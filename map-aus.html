@@ -22,7 +22,7 @@
     </style>
 
     <script src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=false"></script>
-    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerclusterer/1.0.2/src/data.json"></script>
+    <script type="text/javascript" src="js/maps/data.json"></script>
     	
     <script type="text/javascript" src="js/maps/markerclusterer_packed.js"></script>
 
@@ -45,7 +45,7 @@
         var markers = [];
         var count = data.count;
         for (var i = 0; i < count; i++) {
-          var dataLocation = data.photos[i];
+          var dataLocation = data.locations[i];
           var latLng = new google.maps.LatLng(dataLocation.latitude,dataLocation.longitude);
           var marker = new google.maps.Marker({position: latLng,map: map});           
           

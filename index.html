@@ -22,42 +22,10 @@
 		<script src="http://c3js.org/js/c3.min-be9bea56.js"></script>
 		
 		<script src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=false"></script>
-    	<script type="text/javascript" src="js/maps/data.json"></script>
+    	<script type="text/javascript" src="js/maps/data.js"></script>
     	<script type="text/javascript" src="js/maps/markerclusterer_packed.js"></script>
     	
-    	<script type="text/javascript">
-      function initialize(){
-        var center = new google.maps.LatLng(-25.053169, 133.867844);
-
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 4,
-          minZoom:4,
-          maxZoom:7,
-		  disableDefaultUI: true,
-          center: center,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        });
-        
-    
-       	
-  
-
-        var markers = [];
-        var count = data.count;
-        for (var i = 0; i < count; i++) {
-          var dataLocation = data.locations[i];
-          var latLng = new google.maps.LatLng(dataLocation.latitude,dataLocation.longitude);
-          var marker = new google.maps.Marker({position: latLng,map: map});           
-          
-          markers.push(marker);
-          
-        }
-        
-        var markerCluster = new MarkerClusterer(map, markers);
-        
-      }
-      google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
+    	
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -72,7 +40,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand logo" href="#"><em><i class="fa fa-tachometer"></i> Sojourn</em></a>
+          <a class="navbar-brand logo" href="#" ><em><i class="fa fa-tachometer"></i> Sojourn</em></a>
         </div>
         
         <div class="navbar-collapse collapse">
@@ -103,7 +71,7 @@
             <li id="fat-menu" class="dropdown">
               <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-magic"></i> Virtual Tour <b class="caret"></b></a>
               <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-                <li><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">Lets start now!</a></li>
                 <li><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
                 <li><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
                 <li class="divider"> </li>
@@ -170,8 +138,7 @@
       <div class="row">
         <div class="col-sm-12 col-md-1 col-lg-1" id="leftCol" >
         	<div class="nav nav-stacked affix-top" id="sidebar">
-        	<!-- <div id="sidebar" class="affix-top" data-spy="affix" data-offset-top="40" data-offset-bottom="40"> -->
-        		<div class="side-tools clearfix">
+        		<div class="side-tools clearfix"  id="my-other-element">
 <ul>
 							<li>
 								<a href="#"> <i class="fa fa-tachometer fa-3x"></i> <label class="control-label">Dashboard</label> </a>
@@ -236,10 +203,10 @@
 												<br>
 												Reports
 											</button>
-											<button class="btn">
-												<i class="fa fa-bar-chart-o fa-2x"></i>
+											<button class="btn start-tour">
+												<i class="fa fa-magic fa-2x"></i>
 												<br>
-												Charts
+												Start Tour
 											</button>
 										</div>
 									</div>
@@ -274,7 +241,7 @@
 							
 							<div class="col-md-6">
 								<div class="box">
-									<div class="box-head pad-5"><label><i class="fa fa-table fa-lg"></i> Table A</label></div>
+									<div class="box-head pad-5"><label><i class="fa fa-table fa-lg"></i> Chart</label></div>
 									<div class="box-area pad-5">
 										<div id="chart1"></div>
 									</div>
@@ -282,10 +249,10 @@
 							</div>	
 							
 							<div class="col-md-6">
-								<div class="box">
+								<div class="box" id="my-element">
 									<div class="box-head pad-5"><label><i class="fa fa-map-marker fa-lg"></i> Maps</label></div>
 									<div class="box-area">
-										<div id="map-container"><div id="map"> </div></div>
+										<div id="map-container"><div id="map"></div></div>
 									</div>
 								</div>								
 							</div>	
@@ -424,14 +391,12 @@
 							
 							<div class="col-md-4">
 								<div class="box">
-									<div class="box-head pad-5"><label><i class="fa fa-tags fa-lg"></i> Title</label></div>
+									<div class="box-head pad-5"><label><i class="fa fa-bar-chart-o fa-lg"></i> Donut Chart</label></div>
 									<div class="box-area pattern-sandstone pad-5">
-										<p>
-											Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-										</p>
+										<div id="chart2"></div>
 									</div>
 								</div>								
-							</div>							
+							</div>						
 							
 						</div>
 						
@@ -451,6 +416,9 @@
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.0.min.js"><\/script>')</script>
 
         <script src="js/vendor/bootstrap.min.js"></script>
+        
+        <script src="js/bootstrap-tour.min.js"></script>
+		<link href="css/bootstrap-tour.min.css" rel="stylesheet">
 
         <script src="js/plugins.js"></script>
         <script src="js/main.js"></script>
@@ -465,40 +433,12 @@
             ga('create','UA-XXXXX-X');ga('send','pageview');
         </script>
         
-        
-        <script>
-        	var chart1 = c3.generate({
-			bindto : '#chart1',
-        data: {
-          columns: [
-            ['data1', 30, 20, 50, 40, 60, 50],
-            ['data2', 200, 130, 90, 240, 130, 220],
-            ['data3', 300, 200, 160, 400, 250, 250],
-            ['data4', 200, 130, 90, 240, 130, 220],
-            ['data5', 130, 120, 150, 140, 160, 150],
-            ['data6', 90, 70, 20, 50, 60, 120],
-          ],
-          types: {
-            data1: 'bar',
-            data2: 'bar',
-            data3: 'spline',
-            data4: 'line',
-            data5: 'bar',
-            data6: 'area'
-          },
-          groups: [
-            ['data1','data2']
-          ]
-        },
-        axis: {
-          x: {
-            type: 'categorized'
-          }
-        }
-    });
-        </script>
-        
-        
-        
+        <script type="text/javascript">
+      // function initialize(){
+//         
+//         
+      // }
+      // google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
     </body>
 </html>
