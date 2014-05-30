@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -16,13 +16,55 @@
         <link rel="stylesheet" href="css/main.css">
 		<link href="css/font-awesome.min.css" rel="stylesheet">
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        
+        <link href="http://c3js.org/css/c3-e07e76d4.css" rel="stylesheet" type="text/css">
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<script src="http://c3js.org/js/c3.min-be9bea56.js"></script>
+		
+		<script src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=false"></script>
+    	<script type="text/javascript" src="js/maps/data.json"></script>
+    	<script type="text/javascript" src="js/maps/markerclusterer_packed.js"></script>
+    	
+    	<script type="text/javascript">
+      function initialize(){
+        var center = new google.maps.LatLng(-25.053169, 133.867844);
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          minZoom:4,
+          maxZoom:7,
+		  disableDefaultUI: true,
+          center: center,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        
+    
+       	
+  
+
+        var markers = [];
+        var count = data.count;
+        for (var i = 0; i < count; i++) {
+          var dataLocation = data.locations[i];
+          var latLng = new google.maps.LatLng(dataLocation.latitude,dataLocation.longitude);
+          var marker = new google.maps.Marker({position: latLng,map: map});           
+          
+          markers.push(marker);
+          
+        }
+        
+        var markerCluster = new MarkerClusterer(map, markers);
+        
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
     </head>
     <body>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
     <div class="navbar navbar-inverse navbar-fixed-top top-nav" role="navigation">
-      <div class="container">
+      <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -36,47 +78,47 @@
         <div class="navbar-collapse collapse">
         	<ul class="nav navbar-nav">
             <li class="dropdown">
-              <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <a id="drop1" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-coffee"></i> Admin Controls <b class="caret"></b></a>
               <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Action</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Another action</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Something else here</a></li>
-                <li role="presentation" class="divider"></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Separated link</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                <li class="divider"> </li>
+                <li><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
               </ul>
             </li>
             <li class="dropdown">
-              <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown 2 <b class="caret"></b></a>
+              <a href="#" id="drop2" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-phone"></i> Contact Person <b class="caret"></b></a>
               <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Action</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Another action</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Something else here</a></li>
-                <li role="presentation" class="divider"></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Separated link</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                <li class="divider"> </li>
+                <li><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
               </ul>
             </li>
           </ul>
           
           <ul class="nav navbar-nav navbar-right">
             <li id="fat-menu" class="dropdown">
-              <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown 3 <b class="caret"></b></a>
+              <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-magic"></i> Virtual Tour <b class="caret"></b></a>
               <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Action</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Another action</a></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Something else here</a></li>
-                <li role="presentation" class="divider"></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Separated link</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                <li><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                <li class="divider"> </li>
+                <li><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
               </ul>
             </li>
             
             <li id="fat-menu" class="dropdown">
-              <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Dropdown 3 <b class="caret"></b></a>
+              <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Jane Smith <b class="caret"></b></a>
               <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Action</a></li>
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Another action</a></li>
                 <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Something else here</a></li>
                 <li role="presentation" class="divider"></li>
-                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat">Separated link</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="http://twitter.com/fat"><i class="fa fa-sign-out"></i> Sign Out</a></li>
               </ul>
             </li>
           </ul>
@@ -89,20 +131,7 @@
     
 			
       <div class="container-fluid head-control">
-			<div class="container">
-				<!-- <div class="row">
-					<div class="col-md-12">
-						<h2>Heading</h2>
-						<p>
-							Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-						</p>
-						<p>
-							<a class="btn btn-default" href="#" role="button">View details &raquo;</a>
-						</p>
-					</div>
-
-				</div> -->
-				
+			<div class="container-fluid">				
 				<div class="row">
 
 					<div class="col-md-6 col-sm-4 col-xs-12 pull-left">
@@ -113,8 +142,8 @@
 						</header>
 					</div>
 
-					<div class="page-nav-options col-md-6 col-sm-8 col-xs-12 pull-right">
-							<ul class="nav nav-tabs">
+					<div class="page-nav-options col-md-6 col-sm-8 col-xs-12 pull-right hidden-xs">
+							<ul class="nav nav-tabs navbar-right">
 								<li class="active">
 									<a href="#"><i class="icon-home"></i>Home</a>
 								</li>
@@ -136,28 +165,279 @@
   
 	 <!-- /container-fluid --> 
 
-    <div class="container">
+    <div class="container-fluid">
       <!-- Example row of columns -->
       <div class="row">
-        <div class="aside col-sm-12 col-md-1">
-          <h2>Side</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        <div class="col-sm-12 col-md-1 col-lg-1" id="leftCol" >
+        	<div class="nav nav-stacked affix-top" id="sidebar">
+        	<!-- <div id="sidebar" class="affix-top" data-spy="affix" data-offset-top="40" data-offset-bottom="40"> -->
+        		<div class="side-tools clearfix">
+<ul>
+							<li>
+								<a href="#"> <i class="fa fa-tachometer fa-3x"></i> <label class="control-label">Dashboard</label> </a>
+							</li>
+							<li>
+								<a href="#"> <i class="fa fa-calendar fa-3x"></i>  <label class="control-label">Clients</label></a>
+							</li>
+							<li>
+								<a href="#"> <i class="fa fa-map-marker fa-3x"></i>  <label class="control-label">Projects</label></a>
+							</li>
+							<li>
+								<a href="#"> <i class="fa fa-tasks fa-3x"></i>  <label class="control-label">WIP</label></a>
+							</li>
+							<li>
+								<a href="#"> <i class="fa fa-list-alt fa-3x"></i> <label class="control-label">Invoice</label></a>
+							</li>
+							<li>
+								<a href="#"> <i class="fa fa-bar-chart-o fa-3x"></i> <label class="control-label">Reports</label></a>
+							</li>
+							<li>
+								<a href="#" class=""> <i class="fa fa-cogs fa-3x"></i>  <label class="control-label">Settings</label></a>
+							</li>
+						</ul>
+          </div>
+          </div>
         </div>
-        <div class="section col-sm-12 col-md-11">
-          <h2>Heading</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-         
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        <div class="section col-sm-12 col-md-11 col-lg-11">
+          <div class="container-fluid">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="box">
+									<div class="box-head pad-5"><label><i class="fa fa-bookmark"></i> Shortcuts</label></div>
+									<div class="box-area pad-5 no-pad-b">
+										<div class="btn-group-box">
+											<button class="btn">
+												<i class="fa fa-tachometer fa-2x"></i>
+												<br>
+												Dashboard
+											</button>
+											<button class="btn">
+												<i class="fa fa-user fa-2x"></i>
+												<br>
+												Account
+											</button>
+											<button class="btn">
+												<i class="fa fa-search fa-2x"></i>
+												<br>
+												Search
+											</button>
+											<button class="btn">
+												<i class="fa fa-list-alt fa-2x"></i>
+												<br>
+												Reports
+											</button>
+											<button class="btn">
+												<i class="fa fa-bar-chart-o fa-2x"></i>
+												<br>
+												Charts
+											</button>
+											<button class="btn">
+												<i class="fa fa-list-alt fa-2x"></i>
+												<br>
+												Reports
+											</button>
+											<button class="btn">
+												<i class="fa fa-bar-chart-o fa-2x"></i>
+												<br>
+												Charts
+											</button>
+										</div>
+									</div>
+								</div>								
+							</div>
+							
+							<div class="col-md-4">
+								<div class="box">
+									<div class="box-head pad-5"><label><i class="fa fa-tags fa-lg"></i> Title</label></div>
+									<div class="box-area pattern-sandstone pad-5">
+										<p>
+											Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+										</p>
+									</div>
+								</div>								
+							</div>
+							
+							<div class="col-md-4">
+								<div class="left-section-box">
+									<div class="box-head pad-10"><label>Welcome</label></div>
+									<div class="box-area pad-10">
+										<p>
+											Welcome message goes here. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+										</p>
+									</div>
+								</div>								
+							</div>							
+							
+						</div>
+						
+						<div class="row">
+							
+							<div class="col-md-6">
+								<div class="box">
+									<div class="box-head pad-5"><label><i class="fa fa-table fa-lg"></i> Table A</label></div>
+									<div class="box-area pad-5">
+										<div id="chart1"></div>
+									</div>
+								</div>								
+							</div>	
+							
+							<div class="col-md-6">
+								<div class="box">
+									<div class="box-head pad-5"><label><i class="fa fa-map-marker fa-lg"></i> Maps</label></div>
+									<div class="box-area">
+										<div id="map-container"><div id="map"> </div></div>
+									</div>
+								</div>								
+							</div>	
+							
+							
+							
+							<!-- <div class="col-md-4">
+								<div class="box">
+									<div class="box-area pattern-sandstone pad-5 ">
+										<div class="numbers-control-text">
+											<p class="value">
+												100
+											</p>
+											<p class="text">
+												Total Project Revenue
+											</p>
+											<i class="fa fa-money  "> </i>
+										</div>
+									</div>
+								</div>							
+							</div> -->
+							
+													
+							
+						</div>
+						
+						<div class="row">
+							
+							
+							<div class="col-md-4">
+								<div class="box">
+									<div class="box-head pad-10"><label><i class="fa fa-th-list fa-lg"></i> Lists</label></div>
+									<div class="box-area pattern-sandstone pad-5">
+										
+										
+										<div class="box-content box-list collapse in">
+									<ul>
+										<li>
+											<div>
+												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
+												<p class="news-item-preview">
+													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
+												</p>
+											</div>
+										</li>
+										<li>
+											<div>
+												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
+												<p class="news-item-preview">
+													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
+												</p>
+											</div>
+										</li>										
+									</ul>
+									<div class="box-collapse">
+										<a style="cursor: pointer;" data-toggle="collapse" data-target=".more-list">
+											Show More
+										</a>
+									</div>
+									<ul class="more-list collapse out">
+										<li>
+											<div>
+												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
+												<p class="news-item-preview">
+													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
+												</p>
+											</div>
+										</li>
+										<li>
+											<div>
+												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
+												<p class="news-item-preview">
+													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
+												</p>
+											</div>
+										</li>
+										<li>
+											<div>
+												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
+												<p class="news-item-preview">
+													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
+												</p>
+											</div>
+										</li>
+									</ul>
+								</div>
+									</div>
+								</div>								
+							</div>
+							
+							<div class="col-md-4">
+								<div class="box">
+									<div class="box-area pattern-sandstone">
+										<div class="box-content box-table">
+											<table id="sample-table" class="table table-hover table-bordered tablesorter">
+												<thead>
+													<tr>
+														<th class="header">Version</th>
+														<th class="header">Browser</th>
+														<th class="td-actions header"></th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td>7.0</td>
+														<td>Internet
+														Explorer</td>
+														<td class="td-actions"><a href="javascript:;" class="btn btn-small btn-info"> <i class="btn-icon-only icon-ok"></i> </a><a href="javascript:;" class="btn btn-small btn-danger"> <i class="btn-icon-only icon-remove"></i> </a></td>
+													</tr>
+													<tr>
+														<td>4.0</td>
+														<td>Firefox</td>
+														<td class="td-actions"><a href="javascript:;" class="btn btn-small btn-info"> <i class="btn-icon-only icon-ok"></i> </a><a href="javascript:;" class="btn btn-small btn-danger"> <i class="btn-icon-only icon-remove"></i> </a></td>
+													</tr>
+													<tr>
+														<td>Latest</td>
+														<td>Safari</td>
+														<td class="td-actions"><a href="javascript:;" class="btn btn-small btn-info"> <i class="btn-icon-only icon-ok"></i> </a><a href="javascript:;" class="btn btn-small btn-danger"> <i class="btn-icon-only icon-remove"></i> </a></td>
+													</tr>
+													<tr>
+														<td>Latest</td>
+														<td>Chrome</td>
+														<td class="td-actions"><a href="javascript:;" class="btn btn-small btn-info"> <i class="btn-icon-only icon-ok"></i> </a><a href="javascript:;" class="btn btn-small btn-danger"> <i class="btn-icon-only icon-remove"></i> </a></td>
+													</tr>
+													<tr>
+														<td>11</td>
+														<td> Opera</td>
+														<td class="td-actions"><a href="javascript:;" class="btn btn-small btn-info"> <i class="btn-icon-only icon-ok"></i> </a><a href="javascript:;" class="btn btn-small btn-danger"> <i class="btn-icon-only icon-remove"></i> </a></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>								
+							</div>	
+							
+							<div class="col-md-4">
+								<div class="box">
+									<div class="box-head pad-5"><label><i class="fa fa-tags fa-lg"></i> Title</label></div>
+									<div class="box-area pattern-sandstone pad-5">
+										<p>
+											Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+										</p>
+									</div>
+								</div>								
+							</div>							
+							
+						</div>
+						
+						
+
+					</div> 
        </div>
         
       </div>
@@ -165,7 +445,7 @@
       <hr>
 
       <footer>
-        <p>&copy; Company 2014</p>
+        <p class="text-center">&copy; Company 2014</p>
       </footer>
     </div> <!-- /container -->        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.0.min.js"><\/script>')</script>
@@ -184,5 +464,41 @@
             r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
             ga('create','UA-XXXXX-X');ga('send','pageview');
         </script>
+        
+        
+        <script>
+        	var chart1 = c3.generate({
+			bindto : '#chart1',
+        data: {
+          columns: [
+            ['data1', 30, 20, 50, 40, 60, 50],
+            ['data2', 200, 130, 90, 240, 130, 220],
+            ['data3', 300, 200, 160, 400, 250, 250],
+            ['data4', 200, 130, 90, 240, 130, 220],
+            ['data5', 130, 120, 150, 140, 160, 150],
+            ['data6', 90, 70, 20, 50, 60, 120],
+          ],
+          types: {
+            data1: 'bar',
+            data2: 'bar',
+            data3: 'spline',
+            data4: 'line',
+            data5: 'bar',
+            data6: 'area'
+          },
+          groups: [
+            ['data1','data2']
+          ]
+        },
+        axis: {
+          x: {
+            type: 'categorized'
+          }
+        }
+    });
+        </script>
+        
+        
+        
     </body>
 </html>
