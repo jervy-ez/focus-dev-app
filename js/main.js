@@ -100,20 +100,14 @@ var chart1 = c3.generate({
 
 
 	// Instance the tour
-		 var $demo = $("#my-element");
 	var tour = new Tour({
-		onStart: function() {
-      return $demo.addClass("disabled", true);
-    },
-    onEnd: function() {
-      return $demo.removeClass("disabled", true);
-    },
+		
 		steps : [{
 			element : "#my-element",
         placement: "top",
         backdrop: true,
 			title : "Title of my step",
-			content : "Content of my step"
+			content : "Introduce new users to your product by walking them through it step by step."
 		}, {
 			element : "#my-other-element",
 			title : "Title of my step",
@@ -138,6 +132,17 @@ $('.start-tour').click(function(e){
     e.preventDefault(); 
 });
 
+	$('.popover-test').popover();
+	$('.tooltip-test').tooltip();	
 	
+	
+	$('#loading-example-btn').click(function () {
+        var btn = $(this);
+        btn.button('loading');
+        setTimeout(function () {
+            btn.button('reset');
+            $(".alert").alert('close');
+        }, 1000);
+    });
 
 });

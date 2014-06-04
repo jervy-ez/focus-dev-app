@@ -69,6 +69,7 @@ body {
 .head-control  .nav-tabs .active > a:hover {
 	color: #fff;
 	border: 1px solid #012F4E;
+	border-bottom: 1px solid #84CCFD;
 	background: #048ae4; /* Old browsers */
 	background: -moz-linear-gradient(top,  #048ae4 0%, #048ae4 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#048ae4), color-stop(100%,#048ae4)); /* Chrome,Safari4+ */
@@ -80,7 +81,6 @@ body {
 }
 
 .head-control  .nav-tabs a {
-
 	color: #fff;
 	border: 1px solid #012F4E;
 	border-bottom: 1px solid #84CCFD;
@@ -223,6 +223,11 @@ body {
 	border:0;	
 }
 
+.border-less-box{
+	margin: 20px 0 0;
+	font-size:14px;
+	
+}
 
 .left-section-box{
 	border-left: 1px solid #E2E2E2;
@@ -275,6 +280,22 @@ body {
 	font-weight: 800;
 }
 
+.box-head h3{
+	display: inline-block;	
+}
+
+.box-head .head-btn {
+	margin: -8px 0px 0px 10px;
+}
+
+.form-horizontal hr {
+	margin-top: 5px;
+	margin-bottom: 20px;
+}
+
+.form-horizontal label{
+	font-weight:normal;
+}
 
 .pad-0{
 	padding:0;
@@ -303,7 +324,7 @@ body {
 
 .box .btn-group-box button.btn {
 	color: #555555;
-	font-size: 14px;
+	font-size: 12px;
 	border: none;
 	height: 70px;
 	width: 82px;
