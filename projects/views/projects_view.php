@@ -25,6 +25,8 @@
 
 	$variation = $this->session->flashdata('variation');
 
+
+
 ?>
 
 
@@ -99,8 +101,9 @@ estimate-->
 				<?php if($this->session->userdata('is_admin') == 1 ): ?>
 
 					<div class="border-less-box alert alert-info fade in pad-0 no-pad row">
-						<div class="col-sm-3"><strong>Project Mark-Up:</strong> <?php echo $markup; ?>%</div>
-						<div class="col-sm-3"><strong>Site Labour Total:</strong> (ex-gst) $<?php echo number_format($final_labor_cost); ?></div>
+						<div class="col-sm-2"><strong>Project Mark-Up:</strong> <?php echo $markup; ?>%</div>
+						<div class="col-sm-2"><strong>Site Labour Total:</strong> (ex-gst) $<?php echo number_format($final_labor_cost); ?></div>
+						<div class="col-sm-2"><strong>Variation Total:</strong> $<?php echo number_format($variation_total); ?></div>
 						<div class="col-sm-4"><strong>Project Total:</strong> (ex-gst) $<?php echo number_format($final_total_quoted); ?>  &nbsp;&nbsp;&nbsp;&nbsp; (inc-gst) $<?php echo number_format($final_total_quoted+($final_total_quoted*($admin_gst_rate/100))); ?></div>
 						<div class="col-sm-2"><strong>GP:</strong> <?php echo ($gp*100); ?>%</div>
 
@@ -194,8 +197,7 @@ estimate-->
 												<li><a href="<?php echo base_url(); ?>works/proj_joinery_summary_w_cost/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Joinery Summary with Cost</a></li>
 												<li><a href="<?php echo base_url(); ?>works/proj_joinery_summary_wo_cost/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Joinery Summary without Cost</a></li>
 												<?php if($this->session->userdata('is_admin') == 1 ): ?>
-												<li><a href="#" target="_blank"><i class="fa fa-file-pdf-o"></i> 
-												s Summary</a></li>
+												<li><a href="#" target="_blank"><i class="fa fa-file-pdf-o"></i> Variations Summary</a></li>
 												<li><a href="amplemod/print_pdf"><i class="fa fa-file-pdf-o"></i> Project Details</a></li>
 												<?php endif; ?>
 												<li><a href="" id = "work_cont_quote_req"><i class="fa fa-file-pdf-o"></i> Contractor Quote Request</a></li>
@@ -277,14 +279,14 @@ estimate-->
 																		<label for="client_po" class="col-sm-4 control-label m-top-5 text-left">Job Date</label>
 																		<div class="col-sm-8  col-xs-12">
 
-																		<?php // if($this->invoice->if_has_invoice($project_id) == 0): ?>
+																		<?php  if($this->invoice->if_has_invoice($project_id) == 0 || $this->invoice->if_completed_invoice($project_id) == 0): ?>
 																			
-																				<!-- <div  title="Warning: You need to set up the Project Payments." class="tooltip-enabled">
+																				 <div  title="Warning: You need to set up the Project Payments." class="tooltip-enabled">
 																					<input type="text" disabled="disabled" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Please fill the progress payment for project contract. Can be found at the Invoices tab." class="tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
-																				</div> -->
+																				</div>
 
 
-																		<?php //  else: ?>
+																		<?php   else: ?>
 
 																			<?php if($job_date == '' ): ?>
 																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
@@ -300,7 +302,7 @@ estimate-->
 																				<input type="text" disabled="disabled" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: You need to request to the Project Manager to change the Job Date" class="tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php endif; ?>
 
-																		<?php // endif; ?>
+																		<?php  endif; ?>
 																			
 																		</div>
 																	</div>
