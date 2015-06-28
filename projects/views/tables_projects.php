@@ -4,12 +4,24 @@ foreach ($proj_t->result_array() as $row){
 
 
 	if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
-		echo '<td>'.number_format($row['project_total']).'</td></tr>';
+		echo '<td>'.number_format($row['project_total']).'</td>';
 
 	}else{
-		echo '<td><strong class="green-estimate">'.number_format($row['budget_estimate_total']).'<strong></td></tr>';
+		echo '<td><strong class="green-estimate">'.number_format($row['budget_estimate_total']).'<strong></td>';
 	}
 
+
+	if($this->session->userdata('user_id') == $row['project_manager_id'] ){
+		echo '<td>PM</td></tr>';
+	}else if($this->session->userdata('user_id') == $row['project_admin_id'] ){
+		echo '<td>PA</td></tr>';
+
+	}elseif($this->session->userdata('user_id') == $row['project_estiamator_id'] ){
+		echo '<td>EST</td></tr>';
+
+	}else{
+		echo '<td>ORD</td></tr>';
+	}
 	
 }
 ?>

@@ -70,11 +70,34 @@
 										<?php $this->company->company_list('dropdown'); ?>
 									</select>
 									
-									<select class="form-control m-top-10 select-arr-tbl right"  style="float: right; width: 95px; margin-right: 5px;">
-										<option value="">Is WIP</option>
+									<select class="form-control m-top-10 select-arr-tbl right"  style="float: right; width: 120px; margin-right: 5px;">
+										<option value="">View WIP?</option>
 										<option value="desc">Yes</option>
 										<option value="asc">No</option>
 									</select>
+
+									<?php if($this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 8 || $this->session->userdata('user_role_id') == 7 ): ?>
+
+									
+										<select class="form-control m-top-10 select-personal right"  style="float: right; width: 120px; margin-right: 5px;">
+											
+											<option value="ORD">View All</option>
+
+											<?php if($this->session->userdata('user_role_id') == 3 ){
+													echo '<option value="PM">Personal</option>';
+												}else if($this->session->userdata('user_role_id') == 2 ){
+													echo '<option value="PA">Personal</option>';
+												}elseif($this->session->userdata('user_role_id') == 8){
+													echo '<option value="EST">Personal</option>';
+											
+												}
+											?>
+
+										</select>
+
+									<?php endif; ?>
+
+
 								</div>
 								<label><?php echo $screen; ?> List</label><span> (<a href="#" data-placement="right" class="popover-test" title="" data-content="Hello there mate! Welcome to the clients screen." data-original-title="Welcome">?</a>)</span>
 								<p>This is where the companies are listed.</p>
@@ -82,7 +105,7 @@
 							</div>
 							<div class="box-area pad-10">
 								<table id="projectTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-									<thead> <tr> <th>Number</th> <th>Project Name</th> <th>Client</th> <th>Category</th> <th>Job Date</th> <th>Total Cost</th> </tr> </thead> 
+									<thead> <tr> <th>Number</th> <th>Project Name</th> <th>Client</th> <th>Category</th> <th>Job Date</th> <th>Total Cost</th> <th>Personal</th></tr> </thead> 
 									 
 									<tbody>
 										<?php echo $this->projects->display_all_projects(); ?>

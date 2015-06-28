@@ -169,7 +169,7 @@
 																			
 																				
 
-																			<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3  ): ?>
+																			<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_id') == 8  ): ?>
 																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			
 
