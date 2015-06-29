@@ -683,7 +683,7 @@ estimate-->
 			<div class="pad-l-10">
 				<fieldset class="pad-10 border-2 mgn-top-10">
 					<legend class="pad-l-10 pad-r-10"><strong>Invoices</strong></legend>
-					<div class="full clearfix">
+					<div class="full clearfix invoices_list_item">
 						<?php $this->projects->list_invoiced_items($project_id,$final_total_quoted) ?>
 					</div>
 				</fieldset>
