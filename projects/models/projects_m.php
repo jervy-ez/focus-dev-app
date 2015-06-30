@@ -3,7 +3,7 @@
 class Projects_m extends CI_Model{
 	
 	public function display_all_projects(){
-		$query = $this->db->query("SELECT `project`.`project_id`, `project`.`project_total`,`project`.`project_name`, `project_cost_total`.`work_estimated_total`, `project`.`install_time_hrs`,`company_details`.`company_name`,`company_details`.`company_id`, `project`.`job_category`, `project`.`project_status_id`, `project`.`job_date`, `project`.`budget_estimate_total`,`project`.`project_manager_id`,`project`.`project_admin_id`,`project`.`project_estiamator_id`
+		$query = $this->db->query("SELECT `project`.`project_id`, `project`.`project_total`,`project`.`project_name`, `project_cost_total`.`work_estimated_total`, `project`.`install_time_hrs`,`company_details`.`company_name`,`company_details`.`company_id`, `project`.`job_category`, `project`.`project_status_id`, `project`.`job_date`, `project`.`budget_estimate_total`,`project`.`project_manager_id`,`project`.`project_admin_id`,`project`.`project_estiamator_id`,`project`.`is_wip`, `project`.`is_paid`
 			FROM  `project`,`company_details`,`project_cost_total` 
 			WHERE `company_details`.`company_id` = `project`.`client_id` AND `project`.is_active = '1' AND `project_cost_total`.`project_id` = `project`.`project_id`
 			ORDER BY `project`.`project_id`  DESC");

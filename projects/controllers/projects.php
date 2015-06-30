@@ -115,8 +115,8 @@ class Projects extends MY_Controller{
 		}
 	}
 
-	public function list_invoiced_items($project_id,$project_total){
-		$this->invoice->list_invoiced_items($project_id,$project_total);
+	public function list_invoiced_items($project_id,$project_total,$variation_total){
+		$this->invoice->list_invoiced_items($project_id,$project_total,$variation_total);
 	}
 	
 	public function view(){
