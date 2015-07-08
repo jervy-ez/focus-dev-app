@@ -70,10 +70,12 @@
 										<?php $this->company->company_list('dropdown'); ?>
 									</select>
 									
-									<select class="form-control m-top-10 select-arr-tbl right"  style="float: right; width: 120px; margin-right: 5px;">
-										<option value="">View WIP?</option>
-										<option value="desc">Yes</option>
-										<option value="asc">No</option>
+									<select class="form-control m-top-10 select-status-tbl right"  style="float: right; width: 110px; margin-right: 5px;">
+										<option value="">Status</option>
+										<option value="wip">WIP</option>
+										<option value="unset">Not WIP</option>
+										<option value="invoiced">Invoiced</option>
+										<option value="paid">Paid</option>
 									</select>
 
 									<?php if($this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 8 || $this->session->userdata('user_role_id') == 7 ): ?>
@@ -105,7 +107,7 @@
 							</div>
 							<div class="box-area pad-10">
 								<table id="projectTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-									<thead> <tr> <th>Number</th> <th>Project Name</th> <th>Client</th> <th>Category</th> <th>Job Date</th> <th>Total Cost</th> <th>Personal</th></tr> </thead> 
+									<thead> <tr> <th>Number</th> <th>Project Name</th> <th>Client</th> <th>Category</th> <th>Job Date</th> <th>Total Cost</th> <th>Personal</th> <th>Status</th></tr> </thead> 
 									 
 									<tbody>
 										<?php echo $this->projects->display_all_projects(); ?>
@@ -124,6 +126,17 @@
 								<p>
 									The table can be sortable by the header. It has search feature using a sub text or keyword you are searching. Clicking the Name of the company will lead to the Company Details Screen.
 								</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3">
+						<div class="box">
+							<div class="box-head pad-5">
+								<label><i class="fa fa-info-circle fa-lg"></i> Color Codes: &nbsp; &nbsp;
+								<strong class="wip">WIP</strong> &nbsp; &nbsp;
+								<strong class="invoiced">Invoiced</strong> &nbsp; &nbsp;
+								<strong class="paid">Paid</strong></label>
 							</div>
 						</div>
 					</div>

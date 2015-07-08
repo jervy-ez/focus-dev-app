@@ -125,7 +125,7 @@ estimate-->
 								<strong>Install Markup:</strong> <?php echo $admin_install_markup; ?>%
 							</div>
 							<div class="col-sm-3">
-								<strong>GST Rate:</strong> <?php echo $admin_gst_rate; ?>%
+								<strong>GST Rate:</strong> <span class="project_gst_percent"><?php echo $admin_gst_rate; ?></span>%
 							</div>		
 							<div class="col-sm-3">
 								<strong>Hourly Rate:</strong> <?php echo $admin_hourly_rate; ?>
@@ -177,10 +177,11 @@ estimate-->
 										<li class="<?php echo ($curr_tab == 'works' ? 'active' : '' ); ?>">
 											<a href="#works" data-toggle="tab"><i class="fa fa-cubes fa-lg"></i> Works</a>
 										</li>
-										<?php if($this->session->userdata('is_admin') == 1 ): ?>
+										
 										<li class="<?php echo ($curr_tab == 'variations' ? 'active' : '' ); ?>">
 											<a href="#variations" onclick = "load_variation()" data-toggle="tab"><i class="fa fa-cube fa-lg"></i> Variations</a>
 										</li>
+										<?php if($this->session->userdata('is_admin') == 1 ): ?>
 										<li class="<?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>">
 											<a href="#attachments" data-toggle="tab"><i class="fa fa-paperclip fa-lg"></i> Attachments</a>
 										</li>
@@ -549,7 +550,7 @@ estimate-->
 												<?php echo $this->projects->works_view(); ?>
 											</div>
 										</div>
-										<?php if($this->session->userdata('is_admin') == 1 ): ?>
+										
 										<div class="tab-pane fade in  clearfix <?php echo ($curr_tab == 'variations' ? 'active' : '' ); ?>" id="variations">
 											<div class="m-bottom-15 clearfix m-top-10">
 												<?php 
@@ -561,12 +562,14 @@ estimate-->
 												?>
 											</div>
 										</div>
-										<?php endif; ?>
+										<?php if($this->session->userdata('is_admin') == 1 ): ?>
+										
 										<div class="tab-pane fade in  clearfix <?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>" id="attachments">
 											<div class="m-bottom-15 clearfix m-top-10">
 												<?php echo $this->attachments->attachments_view(); ?>
 											</div>
 										</div>
+										<?php endif; ?>
 										<div class="tab-pane fade in  clearfix <?php echo ($curr_tab == 'send_pdf' ? 'active' : '' ); ?>" id="send_pdf">
 											<div class="m-bottom-15 clearfix m-top-10">
 												<?php echo $this->send_emails->send_pdf(); ?>

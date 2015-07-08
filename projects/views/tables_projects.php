@@ -6,6 +6,10 @@ foreach ($proj_t->result_array() as $row){
 
 	$status = '';
 
+	if($row['job_date'] != '' ){
+		$status = 'wip';
+	}
+
 	if($this->invoice->if_invoiced_all($row['project_id'])  && $this->invoice->if_has_invoice($row['project_id']) > 0 ){
 		$status = 'invoiced';
 	}
@@ -13,6 +17,9 @@ foreach ($proj_t->result_array() as $row){
 	if($row['is_paid'] == 1 && $row['is_wip'] == 0){
 		$status = 'paid';
 	}
+
+
+	
 
 
 
@@ -28,16 +35,19 @@ foreach ($proj_t->result_array() as $row){
 
 
 	if($this->session->userdata('user_id') == $row['project_manager_id'] ){
-		echo '<td>PM</td></tr>';
+		echo '<td>PM</td>';
 	}else if($this->session->userdata('user_id') == $row['project_admin_id'] ){
-		echo '<td>PA</td></tr>';
-
+		echo '<td>PA</td>';
 	}elseif($this->session->userdata('user_id') == $row['project_estiamator_id'] ){
-		echo '<td>EST</td></tr>';
-
+		echo '<td>EST</td>';
 	}else{
-		echo '<td>ORD</td></tr>';
+		echo '<td>ORD</td>';
 	}
+
+	if($row['job_date'] == ''){
+		$status = 'unset';
+	}
+	echo '<td>'.$status.'</td></tr>';
 	
 }
 ?>

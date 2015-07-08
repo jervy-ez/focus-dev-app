@@ -222,5 +222,14 @@ class Projects_m extends CI_Model{
 		$this->db->query("UPDATE `project` SET `project_total` = '$project_total' WHERE `project`.`project_id` = '$project_id' ");
 	}
 
+	public function get_list_shopping_centers($state_id,$suburb){
+		$query = $this->db->query("SELECT * FROM `address_general` 
+			LEFT JOIN `address_detail` ON  `address_detail`.`general_address_id` = `address_general`.`general_address_id`
+			LEFT JOIN `shopping_center` ON `shopping_center`.`detail_address_id` = `address_detail`.`address_detail_id`
+			WHERE `address_general`.`state_id` = '$state_id' AND `address_general`.`suburb` = '$suburb' AND `shopping_center`.`shopping_center_brand_name` IS NOT NULL
+			ORDER BY `shopping_center`.`shopping_center_brand_name` ASC");
+		return $query;
+	}
+
 
 }

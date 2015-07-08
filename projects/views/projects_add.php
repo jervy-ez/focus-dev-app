@@ -141,7 +141,7 @@
 												<div class="col-sm-6 m-bottom-10 clearfix" >
 													<label for="job_date" class="col-sm-3 control-label"><i class="fa fa-calendar"></i> Job Date</label>
 													<div class="col-sm-9">
-														<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control datepicker" id="job_date" name="job_date" value="<?php echo $this->input->post('job_date'); ?>">
+														<input disabled="disabled" type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control datepicker" id="job_date" name="job_date" value="<?php echo $this->input->post('job_date'); ?>">
 													</div>													
 												</div>
 
@@ -385,35 +385,57 @@
 												<div class="shopping_center" <?php echo ($this->input->post('is_shopping_center')==1 ?  '' : 'style="display:none;"' ); ?>>
 													<input type="hidden" name="is_shopping_center" class="is_shopping_center" value="<?php echo ($this->input->post('is_shopping_center')==1 ?  1 : 0 ); ?>">
 
-													<div class="col-sm-4 m-bottom-10 clearfix">
+													<div class="col-sm-3 m-bottom-5 clearfix <?php if(form_error('shopping_center_state')){ echo 'has-error has-feedback';} ?>">											
 														<div class="col-sm-12">
-															<label for="shop_tenancy_number" class="control-label">Shop/Tenancy Number</label><br />
-															<input type="text" class="form-control" id="shop_tenancy_number" placeholder="Shop/Tenancy Number" tabindex="14" name="shop_tenancy_number" value="<?php echo $this->input->post('shop_tenancy_number'); ?>">
-														</div>
-													</div>
-
-													<div class="col-sm-4 m-bottom-5 clearfix <?php if(form_error('shopping_center')){ echo 'has-error has-feedback';} ?>">											
-														<div class="col-sm-12">
-															<label for="shopping_center" class="control-label">Select Brand/Shopping Center*</label>
-															<select class="form-control brand_shopping_center"  tabindex="15" id="shopping_center" name="shopping_center" style="width: 100%;">
-																<option value="" disabled>Choose a Shopping Center</option>
-																<?php $focus_selected = ($this->input->post('focus') ? $this->input->post('focus') : $this->session->userdata('user_focus_company_id')); ?>
-																<?php $this->projects->set_jurisdiction_shoping_center($focus_selected); ?>
+															<label for="shopping_center_state" class="control-label">State*</label>
+															<select class="form-control state-option-a shopping_center_state"  tabindex="14" id="shopping_center_state" name="shopping_center_state">
+																<?php if($this->input->post('focus')): ?>
+																	<?php echo $this->projects->set_jurisdiction($this->input->post('focus')); ?>
+																<?php else: ?>
+																	<?php echo $this->projects->set_jurisdiction($this->session->userdata('user_focus_company_id')); ?>
+																<?php endif;  ?>
 															</select>
-															<script type="text/javascript">$("select#shopping_center").val("<?php echo $this->input->post('shopping_center'); ?>");</script>
+															<script type="text/javascript">$("select#shopping_center_state").val("<?php echo $this->input->post('shopping_center_state'); ?>");</script>
 														</div>
 													</div>
 
-													<div class="col-sm-4 m-bottom-5 clearfix <?php if(form_error('shopping_center_suburb')){ echo 'has-error has-feedback';} ?>">											
+													<div class="col-sm-3 m-bottom-5 clearfix <?php if(form_error('shopping_center_suburb')){ echo 'has-error has-feedback';} ?>">											
 														<div class="col-sm-12">
 															<label for="shopping_center_suburb" class="control-label">Suburb*</label>
-															<select class="form-control shopping_center_suburb"  tabindex="15" id="shopping_center_suburb" name="shopping_center_suburb" style="width: 100%;">															
-																<option value="" disabled>Choose a Suburb</option>
-																<?php // echo $this->projects->fetch_shopping_center($this->input->post('shopping_center') ); ?>
+															<select class="form-control shopping_center_suburb" id="shopping_center_suburb"  tabindex='15' name="shopping_center_suburb">
+																<?php if($this->input->post('shopping_center_state')): ?>
+																	<?php $this->company->get_suburb_list('dropdown|state_id|'.$this->input->post('shopping_center_state')); ?>
+																<?php else: ?>
+																	<option value="" disabled="disabled">Choose a Suburb...</option>
+																<?php endif; ?>
 															</select>
 															<script type="text/javascript">$("select#shopping_center_suburb").val("<?php echo $this->input->post('shopping_center_suburb'); ?>");</script>
 														</div>
 													</div>
+
+													<div class="col-sm-3 m-bottom-5 clearfix <?php if(form_error('shopping_center')){ echo 'has-error has-feedback';} ?>">											
+														<div class="col-sm-12">
+															<label for="shopping_center" class="control-label">Select Brand/Shopping Center*</label>
+															<select class="form-control brand_shopping_center"  tabindex="16" id="brand_shopping_center" name="brand_shopping_center" style="width: 100%;">
+																<?php if($this->input->post('brand_shopping_center')): ?>
+
+																	<?php $post_suburb = $this->input->post('shopping_center_suburb'); $post_state = $this->input->post('shopping_center_state');  ?>
+																	<?php $this->projects->fetch_shopping_center_state_sub($post_suburb,$post_state,1); ?>
+																<?php else: ?>
+																	<option value="" disabled="disabled">Choose a Shopping Center</option>
+																<?php endif; ?>
+															</select>
+															<script type="text/javascript">$("select#brand_shopping_center").val("<?php echo $this->input->post('brand_shopping_center'); ?>");</script>
+														</div>
+													</div>
+
+													<div class="col-sm-3 m-bottom-10 clearfix">
+														<div class="col-sm-12">
+															<label for="shop_tenancy_number" class="control-label">Shop/Tenancy Number</label><br />
+															<input type="text" class="form-control" id="shop_tenancy_number" placeholder="Shop/Tenancy Number" tabindex="17" name="shop_tenancy_number" value="<?php echo $this->input->post('shop_tenancy_number'); ?>">
+														</div>
+													</div>
+
 												</div>											
 
 											</div>

@@ -106,6 +106,33 @@ class Projects extends MY_Controller{
 	}
 
 
+
+	public function fetch_shopping_center_state_sub($suburb='',$state='',$direct=0){
+
+		if($direct == 0){
+	      	$data = explode('|',$_POST['ajax_var']);
+	      	$suburb = $data['0'];
+	      	$state = $data['6'];
+		}else{
+	      	$suburb_arr = explode('|',$suburb);
+	      	$suburb = $suburb_arr['0'];
+
+	      	$state_arr = explode('|',$state);
+	      	$state = $state_arr['3'];
+		}
+
+      	$suburb = strtoupper($suburb);
+		$shopping_center_list = $this->projects_m->get_list_shopping_centers($state,$suburb);
+
+		echo '<option value="" disabled="disabled" selected="selected">Choose a Shopping Center</option>';
+
+      	foreach ($shopping_center_list->result() as $row){
+      		echo '<option value="'.$row->detail_address_id.'">'.ucwords(strtolower($row->shopping_center_brand_name)).'</option>';
+      	}
+	}
+
+
+
 	public function hasQuote($project_id){
 		$project_work_list = $this->projects_m->display_all_works($project_id);
 		if($project_work_list->num_rows > 0){
@@ -600,7 +627,7 @@ email
 			$this->form_validation->set_rules('postcode_a', 'Site Postcode','trim|required|xss_clean');
 		}else{
 			$this->form_validation->set_rules('shop_tenancy_number', 'Site Shop/Tenancy Number','trim|xss_clean');
-			$this->form_validation->set_rules('shopping_center', 'Site Brand/Shopping Center','trim|required|xss_clean');
+			$this->form_validation->set_rules('brand_shopping_center', 'Site Brand/Shopping Center','trim|required|xss_clean');
 			$this->form_validation->set_rules('shopping_center_suburb', 'Site Suburb','trim|required|xss_clean');
 		}		
 
@@ -720,7 +747,7 @@ email
 
 
 			if($is_shopping_center == 1){
-				$site_address_id =  $this->input->post('shopping_center_suburb');
+				$site_address_id =  $this->input->post('brand_shopping_center');
 			}else{
 
 				$general_address_id_result_a = $this->company_m->fetch_address_general_by('postcode-suburb',$data['postcode_a'],$data['suburb_a']);
@@ -1220,7 +1247,7 @@ $gp = 0;
 				$this->form_validation->set_rules('postcode_a', 'Site Postcode','trim|required|xss_clean');
 			}else{
 				$this->form_validation->set_rules('shop_tenancy_number', 'Site Shop/Tenancy Number','trim|xss_clean');
-				$this->form_validation->set_rules('shopping_center', 'Site Brand/Shopping Center','trim|required|xss_clean');
+				$this->form_validation->set_rules('brand_shopping_center', 'Site Brand/Shopping Center','trim|required|xss_clean');
 				$this->form_validation->set_rules('shopping_center_suburb', 'Site Suburb','trim|required|xss_clean');
 			}
 
@@ -1323,7 +1350,7 @@ $gp = 0;
 
 
 				if($is_shopping_center == 1){
-					$site_address_id =  $this->input->post('shopping_center_suburb');
+					$site_address_id =  $this->input->post('brand_shopping_center');
 				}else{
 					$site_address_id = $data['address_id'];
 					$shop_tenancy_number = '';
