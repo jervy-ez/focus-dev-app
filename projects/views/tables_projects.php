@@ -44,7 +44,7 @@ foreach ($proj_t->result_array() as $row){
 		echo '<td>ORD</td>';
 	}
 
-	if($row['job_date'] == ''){
+	if($row['job_date'] == '' && $row['is_paid'] == 0){
 		$status = 'unset';
 	}
 	echo '<td>'.$status.'</td></tr>';

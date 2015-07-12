@@ -1,4 +1,4 @@
-<?php date_default_timezone_set("Australia/Perth");  // date is set to perth and important setting for diff timezone acounts ?>
+﻿<?php date_default_timezone_set("Australia/Perth");  // date is set to perth and important setting for diff timezone acounts ?>
 <?php $this->load->module('company'); ?>
 <?php $this->load->module('projects'); ?>
 <?php $this->load->module('attachments'); ?>
@@ -25,7 +25,11 @@
 
 	$variation = $this->session->flashdata('variation');
 
-
+	if($this->invoice->if_has_invoice($project_id) == 0): 
+		$prog_payment_stat = 0;
+	else:
+		$prog_payment_stat = 1;
+	endif;
 
 ?>
 
@@ -45,6 +49,7 @@
 
 <!-- title bar 
 estimate-->
+<input type="hidden" id = "prog_payment_stat" value = "<?php echo $prog_payment_stat ?>">
 <div class="container-fluid head-control">
 	<div class="container-fluid">
 		<div class="row">
@@ -206,7 +211,7 @@ estimate-->
 												<li><a href="" id = "work_cont_po"><i class="fa fa-file-pdf-o"></i> Contractor Purchase Order</a></li>
 												<?php if($this->session->userdata('is_admin') == 1 ): ?>
 												<li><a href="amplemod/print_pdf"><i class="fa fa-file-pdf-o"></i> Quotation and Contract</a></li>
-												<li><a href="<?php echo base_url(); ?>works/contract_tot_rfntf/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Contract, Terms of Trade<br />&amp; Request for New Trade Form</a></li>
+												<li><a href="#" onclick = "create_contract(<?php echo $project_id ?>)"><i class="fa fa-file-pdf-o"></i> Contract, Terms of Trade<br />&amp; Request for New Trade Form</a></li>
 												<?php endif; ?>
 											</ul>
 										</li>									
@@ -585,6 +590,52 @@ estimate-->
 			</div>
 		</div>
 	</div>
+	<!-- MODAL -->
+<div class="modal fade" id="contract_notes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+	    <div class="modal-content">
+	        <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		        <h4 class="modal-title">Contract Notes</h4>
+	        </div>
+	        <div class="modal-body" style = "height: 250px">
+	        	<div class="col-sm-12 m-bottom-10 clearfix <?php if(form_error('officeNumber')){ echo 'has-error has-feedback';} ?>">
+					<label for="company_prg" class="col-sm-4 control-label">Contract Date*</label>
+					<div class="col-sm-8">														
+						<div class="input-group <?php if(form_error('company_prg')){ echo 'has-error has-feedback';} ?>">
+							<span class="input-group-addon"><i class="fa fa-calendar  fa-lg"></i></span>
+							<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" class="form-control datepicker" id="contract_date" name="contract_date">
+						</div>
+					</div>
+				</div>
+
+	          	<div class="col-sm-12 m-bottom-10 clearfix">
+					<label for="company_prg" class="col-sm-4 control-label">Plans, Elevations and Drawings:</label>
+					<div class="col-sm-8">														
+						<textarea class = "form-control input-sm" id = "plans_elv_draw" maxlength="43"></textarea>
+					</div>
+				</div>
+				<div class="col-sm-12 m-bottom-10 clearfix">
+					<label for="company_prg" class="col-sm-4 control-label">Schedule of Works Include in Quotation:</label>
+					<div class="col-sm-8">														
+						<textarea class = "form-control input-sm" id = "sched_work_quotation" maxlength="43"></textarea>
+					</div>
+				</div>
+				<div class="col-sm-12 m-bottom-10 clearfix">
+					<label for="company_prg" class="col-sm-4 control-label">Condition of Quotation and Contract</label>
+					<div class="col-sm-8">
+						<textarea class = "form-control input-sm" id = "condition_quote_contract" maxlength="43"></textarea>
+					</div>
+				</div>
+	        </div>
+	        <div class="modal-footer">
+	        	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	          	<button type="button" class="btn btn-primary" id = "create_contract"><i class="fa fa-file-pdf-o  fa-lg"></i> Create Contract</button>
+	        </div>
+	    </div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 </div>
 
 
