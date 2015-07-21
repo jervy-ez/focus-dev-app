@@ -363,6 +363,18 @@ email
 		}
 	}
 
+	public function fetch_project_total_values(){
+		$project_id = $_POST['proj_id'];
+		$project_totals_arr = $this->fetch_project_totals($project_id);
+		$proj_default_arr = $this->display_project_applied_defaults($project_id);
+		$admin_gst_rate = $proj_default_arr['admin_gst_rate'];
+		$proj_ex_gst = round($project_totals_arr['final_total_quoted'],2);
+		$proj_ex_gst_formatted = number_format($project_totals_arr['final_total_quoted'],2);
+		$proj_inc_gst = number_format($proj_ex_gst+($proj_ex_gst*($admin_gst_rate/100)),2);
+		//echo $project_id;
+		echo $proj_ex_gst_formatted."|".$proj_inc_gst;
+	}
+
 	public function find_contact_person($comp_id=''){
 		$post_ajax_arr = array();
 
@@ -628,7 +640,6 @@ email
 		}else{
 			$this->form_validation->set_rules('shop_tenancy_number', 'Site Shop/Tenancy Number','trim|xss_clean');
 			$this->form_validation->set_rules('brand_shopping_center', 'Site Brand/Shopping Center','trim|required|xss_clean');
-			$this->form_validation->set_rules('shopping_center_suburb', 'Site Suburb','trim|required|xss_clean');
 		}		
 
 		$this->form_validation->set_rules('street_b', 'Invoice Street','trim|required|xss_clean');
@@ -794,7 +805,7 @@ email
 					$total_work_quote = $work_estimate + ($work_estimate*($project_markup/100));
 				}				
 
-				$work_id = $this->works_m->insert_new_works($row->contractor_type,$row->work_con_sup_id,$row->other_work_desc,$project_markup,$note_id,$row->is_deliver_office,$row->work_cpo_date,$row->work_reply_date,$inserted_project_id,'0',$work_estimate,$total_work_quote);
+				$work_id = $this->works_m->insert_new_works($row->contractor_type,$row->work_con_sup_id,$row->other_work_desc,$project_markup,$note_id,$row->is_deliver_office,'',$row->work_reply_date,$inserted_project_id,'0',$work_estimate,$total_work_quote);
 
 				$works_joinery_raw = $this->works_m->display_all_works_joinery($row->works_id);
 				foreach ($works_joinery_raw->result() as $joinery_row) {
@@ -803,7 +814,7 @@ email
 					$joinery_notes = array_shift($joinery_notes_raw->result_array());
 
 					$joinery_note_id = $this->works_m->insert_work_notes($joinery_notes['comments'],$joinery_notes['notes']);
-					$added_new_joinery_id = $this->works_m->insert_works_joinery($work_id,$joinery_row->joinery_id,$project_markup,$joinery_note_id,$joinery_row->is_deliver_office,$joinery_row->work_cpo_date,$joinery_row->work_reply_date);
+					$added_new_joinery_id = $this->works_m->insert_works_joinery($work_id,$joinery_row->joinery_id,$project_markup,$joinery_note_id,$joinery_row->is_deliver_office,'',$joinery_row->work_reply_date);
 
 				}
 
@@ -1248,7 +1259,6 @@ $gp = 0;
 			}else{
 				$this->form_validation->set_rules('shop_tenancy_number', 'Site Shop/Tenancy Number','trim|xss_clean');
 				$this->form_validation->set_rules('brand_shopping_center', 'Site Brand/Shopping Center','trim|required|xss_clean');
-				$this->form_validation->set_rules('shopping_center_suburb', 'Site Suburb','trim|required|xss_clean');
 			}
 
 			$this->form_validation->set_rules('street_b', 'Invoice Street','trim|required|xss_clean');

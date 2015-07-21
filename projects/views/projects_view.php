@@ -1,4 +1,4 @@
-﻿<?php date_default_timezone_set("Australia/Perth");  // date is set to perth and important setting for diff timezone acounts ?>
+<?php date_default_timezone_set("Australia/Perth");  // date is set to perth and important setting for diff timezone acounts ?>
 <?php $this->load->module('company'); ?>
 <?php $this->load->module('projects'); ?>
 <?php $this->load->module('attachments'); ?>
@@ -31,6 +31,8 @@
 		$prog_payment_stat = 1;
 	endif;
 
+
+
 ?>
 
 
@@ -49,7 +51,6 @@
 
 <!-- title bar 
 estimate-->
-<input type="hidden" id = "prog_payment_stat" value = "<?php echo $prog_payment_stat ?>">
 <div class="container-fluid head-control">
 	<div class="container-fluid">
 		<div class="row">
@@ -109,7 +110,7 @@ estimate-->
 						<div class="col-sm-2"><strong>Project Mark-Up:</strong> <?php echo $markup; ?>%</div>
 						<div class="col-sm-2"><strong>Site Labour Total:</strong> (ex-gst) $<?php echo number_format($final_labor_cost); ?></div>
 						<div class="col-sm-2"><strong>Variation Total:</strong> $<span class="variation_total"><?php echo number_format($variation_total); ?></span></div>
-						<div class="col-sm-4"><strong>Project Total:</strong> (ex-gst) $<?php echo number_format($final_total_quoted); ?>  &nbsp;&nbsp;&nbsp;&nbsp; (inc-gst) $<?php echo number_format($final_total_quoted+($final_total_quoted*($admin_gst_rate/100))); ?></div>
+						<div class="col-sm-4"><strong>Project Total:</strong> (ex-gst) $<span id = "proj_ex_gst"><?php echo number_format($final_total_quoted); ?></span>  &nbsp;&nbsp;&nbsp;&nbsp; (inc-gst) $<span id = "proj_inc_gst"><?php echo number_format($final_total_quoted+($final_total_quoted*($admin_gst_rate/100))); ?></span></div>
 						<div class="col-sm-2"><strong>GP:</strong> <?php echo ($gp*100); ?>%</div>
 
 						<div class="admin_settings clearfix" style="display:none;">
@@ -174,7 +175,7 @@ estimate-->
 										
 									<ul id="myTab" class="nav nav-tabs pull-right">
 										<li class="<?php echo ($curr_tab == 'invoice' ? 'active' : '' ); ?>">
-											<a href="#invoices" data-toggle="tab"><i class="fa fa-list-alt fa-lg"></i> Invoices</a>
+											<a href="#invoices" data-toggle="tab" class="link_tab_invoice" id="<?php echo $project_id ?>"><i class="fa fa-list-alt fa-lg"></i> Invoices</a>
 										</li>
 										<li class="<?php echo ($curr_tab == 'project-details' ? 'active' : '' ); ?>">
 											<a href="#project-details" data-toggle="tab"><i class="fa fa-briefcase fa-lg"></i> Project Details</a>
@@ -203,16 +204,16 @@ estimate-->
 												<li><a href="<?php echo base_url(); ?>works/proj_summary_wo_cost/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Project Summary without Cost</a></li>
 												<li><a href="<?php echo base_url(); ?>works/proj_joinery_summary_w_cost/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Joinery Summary with Cost</a></li>
 												<li><a href="<?php echo base_url(); ?>works/proj_joinery_summary_wo_cost/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Joinery Summary without Cost</a></li>
-												<?php if($this->session->userdata('is_admin') == 1 ): ?>
+												
 												<li><a href="<?php echo base_url(); ?>works/variation_summary/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Variations Summary</a></li>
-												<li><a href="amplemod/print_pdf"><i class="fa fa-file-pdf-o"></i> Project Details</a></li>
-												<?php endif; ?>
+												<li><a href="<?php echo base_url(); ?>works/proj_details/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Project Details</a></li>
 												<li><a href="" id = "work_cont_quote_req"><i class="fa fa-file-pdf-o"></i> Contractor Quote Request</a></li>
 												<li><a href="" id = "work_cont_po"><i class="fa fa-file-pdf-o"></i> Contractor Purchase Order</a></li>
 												<?php if($this->session->userdata('is_admin') == 1 ): ?>
 												<li><a href="amplemod/print_pdf"><i class="fa fa-file-pdf-o"></i> Quotation and Contract</a></li>
-												<li><a href="#" onclick = "create_contract(<?php echo $project_id ?>)"><i class="fa fa-file-pdf-o"></i> Contract, Terms of Trade<br />&amp; Request for New Trade Form</a></li>
 												<?php endif; ?>
+												<li><a href="#" onclick = "create_contract(<?php echo $project_id ?>)"><i class="fa fa-file-pdf-o"></i> Contract, Terms of Trade<br />&amp; Request for New Trade Form</a></li>
+												
 											</ul>
 										</li>									
 									</ul>
@@ -590,7 +591,9 @@ estimate-->
 			</div>
 		</div>
 	</div>
-	<!-- MODAL -->
+</div>
+
+<!-- MODAL -->
 <div class="modal fade" id="contract_notes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
 	    <div class="modal-content">
@@ -635,8 +638,6 @@ estimate-->
 	    </div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
-</div>
 
 
 <div id="job_book_area" style="display:none">

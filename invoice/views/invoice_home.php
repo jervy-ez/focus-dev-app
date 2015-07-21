@@ -115,7 +115,7 @@
 
 													<div class="box-area">
 														<table id="invoice_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-															<thead><tr><th>Project Number</th><th>Project Name</th><th>Progress Claim</th><th>Percent</th><th>Invoiced Date</th><th>Amount</th><th>Outstanding</th></tr></thead>
+															<thead><tr><th>Project Number</th><th>Project Name</th><th>Progress Claim</th><th>Client</th><th>Percent</th><th>Invoiced Date</th><th>Amount</th><th>Outstanding</th></tr></thead>
 															<tbody>
 																<?php $this->invoice->invoice_table(); ?>
 															</tbody>
@@ -133,7 +133,7 @@
 
 												<div class="box-area">
 														<table id="invoice_paid_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-															<thead><tr><th>Project Number</th><th>Project Name</th><th>Progress Claim</th><th>Invoiced Date</th><th>Amount</th><th>Outstanding</th></tr></thead>
+															<thead><tr><th>Project Number</th><th>Project Name</th><th>Progress Claim</th><th>Client Name</th><th>Invoiced Date</th><th>Amount</th><th>Outstanding</th></tr></thead>
 															<tbody>
 																<?php $this->invoice->paid_table(); ?>
 															</tbody>
@@ -185,6 +185,13 @@
       		<input type="text" placeholder="Progress Claim" class="form-control" id="invoice_progress_claim" name="invoice_progress_claim" value="" >
       	</div>
 
+      	<div class="input-group m-bottom-10">
+      		<span class="input-group-addon" id="">
+      			<i class="fa fa-briefcase"></i>
+      		</span>
+      		<input type="text" placeholder="Client Name" class="form-control" id="invoice_client_name" name="invoice_client_name" value="" >
+      	</div>
+
 
 
 
@@ -225,7 +232,7 @@
                 <p>Description: <strong class="po_desc_mod"></strong></p>
               </div>
               <div class="clearfix col-sm-6">
-                <p>Outstanding: $<strong class="po_balance_mod">0.00</strong></p>
+                <p>Outstanding Ex-GST: $<strong class="po_balance_mod">0.00</strong></p>
               </div>          
             </div>
 
@@ -267,9 +274,9 @@
 
             <div class="col-sm-6">
               <div class="clearfix">
-                <label for="" class="col-sm-5 control-label text-left m-top-10" style="font-weight: normal;">Reference No*</label>
-                <div class="col-sm-7">
-                  <input type="text" placeholder="Reference Number" class="form-control" id="invoice_payment_reference" name="" value="" tabindex="3">
+                <label for="" class="col-sm-6 control-label text-left m-top-10" style="font-weight: normal;">Reference Name*</label>
+                <div class="col-sm-6">
+                  <input type="text" placeholder="Reference Name" class="form-control" id="invoice_payment_reference" name="" value="" tabindex="3">
                 </div>
               </div>
             </div>
@@ -304,8 +311,8 @@
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Amount</th>
-                  <th>Reference Number</th>
+                  <th>Amount Ext-GST</th>
+                  <th>Reference Name</th>
                 </tr>
               </thead>
               <tbody class="payment_history"></tbody>
@@ -367,7 +374,7 @@
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Amount</th>
+                  <th>Amount Ext-GST</th>
                   <th>Reference Number</th>
                 </tr>
               </thead>

@@ -321,7 +321,7 @@
                 <p>Description: <strong class="po_desc_mod">Progress</strong></p>
               </div>
               <div class="clearfix col-sm-6">
-                <p>Outstanding: <strong class="po_balance_mod">$0.00</strong></p>
+                <p>Outstanding Ex-GST: <strong class="po_balance_mod">$0.00</strong></p>
               </div>          
             </div>
 
@@ -362,9 +362,9 @@
 
             <div class="col-sm-6">
               <div class="clearfix">
-                <label for="invoice_payment_reference_no" class="col-sm-5 control-label text-left m-top-10" style="font-weight: normal;">Reference No*</label>
-                <div class="col-sm-7">
-                  <input type="text" placeholder="Reference Number" class="form-control" id="invoice_payment_reference_no" name="invoice_payment_reference_no" value="" tabindex="3">
+                <label for="invoice_payment_reference_no" class="col-sm-6 control-label text-left m-top-10" style="font-weight: normal;">Reference Name*</label>
+                <div class="col-sm-6">
+                  <input type="text" placeholder="Reference Name" class="form-control" id="invoice_payment_reference_no" name="invoice_payment_reference_no" value="" tabindex="3">
                 </div>
               </div>
             </div>
@@ -401,8 +401,8 @@
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Amount</th>
-                  <th>Reference Number</th>
+                  <th>Amount Ext-GST</th>
+                  <th>Reference Name</th>
                 </tr>
               </thead>
               <tbody class="payment_history payment_history_a">

@@ -7,6 +7,7 @@ class Invoice extends MY_Controller{
 		$this->load->model('invoice_m');
 		$this->load->module('users');
 		$this->load->module('company');
+		$this->load->model('company_m');
 		$this->load->module('projects');
 		$this->load->model('projects_m');
 		if(!$this->users->_is_logged_in() ): 		
@@ -47,6 +48,8 @@ class Invoice extends MY_Controller{
 
 	public function invoice_table(){
 		$q_invoice_project = $this->invoice_m->list_invoice_project();
+		$total_invoice = 0;
+		$total_outstanding = 0;
 
 		foreach ($q_invoice_project->result() as $invoice_project) {
 			$q_unpaid_invoiced = $this->invoice_m->list_unpaid_invoiced($invoice_project->project_id);
@@ -62,9 +65,13 @@ class Invoice extends MY_Controller{
 				$amount = $project_details['project_total']*($invoice->progress_percent/100);
 
 				$outstanding = $this->get_current_balance($invoice->project_id,$invoice->invoice_id,$amount);
+				$total_outstanding = $total_outstanding + round($outstanding,2);
 				$outstanding = number_format($outstanding,2);
 
 				$progress_percent = $invoice->progress_percent;
+
+				$client_details_raw = $this->company_m->fetch_company_details($project_details['client_id']);
+				$client_details = array_shift($client_details_raw->result_array());
 
 
 				if($invoice->label == 'VR'){
@@ -72,6 +79,7 @@ class Invoice extends MY_Controller{
 					$amount = $project_totals['variation_total'];
 
 					$outstanding = $this->get_current_balance($invoice->project_id,$invoice->invoice_id,$amount);
+				$total_outstanding = $total_outstanding + round($outstanding,2);
 					$outstanding = number_format($outstanding,2);
 
 					$progress_percent = '100.00';
@@ -88,14 +96,18 @@ class Invoice extends MY_Controller{
 				}else{
 					$progress_id = $invoice->invoice_id.'_'.$invoice->project_id.'_p_'.$invoice->order_invoice;
 				}
+				$total_invoice = $total_invoice + $amount;
 
-				echo '<tr id="'.$project_defaults['admin_gst_rate'].'"><td><a href="'.base_url().'projects/view/'.$invoice->project_id.'?submit_invoice='.$invoice->project_id.'">'.$invoice->project_id.'</a></td><td>'.$project_details['project_name'].'</td><td><a onclick="invoice_payment_modal(this)" href="#" data-toggle="modal" data-target="#invoice_payment_modal" data-backdrop="static" id="'.$progress_id.'">'.$invoice_progress.'</a></td><td>'.$progress_percent.'</td><td>'.$invoice->set_invoice_date.'</td><td class="invocie_amount_total">'.number_format($amount,2).'</td><td class="invocie_outstanding">'.$outstanding.'</td></tr>';
+				echo '<tr id="'.$project_defaults['admin_gst_rate'].'"><td><a href="'.base_url().'projects/view/'.$invoice->project_id.'?submit_invoice='.$invoice->project_id.'">'.$invoice->project_id.'</a></td><td>'.$project_details['project_name'].'</td><td><a onclick="invoice_payment_modal(this)" href="#" data-toggle="modal" data-target="#invoice_payment_modal" data-backdrop="static" id="'.$progress_id.'">'.$invoice_progress.'</a></td><td>'.$client_details['company_name'].'</td><td>'.$progress_percent.'</td><td>'.$invoice->set_invoice_date.'</td><td class="invocie_amount_total">'.number_format($amount,2).'</td><td class="invocie_outstanding">'.$outstanding.'</td></tr>';
 			}
 		}
+		echo '<tr class="hidden hide"><td><input type="hidden" class="total-invoiced-row" id="total-invoiced-row" value="'.number_format($total_invoice,2).'" /></td><td><input type="hidden" class="total-invoiced-outstanding-row" id="total-invoiced-outstanding-row" value="'.number_format($total_outstanding,2).'" /></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
 	}
 
 	public function paid_table(){
 		$q_invoice_project = $this->invoice_m->list_invoice_project('1');
+		$total_invoice = 0;
+		$total_outstanding = 0;
 
 		foreach ($q_invoice_project->result() as $invoice_project) {
 			$q_unpaid_invoiced = $this->invoice_m->list_unpaid_invoiced($invoice_project->project_id,'1');
@@ -110,11 +122,15 @@ class Invoice extends MY_Controller{
 
 				$amount = $project_details['project_total']*($invoice->progress_percent/100);
 
+				$client_details_raw = $this->company_m->fetch_company_details($project_details['client_id']);
+				$client_details = array_shift($client_details_raw->result_array());
+
 				if($invoice->label == 'VR'){
 					$invoice_progress = $invoice->project_id.$invoice->label;
 					$amount = $project_totals['variation_total'];
 
 					$outstanding = $this->get_current_balance($invoice->project_id,$invoice->invoice_id,$amount);
+					$total_outstanding = $total_outstanding + round($outstanding,2);
 					$outstanding = number_format($outstanding,2);
 
 					$progress_percent = '100.00';
@@ -125,6 +141,7 @@ class Invoice extends MY_Controller{
 				}
 
 				$outstanding = $this->get_current_balance($invoice->project_id,$invoice->invoice_id,$amount);
+				$total_outstanding = $total_outstanding + round($outstanding,2);
 				$outstanding = number_format($outstanding,2);
 
 				if($invoice->label == 'VR'){
@@ -135,9 +152,16 @@ class Invoice extends MY_Controller{
 					$progress_id = $invoice->invoice_id.'_'.$invoice->project_id.'_p_'.$invoice->order_invoice;
 				}
 
-				echo '<tr id="'.$project_defaults['admin_gst_rate'].'"><td><a href="'.base_url().'projects/view/'.$invoice->project_id.'?submit_invoice='.$invoice->project_id.'">'.$invoice->project_id.'</a></td><td>'.$project_details['project_name'].'</td><td><a onclick="invoice_paid_modal(this)" href="#" data-toggle="modal" data-target="#invoice_paid_modal" data-backdrop="static" id="'.$progress_id.'">'.$invoice_progress.'</a></td><td>'.$invoice->set_invoice_date.'</td><td class="invocie_amount_total">'.number_format($amount,2).'</td><td class="invocie_outstanding">'.$outstanding.'</td></tr>';
+				$total_invoice = $total_invoice + $amount;
+
+
+
+
+				echo '<tr id="'.$project_defaults['admin_gst_rate'].'"><td><a href="'.base_url().'projects/view/'.$invoice->project_id.'?submit_invoice='.$invoice->project_id.'">'.$invoice->project_id.'</a></td><td>'.$project_details['project_name'].'</td><td><a onclick="invoice_paid_modal(this)" href="#" data-toggle="modal" data-target="#invoice_paid_modal" data-backdrop="static" id="'.$progress_id.'">'.$invoice_progress.'</a></td><td>'.$client_details['company_name'].'</td><td>'.$invoice->set_invoice_date.'</td><td class="invocie_amount_total">'.number_format($amount,2).'</td><td class="invocie_outstanding">'.$outstanding.'</td></tr>';
 			}
 		}
+		
+		echo '<tr class="hidden hide"><td><input type="hidden" class="total-paid-row" id="total-paid-row" value="'.number_format($total_invoice,2).'" /></td><td><input type="hidden" class="total-paid-outstanding-row" id="total-paid-outstanding-row" value="'.number_format($total_outstanding,2).'" /></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
 	}
 
 	public function insert_invoice_progress(){
@@ -218,8 +242,10 @@ class Invoice extends MY_Controller{
 		}
 	}
 
-	public function set_project_as_paid(){
-		$project_id = $_POST['ajax_var'];
+	public function set_project_as_paid($project_id=''){
+		if($project_id==''){
+			$project_id = $_POST['ajax_var'];
+		}
 		$this->invoice_m->set_project_as_paid($project_id);
 	}
 
@@ -340,7 +366,10 @@ class Invoice extends MY_Controller{
 		$notes_id = $this->company_m->insert_notes($notes);
 		$this->invoice_m->insert_payment($project_id,$notes_id,$amount_exgst,$invoice_id,$payment_date,$reference_number);
 		$this->invoice_m->set_payment_invoice($invoice_id,$is_paid);
-		
+
+		if( $this->if_invoiced_all($project_id) && $this->is_all_paid($project_id) ){
+			$this->invoice_m->set_project_as_paid($project_id);
+		} 
 	}
 
 

@@ -2,6 +2,7 @@
 <?php $this->load->module('company'); ?>
 <?php $this->load->module('projects'); ?>
 <?php $this->load->module('invoice'); ?>
+<?php $this->load->module('shopping_center'); ?>
 <!-- title bar -->
 <div class="container-fluid head-control">
 	<div class="container-fluid">
@@ -364,7 +365,7 @@
 														<label for="state" class="col-sm-3 control-label">State*</label>													
 														<div class="col-sm-9">
 															<select class="form-control state-option-a chosen"  tabindex="17" id="state_a" name="state_a">	
-																<?php echo $this->projects->set_jurisdiction(); ?>
+																<?php echo $this->projects->set_jurisdiction($focus_company_id); ?>
 															</select>
 
 															<?php if($this->input->post('state_a')): ?>
@@ -420,90 +421,54 @@
 
 												</div>
 
+
 												<div class="shopping_center" <?php echo ($this->input->post('is_shopping_center')==1 || $job_type == 'Shopping Center' ?  '' : 'style="display:none;"' ); ?>>
 													<input type="hidden" name="is_shopping_center" class="is_shopping_center" value="<?php echo ($this->input->post('is_shopping_center')==1 || $job_type == 'Shopping Center' ?  1 : 0 ); ?>">
 
+													<?php if($this->input->post('brand_shopping_center')): ?>
+														<input type="hidden" name="brand_shopping_center" class="brand_shopping_center" id="brand_shopping_center" value="<?php echo $this->input->post('brand_shopping_center'); ?>">
+													<?php else: ?>
+														<input type="hidden" name="brand_shopping_center" class="brand_shopping_center" id="brand_shopping_center" value="<?php echo $address_id; ?>">
+													<?php endif; ?>
 
+													
 
-													<div class="col-sm-3 m-bottom-5 clearfix <?php if(form_error('shopping_center_state')){ echo 'has-error has-feedback';} ?>">											
-														<div class="col-sm-12">
-															<label for="shopping_center_state" class="control-label">State*</label>
-															<select class="form-control state-option-a shopping_center_state"  tabindex="14" id="shopping_center_state" name="shopping_center_state">
-																<?php if($this->input->post('focus')): ?>
-																	<?php echo $this->projects->set_jurisdiction($this->input->post('focus')); ?>
-																<?php else: ?>
-																	<?php echo $this->projects->set_jurisdiction($this->session->userdata('user_focus_company_id')); ?>
-																<?php endif;  ?>
-															</select>
+													<?php if($this->input->post('selected_shopping_center_detail')): ?>
+														<input type="hidden" name="selected_shopping_center_detail" class="selected_shopping_center_detail" id="selected_shopping_center_detail" value="<?php echo $this->input->post('selected_shopping_center_detail'); ?>">
+													<?php else: ?>
+														<input type="hidden" name="selected_shopping_center_detail" class="selected_shopping_center_detail" id="selected_shopping_center_detail" value="<?php echo $shopping_center_brand_name.', '.$unit_number.' '.$street.', '.ucwords(strtolower($suburb)).', '.$state.', '.$postcode; ?>">
+													<?php endif; ?>
 
-															<?php if($this->input->post('shopping_center_state')): ?>
-																<script type="text/javascript">$("select#shopping_center_state").val("<?php echo $this->input->post('shopping_center_state'); ?>");</script>
-															<?php else: ?>
-																<script type="text/javascript">$("select#shopping_center_state").val("<?php echo $shortname.'|'.$state.'|'.$phone_area_code.'|'.$state_id; ?>");</script>
-															<?php endif;  ?>
+													<?php #echo $shortname.'|'.$state.'|'.$phone_area_code.'|'.$state_id.'|'.$shopping_center_brand_name; ?>
+													<?php #echo $suburb.'|'.$state.'|'.$phone_area_code.'|'.$shop_tenancy_number; ?>
+													<?php #echo $shop_tenancy_number.'|'.$unit_level.'|'.$unit_number.'|'.$street.'|'.$suburb.'|'.$state.'|'.$postcode; ?>
 
-														</div>
+													<div class="col-sm-2 m-bottom-5 clearfix">											
+														<a href="#" data-toggle="modal" data-target="#select_shopping_center_modal" data-backdrop="static" class="btn btn-primary">Select Shopping Center</a>
 													</div>
 
-													<div class="col-sm-3 m-bottom-5 clearfix <?php if(form_error('shopping_center_suburb')){ echo 'has-error has-feedback';} ?>">											
-														<div class="col-sm-12">
-															<label for="shopping_center_suburb" class="control-label">Suburb*</label>
-															<select class="form-control shopping_center_suburb" id="shopping_center_suburb"  tabindex='15' name="shopping_center_suburb">
-																<?php if($this->input->post('shopping_center_state')): ?>
-																	<?php $this->company->get_suburb_list('dropdown|state_id|'.$this->input->post('shopping_center_state')); ?>
-																<?php else: ?>
-																	<?php $this->company->get_suburb_list('dropdown|state_id|'.$shortname.'|'.$state.'|'.$phone_area_code.'|'.$state_id ); ?>
-																<?php endif; ?>
-															</select>
-
-															<?php if($this->input->post('shopping_center_suburb')): ?>
-																<script type="text/javascript">$("select#shopping_center_suburb").val("<?php echo $this->input->post('shopping_center_suburb'); ?>");</script>
+													<div class="col-sm-6 m-bottom-5 clearfix <?php if(form_error('brand_shopping_center')){ echo 'has-error has-feedback';} ?>">											
+														<p class="m-top-10">Shopping Center: 
+															<?php if($this->input->post('selected_shopping_center_detail')): ?>
+																<strong class="selected_shopping_center_text" id="selected_shopping_center_text"><?php echo $this->input->post('selected_shopping_center_detail'); ?></strong>
 															<?php else: ?>
-																<script type="text/javascript">$("select#shopping_center_suburb").val("<?php echo $suburb.'|'.$state.'|'.$phone_area_code; ?>");</script>
+																<strong class="selected_shopping_center_text" id="selected_shopping_center_text"><?php echo $shopping_center_brand_name.', '.$unit_number.' '.$street.', '.ucwords(strtolower($suburb)).', '.$state.', '.$postcode; ?></strong>
 															<?php endif; ?>
-														</div>
-													</div> 
-
-													<div class="col-sm-3 m-bottom-5 clearfix <?php if(form_error('shopping_center')){ echo 'has-error has-feedback';} ?>">											
-														<div class="col-sm-12">
-															<label for="shopping_center" class="control-label">Select Brand/Shopping Center*</label>
-															<select class="form-control brand_shopping_center"  tabindex="16" id="brand_shopping_center" name="brand_shopping_center" style="width: 100%;">
-																<?php if($this->input->post('brand_shopping_center')): ?>
-																	<?php $post_suburb = $this->input->post('shopping_center_suburb'); $post_state = $this->input->post('shopping_center_state');  ?>
-																<?php else: ?>
-																	<?php $post_suburb = $suburb.'|'.$state.'|'.$phone_area_code; $post_state = $shortname.'|'.$state.'|'.$phone_area_code.'|'.$state_id;  ?>
-																<?php endif; ?>
-
-																<?php $this->projects->fetch_shopping_center_state_sub($post_suburb,$post_state,1); ?>
-																
-															</select>
-
-
-
-															<?php if($this->input->post('shopping_center_suburb')): ?>
-																<script type="text/javascript">$("select#brand_shopping_center").val("<?php echo $this->input->post('brand_shopping_center'); ?>");</script>
-															<?php else: ?>
-																<script type="text/javascript">$("select#brand_shopping_center").val("<?php echo $address_id; ?>");</script>
-															<?php endif; ?>
-
-
-															
-														</div>
+														</p>
 													</div>
 
-
-
-
-													<div class="col-sm-3 m-bottom-10 clearfix">
-														<div class="col-sm-12">
-															<label for="shop_tenancy_number" class="control-label">Shop/Tenancy Number</label><br />
+													<div class="col-sm-4 m-bottom-10 clearfix">
+														<label for="client_po" class="col-sm-6 control-label">Shop/Tenancy Number</label>
+														<div class="col-sm-6">
 															<input type="text" class="form-control" id="shop_tenancy_number" placeholder="Shop/Tenancy Number" tabindex="14" name="shop_tenancy_number" value="<?php echo ($this->input->post('shop_tenancy_number') ?  $this->input->post('shop_tenancy_number') : $shop_tenancy_number ); ?>">
 														</div>
 													</div>
- 
- 
- 
-												</div>											
+
+												</div>
+
+
+
+																							
 
 											</div>
 											<div class="tab-pane fade clearfix" id="postalAddress">
@@ -824,7 +789,7 @@
 		</div>
 	</div>
 </div>
-
+<!-- 
 <div id="add_contact" class="modal fade" tabindex="-1" data-width="760" style="display: none; overflow: hidden;">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -883,9 +848,9 @@
 								<select name="contact_company" class="form-control" id="contactperson">
 									<option value="">Select Company</option>
 									<?php
-										foreach ($all_company_list as $row){
-										echo '<option value="'.$row->company_name.'">'.$row->company_name.'</option>';
-									}?>	
+										#foreach ($all_company_list as $row){
+										#echo '<option value="'.$row->company_name.'">'.$row->company_name.'</option>'; }
+									?>	
 								</select>
 							</div>
 						</div>
@@ -901,6 +866,52 @@
 		</div>
 	</div>
 </div>
+ -->
+
+<div class="modal fade" id="select_shopping_center_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Shopping Center Selection</h4>
+        <span>Note: Please select a state to view the shopping centers.</span>
+      </div>
+      <div class="modal-body clearfix pad-10">
+
+        <div class="m-bottom-10">
+        	<table id="shoppingCenterTable_prj" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead><tr><th>Brand</th><th>Common</th><th>Street</th><th>Suburb</th><th>State</th></tr></thead>
+        		<tbody>
+        			<?php echo $this->shopping_center->display_shopping_center_prj(); ?>
+        		</tbody>
+        	</table>
+        </div>
+        <div class="pull-right">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary set_invoice_modal_submit">Submit</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<?php $focus_id = ($this->input->post('focus') ? $this->input->post('focus') : $focus_company_id );  ?>
+
+<div style="display:none;" class="state_select_list">
+	<div class="input-group m-bottom-10 pull-right m-left-10" style="width: 210px;">
+		<span class="input-group-addon" id=""><i class="fa fa-map-marker"></i></span>
+		<select class="form-control select_state_shopping_center m-bottom-10 input-sm">
+			<?php echo $this->projects->set_jurisdiction($focus_id); ?>
+			<?php /*
+				foreach ($all_aud_states as $row):
+					echo '<option value="'.$row->name.'">'.$row->name.'</option>';
+				endforeach;*/
+			?>
+		</select>
+	</div>
+</div>
+
 <?php $this->load->view('assets/logout-modal'); ?>
 <script type="text/javascript">
 	<?php echo ($this->input->post('is_form_submit') ? "" : "$('#project_name').focus();" ); ?>
