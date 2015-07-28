@@ -59,7 +59,6 @@ class Company extends MY_Controller{
 
 		$curr_company_id = $this->uri->segment(3);
 
-
 		$comp_type_list = $this->company_m->fetch_all_company_types();
 		$data['comp_type_list'] = $comp_type_list->result();
 
@@ -93,6 +92,13 @@ class Company extends MY_Controller{
 
 		$bank_account_details_q = $this->company_m->fetch_bank_account_details($company_detail['bank_account_id']);			
 		$bank_account_details = array_shift($bank_account_details_q->result_array());
+
+		$q_client_project = $this->company_m->select_client($curr_company_id); 
+		if($q_client_project->num_rows > 0){
+			$data['has_project'] = 1;
+		}else{
+			$data['has_project'] = 0;
+		}
 
 		$data['bank_account_id'] = $bank_account_details['bank_account_id'];
 		$data['bank_account_name'] = $bank_account_details['bank_account_name'];

@@ -51,6 +51,11 @@ class Company_m extends CI_Model{
 		return $query;
 	}
 
+	public function select_client($client_id){
+		$query = $this->db->query("SELECT * FROM `project` WHERE `project`.`client_id` = '$client_id'");
+		return $query;
+	}
+
 
 
 	public function fetch_address_general_by($selector='',$value='',$suburb=''){
