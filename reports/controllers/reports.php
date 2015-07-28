@@ -168,28 +168,28 @@ class Reports extends MY_Controller{
 
 		if($data_val['5'] == 'cm_asc'){
 			$order_q = '`company_details`.`company_name` ASC';
-			$sort = 'Company Name ASC';
+			$sort = 'Company Name A-Z';
 		}elseif($data_val['5'] == 'cm_desc'){
 			$order_q = '`company_details`.`company_name` DESC';
-			$sort = 'Company Name DESC';
+			$sort = 'Company Name Z-A';
 		}elseif($data_val['5'] == 'sub_asc'){
 			$order_q = '`address_general`.`suburb` ASC';
-			$sort = 'Suburb ASC';
+			$sort = 'Suburb A-Z';
 		}elseif($data_val['5'] == 'sub_desc'){
 			$order_q = '`address_general`.`suburb` DESC';
-			$sort = 'Suburb DESC';
+			$sort = 'Suburb Z-A';
 		}elseif($data_val['5'] == 'state_asc'){
 			$order_q = '`states`.`id` ASC';
-			$sort = 'States ASC';
+			$sort = 'States A-Z';
 		}elseif($data_val['5'] == 'state_desc'){
 			$order_q = '`states`.`id` DESC';
-			$sort = 'States DESC';
+			$sort = 'States Z-A';
 		}elseif($data_val['5'] == 'act_asc'){
 			$order_q = '`company_details`.`activity_id` ASC';
-			$sort = 'Activity ASC';
+			$sort = 'Activity A-Z';;
 		}elseif($data_val['5'] == 'act_desc'){
 			$order_q = '`company_details`.`activity_id` DESC';
-			$sort = 'Activity DESC';
+			$sort = 'Activity Z-A';
 		}else { }
 
 
@@ -201,6 +201,8 @@ class Reports extends MY_Controller{
 
 
 		$table_q = $this->reports_m->select_list_company($company_type,$query,$order_q);
+
+		$records_num = $table_q->num_rows();
 
 
 		$content .= '<div class="clearfix header"><img src="./img/focus-logo-print.png" align="left" class="block" /><h1 class="text-right block"><br />Company List Report</h1></div><br />';
@@ -248,7 +250,8 @@ class Reports extends MY_Controller{
 		$content .= '<strong> Company Type :</strong> '.$my_company_type.' | ';
 		$content .= '<strong> Activity :</strong> '.$my_activity.' |';
 		$content .= '<strong> Letter Segments :</strong> '.$letter_segment_a.' - '.$letter_segment_b.' |';
-		$content .= '<strong> Sort :</strong> '.$sort.'</p>';
+		$content .= '<strong> Sort :</strong> '.$sort.' |';
+		$content .= '<strong> Records Found :</strong> '.$records_num.'</p>';
 
       	$my_pdf = $this->html_form($content,'landscape','A4','companies','temp');
       	echo $my_pdf;

@@ -493,11 +493,11 @@
 
 
 													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix '; if(form_error('contact_email_'.$value)){ echo 'has-error has-feedback'; }  echo '">
-														<label class="col-sm-3 control-label" for="contact_email_'.$value.'">Email</label>
+														<label class="col-sm-3 control-label" for="contact_email_'.$value.'">Email*</label>
 														<div class="col-sm-9"><input type="email" value="'.$this->input->post('contact_email_'.$value).'" name="contact_email_'.$value.'" placeholder="Email" id="contact_email_'.$value.'" class="form-control"></div>
 													</div>
 
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix ">
+													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix '; if(form_error('contact_number_'.$value)){ echo 'has-error has-feedback'; }  echo '">
 														<label class="col-sm-3 control-label" for="contact_number_'.$value.'">Office Contact</label>
 														<div class="col-sm-9">
 															<div class="input-group">
@@ -507,7 +507,7 @@
 														</div>
 													</div>
 
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix '; if(form_error('mobile_number_'.$value)){ echo 'has-error has-feedback'; }  echo '">
 														<label class="col-sm-3 control-label" for="mobile_number_'.$value.'">Mobile</label>
 														<div class="col-sm-9">
 															<input type="text" value="'.$this->input->post('mobile_number_'.$value).'" name="mobile_number_'.$value.'" placeholder="Mobile Number" id="mobile_number_'.$value.'" class="form-control mobile_number_assign" onchange="mobile_number_assign(\'mobile_number_'.$value.'\')" >

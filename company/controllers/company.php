@@ -228,12 +228,26 @@ class Company extends MY_Controller{
 				$this->form_validation->set_rules('contact_f_name_'.$value, 'Contact First Name', 'trim|required|xss_clean');
 				$this->form_validation->set_rules('contact_l_name_'.$value, 'Contact Last Name', 'trim|required|xss_clean');
 				$this->form_validation->set_rules('contact_gender_'.$value, 'Contact Gender', 'trim|required|xss_clean');
-				$this->form_validation->set_rules('contact_email_'.$value, 'Contact Email', 'trim|xss_clean');
-				$this->form_validation->set_rules('contact_number_'.$value,'Office Contact Number', 'trim|xss_clean');
+				$this->form_validation->set_rules('contact_email_'.$value, 'Contact Email', 'trim|required|xss_clean');
 
-				$this->form_validation->set_rules('mobile_number_'.$value,'Mobile Number', 'trim|xss_clean');
+
+				if($_POST['contact_number_'.$value] == ''){
+					if($_POST['mobile_number_'.$value] == '' ){
+						$this->form_validation->set_rules('mobile_number_'.$value,'Mobile Number', 'trim|required|xss_clean');
+					}else{
+						$this->form_validation->set_rules('mobile_number_'.$value,'Mobile Number', 'trim|xss_clean');
+					}
+				}
+
+				if($_POST['mobile_number_'.$value] == ''){
+					if($_POST['contact_number_'.$value] == '' ){
+						$this->form_validation->set_rules('contact_number_'.$value,'Office Contact Number', 'trim|required|xss_clean');
+					}else{
+						$this->form_validation->set_rules('contact_number_'.$value,'Office Contact Number', 'trim|xss_clean');
+					}
+				}
+
 				$this->form_validation->set_rules('after_hours_'.$value,'After Hours Contact', 'trim|xss_clean');
-
 				$this->form_validation->set_rules('contact_type_'.$value,'Contact Type', 'trim|required|xss_clean');
 
 			}

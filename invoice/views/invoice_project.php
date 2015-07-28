@@ -45,6 +45,14 @@
   <style type="text/css">.progress_invoice{display: none; visibility: hidden;}</style>
 <?php endif; ?>
 
+
+
+<?php
+  if($variation_total != 0 && $has_invoice > 0 && $job_date != '' && $this->invoice->if_has_vr($project_id) == 0){
+    $this->invoice->set_invoice_vr($project_id);
+  }
+?>
+
 <div class="test"></div>
 
 <div class="row pad-10">
@@ -144,21 +152,19 @@
           <td>
             <?php $variation_data = $this->invoice->fetch_vr($project_id); ?>
             <?php $outstanding = $this->invoice->get_current_balance($project_id,$variation_data['invoice_id'],$variation_total); ?>
+            
+            <?php if($this->invoice->if_has_vr($project_id) > 0 && $has_invoice > 0 && $if_been_invoiced && $job_date !='' && !$this->invoice->is_vr_invoiced($project_id) ): ?> 
+              <?php //if($this->invoice->is_vr_invoiced($project_id) && $if_been_invoiced): ?>
+                <div class="progress_vr_invoice_button"><button class="btn btn-primary  m-right-5 progress_invoice_variation" onclick="progress_invoice_variation(this)" id="VR_" data-toggle="modal" data-target="#set_invoice_modal"><i class="fa fa-file-text-o"></i> Set Invoice</button></div>
+              <?php // endif; ?>
+            <?php else: ?>
 
-            <?php  if($has_invoice > 0 && $variation_total > 0): ?>
-              <?php if($this->invoice->if_has_vr($project_id) == 0 ): ?>
-                  <?php if( $this->invoice->if_invoiced_all($project_id)): ?>
-                    <?php $this->invoice->set_project_as_fully_invoiced($project_id); ?>
-                    <div class="progress_vr_invoice_button"><button class="btn btn-primary  m-right-5 progress_invoice_variation" onclick="progress_invoice_variation(this)" id="VR_" data-toggle="modal" data-target="#set_invoice_modal"><i class="fa fa-file-text-o"></i> Set Invoice</button></div>
-                  <?php endif; ?>
-                 
-              <?php else: ?>
+              <?php if($this->invoice->is_vr_invoiced($project_id) && $job_date != '' ): ?>
+
+
                 <div class="hide hidden progress-item" id="<?php echo $variation_data['invoice_id']; ?>"><?php echo $variation_data['invoice_id']; ?></div>
-
-                <?php if($variation_data['is_paid'] == 0): ?>
-
+                
                 <div class="vr_bttn_group">
-
                   <div class="btn-group pull-left m-right-10 progress_invoice_group">
                     <button type="button" disabled="disabled" class="btn btn-primary progress_invoice"><i class="fa fa-file-text-o"></i> Invoiced</button>
                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -170,18 +176,17 @@
                       <li class="remove_link"><a href="#" id="<?php echo $project_id; ?>" class="remove_vr"><i class="fa fa-exclamation-triangle"></i> Remove Invoice</a></li>
                     </ul>
                   </div>
-
                   <button class="btn btn-danger vr_paid" id="<?php echo $project_id; ?>_<?php echo $variation_data['invoice_id']; ?>" data-toggle="modal" data-target="#payment_modal" data-backdrop="static"><i class="fa fa-usd"></i> Payment</button>
                 </div>
-
-              <?php else: ?>
-                <button class="btn btn-success progress_paid" id="<?php echo $project_id; ?>" data-toggle="modal" data-target="#payment_history_modal" data-backdrop="static"><i class="fa fa-usd"></i> Paid</button>
-
               <?php endif; ?>
 
+            <?php endif; ?>
 
-            <?php endif; ?>
-            <?php endif; ?>
+            <?php
+              if( $this->invoice->if_invoiced_all($project_id) ){
+                $this->invoice->set_project_as_fully_invoiced($project_id); 
+              }
+            ?>
 
           </td>
           <td><strong>$<span class="vr_outstanding"><?php echo number_format($outstanding); ?></span></strong></td>
@@ -194,7 +199,7 @@
           <td colspan="2"><strong><div class="m-top-5">$<span class="total_cost_progress"><?php echo number_format($project_grand_total_in); ?></span> ex-gst &nbsp; &nbsp; $<span class="total_cost_progress"><?php echo number_format($project_grand_total_in+($project_grand_total_in*($admin_gst_rate/100))); ?></span> inc-gst</div></strong></td>
           <td>
 
-          <?php if($this->invoice->if_invoiced_all($project_id)){ $this->invoice->set_project_as_fully_invoiced($project_id); } ?>
+          <?php //if($this->invoice->if_invoiced_all($project_id)){ $this->invoice->set_project_as_fully_invoiced($project_id); } ?>
 
           <?php if($if_been_invoiced > 0 && $has_invoice > 0): ?>
             <?php if($this->invoice->is_all_paid($project_id) && $this->invoice->if_invoiced_all($project_id)): ?>

@@ -254,14 +254,14 @@
       			<i class="fa fa-sort-amount-asc"></i> Sort
       		</span>      		
       		<select class="company_sort form-control" id="company_sort"  name="company_sort"  title="company_sort*">
-      			<option value="cm_asc">Company Name ASC</option>	
-      			<option value="cm_desc">Company Name DESC</option>
-      			<option value="act_asc">Activity ASC</option>
-      			<option value="act_desc">Activity DESC</option>
-      			<option value="sub_asc">Suburb ASC</option>	
-      			<option value="sub_desc">Suburb DESC</option>		
-      			<option value="state_asc">State ASC</option>	
-      			<option value="state_desc">State DESC</option>																			
+      			<option value="cm_asc">Company Name A-Z</option>	
+      			<option value="cm_desc">Company Name Z-A</option>
+      			<option value="act_asc">Activity A-Z</option>
+      			<option value="act_desc">Activity Z-A</option>
+      			<option value="sub_asc">Suburb A-Z</option>	
+      			<option value="sub_desc">Suburb Z-A</option>		
+      			<option value="state_asc">State A-Z</option>	
+      			<option value="state_desc">State Z-A</option>																			
       		</select>     	
       	</div>
 

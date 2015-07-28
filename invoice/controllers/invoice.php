@@ -242,6 +242,18 @@ class Invoice extends MY_Controller{
 		}
 	}
 
+	public function set_invoice_vr($project_id){
+
+		$query_list_invoice = $this->invoice_m->list_invoice($project_id);
+		$order_invoice = $query_list_invoice->num_rows() + 1;
+		$label = 'VR';
+		$progress_percent = '100';
+		$invoice_date_req = date("d/m/Y");
+
+		$this->invoice_m->insert_new_invoice($invoice_date_req, $project_id, $progress_percent,$label,$order_invoice);
+
+	}
+
 	public function set_project_as_paid($project_id=''){
 		if($project_id==''){
 			$project_id = $_POST['ajax_var'];
@@ -367,9 +379,15 @@ class Invoice extends MY_Controller{
 		$this->invoice_m->insert_payment($project_id,$notes_id,$amount_exgst,$invoice_id,$payment_date,$reference_number);
 		$this->invoice_m->set_payment_invoice($invoice_id,$is_paid);
 
+		$invoice_vr = $this->fetch_vr($project_id);
+		//$invoice_vr['is_paid'] == 0
+
+
 		if( $this->if_invoiced_all($project_id) && $this->is_all_paid($project_id) ){
 			$this->invoice_m->set_project_as_paid($project_id);
 		} 
+
+
 	}
 
 
@@ -481,6 +499,18 @@ class Invoice extends MY_Controller{
 		$invoice_vr_q = $this->invoice_m->fetch_invoice_vr($project_id);
 		$invoice_vr = array_shift($invoice_vr_q->result_array());
 		return $invoice_vr;
+	}
+
+	public function is_vr_invoiced($project_id){
+		$num_vr = 0;
+		$invoice_vr_q = $this->invoice_m->select_vr_invoice($project_id);
+		$num_vr = $invoice_vr_q->num_rows();
+
+		if($num_vr > 0){
+			return true;
+		}else{
+			return  false;
+		}
 	}
 
 	public function if_has_vr($project_id){

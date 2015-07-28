@@ -57,6 +57,11 @@ class Invoice_m extends CI_Model{
 		return $query;
 	}
 
+	public function select_vr_invoice($project_id){
+		$query = $this->db->query("SELECT * FROM `invoice` WHERE `invoice`.`project_id`='$project_id' AND `invoice`.`label` = 'VR' AND `invoice`.`is_invoiced` = '1'");
+		return $query;
+	}
+
 	public function insert_payment($project_id,$notes_id,$amount_exgst,$invoice_id,$payment_date,$reference_number){
 		$query = $this->db->query("INSERT INTO `payment` (`project_id`, `notes_id`, `amount_exgst`, `invoice_id`, `payment_date`, `reference_number`) VALUES ('$project_id', '$notes_id', '$amount_exgst', '$invoice_id', '$payment_date', '$reference_number')");
 		return $this->db->insert_id();		
@@ -129,8 +134,8 @@ class Invoice_m extends CI_Model{
 	}
 
 	public function insert_invoiced_variation($invoice_date_req,$set_invoice_date,$project_id,$order_invoice){
-		$this->db->query("INSERT INTO `invoice` (`invoice_date_req`, `set_invoice_date`, `project_id`, `is_paid`, `progress_percent`, `label`, `is_invoiced`, `order_invoice`)
-			VALUES ('$invoice_date_req', '$set_invoice_date', '$project_id', '0', '0.00', 'VR', '1', '$order_invoice')");
+		$this->db->query("UPDATE .`invoice` SET `invoice_date_req` = '$invoice_date_req', `set_invoice_date` = '$set_invoice_date', `progress_percent` = '100.00', `is_invoiced` = '1' 
+			WHERE `invoice`.`project_id` = '$project_id' AND `invoice`.`label` = 'VR'");
 		return $this->db->insert_id();		
 	}
 
