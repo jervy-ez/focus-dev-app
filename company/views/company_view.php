@@ -826,17 +826,6 @@
 						</div>
 						
 						<div class="col-md-3">
-
-							<?php if($has_project == 1): ?>
-								<div class="box danger-box">
-									<div class="box-head pad-5">
-										<label><i class="fa fa-info-circle fa-lg"></i> Alert</label>
-									</div>
-									<div class="box-area pad-5" id="container">
-										<p>This client has a project.</p>
-									</div>
-								</div>
-							<?php endif; ?>
 							
 							<div class="box">
 								<div class="box-head pad-5">

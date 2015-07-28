@@ -51,11 +51,6 @@ class Company_m extends CI_Model{
 		return $query;
 	}
 
-	public function select_client($client_id){
-		$query = $this->db->query("SELECT * FROM `project` WHERE `project`.`client_id` = '$client_id'");
-		return $query;
-	}
-
 
 
 	public function fetch_address_general_by($selector='',$value='',$suburb=''){
@@ -247,7 +242,7 @@ class Company_m extends CI_Model{
 	}
 	
 	public function display_company_by_type($type){
-		$query = $this->db->query("SELECT `company_details`.`company_id`,`company_details`.`company_name` ,  `address_general`.`suburb` ,  `states`.`shortname` , `contact_number`.`area_code`, `contact_number`.`office_number`,`email`.`general_email`
+		$query = $this->db->query("SELECT `company_details`.*,`company_details`.`company_id`,`company_details`.`company_name` ,  `address_general`.`suburb` ,  `states`.`shortname` , `contact_number`.`area_code`, `contact_number`.`office_number`,`email`.`general_email`
 			FROM  `company_details`			
 			LEFT JOIN  `address_detail` ON  `address_detail`.`address_detail_id` =  `company_details`.`address_id` 
 			LEFT JOIN  `address_general` ON  `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
@@ -335,12 +330,19 @@ class Company_m extends CI_Model{
 		return $query;
 	}
 
-
-	
-
-
-
-
+	public function update_company_details_insurance($comp_id,$insurance_type,$expiration){
+		$start_date = date('d/m/Y');
+		if($insurance_type == 1){
+			$this->db->query("UPDATE `company_details` set `has_insurance_public_liability` = '1', `public_liability_start_date` = '$start_date', `public_liability_expiration` = '$expiration' where company_id = '$comp_id'");	
+		}else{
+			if($insurance_type == 2){
+				$this->db->query("UPDATE `company_details` set `has_insurance_workers_compensation` = '1', `workers_compensation_start_date` = '$start_date', `workers_compensation_expiration` = '$expiration' where company_id = '$comp_id'");	
+			}else{
+				$this->db->query("UPDATE `company_details` set `has_insurance_income_protection` = '1', `income_protection_start_date` = '$start_date', `income_protection_expiration` = '$expiration' where company_id = '$comp_id'");	
+			}
+		}
+		
+	}
 
 
 	

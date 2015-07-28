@@ -113,7 +113,31 @@
 							</div>
 						</div>
 					</div>
-					
+					<!-- Insurance information -->
+					<?php if($comp_type == 2): ?>
+					<div class="col-md-3">
+						<div class="box">
+							<div class="box-head pad-5 clearfix">
+								<label><i class="fa fa-bar-chart-o fa-lg"></i> Contractors Insurance Status</label>
+								<a href="./company/add" class="btn btn-primary pull-right btn-xs admin_access"><i class="fa fa-briefcase"></i>&nbsp; Add New</a>
+							</div>
+							<div class="box-area pattern-sandstone pad-5">
+								<label for="" style = "color: Blue">Complete Insurance: <span id = "ins_complete"><?php echo $complete ?></span></label>
+								<button type = "button" class = "btn btn-success btn-xs pull-right" id = "complete_print" data-toggle="modal" data-target="#contractor_list">Print List</button>
+								<br>
+								<label for="" style = "color: Green">Incomplete Insurance: <span id = "ins_incomplete"><?php echo $incomplete ?></span></label>
+								<button type = "button" class = "btn btn-success btn-xs pull-right" id = "incomplete_print" data-toggle="modal" data-target="#contractor_list">Print List</button>
+								<br>
+								<label for="" style = "color: Red">No Insurance: <span id = "no_insurance"><?php echo $no_insurance ?></span></label>
+								<button type = "button" class = "btn btn-success btn-xs pull-right" id = "no_insurance_print" data-toggle="modal" data-target="#contractor_list">Print List</button>
+								<br>
+								<label for="" style = "color: Orange">With Expired Insurance: <span id = "exp_insurance"><?php echo $comp_expired ?></span></label>
+								<button type = "button" class = "btn btn-success btn-xs pull-right" id = "expired_print" data-toggle="modal" data-target="#contractor_list">Print List</button>
+							</div>
+						</div>
+					</div>
+					<?php endif; ?>
+					<!-- Insurance information -->
 					<div class="col-md-3">						
 						<div class="box">
 							<div class="box-head pad-10">
@@ -295,6 +319,30 @@
   </div>
 </div>
 
+
+<!-- Insurance Modal -->
+<div class="modal fade" id="contractor_list" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+	    <div class="modal-content">
+	    	<form action="<?php echo base_url(); ?>company/upload_insurance" method="post" enctype="multipart/form-data">
+		        <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			        <h4 class="modal-title insurance_title">Contractors List (<span id = "contractorlist_modal_title"></span>)</h4>
+		        </div>
+		        <div class="modal-body" style = "height: 500px">
+		        	Search: <input type="text" class = "form-control">
+		        	<br>
+		        	<div id = "contractor_list_filtered" style = "height: 400px; overflow: auto"></div>
+				</div>
+				<div class="modal-footer">
+				   	<button type = "submit" class="btn btn-primary">Print</button>
+				   	<button type="button" class="btn btn-default" id = "update_estimate_no" data-dismiss="modal">Cancel</button>
+				</div>
+			</form>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- Insurance Modal -->
 <div class="report_result hide hidden"></div>
 
 <?php $this->load->view('assets/logout-modal'); ?>

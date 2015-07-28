@@ -3,6 +3,7 @@ class Company extends MY_Controller{
 	
 	function __construct(){
 		parent::__construct();
+		$this->load->helper(array('form', 'url'));
 		$this->load->library('form_validation');		
 		$this->load->module('users'); 	
 		$this->load->model('company_m');	
@@ -37,7 +38,62 @@ class Company extends MY_Controller{
 		$all_aud_states = $this->company_m->fetch_all_states();
 		$data['all_aud_states'] = $all_aud_states->result();
 
+		$complete = 0;
+		$incomplete = 0;
+		$no_insurance = 0;
+		$comp_expired = 0;
+
+		$company_q = $this->company_m->display_company_by_type(2);
+		$today = date('d/m/Y');
+		foreach ($company_q->result_array() as $row){
+			$expired = 0;
+			if($row['public_liability_expiration'] !== ""){
+				if($row['public_liability_expiration'] > $today){
+					$expired = 1;
+				}
+			}
+			if($row['workers_compensation_expiration'] !== ""){
+				if($row['workers_compensation_expiration'] <= $today){
+					$expired = 1;
+				}
+			}
+			if($row['income_protection_expiration'] !== ""){
+				if($row['income_protection_expiration'] <= $today){
+					$expired = 1;
+				}
+			}
+			if($expired == 1){
+				$comp_expired++;
+			}
+			if($row['has_insurance_public_liability'] == 1){
+				if($row['has_insurance_workers_compensation'] == 1){
+					$complete++;
+				}else{
+					if($row['has_insurance_income_protection'] == 1){
+						$complete++;
+					}else{
+						$incomplete++;
+					}
+				}
+			}else{
+				
+				if($row['has_insurance_workers_compensation'] == 1){
+					$incomplete++;
+				}else{
+					if($row['has_insurance_income_protection'] == 1){
+						$incomplete++;
+					}else{
+						$no_insurance++;
+					}
+				}
+			}
+		}
 		
+		$data['complete'] = $complete;
+		$data['incomplete'] = $incomplete;
+		$data['no_insurance'] = $no_insurance;
+		$data['comp_expired'] = $comp_expired;
+
 		$this->load->view('page', $data);
 	}
 	
@@ -50,7 +106,6 @@ class Company extends MY_Controller{
 
 		$all_aud_states = $this->company_m->fetch_all_states();
 		$data['all_aud_states'] = $all_aud_states->result();
-
 		
 		$this->load->view('page', $data);
 	}
@@ -58,6 +113,7 @@ class Company extends MY_Controller{
 	public function view(){
 
 		$curr_company_id = $this->uri->segment(3);
+
 
 		$comp_type_list = $this->company_m->fetch_all_company_types();
 		$data['comp_type_list'] = $comp_type_list->result();
@@ -79,12 +135,42 @@ class Company extends MY_Controller{
 		$company_detail_q = $this->company_m->fetch_all_company($curr_company_id);			
 		$company_detail = array_shift($company_detail_q->result_array());
 
-
 		$data['company_name'] = $company_detail['company_name'];
 		$data['abn'] = $company_detail['abn'];
 		$data['acn'] = $company_detail['acn'];
 		$data['company_id'] = $company_detail['company_id'];
 
+		//INSURANCE
+		$public_liability = $company_detail['has_insurance_public_liability'];
+		$data['public_liability'] = $public_liability;
+		if($public_liability == 1){
+			$data['pl_start_date'] = $company_detail['public_liability_start_date'];
+			$data['pl_expiration'] = $company_detail['public_liability_expiration'];
+		}else{
+			$data['pl_start_date'] = "";
+			$data['pl_expiration'] = "";
+		}
+
+		$workers_compensation = $company_detail['has_insurance_workers_compensation'];
+		$data['workers_compensation'] = $workers_compensation;
+		if($workers_compensation == 1){
+			$data['wc_start_date'] = $company_detail['workers_compensation_start_date'];
+			$data['wc_expiration'] = $company_detail['workers_compensation_expiration'];
+		}else{
+			$data['wc_start_date'] = "";
+			$data['wc_expiration'] = "";
+		}
+
+		$income_protection = $company_detail['has_insurance_income_protection'];
+		$data['income_protection'] = $income_protection;
+		if($workers_compensation == 1){
+			$data['ip_start_date'] = $company_detail['income_protection_start_date'];
+			$data['ip_expiration'] = $company_detail['income_protection_expiration'];
+		}else{
+			$data['ip_start_date'] = "";
+			$data['ip_expiration'] = "";
+		}
+		//INSURANCE
 
 		$data['main_content'] = 'company_view';
 		$data['screen'] = 'Company Detail';
@@ -92,13 +178,6 @@ class Company extends MY_Controller{
 
 		$bank_account_details_q = $this->company_m->fetch_bank_account_details($company_detail['bank_account_id']);			
 		$bank_account_details = array_shift($bank_account_details_q->result_array());
-
-		$q_client_project = $this->company_m->select_client($curr_company_id); 
-		if($q_client_project->num_rows > 0){
-			$data['has_project'] = 1;
-		}else{
-			$data['has_project'] = 0;
-		}
 
 		$data['bank_account_id'] = $bank_account_details['bank_account_id'];
 		$data['bank_account_name'] = $bank_account_details['bank_account_name'];
@@ -823,4 +902,283 @@ class Company extends MY_Controller{
 
 	}
 
+	// public function upload_insurance(){
+	// 	$comp_id = $_POST['company_id'];
+	// 	$insurance_type = $_POST['insurance_type'];
+	// 	$expiration_date = $_POST['attach_expiration'];
+
+
+
+	//     if($insurance_type == 1){
+	//     	$filename = $comp_id."_Public_Liability" ;
+	//     }else{
+	//     	if($insurance_type == 2){
+	//     		$filename = $comp_id."_Workers_Compesation" ;
+	//     	}else{
+	//     		$filename = $comp_id."_Income Protection" ;
+	//     	}
+	//     }
+
+
+	// 	$config['upload_path'] = './uploads/company/insurance';
+	// 	$config['allowed_types'] = 'gif|jpg|png';
+	// 	$config['max_size']	= '1024';
+	// 	$config['max_width']  = '1024';
+	// 	$config['max_height']  = '768';
+
+	// 	$config['file_name']  = $filename;
+
+	// 	$this->upload->initialize($config);
+
+	// 	$this->load->library('upload', $config);
+	// 	$this->upload->initialize($config);	
+
+
+
+	
+	// 		if ( ! $this->upload->do_upload()){
+	// 			$upload_error = array('error' => $this->upload->display_errors());
+	// 			$upload_has_error = 1;
+	// 		}else{
+	// 			
+	// 			redirect('/company/view/'.$comp_id);
+	// 			// $up_data = array('upload_data' => $this->upload->data());
+	// 			// $logo = $up_data['upload_data']['file_name'];
+	// 		}
+	 
+	// }
+
+	function upload_insurance()
+	{
+		$comp_id = $_POST['company_id'];
+		$insurance_type = $_POST['insurance_type'];
+		$expiration_date = $_POST['attach_expiration'];
+
+	    $this->load->library('upload');
+
+	    $files = $_FILES;
+	    $cpt = count($_FILES['userfile']['name']);
+	    for($i=0; $i<$cpt; $i++)
+	    {
+	    	$file_name =  $files['userfile']['name'][$i];
+	    	$file_name = str_replace(' ', '_', $file_name);
+	    	//$proj_attach_q = $this->attachments_m->display_selected_project_attachments($project_id);
+	    	$file = explode('.', $file_name);
+	    	$filename = $file[0];
+	    	$extension = $file[1];
+	    	$file_exist = 0;
+	    	
+		    if (strpos($filename) !== false) {
+		    		$file_exist = $file_exist + 1;
+		    }
+	    	//}
+
+	    	if($file_exist > 0){
+	    		$filename = $filename.$file_exist;
+	    		$file_name = $filename.".".$extension;
+	    	}
+
+	    	if($insurance_type == 1){
+		    	$filename = $comp_id."_Public_Liability" ;
+		    }else{
+		    	if($insurance_type == 2){
+		    		$filename = $comp_id."_Workers_Compensation" ;
+		    	}else{
+		    		$filename = $comp_id."_Income Protection" ;
+		    	}
+		    }
+
+		    $_FILES['userfile']['name']= $filename.'.'.$extension;
+		    $_FILES['userfile']['type']= $files['userfile']['type'][$i];
+		    $_FILES['userfile']['tmp_name']= $files['userfile']['tmp_name'][$i];
+		    $_FILES['userfile']['error']= $files['userfile']['error'][$i];
+		    $_FILES['userfile']['size']= $files['userfile']['size'][$i];    
+
+		    $this->upload->initialize($this->set_upload_options($comp_id));
+		    $this->upload->do_upload();
+	    	$this->company_m->update_company_details_insurance($comp_id,$insurance_type,$expiration_date);
+	    }
+	   	redirect('/company/view/'.$comp_id);
+	}
+	private function set_upload_options($comp_id)
+	{   
+	//  upload an image options
+		$path = "./uploads/company/insurance/".$comp_id;
+		mkdir($path, 0755, true);
+	    $config = array();
+	    $config['upload_path'] = $path."/";
+	    $config['allowed_types'] = 'pdf';
+	    $config['max_size']      = '0';
+	    $config['overwrite']     = TRUE;
+
+
+	    return $config;
+	}
+
+	public function update_insurance_exp_date(){
+		$comp_id = $_POST['comp_id'];
+		$insurance_type = $_POST['insurance_type'];
+		$expiration_date = $_POST['expiration'];
+		$this->company_m->update_company_details_insurance($comp_id,$insurance_type,$expiration_date);
+	}
+
+	public function filter_contractor_list(){
+		$filter = $_POST['filter'];
+		$company_q = $this->company_m->display_company_by_type(2);
+		$today = date('d/m/Y');
+		switch($filter){
+			case 1:	
+				echo '<table class = "table table-striped table-bordered"><th>Contractor Name</th><th>Public Liability</th><th>Workers Compensation</th><th>Income Protection</th>';
+				foreach ($company_q->result_array() as $row){
+					// $expired = 0;
+					// if($row['public_liability_expiration'] !== ""){
+					// 	if($row['public_liability_expiration'] > $today){
+					// 		$expired = 1;
+					// 	}
+					// }
+					// if($row['workers_compensation_expiration'] !== ""){
+					// 	if($row['workers_compensation_expiration'] <= $today){
+					// 		$expired = 1;
+					// 	}
+					// }
+					// if($row['income_protection_expiration'] !== ""){
+					// 	if($row['income_protection_expiration'] <= $today){
+					// 		$expired = 1;
+					// 	}
+					// }
+					// if($expired == 1){
+					// 	$comp_expired++;
+					// }
+					
+					if($row['has_insurance_public_liability'] == 1){
+						if($row['has_insurance_workers_compensation'] == 1){
+							echo '<tr><td colspan =>'.$row['company_name'].'</td><td>'.$row['public_liability_expiration'].'</td><td>'.$row['workers_compensation_expiration'].'</td><td>No File</td></tr>';
+						}else{
+							if($row['has_insurance_income_protection'] == 1){
+								echo '<tr><td colspan =>'.$row['company_name'].'</td><td>'.$row['public_liability_expiration'].'</td><td>No File</td><td>'.$row['income_protection_expiration'].'</td></tr>';
+							}
+						}
+					}
+				}
+				echo '</table>';
+				break;
+			case 2:
+				echo '<table class = "table table-striped table-bordered"><th>Contractor Name</th><th>Public Liability</th><th>Workers Compensation</th><th>Income Protection</th>';
+				foreach ($company_q->result_array() as $row){
+					// $expired = 0;
+					// if($row['public_liability_expiration'] !== ""){
+					// 	if($row['public_liability_expiration'] > $today){
+					// 		$expired = 1;
+					// 	}
+					// }
+					// if($row['workers_compensation_expiration'] !== ""){
+					// 	if($row['workers_compensation_expiration'] <= $today){
+					// 		$expired = 1;
+					// 	}
+					// }
+					// if($row['income_protection_expiration'] !== ""){
+					// 	if($row['income_protection_expiration'] <= $today){
+					// 		$expired = 1;
+					// 	}
+					// }
+					// if($expired == 1){
+					// 	$comp_expired++;
+					// }
+					
+					if($row['has_insurance_public_liability'] == 1){
+						if($row['has_insurance_workers_compensation'] == 0){
+							if($row['has_insurance_income_protection'] == 0){
+								echo '<tr><td colspan =>'.$row['company_name'].'</td><td>'.$row['public_liability_expiration'].'</td><td>No File</td><td>No File</td></tr>';
+							}
+						}
+					}else{
+						if($row['has_insurance_workers_compensation'] == 1){
+							echo '<tr><td colspan =>'.$row['company_name'].'</td><td>No File</td><td>'.$row['workers_compensation_expiration'].'</td><td>No File</td></tr>';
+						}else{
+							if($row['has_insurance_income_protection'] == 1){
+								echo '<tr><td colspan =>'.$row['company_name'].'</td><td>No File</td><td>No File</td><td>'.$row['income_protection_expiration'].'</td></tr>';
+							}
+						}
+					}
+				}
+				echo '</table>';
+				break;
+			case 3:
+				echo '<table class = "table table-striped table-bordered"><th>Contractor Name</th><th>Public Liability</th><th>Workers Compensation</th><th>Income Protection</th>';
+				foreach ($company_q->result_array() as $row){
+					// $expired = 0;
+					// if($row['public_liability_expiration'] !== ""){
+					// 	if($row['public_liability_expiration'] > $today){
+					// 		$expired = 1;
+					// 	}
+					// }
+					// if($row['workers_compensation_expiration'] !== ""){
+					// 	if($row['workers_compensation_expiration'] <= $today){
+					// 		$expired = 1;
+					// 	}
+					// }
+					// if($row['income_protection_expiration'] !== ""){
+					// 	if($row['income_protection_expiration'] <= $today){
+					// 		$expired = 1;
+					// 	}
+					// }
+					// if($expired == 1){
+					// 	$comp_expired++;
+					// }
+					
+					if($row['has_insurance_public_liability'] == 0){
+						if($row['has_insurance_workers_compensation'] == 0){
+							if($row['has_insurance_income_protection'] == 0){
+								echo '<tr><td colspan =>'.$row['company_name'].'</td><td>No File</td><td>No File</td><td>No File</td></tr>';
+							}
+						}
+					}
+				}
+				echo '</table>';
+				break;
+			case 4:
+				echo '<table class = "table table-striped table-bordered"><th>Contractor Name</th><th>Public Liability</th><th>Workers Compensation</th><th>Income Protection</th>';
+				foreach ($company_q->result_array() as $row){
+					$expired = 0;
+					$pl_expiration = $row['public_liability_expiration'];
+					$wc_expiration = $row['workers_compensation_expiration'];
+					$ip_expiration = $row['income_protection_expiration'];
+
+					$color1 = "";
+					$color2 = "";
+					$color3 = "";
+					if($row['public_liability_expiration'] !== ""){
+						if($row['public_liability_expiration'] > $today){
+							$expired = 1;
+							$color1 = "Red";
+						}
+					}
+					if($row['workers_compensation_expiration'] !== ""){
+						if($row['workers_compensation_expiration'] <= $today){
+							$expired = 1;
+							$color2 = "Red";
+						}
+					}
+					if($row['income_protection_expiration'] !== ""){
+						if($row['income_protection_expiration'] <= $today){
+							$expired = 1;
+							$color3 = "Red";
+						}
+					}
+					if($expired == 1){
+						echo '<tr><td colspan =>'.$row['company_name'].'</td><td style = "color: '.$color1.'">'.$pl_expiration.'</td><td style = "color: '.$color2.'">'.$wc_expiration.'</td><td style = "color: '.$color3.'">'.$ip_expiration.'</td></tr>';
+					}
+					
+					// if($row['has_insurance_public_liability'] == 0){
+					// 	if($row['has_insurance_workers_compensation'] == 0){
+					// 		if($row['has_insurance_income_protection'] == 0){
+								
+					// 		}
+					// 	}
+					// }
+				}
+				echo '</table>';
+				break;
+		}
+	}
 }
