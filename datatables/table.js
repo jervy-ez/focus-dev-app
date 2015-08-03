@@ -255,9 +255,12 @@ $('#filter_wip_table').click(function(){
 
 
 
-    var itemSearchB = $('select.select-pm-tbl').val(); 
-    if(itemSearchB!=''){
-        wipTable.fnFilter(itemSearchB,'3');
+    var itemSearchB_raw = $('select.select-pm-tbl').val();
+
+    var itemSearchB = itemSearchB_raw.split('|');
+
+    if(itemSearchB_raw!=''){
+        wipTable.fnFilter(itemSearchB['0'],'3');
     }
 
 
@@ -277,8 +280,8 @@ $('#filter_wip_table').click(function(){
                     var endDateArr = $('#finish_date_start').val().split('/');
                     var dateColmnArr = data[6].split('/');
 
-                    var endDate = new Date(endDateArr[1]+'/'+endDateArr[0]+'/'+endDateArr[2]).getTime() / 1000;
-                    var dateColmn = new Date(dateColmnArr[1]+'/'+dateColmnArr[0]+'/'+dateColmnArr[2]).getTime() / 1000;
+                    var endDate = new Date(endDateArr[1]+'/'+endDateArr[0]+'/'+endDateArr[2]).getTime();
+                    var dateColmn = new Date(dateColmnArr[1]+'/'+dateColmnArr[0]+'/'+dateColmnArr[2]).getTime();
 
                     if ( ( isNaN( endDate )  ) || 
                         ( endDate > dateColmn ) )
@@ -306,8 +309,8 @@ $('#filter_wip_table').click(function(){
                     var endDateArr = $('#finish_date').val().split('/');
                     var dateColmnArr = data[6].split('/');
 
-                    var endDate = new Date(endDateArr[1]+'/'+endDateArr[0]+'/'+endDateArr[2]).getTime() / 1000;
-                    var dateColmn = new Date(dateColmnArr[1]+'/'+dateColmnArr[0]+'/'+dateColmnArr[2]).getTime() / 1000;
+                    var endDate = new Date(endDateArr[1]+'/'+endDateArr[0]+'/'+endDateArr[2]).getTime();
+                    var dateColmn = new Date(dateColmnArr[1]+'/'+dateColmnArr[0]+'/'+dateColmnArr[2]).getTime();
 
                     if ( ( isNaN( endDate )  ) || 
                         ( endDate < dateColmn ) )
@@ -344,6 +347,25 @@ $('#filter_wip_table').click(function(){
         else{
             wipTable.fnFilter();
         }
+
+
+
+        var wip_sort = $('select.wip_sort').val();
+        var wipTableSort = $('#wipTable').DataTable();
+
+        if(wip_sort == 'clnt_asc'){
+            wipTableSort.order( [ 2, 'asc' ] ).draw();
+        }else if(wip_sort == 'clnt_desc'){
+            wipTableSort.order( [ 2, 'desc' ] ).draw();
+        }else if(wip_sort == 'fin_d_asc'){
+            wipTableSort.order( [ 6, 'asc' ] ).draw();
+        }else if(wip_sort == 'fin_d_desc'){
+            wipTableSort.order( [ 6, 'desc' ] ).draw();
+        }else if(wip_sort == 'prj_num_asc'){
+            wipTableSort.order( [ 0, 'asc' ] ).draw();
+        }else if(wip_sort == 'prj_num_desc'){
+            wipTableSort.order( [ 0, 'desc' ] ).draw();
+        }else { $order_q = ''; }
 
 });
 

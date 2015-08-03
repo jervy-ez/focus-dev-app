@@ -110,47 +110,7 @@
 	</div>
 </div>
 
-<div class="dataTables_info" id="print_wip_table_area">
-	<table class="dynamic_wip_table" cellspacing="0" width="100%" role="grid" style="width: 100%;">
-
-		<?php
-
-
-
-
-			echo '<thead><tr><th>Finish</th><th>Start</th><th>Client</th><th>Project</th><th>Total</th><th>Job Date</th><th>Install Hrs</th><th>Project Number</th><th>Invoiced $</th></tr></thead><tbody>';
-
-			foreach ($proj_t->result_array() as $row){
-				echo '<tr><td>'.$row['date_site_finish'].'</td><td>'.$row['date_site_commencement'].'</td><td>'.$row['company_name'].'</td><td>'.$row['project_name'].'</td>';
-
-				if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
-					echo '<td>'.number_format($row['project_total']).'</td>';
-				}else{
-					echo '<td class="green-estimate">'.number_format($row['budget_estimate_total']).'</td>';
-				}
-
-				echo '<td>'.$row['job_date'].'</td>';
-
-				if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
-					echo '<td>'.number_format($row['install_time_hrs']).'</td>';
-				}else{
-					echo '<td class="green-estimate">'.number_format($row['labour_hrs_estimate']).'</td>';
-				}
-
-				echo '<td>'.$row['project_id'].'</td><td>'.number_format($this->invoice->get_project_invoiced($row['project_id'],$row['project_total'])).'</td></tr>';
-
-				
-
-
-			}
-
-			echo '</tbody>';
-
-		?>
-	</table>
-
-
-</div>
+<div class="dataTables_info" id="print_wip_table_area"></div>
 <style type="text/css">
 
 .dataTables_filter, .dataTables_info {
@@ -164,6 +124,27 @@
 
 <?php $this->load->view('assets/logout-modal'); ?>
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="loading_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-sm">
+    <div class="modal-content">
+       
+      <div class="modal-body clearfix pad-10">
+
+        <center><h3>Loading Please Wait</h3></center>
+        <center><h2><i class="fa fa-circle-o-notch fa-spin fa-5x"></i></h2></center>
+        <p>&nbsp;</p>
+  
+  
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="report_result hide hidden"></div>
 
 <!-- wip_filter_modal -->
 <div class="modal fade" id="wip_filter_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -204,18 +185,12 @@
       			<?php
       			foreach ($users->result_array() as $row){
       				if($row['user_role_id']==3):
-      					echo '<option value="'.$row['user_first_name'].' '.$row['user_last_name'].'" >'.$row['user_first_name'].' '.$row['user_last_name'].'</option>';
+                		echo '<option value="'.$row['user_first_name'].' '.$row['user_last_name'].'|'.$row['user_id'].'" >'.$row['user_first_name'].' '.$row['user_last_name'].'</option>';
       				endif;
       			}
       			?>
       		</select>
       	</div>
-
-
-      	
-
-
-
       	
 
       	<div class="box-area clearfix  m-bottom-10">
@@ -231,7 +206,7 @@
 
       	<div class="input-group m-bottom-10">
       		<span class="input-group-addon" id="">
-      			<i class="fa fa-calendar"></i>
+      			<i class="fa fa-calendar"></i> Site Finish A
       		</span>
       		<input type="text" data-date-format="dd/mm/yyyy" placeholder="From" class="form-control datepicker" id="finish_date_start" name="finish_date_start" value="" >
       	</div>
@@ -240,7 +215,7 @@
 
       	<div class="input-group m-bottom-10">
       		<span class="input-group-addon" id="">
-      			<i class="fa fa-calendar"></i>
+      			<i class="fa fa-calendar"></i> Site Finish B
       		</span>
       		<input type="text" data-date-format="dd/mm/yyyy" placeholder="To" class="form-control datepicker" id="finish_date" name="finish_date" value="" >
       	</div>
@@ -249,6 +224,18 @@
       	<div class="input-group m-bottom-10">
       		<span class="input-group-addon" id="">$</span>
       		<input type="text" placeholder="Less Than Project Total Range" class="form-control number_format" id="cost_total" name="cost_total" value="">
+      	</div>
+
+      	<div class="input-group m-bottom-10">
+      		<span class="input-group-addon" id="">Sort</span>         
+      		<select class="wip_sort form-control" id="wip_sort" name="wip_sort" title="invoice_sort*">
+      			<option value="clnt_asc">Client Name A-Z</option>  
+      			<option value="clnt_desc">Client Name Z-A</option>
+      			<option value="fin_d_asc">Finish Date Ascending</option> 
+      			<option value="fin_d_desc">Finish Date Descending</option>    
+      			<option value="prj_num_asc" selected="selected" >Project Number Ascending</option>  
+      			<option value="prj_num_desc">Project Number Descending</option>                                     
+      		</select>       
       	</div>
 
 
