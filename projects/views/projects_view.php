@@ -644,6 +644,7 @@ estimate-->
 
 
 <div id="job_book_area" style="display:none">
+	<strong class="pull-right" style="margin-top: 48px;font-size: 16px;"><?php echo $focus_company_name; ?></strong>
 	<div class="header clearfix">
 	<p class="pull-left">Client: <strong><?php echo $client_company_name; ?></strong> - <strong><?php echo $job_category; ?></strong><br />Project: <strong><?php echo $project_name; ?> <?php echo $client_po; ?></strong></p>
 	<p class="pull-right"><strong>Job Book</strong><br />Project No. <strong><?php echo $project_id; ?></strong></p>
@@ -703,16 +704,16 @@ estimate-->
 		<div class="full clearfix">
 			<div class="one-half">
 				<div class="pad-r-10">
-					<p class="">Quotes Total : <strong class="pull-right">$<?php echo number_format($final_total_quoted); ?></strong></p>
+					<p class="">Quotes Total : <strong class="pull-right">$<?php echo number_format($final_total_quoted,2); ?></strong></p>
 					<p class=""><?php echo $admin_gst_rate; ?>% GST : <strong class="pull-right">$<?php echo number_format($final_total_quoted*($admin_gst_rate/100),2); ?></strong></p>
-					<p class="">Total (inc GST) : <strong class="pull-right">$<?php echo number_format($final_total_quoted+($final_total_quoted*($admin_gst_rate/100))); ?></strong></p>
+					<p class="">Total (inc GST) : <strong class="pull-right">$<?php echo number_format($final_total_quoted+($final_total_quoted*($admin_gst_rate/100)),2); ?></strong></p>
 				</div>
 			</div>
 			<div class="one-half">
 				<div class="pad-l-10">
-					<p class="">Variations Total : <strong class="pull-right">$<?php echo number_format($variation_total); ?></strong></p>
+					<p class="">Variations Total : <strong class="pull-right">$<?php echo number_format($variation_total,2); ?></strong></p>
 					<p class=""><?php echo $admin_gst_rate; ?>% GST : <strong class="pull-right">$<?php echo number_format($variation_total*($admin_gst_rate/100),2); ?></strong></p>
-					<p class="">Total (inc GST) : <strong class="pull-right">$<?php echo number_format($variation_total+($variation_total*($admin_gst_rate/100))); ?></strong></p>				
+					<p class="">Total (inc GST) : <strong class="pull-right">$<?php echo number_format($variation_total+($variation_total*($admin_gst_rate/100)),2); ?></strong></p>				
 				</div>
 			</div>
 		</div>

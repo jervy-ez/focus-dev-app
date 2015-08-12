@@ -41,6 +41,21 @@ class User_model extends CI_Model{
 		return $query;
 	}
 
+	public function insert_user_log($user_id,$date,$time,$actions,$project_id,$type){
+		$query = $this->db->query("INSERT INTO `user_log` (`user_id`, `date`,`time`, `actions`, `project_id`, `type`) VALUES ('$user_id', '$date','$time', '$actions', '$project_id', '$type')");
+		return $query;
+	}
+
+	public function fetch_user_logs(){
+		$query = $this->db->query("SELECT `user_log`.*, `users`.`user_first_name`, `users`.`user_last_name` ,`project`.`project_name`, `company_details`.`company_name`
+			FROM `user_log` 
+			LEFT JOIN `users` ON `users`.`user_id` = `user_log`.`user_id` 
+			LEFT JOIN `project` ON  `project`.`project_id` = `user_log`.`project_id` 
+			LEFT JOIN `company_details` ON  `company_details`.`company_id` = `project`.`client_id`
+			ORDER BY `user_log`.`user_log_id` DESC");
+		return $query;
+	}
+
 	public function fetch_all_roles(){
 		$query = $this->db->query("SELECT * FROM `role` ORDER BY `role`.`role_types` ASC");
 		return $query;
@@ -114,8 +129,8 @@ class User_model extends CI_Model{
 		$query = $this->db->query("update users set user_login_status = 0, ip_address = 0 where user_id = '$user_id'");
 	}
 
-	public function fetch_login_user(){
-		$query = $this->db->query("SELECT * FROM `users` WHERE `users`.`user_login_status` = 1");
+	public function fetch_login_user($order=''){
+		$query = $this->db->query("SELECT * FROM `users` WHERE `users`.`user_login_status` = '1' $order");
 		return $query;
 	}
 

@@ -1300,8 +1300,22 @@ $gp = 0;
 				$site_start = $this->input->post('site_start');
 				$site_finish = $this->input->post('site_finish');
 
-
 				$is_wip = ($job_date != '' ? 1 : 0); 
+
+				$q_proj_prev = $this->projects_m->fetch_complete_project_details($project_id);
+				$prev_project_details = array_shift($q_proj_prev->result_array());
+
+				if(strlen($job_date) == 0 && $prev_project_details['job_date'] == ''){
+					$actions = 'Updated project details, with no job date';
+				}elseif($job_date == $prev_project_details['job_date']){
+					$actions = 'Updated project details';
+				}elseif($job_date != $prev_project_details['job_date'] && strlen($job_date) > 0 && strlen($prev_project_details['job_date']) > 0 ){
+					$actions = 'Replaced job date';
+				}elseif($job_date != $prev_project_details['job_date'] && strlen($job_date) == 0){
+					$actions = 'Removed job date';
+				}else{
+					$actions = 'Added job date';
+				}
 
 				$data['unit_level'] = $this->company->if_set($this->input->post('unit_level', true));
 				$data['unit_number'] = $this->company->if_set($this->input->post('unit_number', true));
@@ -1435,6 +1449,18 @@ $gp = 0;
 				endif;
 
 				$this->session->set_flashdata('full_update', 'Project Details is now updated!');
+
+
+				$type = 'Update';
+
+				date_default_timezone_set("Australia/Perth");
+				$user_id = $this->session->userdata('user_id');
+				$date = date("d/m/Y");
+				$time = date("H:i:s");
+				$this->user_model->insert_user_log($user_id,$date,$time,$actions,$project_id,$type);
+
+
+
 				redirect('/projects/view/'.$project_id);
 			}
 
@@ -1467,11 +1493,27 @@ $gp = 0;
 		$site_finish = $this->input->post('site_finish');
 		
 		$is_double_time = $this->input->post('is_double_time');
+		$type = 'Update';
+
+		$q_proj = $this->projects_m->fetch_complete_project_details($project_id);
+		$prev_project_details = array_shift($q_proj->result_array());
 
 		if(strlen($job_date) > 0 && $job_date != ''){
-			$is_wip = 1;			
+			$is_wip = 1;
 		}else{
 			$is_wip = 0;
+		}
+
+		if(strlen($job_date) == 0 && $prev_project_details['job_date'] == ''){
+			$actions = 'Updated project details, with no job date';
+		}elseif($job_date == $prev_project_details['job_date']){
+			$actions = 'Updated project details';
+		}elseif($job_date != $prev_project_details['job_date'] && strlen($job_date) > 0 && strlen($prev_project_details['job_date']) > 0 ){
+			$actions = 'Replaced job date';
+		}elseif($job_date != $prev_project_details['job_date'] && strlen($job_date) == 0){
+			$actions = 'Removed job date';
+		}else{
+			$actions = 'Added job date';
 		}
 
 		$has_updated_wip = 0;
@@ -1493,6 +1535,12 @@ $gp = 0;
 		$this->projects_m->project_details_quick_update($project_id,$project_name,$budget_estimate_total,$job_date,$client_po,$install_time_hrs,$project_markup,$site_start,$site_finish);
 
 		$this->update_install_cost_total($project_id,$prj_install_hrs,$is_double_time);
+
+		date_default_timezone_set("Australia/Perth");
+		$user_id = $this->session->userdata('user_id');
+		$date = date("d/m/Y");
+		$time = date("H:i:s");
+		$this->user_model->insert_user_log($user_id,$date,$time,$actions,$project_id,$type);
 		
 
 		if($proj_markup !== $project_markup):

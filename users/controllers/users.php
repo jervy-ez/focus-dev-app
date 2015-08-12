@@ -34,6 +34,17 @@ class Users extends MY_Controller{
 
 	}
 
+	public function user_logs(){
+		$order = 'ORDER BY `users`.`user_first_name` ASC';
+		$data['users_q'] = $this->user_model->fetch_login_user($order);
+		$user_logs = $this->user_model->fetch_user_logs();
+		$data['user_logs'] = $user_logs;
+		$data['main_content'] = 'user_logs';
+		$data['screen'] = 'User Logs';
+		$this->load->view('page', $data);
+
+	}
+
 	public function account(){
 		$this->load->module('admin');
 		$this->load->module('company');
