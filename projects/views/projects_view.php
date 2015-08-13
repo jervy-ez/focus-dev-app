@@ -111,9 +111,9 @@ estimate-->
 
 					<div class="border-less-box alert alert-info fade in pad-0 no-pad row">
 						<div class="col-sm-2"><strong>Project Mark-Up:</strong> <?php echo $markup; ?>%</div>
-						<div class="col-sm-2"><strong>Site Labour Total:</strong> (ex-gst) $<?php echo number_format($final_labor_cost); ?></div>
-						<div class="col-sm-2"><strong>Variation Total:</strong> $<span class="variation_total"><?php echo number_format($variation_total); ?></span></div>
-						<div class="col-sm-4"><strong>Project Total:</strong> (ex-gst) $<span id = "proj_ex_gst"><?php echo number_format($final_total_quoted); ?></span>  &nbsp;&nbsp;&nbsp;&nbsp; (inc-gst) $<span id = "proj_inc_gst"><?php echo number_format($final_total_quoted+($final_total_quoted*($admin_gst_rate/100))); ?></span></div>
+						<div class="col-sm-2"><strong>Site Labour Total:</strong> (ex-gst) $<?php echo number_format($final_labor_cost,2); ?></div>
+						<div class="col-sm-2"><strong>Variation Total:</strong> $<span class="variation_total"><?php echo number_format($variation_total,2); ?></span></div>
+						<div class="col-sm-4"><strong>Project Total:</strong> (ex-gst) $<span id = "proj_ex_gst"><?php echo number_format($final_total_quoted,2); ?></span>  &nbsp;&nbsp;&nbsp;&nbsp; (inc-gst) $<span id = "proj_inc_gst"><?php echo number_format($final_total_quoted+($final_total_quoted*($admin_gst_rate/100)),2); ?></span></div>
 						<div class="col-sm-2"><strong>GP:</strong> <?php echo ($gp*100); ?>%</div>
 
 						<div class="admin_settings clearfix" style="display:none;">
@@ -150,9 +150,9 @@ estimate-->
 
 					<div class="border-less-box alert alert-info fade in pad-0 no-pad row">
 						<div class="col-sm-2"><strong>Project Mark-Up:</strong> <?php echo $markup; ?>%</div>
-						<div class="col-sm-2"><strong>Site Labour Total:</strong> (ex-gst) $<?php echo number_format($final_labor_cost); ?></div>
-						<div class="col-sm-2"><strong>Variation Total:</strong> $<span class="variation_total"><?php echo number_format($variation_total); ?></span></div>
-						<div class="col-sm-4"><strong>Project Total:</strong> (ex-gst) $<?php echo number_format($final_total_quoted); ?>  &nbsp;&nbsp;&nbsp;&nbsp; (inc-gst) $<?php echo number_format($final_total_quoted+($final_total_quoted*($admin_gst_rate/100))); ?></div>
+						<div class="col-sm-2"><strong>Site Labour Total:</strong> (ex-gst) $<?php echo number_format($final_labor_cost,2); ?></div>
+						<div class="col-sm-2"><strong>Variation Total:</strong> $<span class="variation_total"><?php echo number_format($variation_total,2); ?></span></div>
+						<div class="col-sm-4"><strong>Project Total:</strong> (ex-gst) $<?php echo number_format($final_total_quoted,2); ?>  &nbsp;&nbsp;&nbsp;&nbsp; (inc-gst) $<?php echo number_format($final_total_quoted+($final_total_quoted*($admin_gst_rate/100)),2); ?></div>
 						<div class="col-sm-2"><strong>GP:</strong> <?php echo ($gp*100); ?>%</div>
 					</div>
 
