@@ -88,7 +88,7 @@
 									<tbody>
 										<?php foreach ($user_logs->result() as $logs): ?>
 											<?php $date_raw = strtotime(str_replace('/', '-',$logs->date)); ?>
-											<?php echo '<tr><td>'.$logs->project_id.'</td><td>'.$logs->type.'</td><td>'.$logs->actions.'</td><td>'.$logs->date.'</td><td>'.$logs->time.'</td><td>'.$logs->user_first_name.' '.$logs->user_last_name.'</td><td>'.$date_raw.'</td><td>'.$logs->project_name.'</td><td>'.$logs->company_name.'</td></tr>'; ?>
+											<?php echo '<tr><td><a href="'.base_url().'projects/view/'.$logs->project_id.'">'.$logs->project_id.'</a></td><td>'.$logs->type.'</td><td>'.$logs->actions.'</td><td>'.$logs->date.'</td><td>'.$logs->time.'</td><td>'.$logs->user_first_name.' '.$logs->user_last_name.'</td><td>'.$date_raw.'</td><td>'.$logs->project_name.'</td><td>'.$logs->company_name.'</td></tr>'; ?>
 										<?php endforeach;  ?>
 									</tbody>
 								</table> 
@@ -109,6 +109,7 @@
 </div>
 
 
+<?php $this->load->view('assets/logout-modal'); ?>
 
 
 <!-- Modal -->
@@ -185,5 +186,4 @@
 
 
 
-<?php $this->load->view('assets/logout-modal'); ?>
 <?php if(!isset($_POST['is_form_submit'])){	echo '<script type="text/javascript">$("#first_name").focus();</script>';}?>

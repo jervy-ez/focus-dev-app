@@ -22,10 +22,13 @@
 						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
 					</li>
 					<li>
-						<a href="<?php echo base_url(); ?>projects" class="btn-small">Projects</a>
+						<a href="<?php echo base_url(); ?>projects/view/<?php echo $project_id; ?>" >Project Breif Details</a>
 					</li>
-					<li>
+					<!-- <li>
 						<a href="" class="btn-small"><i class="fa fa-magic"></i> Tour</a>
+					</li> -->
+					<li>
+						<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
 					</li>
 				</ul>
 			</div>
@@ -670,10 +673,12 @@
 						<div class="col-md-3">
 							
 							<div class="box danger-box delete-project-box clearfix" <?php echo ( $job_date=='' ? '' : 'style="display:none;"' ); ?>>
-								<div class="box-head pad-5">
-									<label><i class="fa fa-exclamation-triangle fa-lg"></i> Warning</label>
-								</div>
-								<div class="box-area pad-10 m-bottom-5 clearfix">
+								<a class="collapsed" role="button" data-toggle="collapse" href="#collapseListGroup1" aria-expanded="false" aria-controls="collapseListGroup1"><div class="box-head pad-5">
+									
+										<label><i class="fa fa-exclamation-triangle fa-lg"></i> Warning</label>
+									
+								</div></a>
+								<div class="box-area pad-10 m-bottom-5 clearfix collapse" id="collapseListGroup1"  style="height: 0px;">
 									<p class="text-center">
 										I`m fully aware of what I am about to do.
 									</p>
@@ -681,33 +686,8 @@
 								</div>
 							</div>
 							
-							<div class="box clearfix">
-								<div class="box-head pad-5">
-									<label><i class="fa fa-quote-left fa-lg"></i> Add Comment</label>
-								</div>
-								<div class="box-area pad-10 m-bottom-5 clearfix">
-									<input type="hidden" class="prjc_user_id" value="<?php echo $this->session->userdata('user_id'); ?>" />
-									<input type="hidden" class="prjc_user_first_name" value="<?php echo $this->session->userdata('user_first_name'); ?>" />
-									<input type="hidden" class="prjc_user_last_name" value="<?php echo $this->session->userdata('user_last_name'); ?>" />
-									<input type="hidden" class="prjc_project_id" value="<?php echo $project_id; ?>" />
-									<textarea class="project_comment form-control m-bottom-10" placeholder="Add Comment" style="height: 100px;"></textarea>
-									<div class="btn btn-info project_comment_btn">Submit</div>
-								</div>
-							</div>
-							
-							<div class="box">
-								<div class="box-head pad-10">
-									<label><i class="fa fa-history fa-lg"></i> Project Comments</label>
-								</div>
-								<div class="box-area pattern-sandstone pad-5">
-	
-									<div class="box-content box-list collapse in">
-										<?php echo $this->projects->list_project_comments($project_id); ?>
-									</div>
-								</div>
-							</div>
 						</div>
-						
+
 					</div>				
 				</div>
 			</form>			

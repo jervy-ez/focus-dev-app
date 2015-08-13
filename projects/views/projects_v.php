@@ -1,6 +1,7 @@
 <?php date_default_timezone_set("Australia/Perth");  // date is set to perth and important setting for diff timezone acounts ?>
 <?php $this->load->module('company'); ?>
 <?php $this->load->module('projects'); ?>
+
 <!-- title bar -->
 <div class="container-fluid head-control">
 	<div class="container-fluid">
@@ -19,11 +20,14 @@
 					<li>
 						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
 					</li>
-					<li <?php if($screen=='Client'){ echo 'class="active"';} ?> >
+					<!--<li <?php if($screen=='Client'){ echo 'class="active"';} ?> >
 						<a href="<?php echo base_url(); ?>projects" class="btn-small">Projects</a>
 					</li>				
-					<li>
+					 <li>
 						<a href="" class="btn-small"><i class="fa fa-magic"></i> Tour</a>
+					</li> -->			
+					<li>
+						<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
 					</li>
 				</ul>
 			</div>
@@ -140,21 +144,14 @@
 							</div>
 						</div>
 					</div>
-
-					<div class="col-md-3">						
-						<div class="box">
-							<div class="box-head pad-10">
-								<label><i class="fa fa-history fa-lg"></i> Project Comments</label>
-							</div>
-							<div class="box-area pattern-sandstone pad-5">
-								<div class="box-content box-list collapse in prj_cmmnt_area"><ul><li><p>No posted comments yet!</p></li></ul></div>
-							</div>
-						</div>
-					</div>
 					
 				</div>				
 			</div>
 		</div>
 	</div>
 </div>
+   
+       
+
+
 <?php $this->load->view('assets/logout-modal'); ?>

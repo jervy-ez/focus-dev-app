@@ -23,7 +23,7 @@ foreach ($proj_t->result_array() as $row){
 
 
 
-	echo '<tr class="'.$status.'"><td><a onmouseover="showProjectCmmnts('.$row['project_id'].')" href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
+	echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
 
 
 	if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){

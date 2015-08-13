@@ -79,16 +79,19 @@ estimate-->
 						<a href="<?php echo base_url(); ?>" ><i class="fa fa-home"></i> Home</a>
 					</li>
 					<li>
-						<a href="<?php echo base_url(); ?>projects" >Projects</a>
+						<a href="<?php echo base_url(); ?>projects" >Project</a>
 					</li>
 					<li>
-						<a class="btn-small sub-nav-bttn" id="project-details-update">Project Details</a>
+						<a href="<?php echo base_url(); ?>projects/update_project_details/<?php echo $project_id; ?>" class="btn-small sub-nav-bttn">Project Details</a>
 					</li>
 					<?php if($this->session->userdata('is_admin') == 1 ): ?>
 					<li>
 						<a href="#" class="btn-small view_applied_settings"><i class="fa fa-cog"></i> Applied Settings</a>
 					</li>
-					<?php endif; ?>
+					<?php endif; ?>							
+					<li>
+						<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
+					</li>
 				</ul>
 			</div>
 
@@ -369,18 +372,7 @@ estimate-->
 
 													</form>
 
-
-							
-													<div class="clearfix">
-														<div class="box-area m-bottom-5 pad-top-10 clearfix">
-															<input type="hidden" class="prjc_user_id" value="<?php echo $this->session->userdata('user_id'); ?>" />
-															<input type="hidden" class="prjc_user_first_name" value="<?php echo $this->session->userdata('user_first_name'); ?>" />
-															<input type="hidden" class="prjc_user_last_name" value="<?php echo $this->session->userdata('user_last_name'); ?>" />
-															<input type="hidden" class="prjc_project_id" value="<?php echo $project_id; ?>" />
-															<textarea class="project_comment form-control m-bottom-10" placeholder="Add Comment" style="height: 75px;"></textarea>
-															<div class="btn btn-info project_comment_btn pull-right">Add Comment</div>
-														</div>
-													</div>
+													
 
 													
 
@@ -517,21 +509,11 @@ estimate-->
 																<div class="clearfix text-left col-xs-12 col-md-9">
 
 																	<div class="row">
-																		<div class="clearfix text-left col-xs-12 col-md-6">
+																		<div class="clearfix text-left col-xs-12">
 																			<div class="pad-15 no-pad-t">
 																				<hr />
 																				<h4><i class="fa fa-book"></i> Project Notes</h4>
 																				<?php echo $project_comments; ?>
-																			</div>
-																		</div>
-
-																		<div class="clearfix text-left col-xs-12 col-md-6">
-																			<div class="pad-15 no-pad-t">
-																				<hr />
-																				<h4><i class="fa fa-quote-left"></i> Recent Project Comment</h4>
-																				<div class="recent_prj_comment">
-																					<?php echo $this->projects->list_recent_project_comment($project_id); ?>
-																				</div>
 																			</div>
 																		</div>
 
@@ -759,4 +741,9 @@ estimate-->
 
 
 </div>
+
+
+
 <?php $this->load->view('assets/logout-modal'); ?>
+
+
