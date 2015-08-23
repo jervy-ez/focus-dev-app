@@ -13,6 +13,11 @@ class Shopping_center extends MY_Controller{
 			redirect('', 'refresh');
 		endif;
 	}
+
+	public function hasWord($word, $txt) {
+		$patt = "/(?:^|[^a-zA-Z])" . preg_quote($word, '/') . "(?:$|[^a-zA-Z])/i";
+		return preg_match($patt, $txt);
+	}
 	
 
 	public function index(){		
@@ -20,6 +25,7 @@ class Shopping_center extends MY_Controller{
 		$suburb_list = $this->company_m->fetch_all_suburb();		
 		$all_aud_states = $this->company_m->fetch_all_states();	
 		$has_it_aready = 0;	
+		$data['error'] = '';
 
 		$data['suburb_list'] = $suburb_list->result();
 		$data['all_aud_states'] = $all_aud_states->result();
@@ -44,10 +50,32 @@ class Shopping_center extends MY_Controller{
 			$this->form_validation->set_rules('common_name', 'Common Name', 'trim|xss_clean');
 		}
 
+		$pos_brand = '';
+		$pos_common = '';
 
+		
 
-		if($this->form_validation->run() === false){
-			$data['error' ] = validation_errors();
+		if($brand == '' && $common_name == ''){
+			$this->form_validation->set_rules('brand', 'Brand/Shopping Center','trim|required|xss_clean');
+			$this->form_validation->set_rules('common_name', 'Common Name', 'trim|required|xss_clean');
+		}
+
+		if($brand != '' ){
+			$pos_brand = $this->hasWord('other',strtolower($brand));
+		}
+
+		if($common_name != ''){
+			$pos_common = $this->hasWord('other',strtolower($common_name));
+		}
+
+		if($pos_brand > 0 || $pos_common > 0){
+			$data['error'] .= '<p>The term "Other"is not allowed to use in the brand and common name for shopping center.</p>';
+			$this->load->view('page', $data);
+		}else{
+
+		if($this->form_validation->run() === false ){
+			$data['error'] = validation_errors();
+			
 			$this->load->view('page', $data);
 		}else{
 			$is_submit = $this->company->if_set($this->input->post('is_submit', true));
@@ -127,7 +155,7 @@ class Shopping_center extends MY_Controller{
 
 			}
 
-			
+			}
 
 		}
 	}

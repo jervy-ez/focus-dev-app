@@ -308,7 +308,7 @@ estimate-->
 																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php else: ?>
 																				<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled job-date-set text-right" ><?php echo $job_date; ?></p>
-																				<input type="hidden" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
+																				<input type="hidden" id="job_date" name="job_date" value="<?php echo $job_date; ?>" class="hide hidden">
 																			<?php endif; ?>
 																		<?php  endif; ?>
 																		</div>
@@ -318,8 +318,28 @@ estimate-->
 																		<label for="project_markup" class="col-sm-4 control-label m-top-5 text-left">Project Markup</label>
 																		<div class="input-group ">
 																			<span class="input-group-addon">(%)</span>
-																			<input type="text" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup" tabindex="12" placeholder="Markup %" value="<?php echo $markup; ?>">		
-																			<p class="min_mark_up hidden"><?php echo $min_markup; ?></p>															
+																				<p class="min_mark_up hidden"><?php echo $min_markup; ?></p>	
+
+
+																			<?php if($job_date != ''): ?>
+																				<p class="form-control text-right"><?php echo $markup; ?></p>
+																				<input type="hidden" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup hide hidden" tabindex="12" placeholder="Markup %" value="<?php echo $markup; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>	
+																			<?php else: ?>
+
+																				<?php if($this->invoice->if_project_invoiced_full($project_id)): ?>
+																					<p class="form-control text-right"><?php echo $markup; ?></p>
+																					<input type="hidden" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup hide hidden" tabindex="12" placeholder="Markup %" value="<?php echo $markup; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>	
+
+																				<?php else: ?>
+																					<input type="text" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup" tabindex="12" placeholder="Markup %" value="<?php echo $markup; ?>" >
+																					
+
+																				<?php endif; ?>
+																				
+																			<?php endif; ?>
+																			
+
+
 																		</div>
 																	</div>
 
@@ -329,7 +349,24 @@ estimate-->
 																		<label for="install_time_hrs" class="col-sm-4 control-label m-top-5 text-left">Site Hours</label>																		
 																		<div class="input-group ">
 																			<span class="input-group-addon">Hrs</span>
-																			<input type="text" placeholder="Site Hours" class="quick_input form-control text-right" id="install_time_hrs"  name="install_time_hrs" value="<?php echo $install_time_hrs; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>
+
+
+																			<?php if($job_date != ''): ?>
+																				<p class="form-control text-right"><?php echo $install_time_hrs; ?></p>
+																				<input type="hidden" placeholder="Site Hours" class="quick_input form-control text-right hide hidden" id="install_time_hrs"  name="install_time_hrs" value="<?php echo $install_time_hrs; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>
+																			<?php else: ?>
+
+																				<?php if($this->invoice->if_project_invoiced_full($project_id)): ?>
+																					<p class="form-control text-right"><?php echo $install_time_hrs; ?></p>
+																					<input type="hidden" placeholder="Site Hours" class="quick_input form-control text-right hide hidden" id="install_time_hrs"  name="install_time_hrs" value="<?php echo $install_time_hrs; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>
+																				<?php else: ?>
+																					<input type="text" placeholder="Site Hours" class="quick_input form-control text-right" id="install_time_hrs"  name="install_time_hrs" value="<?php echo $install_time_hrs; ?>" >
+																				<?php endif; ?>
+
+																			<?php endif; ?>
+																			
+
+
 																		</div>
 																	</div> 
 

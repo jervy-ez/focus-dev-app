@@ -23,10 +23,18 @@
   <style type="text/css"> /*.progress_date,.final_payment,.progress-percent{pointer-events:none;} */</style>
 <?php endif; ?>
 <?php if($job_date == ''): ?>
-  <style type="text/css">.progress_invoice_button{display: none; visibility: hidden;}</style>
+  <style type="text/css">
+  .progress_invoice_button{display: none; visibility: hidden;}
+
+    <?php if($this->session->userdata('user_role_id') == 6 || $this->session->userdata('user_role_id') == 5 || $this->session->userdata('invoice') < 2): ?>
+      .progress_date,.final_payment,.progress-percent{pointer-events:none;}
+    <?php endif; ?>
+  </style>
 <?php else: ?>
   <style type="text/css">
-    .progress_date,.final_payment,.progress-percent{pointer-events:none;}
+    <?php if($this->session->userdata('user_role_id') == 6 ||$this->session->userdata('user_role_id') == 5 || $this->session->userdata('invoice') < 2): ?>
+      .progress_date,.final_payment,.progress-percent{pointer-events:none;}
+    <?php endif; ?>
     .update_progress_values{display: none; visibility: hidden;}
   </style>
 <?php endif; ?>
