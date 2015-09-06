@@ -58,7 +58,7 @@
 							<label for="inputPassword3" class="col-sm-2 control-label"></label>
 							<div class="col-sm-10">
 								<div class="input-group <?php if(form_error('password')){ echo 'has-error has-feedback';} ?>">
-									<input type="checkbox" name="remember">&nbsp;
+									<input type="checkbox" name="remember" id="remember" class="remember">&nbsp;
 									<label for="remember" class="control-label"> Remember me</label>
 								</div>
 								<button style="margin-top: 5px;" type="submit" class="btn btn-primary pull-right" onclik = "sign_in()"><i class="fa fa-sign-in"></i> Sign in</button>

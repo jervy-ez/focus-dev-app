@@ -397,21 +397,13 @@
 
 										<div class="pad-10">
 											<form method="post" class="change_password_form" onkeypress="return event.keyCode != 13;">
-												<div class="clearfix m-top-5 m-bottom-0">
-													<label for="current_password" class="col-sm-5 control-label m-top-5" style="font-weight: normal;">Current Password</label>
-													<div class="col-sm-7">
-														<input type="password" class="form-control" id="current_password" name="current_password" placeholder="Current Password" value="">
-													</div>
-												</div>
 
-												<hr style="margin: 10px 0px;">
-
-												<div id="passstrength" class="pad-5 border-less-box alert alert-info m-bottom-10">Note: The new password must contain a minimum of 6 characters, numbers, spacial character and a capital letter.</div>
+												<div id="passstrength" class="pad-5 border-less-box alert alert-info m-bottom-10">Note: The new password must contain a minimum of 7 characters, a number, a symbol and a capital letter.</div>
 
 												<div class="clearfix m-top-0 m-bottom-10">
 													<label for="new_password" class="col-sm-5 control-label m-top-5" style="font-weight: normal;">New Password</label>
 													<div class="col-sm-7">
-														<input type="password" class="form-control tooltip-enabled" id="new_password" name="new_password" placeholder="New Password" value="" data-original-title="Note: The new password must contain a minimum of 6 characters, numbers, spacial character and a capital letter.">
+														<input type="password" class="form-control tooltip-enabled" id="new_password" name="new_password" placeholder="New Password" value="" data-original-title="Note: The new password must contain a minimum of 7 characters, a number, a symbol and a capital letter.">
 													</div>
 												</div>
 

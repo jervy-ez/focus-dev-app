@@ -109,11 +109,23 @@ class User_model extends CI_Model{
 	}
 
 	public function change_user_password($new_password,$user_id){
-		$query = $this->db->query("UPDATE `users` SET `password` = '$new_password' WHERE `users`.`user_id` = '$user_id' ");
+
+		$new_password_md = md5($new_password);
+		
+		$query = $this->db->query("UPDATE `users` SET `password` = '$new_password_md' WHERE `users`.`user_id` = '$user_id' ");
+
+		$exp_date = date('d/m/Y', strtotime("+30 days"));
+		$this->db->query("UPDATE `user_passwords` SET `is_active` = '0' WHERE `user_passwords`.`is_active` = '1' AND `user_passwords`.`user_id` = '$user_id' ORDER BY `user_passwords`.`users_passwords_id` DESC LIMIT 1 ");
+		$query = $this->db->query("INSERT INTO `user_passwords` (`user_id`, `is_active`, `expiration_date`, `password`) VALUES ('$user_id', '1', '$exp_date', '$new_password') ");
 	}
 
 	public function delete_user($user_id){
 		$query = $this->db->query("UPDATE `users` SET `is_active` = '0' WHERE `users`.`user_id` = '$user_id' ");		
+	}
+
+	public function get_latest_user_password($user_id){
+		$query = $this->db->query("SELECT *,UNIX_TIMESTAMP( STR_TO_DATE(`user_passwords`.`expiration_date`, '%d/%m/%Y') )  AS 'expiration_date_mod' FROM `user_passwords` WHERE `user_passwords`.`is_active` = '1' AND `user_passwords`.`user_id` = '$user_id' ORDER BY `user_passwords`.`users_passwords_id` DESC LIMIT 1");
+		return $query;
 	}
 
 	public function fetch_user($user_id=''){

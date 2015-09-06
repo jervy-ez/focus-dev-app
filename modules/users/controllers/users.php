@@ -129,7 +129,7 @@ class Users extends MY_Controller{
 
 		if($this->input->post('update_password')){
 
-			$this->form_validation->set_rules('current_password', 'Current Password','trim|required|xss_clean');
+			//$this->form_validation->set_rules('current_password', 'Current Password','trim|required|xss_clean');
 			$this->form_validation->set_rules('new_password', 'New Password','trim|required|xss_clean');
 			$this->form_validation->set_rules('confirm_password', 'Confirm Password','trim|required|xss_clean');
 
@@ -138,17 +138,15 @@ class Users extends MY_Controller{
 
 			}else{
 
-				$current_password_raw = $this->input->post('current_password', true);
-				$current_password = md5($current_password_raw);
+				//$current_password_raw = $this->input->post('current_password', true);
+				//$current_password = md5($current_password_raw);
 
 				$new_password = $this->input->post('new_password', true);
 				$confirm_password = $this->input->post('confirm_password', true);
 
-				if($new_password == $confirm_password){
+				if($new_password == $confirm_password){					
 
-					$new_password_md = md5($new_password);
-
-					$this->user_model->change_user_password($new_password_md,$user_id);
+					$this->user_model->change_user_password($new_password,$user_id);
 					$data['user_password_updated'] = 'Your password is now changed';
 
 				}else{
@@ -582,6 +580,11 @@ class Users extends MY_Controller{
 					$this->load->view('page', $data);
 					break;
 				default:
+
+					$this->_confirm_active_password($userdata->user_id,$password);
+
+
+
 					$data['user_id'] = $userdata->user_id;
 					$data['user_role_id'] = $userdata->user_role_id;
 					//$data['user_access_group_id'] = $userdata->user_access_group_id;
@@ -594,6 +597,8 @@ class Users extends MY_Controller{
 					$data['is_admin'] = $userdata->if_admin;
 					$data['user_name'] = $user_name;
 					$data['password'] = $password;
+
+
 
 					$raw_user_access = $this->user_model->fetch_all_access($data['user_id']);
 					$user_access = array_shift($raw_user_access->result_array());
@@ -747,6 +752,118 @@ class Users extends MY_Controller{
 				$this->load->view('page', $data);
 			}*/
 		}
+	}
+
+	public function re_password(){
+
+		$user_id = $this->uri->segment(3);
+
+		if(!$user_id){
+			redirect('');			
+		}
+
+		if($user_id != $this->session->userdata('re_pass_user_id')){
+			redirect('');			
+		}
+
+		$re_password = $this->user_model->get_latest_user_password($user_id);
+		$re_password_arr = array_shift($re_password->result_array());
+
+		$current_date = date("d-m-Y");
+		$timestamp_curr = strtotime($current_date);
+
+		$timestamp_passwrd = $re_password_arr['expiration_date_mod'];
+		
+		if(!$timestamp_passwrd){
+			redirect('');			
+		}
+
+
+		$user_details_q = $this->user_model->fetch_user($user_id);
+		$user_details = array_shift($user_details_q->result_array());
+
+
+		if($timestamp_passwrd <= $timestamp_curr){
+			$data['main_content'] = 're_password';
+			
+
+
+			if($this->input->post('update_password')){
+				
+				$this->form_validation->set_rules('new_password', 'New Password','trim|required|xss_clean');
+				$this->form_validation->set_rules('confirm_password', 'Confirm Password','trim|required|xss_clean');
+
+				if($this->form_validation->run() === false){
+					$data['error'] = validation_errors();
+
+				}else{
+
+					$current_password_raw = $this->input->post('current_password', true);
+					$current_password = md5($current_password_raw);
+
+					$new_password = $this->input->post('new_password', true);
+					$confirm_password = $this->input->post('confirm_password', true);
+
+					if($new_password == $confirm_password){					
+
+						$this->user_model->change_user_password($new_password,$user_id);
+
+
+						$send_to = $user_details['general_email'];
+
+						$this->email->initialize(array(
+							'protocol' => 'smtp',
+							'smtp_host' => 'cp178.ezyreg.com',
+							'smtp_user' => 'accounts@sojourn.focusshopfit.com.au',
+							'smtp_pass' => 'f*0e^cr3',
+							'smtp_port' => 465,
+							'crlf' => "\r\n",
+							'newline' => "\r\n"
+							));
+
+						$this->email->from('accounts@sojourn.focusshopfit.com.au', 'Your Name');
+						$this->email->to($send_to);
+						//$this->email->cc('another@another-example.com');
+						//$this->email->bcc('them@their-example.com');
+						$this->email->subject('Email Test');
+						$this->email->message('Testing the email class.');
+						$this->email->send();
+
+
+
+						redirect('');
+
+					}else{
+						$data['error'] = 'New Password and Confirm Password did not match';
+					}
+
+				}
+
+			}
+			$this->load->view('page', $data);
+
+
+		}else{
+			redirect('');
+		}		
+	}
+
+	function _confirm_active_password($user_id,$user_password){
+
+		$this->session->set_userdata('re_pass_user_id',$user_id);
+
+		$re_password = $this->user_model->get_latest_user_password($user_id);
+		$re_password_arr = array_shift($re_password->result_array());
+
+		$current_date = date("d-m-Y");
+		$timestamp_curr = strtotime($current_date);
+
+		$timestamp_passwrd = $re_password_arr['expiration_date_mod'];
+
+		if($timestamp_passwrd <= $timestamp_curr){
+			 redirect('/users/re_password/'.$user_id);
+		}
+
 	}
 	
 	function logout(){

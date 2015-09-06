@@ -74,6 +74,9 @@
 	<script type="text/javascript"> var base_url = '<?php echo site_url(); //you have to load the "url_helper" to use this function ?>'; </script>
 	<script src="<?php echo base_url(); ?>js/vendor/bootstrap.min.js"></script>	
 	
+  <?php $home = $this->uri->segment(1); ?>
+<?php if($home != ""): ?>
+  
 	<?php //if($chart): ?>
 	<!-- <script src="<?php echo base_url(); ?>js/c3/charts.js"></script> -->
 	<?php //endif; ?>
@@ -87,6 +90,7 @@
  
   <script src="<?php echo base_url(); ?>js/bootstrap-datepicker.js"></script>
   <link href="<?php echo base_url(); ?>css/datepicker.css" rel="stylesheet">
+
 	
 	<?php //if($table): ?>
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/dataTables.bootstrap.css">
@@ -613,6 +617,7 @@ var can_add_contact = 1;
 
 
 
+<?php endif; ?>
 
 </body>
 </html>
