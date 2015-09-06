@@ -32,14 +32,7 @@
 						</li>
 						<li role="presentation">
 							<a role="menuitem" tabindex="-1" href="<?php echo base_url(); ?>users">Users</a>
-						</li>
-						<li role="presentation">
-							<a role="menuitem" tabindex="-1" href="<?php echo base_url(); ?>users/user_logs">User Logs</a>
-						</li>
-						<li role="presentation" class="divider"></li>
-						<li role="presentation">
-							<a role="menuitem" tabindex="-1" href="<?php echo base_url(); ?>users/add"><i class="fa fa-user-plus"></i> Add New User</a>
-						</li>
+						</li>						
 					</ul>
 				</li>
 			</ul>

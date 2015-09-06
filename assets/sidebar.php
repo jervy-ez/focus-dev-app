@@ -23,9 +23,11 @@
 				<li>
 					<a href="<?php echo base_url(); ?>contacts"> <i class="fa fa-phone-square fa-3x"></i> <label class="control-label">Contacts</label></a>
 				</li>
+				<?php if( $this->session->userdata('users') > 0 ): ?>
 				<li>
 					<a href="<?php echo base_url(); ?>users"> <i class="fa fa-users fa-3x"></i> <label class="control-label">Users</label></a>
 				</li>
+			<?php endif; ?>
 				<!-- <li>
 					<a href="#" class=""> <i class="fa fa-cogs fa-3x"></i> <label class="control-label">Settings</label></a>
 				</li> -->
