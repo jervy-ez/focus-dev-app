@@ -1631,7 +1631,7 @@ $('#new_password').keyup(function(e) {
      
      if (false == enoughRegex.test($(this).val())) {
              $('#passstrength').removeClass('.alert-info').removeClass('alert-warning').removeClass('alert-success').addClass('alert-danger').show();
-             $('#passstrength').html('Add more charactes please, minimum of 6.');
+             $('#passstrength').html('Add more charactes please, minimum of 7.');
              $('form.change_password_form').find('input#confirm_password').prop('disabled', true);
 
      } else if (strongRegex.test($(this).val())) {
