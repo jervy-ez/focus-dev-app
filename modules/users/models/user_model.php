@@ -108,15 +108,18 @@ class User_model extends CI_Model{
 		$query = $this->db->query("UPDATE `users` SET `login_name` = '$login_name', `user_first_name` = '$user_first_name', `user_last_name` = '$user_last_name',`user_profile_photo`='$profile',`user_comments_id` = '$user_comments_id', `user_skype` = '$user_skype',`user_skype_password` = '$user_skype_password',`user_focus_company_id`='$user_focus_company_id', `user_gender`='$user_gender',`user_date_of_birth`='$user_date_of_birth',`user_department_id` = '$department_id'  WHERE `users`.`user_id` = '$user_id' ");
 	}
 
-	public function change_user_password($new_password,$user_id){
-
+	public function change_user_password($new_password,$user_id,$days_psswrd_exp){
 		$new_password_md = md5($new_password);
 		
 		$query = $this->db->query("UPDATE `users` SET `password` = '$new_password_md' WHERE `users`.`user_id` = '$user_id' ");
 
-		$exp_date = date('d/m/Y', strtotime("+30 days"));
+		$exp_date = date('d/m/Y', strtotime("+".$days_psswrd_exp." days"));
 		$this->db->query("UPDATE `user_passwords` SET `is_active` = '0' WHERE `user_passwords`.`is_active` = '1' AND `user_passwords`.`user_id` = '$user_id' ORDER BY `user_passwords`.`users_passwords_id` DESC LIMIT 1 ");
 		$query = $this->db->query("INSERT INTO `user_passwords` (`user_id`, `is_active`, `expiration_date`, `password`) VALUES ('$user_id', '1', '$exp_date', '$new_password') ");
+	}
+
+	public function insert_user_password($new_password,$user_id){
+		$query = $this->db->query("INSERT INTO `user_passwords` (`user_id`, `is_active`, `expiration_date`, `password`) VALUES ('$user_id', '1', '10/10/2011', '$new_password') ");
 	}
 
 	public function delete_user($user_id){
@@ -125,6 +128,11 @@ class User_model extends CI_Model{
 
 	public function get_latest_user_password($user_id){
 		$query = $this->db->query("SELECT *,UNIX_TIMESTAMP( STR_TO_DATE(`user_passwords`.`expiration_date`, '%d/%m/%Y') )  AS 'expiration_date_mod' FROM `user_passwords` WHERE `user_passwords`.`is_active` = '1' AND `user_passwords`.`user_id` = '$user_id' ORDER BY `user_passwords`.`users_passwords_id` DESC LIMIT 1");
+		return $query;
+	}
+
+	public function select_static_defaults(){
+		$query = $this->db->query("SELECT * FROM `static_defaults` ORDER BY `static_defaults_id` DESC LIMIT 1");
 		return $query;
 	}
 

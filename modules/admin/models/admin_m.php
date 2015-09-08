@@ -127,6 +127,10 @@ class Admin_m extends CI_Model{
 		return $this->db->insert_id();
 	}
 
+	public function update_static_settings($days_psswrd_exp,$temp_user_psswrd){
+		$query = $this->db->query("UPDATE `static_defaults` SET `days_psswrd_exp` = '$days_psswrd_exp', `temp_user_psswrd` = '$temp_user_psswrd' WHERE `static_defaults`.`static_defaults_id` = 1");
+	}
+
 
 	public function update_abn_acn_jurisdiction($abn,$acn,$jurisdiction_id,$comp_id){
 		$query = $this->db->query("UPDATE `company_details` ,`admin_company` SET `company_details`.`abn` = '$abn', `company_details`.`acn` = '$acn', `admin_company`.`admin_jurisdiction_state_ids` = '$jurisdiction_id' WHERE `company_details`.`company_id` = '$comp_id' AND `admin_company`.`admin_company_details_id` = '$comp_id'");

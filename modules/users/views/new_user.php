@@ -224,11 +224,13 @@
 													<script type="text/javascript">$('.department').val('<?php echo $department; ?>');</script>
 												</div>
 											</div>
+
 											
-											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('password')){ echo 'has-error has-feedback';} ?>">
+											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix hide <?php if(form_error('password')){ echo 'has-error has-feedback';} ?>">
 												<label for="password" class="col-sm-3 control-label">Password*</label>
 												<div class="col-sm-9">
-													<input type="password" class="form-control" id="password" name="password"  tabindex="9" placeholder="Password"  value="">
+													<input type="password" class="form-control" id="password" name="password"  tabindex="9" placeholder="Password"  value="<?php echo $static_defaults[0]->temp_user_psswrd; ?>">
+													<input type="text" class="form-control" id="days_exp" name="days_exp"  tabindex="9"   value="<?php echo $static_defaults[0]->days_psswrd_exp; ?>">
 												</div>
 											</div>
 											
@@ -249,10 +251,18 @@
 												</div>
 											</div>
 											
-											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('confirm_password')){ echo 'has-error has-feedback';} ?>">
+											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix hide <?php if(form_error('confirm_password')){ echo 'has-error has-feedback';} ?>">
 												<label for="confirm_password" class="col-sm-5 control-label">Confirm Password*</label>
 												<div class="col-sm-7">
-													<input type="password" class="form-control" id="confirm_password" name="confirm_password"  tabindex="10" placeholder="Confirm Password"  value="">
+													<input type="password" class="form-control" id="confirm_password" name="confirm_password"  tabindex="10" placeholder="Confirm Password"  value="<?php echo $static_defaults[0]->temp_user_psswrd; ?>">
+												</div>
+											</div>
+
+											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('password')){ echo 'has-error has-feedback';} ?>">
+												<label for="password" class="col-sm-2 control-label"></label>
+												<div class="col-sm-10">
+													<p>Temporary Password: 										
+													<strong><?php echo $static_defaults[0]->temp_user_psswrd; ?></strong></p>
 												</div>
 											</div>
 

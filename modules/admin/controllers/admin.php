@@ -17,7 +17,11 @@ class Admin extends MY_Controller{
 		endif;*/
 	}
 	
-	public function index($dataPass = array()){				
+	public function index($dataPass = array()){	
+		if($this->session->userdata('is_admin') != 1 ):		
+			redirect('', 'refresh');
+		endif;
+
 		$data_c['main_content'] = 'admin_v';
 		$data_c['screen'] = 'Admin Defaults';
 		
@@ -44,6 +48,7 @@ class Admin extends MY_Controller{
 		$q_labour_cost = $this->admin_m->fetch_labour_cost();
 		$labour_cost = array_shift($q_labour_cost->result_array());
 		//labour cost matrix
+
 	
 		$data = array_merge($data_a,$data_b,$data_c,$data_d,$labour_cost,$dataPass);
 		$gp_data_arr = $this->get_double_amalgated_rate($data_a,$labour_cost,$data_b);
@@ -54,6 +59,10 @@ class Admin extends MY_Controller{
 		$data['gp_amalgamated_rate'] = $gp_data_arr['gp_amalgamated_rate'];
 		$data['grand_total'] = $gp_data_arr['gp_grand_total'];
 		$data['leave_percentage'] = $gp_data_arr['gp_leave_percentage'];
+
+		
+		$static_defaults = $this->user_model->select_static_defaults();
+		$data['static_defaults'] = $static_defaults->result();
 
 		$this->load->view('page', $data);
 	}
@@ -340,6 +349,38 @@ class Admin extends MY_Controller{
 		}	
 	}
 
+
+
+
+	public function user_settings(){
+		$passArr = array();
+
+		$this->form_validation->set_rules('days_exp', 'Days Password Expiration','trim|required|xss_clean');
+		$this->form_validation->set_rules('temp_password', 'Temporary User Password','trim|required|xss_clean');
+
+
+		if($this->form_validation->run() === false){
+			$passArr['error'] = validation_errors();
+			$this->index($passArr);
+		}else{
+
+			$days_exp = $this->input->post('days_exp', true);
+			$temp_password = $this->input->post('temp_password', true);
+			
+			$this->admin_m->update_static_settings($days_exp,$temp_password);
+
+			$update_success = 'The User Accounts Setting is now updated.';
+			$this->session->set_flashdata('update_user_settings', $update_success);
+			redirect('/admin');
+		}	
+
+
+	}
+
+
+
+
+
 	public function labour_cost_matrix(){
 		$passArr = array();
 
@@ -386,7 +427,11 @@ class Admin extends MY_Controller{
 
 	}
 
-	public function company(){				
+	public function company(){
+		if($this->session->userdata('is_admin') != 1 ):		
+			redirect('', 'refresh');
+		endif;
+				
 		$data['main_content'] = 'admin_company';
 		$data['screen'] = 'Focus Company';		
 

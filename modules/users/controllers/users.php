@@ -8,6 +8,7 @@ class Users extends MY_Controller{
 		$this->load->library('form_validation');
 		$this->load->library('upload');
 		$this->load->helper('cookie');
+		$this->load->library('email');
 
  //echo $this->input->cookie('user_id', false);
 
@@ -126,6 +127,10 @@ class Users extends MY_Controller{
 		$fetch_user= $this->user_model->fetch_user($user_id);
 		$data['user'] = $fetch_user->result();
 
+		$re_password = $this->user_model->get_latest_user_password($user_id);
+		$re_password_arr = array_shift($re_password->result_array());
+
+		$data['current_password'] = $re_password_arr['password'];
 
 		if($this->input->post('update_password')){
 
@@ -141,13 +146,27 @@ class Users extends MY_Controller{
 				//$current_password_raw = $this->input->post('current_password', true);
 				//$current_password = md5($current_password_raw);
 
+				$static_defaults_q = $this->user_model->select_static_defaults();
+				$static_defaults = array_shift($static_defaults_q->result_array());
+
 				$new_password = $this->input->post('new_password', true);
 				$confirm_password = $this->input->post('confirm_password', true);
 
 				if($new_password == $confirm_password){					
 
-					$this->user_model->change_user_password($new_password,$user_id);
+					$this->user_model->change_user_password($new_password,$user_id,$static_defaults['days_psswrd_exp']);
 					$data['user_password_updated'] = 'Your password is now changed';
+
+					$send_to = $data['user'][0]->general_email;
+
+					$this->email->from('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+					$this->email->to($send_to); 
+						//$this->email->cc('another@another-example.com'); 
+						//$this->email->bcc('them@their-example.com'); 
+
+					$this->email->subject('Password Change');
+					$this->email->message("Do not reply in this email.\r\n\r\n\r\n\r\nCongratulations!\r\n\r\nYour New Password is : ".$new_password."\r\n\r\n\r\n\r\n© FSF Group 2015");	
+					$this->email->send();
 
 				}else{
 					$data['error'] = 'New Password and Confirm Password did not match';
@@ -156,6 +175,7 @@ class Users extends MY_Controller{
 			}
 
 		}
+
 
 
 		$this->load->view('page', $data);
@@ -333,6 +353,10 @@ class Users extends MY_Controller{
 
 		$focus = $this->admin_m->fetch_all_company_focus();
 		$data['focus'] = $focus->result();
+
+		
+		$static_defaults = $this->user_model->select_static_defaults();
+		$data['static_defaults'] = $static_defaults->result();
 /*
 		$access = $this->user_model->fetch_all_access();
 		$data['all_access'] = $access->result();
@@ -406,6 +430,9 @@ class Users extends MY_Controller{
 			$gender = $this->company->cap_first_word($this->company->if_set($this->input->post('gender', true)));
 			$dob = $this->company->if_set($this->input->post('dob', true));
 			$login_name = $this->company->if_set($this->input->post('login_name', true));
+
+			$confirm_password = $this->company->if_set($this->input->post('confirm_password', true));
+
 			$password = $this->company->if_set($this->input->post('password', true));
 			$password = md5($password);
 
@@ -429,6 +456,8 @@ class Users extends MY_Controller{
 			$after_hours = $this->company->if_set($this->input->post('after_hours', true));
 			$mobile_number = $this->company->if_set($this->input->post('mobile_number', true));
 			$email = $this->company->if_set($this->input->post('email', true));
+
+			$days_exp = $this->company->if_set($this->input->post('days_exp', true));
 
 			$comments = $this->company->cap_first_word_sentence($this->company->if_set($this->input->post('comments', true)));
 
@@ -460,8 +489,21 @@ class Users extends MY_Controller{
 
 			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access);
 
+			$this->user_model->insert_user_password($confirm_password,$add_new_user_id);
+
 			$new_user_success = 'The user is now added.';
 			$this->session->set_flashdata('new_user_success', $new_user_success);
+
+			$send_to = $email;
+
+			$this->email->from('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+			$this->email->to($send_to); 
+						//$this->email->cc('another@another-example.com'); 
+						//$this->email->bcc('them@their-example.com'); 
+
+			$this->email->subject('Account Details');
+			$this->email->message("Do not reply in this email.\r\n\r\n\r\n\r\Welcome ".$first_name." to Sojourn, a Focus Shopfit Project Management Application. Please sign-in right away with your temporary account. After sign-in you are required to change your password.\r\n\r\nYour User Name is : ".$login_name." and Password is : ".$confirm_password."\r\n\r\n\r\n\r\n© FSF Group 2015");	
+			$this->email->send();
 
 			redirect('/users');
 		}
@@ -804,37 +846,32 @@ class Users extends MY_Controller{
 					$new_password = $this->input->post('new_password', true);
 					$confirm_password = $this->input->post('confirm_password', true);
 
-					if($new_password == $confirm_password){					
+					$static_defaults_q = $this->user_model->select_static_defaults();
+					$static_defaults = array_shift($static_defaults_q->result_array());
 
-						$this->user_model->change_user_password($new_password,$user_id);
+					var_dump($static_defaults);
+
+					if($new_password == $confirm_password && $new_password != $this->session->userdata('re_pass_curr')){			
+
+						$this->user_model->change_user_password($new_password,$user_id,$static_defaults['days_psswrd_exp']);
 
 
 						$send_to = $user_details['general_email'];
 
-						$this->email->initialize(array(
-							'protocol' => 'smtp',
-							'smtp_host' => 'cp178.ezyreg.com',
-							'smtp_user' => 'accounts@sojourn.focusshopfit.com.au',
-							'smtp_pass' => 'f*0e^cr3',
-							'smtp_port' => 465,
-							'crlf' => "\r\n",
-							'newline' => "\r\n"
-							));
 
-						$this->email->from('accounts@sojourn.focusshopfit.com.au', 'Your Name');
-						$this->email->to($send_to);
-						//$this->email->cc('another@another-example.com');
-						//$this->email->bcc('them@their-example.com');
-						$this->email->subject('Email Test');
-						$this->email->message('Testing the email class.');
+						$this->email->from('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+						$this->email->to($send_to); 
+						//$this->email->cc('another@another-example.com'); 
+						//$this->email->bcc('them@their-example.com'); 
+
+						$this->email->subject('Password Change');
+						$this->email->message("Do not reply in this email.\r\n\r\n\r\n\r\nCongratulations!\r\n\r\nYour New Password is : ".$new_password."\r\n\r\n\r\n\r\n© FSF Group 2015");	
 						$this->email->send();
-
-
 
 						redirect('');
 
 					}else{
-						$data['error'] = 'New Password and Confirm Password did not match';
+						$data['error'] = 'Please complete the form and confirm the new password.';
 					}
 
 				}
@@ -851,6 +888,7 @@ class Users extends MY_Controller{
 	function _confirm_active_password($user_id,$user_password){
 
 		$this->session->set_userdata('re_pass_user_id',$user_id);
+		$this->session->set_userdata('re_pass_curr',$user_password);
 
 		$re_password = $this->user_model->get_latest_user_password($user_id);
 		$re_password_arr = array_shift($re_password->result_array());

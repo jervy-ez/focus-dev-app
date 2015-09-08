@@ -35,7 +35,7 @@
 
 					<form method="post" class="change_password_form" onkeypress="return event.keyCode != 13;">						
 
-						<div id="passstrength" class="pad-5 border-less-box alert alert-info m-bottom-10">Note: The new password must contain a minimum of 7 characters, a number, a symbol and a capital letter.</div>
+						<div id="passstrength" class="pad-5 border-less-box alert alert-info m-bottom-10">Note: The new password must contain a minimum of 8 characters, a number, a symbol and a capital letter.</div>
 
 						<div class="clearfix m-top-0 m-bottom-10">
 							<label for="new_password" class="col-sm-5 control-label m-top-5" style="font-weight: normal;">New Password</label>

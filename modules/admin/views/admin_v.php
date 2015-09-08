@@ -754,62 +754,60 @@
 								
 							</div>
 						</div>
-					</div>					
-					
-					<div class="col-md-3 hide">						
-						<div class="box">
-							<div class="box-head pad-10">
-								<label><i class="fa fa-history fa-lg"></i> History</label>
-							</div>
-							<div class="box-area pattern-sandstone pad-5">
-								<div class="box-content box-list collapse in">
-									<ul>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">You added a new company</a>
-												<p class="news-item-preview">May 25, 2014</p>
-											</div>
-										</li>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Updated the company details and contact information for James Tiling Co.</a>
-												<p class="news-item-preview">May 20, 2014</p>
-											</div>
-										</li>
-									</ul>
-									<div class="box-collapse">
-										<a style="cursor: pointer;" data-toggle="collapse" data-target=".more-list"> Show More </a>
-									</div>
-									<ul class="more-list collapse out">
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
-												<p class="news-item-preview">
-													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
-												</p>
-											</div>
-										</li>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
-												<p class="news-item-preview">
-													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
-												</p>
-											</div>
-										</li>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
-												<p class="news-item-preview">
-													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
-												</p>
-											</div>
-										</li>
-									</ul>
+					</div>	
+
+
+					<?php if(@$this->session->flashdata('update_user_settings')): ?>
+						<div class="col-md-3 m-top-5">							
+							<div class="no-pad-t">
+								<div class="border-less-box alert alert-success fade in">
+									<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+									<h4>Cheers!</h4>
+									<?php echo $this->session->flashdata('update_user_settings');?>
 								</div>
 							</div>
 						</div>
-					</div>
+					<?php endif; ?>
+
+
+					<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/user_settings">
+						<div class="col-md-3 m-top-5">
+							<div class="box">
+								<div class="box-head pad-5">
+									<label>User Accounts Setting</label>
+								</div>
+
+								<div class="box-area clearfix pad-5">
+									<div class="clearfix m-top-10 m-bottom-10">
+										<label for="total-hour" class="col-sm-6  control-label m-top-5 text-left" style="font-weight: normal;">Days Password Expiration </label>
+										<div class="col-sm-6">
+											<div class="input-group">
+												<span class="input-group-addon" id=""><i class="fa fa-calendar"></i></span>
+												<input type="text" class="form-control" value="<?php echo $static_defaults[0]->days_psswrd_exp; ?>" name="days_exp">
+												<span class="input-group-addon" id="">Days</span>
+											</div>
+										</div>						
+									</div>
+
+									<div class="clearfix m-top-10 m-bottom-10">
+										<label for="total-hour" class="col-sm-6  control-label m-top-5 text-left" style="font-weight: normal;">Temporary User Password </label>
+										<div class="col-sm-6">
+											<div class="input-group">
+												<span class="input-group-addon" id=""><i class="fa fa-lock"></i></span>
+												<input type="text" class="form-control" name="temp_password" value="<?php echo $static_defaults[0]->temp_user_psswrd; ?>">
+											</div>
+										</div>						
+									</div>
+
+									<button type="submit" class="btn btn-success pull-right m-bottom-10 m-right-5"><i class="fa fa-floppy-o"></i> Save User Settings</button>
+
+
+								</div>
+							</div>
+						</div>		
+					</form>		
+					
+					
 					
 				</div>				
 			</div>
