@@ -22,12 +22,14 @@ class Users extends MY_Controller{
 		if(!$this->_is_logged_in() ): 		
 			redirect('', 'refresh');
 		endif;
+
+		$this->_check_user_access('users',1);
 /*
 		if($this->session->userdata('is_admin') != 1 ):		
 			redirect('', 'refresh');
 		endif;
 */
-		$this->_check_user_access('users',1);
+//		$this->_check_user_access('users',1);
 
 		$fetch_user= $this->user_model->fetch_user();
 		$data['users'] = $fetch_user->result();
@@ -76,7 +78,15 @@ class Users extends MY_Controller{
 	public function update_user_access(){
 		$this->clear_apost();
 		$user_id = $_POST['user_id_access'];
-		$is_admin = $_POST['chk_is_admin'];
+
+		if($this->session->userdata('is_admin') ==  1){
+			$is_admin = $_POST['chk_is_peon'];
+		}else{
+			$fetch_user= $this->user_model->fetch_user($user_id);
+			$user_details = array_shift($fetch_user->result_array());
+			$is_admin = $user_details['if_admin'];
+		}
+
 		$dashboard = $_POST['dashboard_access'];
 		$company = $_POST['company_access'];
 		$projects = $_POST['projects_access'];
@@ -92,8 +102,6 @@ class Users extends MY_Controller{
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-
-
 		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
@@ -102,6 +110,8 @@ class Users extends MY_Controller{
 	}
 
 	public function account(){
+		$this->_check_user_access('users',1);
+
 		$this->clear_apost();
 
 		$this->load->module('admin');
@@ -126,6 +136,23 @@ class Users extends MY_Controller{
 
 		$fetch_user= $this->user_model->fetch_user($user_id);
 		$data['user'] = $fetch_user->result();
+
+		if($data['user'][0]->user_date_of_birth != ''){
+
+			$dob_arr = explode('/',$data['user'][0]->user_date_of_birth);
+			$curr_year = date('Y');
+			$curr_month = date('m');
+			$curr_day = date('d');
+
+			$data['age'] = ($curr_year - $dob_arr[2]) - 1;
+
+			if($curr_month.$curr_day >= $dob_arr[1].$dob_arr[0]){
+				$data['age']++;			
+			}
+
+		}else{
+			$data['age'] = '';
+		}
 
 		$re_password = $this->user_model->get_latest_user_password($user_id);
 		$re_password_arr = array_shift($re_password->result_array());
@@ -334,12 +361,12 @@ class Users extends MY_Controller{
 		if(!$this->_is_logged_in() ): 		
 			redirect('', 'refresh');
 		endif;
-
-		if($this->session->userdata('is_admin') != 1 ):		
+/*
+		if($this->session->userdata('is_admin') != 1 || $this->session->userdata('users') < 2):		
 			redirect('', 'refresh');
 		endif;
-
-
+*/
+		$this->_check_user_access('users',2);
 
 		$this->load->module('admin');
 		$this->load->module('company');
@@ -365,7 +392,7 @@ class Users extends MY_Controller{
 		$this->form_validation->set_rules('first_name', 'First Name','trim|required|xss_clean');
 		$this->form_validation->set_rules('last_name', 'Last Name','trim|required|xss_clean');
 		$this->form_validation->set_rules('gender', 'Gender','trim|required|xss_clean');
-		$this->form_validation->set_rules('dob', 'Date of Birth','trim|required|xss_clean');
+		$this->form_validation->set_rules('dob', 'Date of Birth','trim|xss_clean');
 		$this->form_validation->set_rules('login_name', 'Login Name','trim|required|xss_clean');
 		$this->form_validation->set_rules('password', 'Password','trim|required|xss_clean');
 		$this->form_validation->set_rules('department', 'Department','trim|required|xss_clean');
@@ -502,7 +529,7 @@ class Users extends MY_Controller{
 						//$this->email->bcc('them@their-example.com'); 
 
 			$this->email->subject('Account Details');
-			$this->email->message("Do not reply in this email.\r\n\r\n\r\n\r\Welcome ".$first_name." to Sojourn, a Focus Shopfit Project Management Application. Please sign-in right away with your temporary account. After sign-in you are required to change your password.\r\n\r\nYour User Name is : ".$login_name." and Password is : ".$confirm_password."\r\n\r\n\r\n\r\n© FSF Group 2015");	
+			$this->email->message("Do not reply in this email.\r\n\r\n\r\n\rWelcome ".$first_name." to Sojourn, an FSf Group Project Management Application.\r\n\r\nYou have been added as a new user and provided with a temporary password.  Please sign-in right away where you will be required to change your password, then you will need to sign in again using your username & changed password.  Use the link below.\r\n\r\nhttps://sojourn.focusshopfit.com.au\r\n\r\nYour User Name is : ".$login_name." and Password is : ".$confirm_password."\r\n\r\nIf you go to the USER section of the site you can personalise your settings and complete your set up.\r\n\r\n© FSF Group 2015");	
 			$this->email->send();
 
 			redirect('/users');

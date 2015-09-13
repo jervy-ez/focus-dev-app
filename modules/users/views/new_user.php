@@ -162,8 +162,8 @@
 													<script type="text/javascript">$('.gender').val('<?php echo $gender; ?>');</script>													
 												</div>
 
-												<div class="col-xs-12 m-bottom-10 clearfix <?php if(form_error('dob')){ echo 'has-error has-feedback';} ?>">													
-													<input type="text" data-date-format="dd/mm/yy" placeholder="Date of Birth* DD/MM/YY" class="form-control datepicker" id="dob" name="dob" tabindex="4" value="<?php echo $this->input->post('dob'); ?>">												
+												<div class="col-xs-12 m-bottom-10 clearfix">													
+													<input type="text" data-date-format="dd/mm/yy" placeholder="Date of Birth" class="form-control datepicker" id="dob" name="dob" tabindex="4" value="<?php echo $this->input->post('dob'); ?>">												
 												</div>
 											</div>
 										</div>

@@ -17,6 +17,11 @@
 					<li>
 						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
 					</li>
+					<?php if($this->session->userdata('users') > 0 || $this->session->userdata('is_admin') ==  1): ?>
+						<li>
+							<a href="<?php echo base_url(); ?>users/account/<?php echo $this->session->userdata('user_id'); ?>"><i class="fa fa-cog"></i> My Account</a>
+						</li>
+					<?php endif; ?>
 					<?php if($this->session->userdata('is_admin') == 1 ): ?>
 						<li>
 							<a href="<?php echo base_url(); ?>admin" class="btn-small">Defaults</a>
@@ -57,7 +62,7 @@
 							<div class="box-head pad-10 clearfix">						
 
 
-								<?php if($this->session->userdata('is_admin') == 1 ): ?><a href="./users/add" class="btn btn-primary pull-right"><i class="fa fa-briefcase"></i>&nbsp; Add New</a><?php endif; ?>
+								<?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('users') > 1): ?><a href="./users/add" class="btn btn-primary pull-right"><i class="fa fa-briefcase"></i>&nbsp; Add New</a><?php endif; ?>
 								<label><?php echo $screen; ?></label><span> (<a href="#" data-placement="right" class="popover-test" title="" data-content="Hello there mate! Welcome to the users screen." data-original-title="Welcome">?</a>)</span>
 								<p class="hide"><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p>								
 							</div>

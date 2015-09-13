@@ -110,7 +110,7 @@
 												<?php $user_id = $user->user_id; ?>
 												<?php $is_user_admin = $user->if_admin; ?>
 
-												<?php if( ($this->session->userdata('users') > 1 && $this->session->userdata('user_id') == $user_id ) || $this->session->userdata('is_admin') ==  1  ): ?>
+												<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id  || $this->session->userdata('is_admin') ==  1  ): ?>
 													<form class="form-horizontal clearfix form" role="form" method="post" action="" accept-charset="utf-8" enctype="multipart/form-data">
 												<?php endif; ?>
 
@@ -130,7 +130,7 @@
 											</div>
 
 
-											<?php if( ($this->session->userdata('users') > 1 && $this->session->userdata('user_id') == $user_id ) || $this->session->userdata('is_admin') ==  1  ): ?>
+											<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id  || $this->session->userdata('is_admin') ==  1  ): ?>
 												<div class="col-xs-12 m-bottom-10 clearfix  <?php if(@$upload_error){ echo 'has-error has-feedback';} ?>  ">
 													<label for="profile_photo" class="col-sm-12 control-label text-center center">Profile Photo</label>
 													<div class="col-sm-12">
@@ -147,26 +147,55 @@
 										<div class="box bank_account m-top-10" >
 
 											<div class="box-head pad-5 m-bottom-5">
-												<label><i class="fa fa-user fa-lg"></i> Peronal Info</label>
+												<label><i class="fa fa-user fa-lg"></i> Personal Info</label>
 											</div>
 
 											<div class="box-area pad-5 clearfix">
-												<div class="col-xs-12 m-bottom-10 clearfix <?php if(form_error('first_name')){ echo 'has-error has-feedback';} ?>">
-													<input type="text" class="form-control" id="first_name" name="first_name"  tabindex="1" placeholder="First Name*"  value="<?php echo $user->user_first_name; ?>">
-												</div>
 
-												<div class="col-xs-12 m-bottom-10 clearfix <?php if(form_error('last_name')){ echo 'has-error has-feedback';} ?>">													
+												<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id || $this->session->userdata('is_admin') ==  1  ): ?>
+
+
+
+													<div class="col-xs-12 m-bottom-10 clearfix <?php if(form_error('first_name')){ echo 'has-error has-feedback';} ?>">
+														<input type="text" class="form-control" id="first_name" name="first_name"  tabindex="1" placeholder="First Name*"  value="<?php echo $user->user_first_name; ?>">
+													</div>
+
+													<div class="col-xs-12 m-bottom-10 clearfix <?php if(form_error('last_name')){ echo 'has-error has-feedback';} ?>">													
 														<input type="text" class="form-control" id="last_name" name="last_name"  tabindex="2" placeholder="Last Name*"  value="<?php echo $user->user_last_name; ?>">
-												</div>
+													</div>
 
-												<div class="col-xs-12 m-bottom-10 clearfix <?php if(form_error('gender')){ echo 'has-error has-feedback';} ?>">													
-													<select name="gender" class="form-control gender" tabindex="3" id="gender"><option value="Male">Male</option><option value="Female">Female</option></select>
-													<script type="text/javascript">$('.gender').val('<?php echo $user->user_gender; ?>');</script>
-												</div>
+													<div class="col-xs-12 m-bottom-10 clearfix <?php if(form_error('gender')){ echo 'has-error has-feedback';} ?>">													
+														<select name="gender" class="form-control gender" tabindex="3" id="gender"><option value="Male">Male</option><option value="Female">Female</option></select>
+														<script type="text/javascript">$('.gender').val('<?php echo $user->user_gender; ?>');</script>
+													</div>
 
-												<div class="col-xs-12 m-bottom-10 clearfix <?php if(form_error('dob')){ echo 'has-error has-feedback';} ?>">													
-													<input type="text" data-date-format="dd/mm/yy" placeholder="Date of Birth* DD/MM/YY" class="form-control datepicker" id="dob" name="dob" tabindex="4" value="<?php echo $user->user_date_of_birth; ?>">											
-												</div>
+													<div class="col-xs-12 m-bottom-10 clearfix <?php if(form_error('dob')){ echo 'has-error has-feedback';} ?>">													
+														<input type="text" data-date-format="dd/mm/yy" placeholder="Date of Birth* DD/MM/YY" class="form-control datepicker" id="dob" name="dob" tabindex="4" value="<?php echo $user->user_date_of_birth; ?>">											
+													</div>
+
+												<?php else: ?>
+
+													<div class="clearfix">
+														<label class="col-sm-3 control-label m-bottom-10">Name</label>
+														<div class="col-sm-9"><?php echo $user->user_first_name; ?> <?php echo $user->user_last_name; ?></div>
+													</div>
+
+													<div class="clearfix">
+														<label class="col-sm-3 control-label m-bottom-10">Gender</label>
+														<div class="col-sm-9"><?php echo $user->user_gender; ?></div>
+													</div>
+
+													<div class="clearfix">
+														<label class="col-sm-3 control-label m-bottom-10">Age</label>
+														<div class="col-sm-9"><?php echo $age; ?></div>
+													</div>
+
+													<div class="clearfix">
+														<label class="col-sm-3 control-label m-bottom-10">Birthday</label>
+														<div class="col-sm-9"><?php echo $user->user_date_of_birth; ?></div>
+													</div>
+
+												<?php endif; ?>
 											</div>
 										</div>
 										<div class="clearfix"></div>
@@ -185,58 +214,120 @@
 												<input type="hidden" name="is_form_submit" value="1">
 
 
-									<?php if( ($this->session->userdata('users') > 1 && $this->session->userdata('user_id') == $user_id ) || $this->session->userdata('is_admin') ==  1  ): ?>
       								<div class="box bank_account" >
 										<div class="box-head pad-5 m-bottom-5">
 											<label><i class="fa fa-suitcase fa-lg"></i> Account Details</label>
 										</div>
 										
 										<div class="box-area pad-5 clearfix">
-											<div class="col-md-6 col-sm-4 col-xs-12 m-bottom-10 clearfix <?php if(form_error('login_name')){ echo 'has-error has-feedback';} ?>">
-												<label for="login_name" class="col-sm-4 control-label">Login Name</label>
+											 
+
+
+
+									<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id || $this->session->userdata('is_admin') ==  1  ): ?>
+											
+
+											<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
+
+												<div class="col-md-6 col-sm-4 col-xs-12 m-bottom-10 clearfix <?php if(form_error('department')){ echo 'has-error has-feedback';} ?>">
+													<label for="department" class="col-sm-3 control-label">Department</label>
+													<div class="col-sm-9">
+														<select name="department" class="form-control department" id="department"  tabindex="7">
+															<option value="">Select Department</option>
+															<?php foreach ($departments as $key => $value): ?>
+																<option value="<?php echo $value->department_id.'|'.$value->department_name; ?>"><?php echo $value->department_name; ?></option>
+															<?php endforeach; ?>
+														</select>
+
+														<?php $department = ($this->input->post('department') != '' ? $this->input->post('department') : ''); ?>
+														<script type="text/javascript">$('.department').val('<?php echo $user->department_id.'|'.$user->department_name; ?>');</script>
+													</div>
+												</div>
+
+
+												<div class="col-md-6 col-sm-4 col-xs-12 m-bottom-10 clearfix <?php if(form_error('focus')){ echo 'has-error has-feedback';} ?>">
+													<label for="focus" class="col-sm-3 control-label">Focus</label>
+													<div class="col-sm-9">
+														<select name="focus" class="form-control focus" id="focus" tabindex="10">
+															<option value="">Select Focus Company</option>
+															<?php foreach ($focus as $key => $value): ?>
+																<option value="<?php echo $value->company_id.'|'.$value->company_name; ?>"><?php echo $value->company_name; ?></option>
+															<?php endforeach; ?>
+														</select>
+
+														<?php $focus = ($this->input->post('focus') != '' ? $this->input->post('focus') : ''); ?>
+														<script type="text/javascript">$('.focus').val('<?php echo $user->company_id.'|'.$user->company_name; ?>');</script>
+													</div>
+												</div>
+
+											<?php else: ?>
+
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+													<label class="col-sm-4 text-right">Focus</label>
+													<div class="col-sm-8">
+														<strong><?php echo $user->company_name; ?></strong>
+													</div>
+												</div>
+
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+													<label class="col-sm-4  text-right">Department</label>
+													<div class="col-sm-8">
+														<strong><?php echo $user->department_name; ?></strong>
+													</div>
+												</div>
+
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+													<label class="col-sm-4  text-right">Role</label>
+													<div class="col-sm-8">
+														<strong><?php echo $user->role_types; ?></strong>
+													</div>
+												</div>
+
+												<input type="hidden" name="department" class="hide" value="<?php echo $user->department_id.'|'.$user->department_name; ?>">
+												<input type="hidden" name="focus" class="hide" value="<?php echo $user->company_id.'|'.$user->company_name; ?>">
+
+											<?php endif; ?>
+
+
+
+
+
+
+
+											<div class="col-md-6 col-sm-4 col-xs-12 m-bottom-10 clearfix ">
+												<label for="login_name" class="col-sm-3 control-label">Login Name</label>
+												<div class="col-sm-9">
+													<input type="text" class="form-control" id="login_name" name="login_name" tabindex="5" placeholder="Login Name" value="<?php echo $user->login_name; ?>" style="text-transform: none;">
+												</div>
+											</div>
+
+
+										<?php else: ?>
+
+											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+												<label class="col-sm-4 control-label">Focus</label>
 												<div class="col-sm-8">
-													<input type="text" class="form-control" id="login_name" name="login_name"  tabindex="5" placeholder="Login Name"  value="<?php echo $user->login_name; ?>" style="text-transform: none;" >
+													<?php echo $user->company_name; ?>
 												</div>
 											</div>
 
-											<?php if($this->session->userdata('is_admin') == 1 ): ?>
-											
-
-											<div class="col-md-6 col-sm-4 col-xs-12 m-bottom-10 clearfix <?php if(form_error('department')){ echo 'has-error has-feedback';} ?>">
-												<label for="department" class="col-sm-3 control-label">Department</label>
-												<div class="col-sm-9">
-													<select name="department" class="form-control department" id="department"  tabindex="7">
-														<option value="">Select Department</option>
-														<?php foreach ($departments as $key => $value): ?>
-															<option value="<?php echo $value->department_id.'|'.$value->department_name; ?>"><?php echo $value->department_name; ?></option>
-														<?php endforeach; ?>
-													</select>
-
-													<?php $department = ($this->input->post('department') != '' ? $this->input->post('department') : ''); ?>
-													<script type="text/javascript">$('.department').val('<?php echo $user->department_id.'|'.$user->department_name; ?>');</script>
+											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+												<label class="col-sm-4 control-label">Department</label>
+												<div class="col-sm-8">
+													<?php echo $user->department_name; ?>
 												</div>
 											</div>
-											
-											
-											<div class="col-md-6 col-sm-4 col-xs-12 m-bottom-10 clearfix <?php if(form_error('focus')){ echo 'has-error has-feedback';} ?>">
-												<label for="focus" class="col-sm-3 control-label">Focus</label>
-												<div class="col-sm-9">
-													<select name="focus" class="form-control focus" id="focus" tabindex="10">
-														<option value="">Select Focus Company</option>
-														<?php foreach ($focus as $key => $value): ?>
-															<option value="<?php echo $value->company_id.'|'.$value->company_name; ?>"><?php echo $value->company_name; ?></option>
-														<?php endforeach; ?>
-													</select>
 
-													<?php $focus = ($this->input->post('focus') != '' ? $this->input->post('focus') : ''); ?>
-													<script type="text/javascript">$('.focus').val('<?php echo $user->company_id.'|'.$user->company_name; ?>');</script>
+											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+												<label class="col-sm-4 control-label">Role</label>
+												<div class="col-sm-8">
+													<?php echo $user->role_types; ?>
 												</div>
-											</div>
+											</div>								
 
 											<?php endif; ?>
 										</div>
 									</div>
-									<?php endif; ?>
 
       								<div class="clearfix"></div>
 
@@ -249,6 +340,8 @@
 										<input type="hidden" name="contact_number_id" value="<?php echo $user->contact_number_id; ?>">
 										
 										<div class="box-area pad-5 clearfix">
+
+										<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id  || $this->session->userdata('is_admin') ==  1  ): ?>
 
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('direct_landline')){ echo 'has-error has-feedback';} ?>">
 												<label for="direct_landline" class="col-sm-5 control-label">Direct Landline</label>
@@ -270,23 +363,110 @@
 													<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign('mobile_number')"  tabindex="13" value="<?php echo $user->mobile_number; ?>">
 												</div>
 											</div>
-											
-											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email')){ echo 'has-error has-feedback';} ?>">
-												<label for="email" class="col-sm-4 control-label">Email</label>
-												<div class="col-sm-8">
-													<input type="email" class="form-control" id="email" name="email"  tabindex="14" placeholder="Email"  value="<?php echo $user->general_email; ?>">
-												</div>
-												<input type="hidden" name="email_id" value="<?php echo $user->email_id; ?>">
-											</div>
-											
-											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('skype_id')){ echo 'has-error has-feedback';} ?>">
-												<label for="skype_id" class="col-sm-4 control-label">Skype ID</label>
-												<div class="col-sm-8">
-													<input type="text" class="form-control" id="skype_id" name="skype_id"  tabindex="15" placeholder="Skype ID"  value="<?php echo $user->user_skype; ?>" style="text-transform: none;">
-												</div>
-											</div>
 
-											<?php if( ($this->session->userdata('users') > 1 && $this->session->userdata('user_id') == $user_id ) || $this->session->userdata('is_admin') ==  1  ): ?>
+											<?php if($this->session->userdata('is_admin') ==  1): ?>
+
+
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email')){ echo 'has-error has-feedback';} ?>">
+													<label for="email" class="col-sm-4 control-label">Email</label>
+													<div class="col-sm-8">
+														<input type="email" class="form-control" id="email" name="email"  tabindex="14" placeholder="Email"  value="<?php echo $user->general_email; ?>">
+													</div>
+													<input type="hidden" name="email_id" value="<?php echo $user->email_id; ?>">
+												</div>
+
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('skype_id')){ echo 'has-error has-feedback';} ?>">
+													<label for="skype_id" class="col-sm-4 control-label">Skype ID</label>
+													<div class="col-sm-8">
+														<input type="text" class="form-control" id="skype_id" name="skype_id"  tabindex="15" placeholder="Skype ID"  value="<?php echo $user->user_skype; ?>" style="text-transform: none;">
+													</div>
+												</div>
+
+
+
+
+											<?php else: ?>												
+											
+												<?php if( trim($user->general_email) != '' ): ?>											
+													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-5 m-top-10 clearfix">
+														<label class="col-sm-4 text-right">Email <i class="fa fa-envelope"></i> </label>
+														<div class="col-sm-8">
+															<strong> <?php echo $user->general_email; ?></strong>
+														</div>
+													</div>
+												<?php endif; ?>
+
+												<div class="clearfix"></div>
+
+
+												<?php if( trim($user->user_skype) != '' ): ?>											
+													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+														<label for="skype_id" class="col-sm-5 text-right">Skype ID <i class="fa fa-skype fa-lg"></i> </label>
+														<div class="col-sm-7">
+															<strong> <?php echo $user->user_skype; ?></strong>
+														</div>
+													</div>
+												<?php endif; ?>
+
+												<input type="hidden" class="form-control hide" readonly="true" id="email" name="email"  tabindex="14" placeholder="Email"  value="<?php echo $user->general_email; ?>">
+												<input type="hidden" class="form-control hidden" readonly="true" id="skype_id" name="skype_id"  tabindex="15" placeholder="Skype ID"  value="<?php echo $user->user_skype; ?>" style="text-transform: none;">	
+
+											<?php endif; ?>
+
+											<input type="hidden" name="email_id" value="<?php echo $user->email_id; ?>">
+
+										<?php else: ?>
+
+											<?php if( trim($user->direct_number) != '' ): ?>
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+													<label class="col-sm-4 control-label">Direct Landline</label>
+													<div class="col-sm-8">
+														<?php echo $user->direct_number; ?>																										
+													</div>
+												</div>
+											<?php endif; ?>
+
+											<?php if( trim($user->after_hours) != '' ): ?>
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+													<label class="col-sm-4 control-label">After Hours</label>
+													<div class="col-sm-8">
+														<?php echo $user->after_hours; ?>																									
+													</div>
+												</div>
+											<?php endif; ?>
+
+											<?php if( trim($user->mobile_number) != '' ): ?>
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+													<label class="col-sm-4 control-label">Mobile Number</label>
+													<div class="col-sm-8">
+														<?php echo $user->mobile_number; ?>
+													</div>
+												</div>
+											<?php endif; ?>
+
+											<?php if( trim($user->general_email) != '' ): ?>											
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+													<label class="col-sm-4 control-label">Email</label>
+													<div class="col-sm-8">
+														<?php echo $user->general_email; ?>
+													</div>
+												</div>
+											<?php endif; ?>
+
+											<?php if( trim($user->user_skype) != '' ): ?>											
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+													<label for="skype_id" class="col-sm-4 control-label">Skype ID <i class="fa fa-skype fa-lg"></i></label>
+													<div class="col-sm-8">
+														<?php echo $user->user_skype; ?>
+													</div>
+												</div>
+											<?php endif; ?>
+
+										<?php endif; ?>
+
+
+
+											<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id  || $this->session->userdata('is_admin') ==  1  ): ?>
 											
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('skype_password')){ echo 'has-error has-feedback';} ?>">
 												<label for="skype_password" class="col-sm-5 control-label">Skype Password</label>
@@ -321,8 +501,21 @@
 											
 										<div class="box-area pad-5 clearfix">
 											<div class="clearfix">												
-												<div class="">
+												<div class="pad-10">
+												<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id  || $this->session->userdata('is_admin') ==  1  ): ?>
 													<textarea class="form-control" id="comments" rows="8"  tabindex="16" name="comments"><?php echo $user->comments; ?></textarea>
+												<?php else: ?>
+													<?php if( trim($user->comments) != '' ): ?>
+														<i class="fa fa-quote-left"></i> <?php echo $user->comments; ?> <i class="fa fa-quote-right"></i>
+
+													<?php else: ?>
+
+														<i class="fa fa-quote-left"></i> No about posted. <i class="fa fa-quote-right"></i>
+
+													<?php endif; ?>
+
+												<?php endif; ?>
+
 												</div>
 											</div>
 										</div>
@@ -331,7 +524,7 @@
 
 									<input type="hidden" name="is_form_submit" value="1">
 
-									<?php if( ($this->session->userdata('users') > 1 && $this->session->userdata('user_id') == $user_id ) || $this->session->userdata('is_admin') ==  1  ): ?>
+									<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id  || $this->session->userdata('is_admin') ==  1  ): ?>
 										<div class="m-top-15 clearfix">
 											<div>
 												<button type="submit" class="btn btn-success btn-lg submit_form" id="focus_add_company" name="save_bttn" value="Save"><i class="fa fa-floppy-o"></i> Update</button>
@@ -344,7 +537,7 @@
 					</div>				
 
 					</div>	
-					<?php if( ($this->session->userdata('users') > 1 && $this->session->userdata('user_id') == $user_id ) || $this->session->userdata('is_admin') ==  1  ): ?>
+					<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id  || $this->session->userdata('is_admin') ==  1  ): ?>
 					</form>
 				<?php endif; ?>
 
@@ -379,7 +572,7 @@
 					<div class="col-md-3">
 
 					<div class="m-top-10">
-						<?php if( ($this->session->userdata('users') > 1 && $this->session->userdata('user_id') == $user_id ) || $this->session->userdata('is_admin') ==  1  ): ?>
+						<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id  || $this->session->userdata('is_admin') ==  1  ): ?>
 						<div class="panel-group" role="tablist">
 							<div class="panel panel-default">
 								<div class="panel-heading" role="tab" id="collapseListGroupHeading1">
@@ -431,9 +624,8 @@
 						</div>
 
 					<?php endif; ?>
-
 						
-						<?php if($this->session->userdata('is_admin') == 1 ): ?>
+						<?php if( ($this->session->userdata('users') > 1 ) || $this->session->userdata('is_admin') ==  1  ): ?>
 
 						<form method="post" action="../update_user_access">
 			
@@ -466,14 +658,19 @@
 							</div>
 
 
-
-							<div class="col-xs-12 m-bottom-10 clearfix">
-								<label for="is_admin" class="col-sm-3 control-label m-top-5">Is Admin</label>
-								<div class="col-sm-9">
-									<input type="checkbox" name="" class="check-swtich is_admin" id="is_admin" data-label-text="Admin" <?php echo ($is_admin_set == 1 ? 'checked="true"' : ''); ?> >
-									<input type="hidden" class="" id="chk_is_admin" name="chk_is_admin" value="<?php echo $is_admin_set; ?>">
+							<?php if( $this->session->userdata('is_admin') ==  1  ): ?>
+								<div class="col-xs-12 m-bottom-10 clearfix">
+									<label for="is_admin" class="col-sm-3 control-label m-top-5">Is Admin</label>
+									<div class="col-sm-9">
+										<input type="checkbox" name="" class="check-swtich is_admin" id="is_admin" data-label-text="Admin" <?php echo ($is_admin_set == 1 ? 'checked="true"' : ''); ?> >
+										<input type="hidden" class="" id="chk_is_peon" name="chk_is_peon" value="<?php echo $is_admin_set; ?>">
+									</div>
 								</div>
-							</div>
+							<?php else: ?>
+								<input type="hidden" class="hide" readonly="true" id="chk_is_peon" name="chk_is_peon" value="<?php echo $is_admin_set; ?>">
+
+							<?php endif; ?>
+
 
 							<?php $dashboard_access_set = $user_access_arr['3'];  ?>
 

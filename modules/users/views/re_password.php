@@ -40,7 +40,7 @@
 						<div class="clearfix m-top-0 m-bottom-10">
 							<label for="new_password" class="col-sm-5 control-label m-top-5" style="font-weight: normal;">New Password</label>
 							<div class="col-sm-7">
-								<input type="password" class="form-control tooltip-enabled" id="new_password" name="new_password" placeholder="New Password" value="" data-original-title="Note: The new password must contain a minimum of 7 characters, a number, a symbol and a capital letter.">
+								<input type="password" class="form-control tooltip-enabled" id="new_password" name="new_password" placeholder="New Password" value="" data-original-title="Note: The new password must contain a minimum of 8 characters, a number, a symbol and a capital letter.">
 							</div>
 						</div>
 

@@ -39,8 +39,8 @@
 
 		<?php endif; ?>
 
-		<?php if($this->session->userdata('user_id') == 7 ): ?>
-
+		<?php // if($this->session->userdata('user_id') == 7 ): ?>
+<?php /*
 			<ul class="nav navbar-nav navbar-left">
 				<li id="fat-menu" class="dropdown">
 					<a href="#" id="drop3" role="button" class="dropdown-toggle tour-6" data-toggle="dropdown"><i class="fa fa-coffee"></i> Admin Controls <b class="caret"></b></a>
@@ -55,8 +55,10 @@
 					</ul>
 				</li>
 			</ul>
+*/
 
-		<?php endif; ?>
+?>
+		<?php // endif; ?>
 
 
 
@@ -76,16 +78,12 @@
 				<li id="fat-menu" class="dropdown">
 					<a href="#" id="drop3" role="button" class="dropdown-toggle tour-6" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo ucfirst($this->session->userdata('user_first_name')).' '.ucfirst($this->session->userdata('user_last_name')); ?> <b class="caret"></b></a>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
-						<!-- <li role="presentation">
-							<a role="menuitem" tabindex="-1" href="#">Action</a>
-						</li>
-						<li role="presentation">
-							<a role="menuitem" tabindex="-1" href="#">Another action</a>
-						</li>
-						<li role="presentation">
-							<a role="menuitem" tabindex="-1" href="#">Something else here</a>
-						</li> 
-						<li role="presentation" class="divider"></li>-->
+						<?php if($this->session->userdata('users') > 0 || $this->session->userdata('is_admin') ==  1): ?>
+							<li role="presentation">
+								<a role="menuitem" tabindex="-1" href="<?php echo base_url(); ?>users/account/<?php echo $this->session->userdata('user_id'); ?>"><i class="fa fa-cog"></i> My Account</a>
+							</li>
+							<li role="presentation" class="divider"></li>
+						<?php endif; ?>
 						<li role="presentation">
 							<a role="menuitem" data-toggle="modal" data-target="#logout" tabindex="-1" href="#"><i class="fa fa-sign-out"></i> Sign Out</a>
 						</li>
