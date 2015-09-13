@@ -708,13 +708,15 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
 
     $('.po_number_mod').text(po_item_row[0]);
     $('.po_desc_mod').text(po_item_row[2]);
-    $('.po_total_mod').text('$'+po_item_row[8]);
     $('.po_balance_mod').text('$0.00');
     $('.po_number_item').val(po_item_row[0]);
 
 
     var po_actual_balance_arr = po_item_row[9].split('-');
     var po_amount_value_arr = po_item_row[10].split('-');
+
+
+    $('.po_total_mod').text(po_actual_balance_arr[0]);
 
     $('.po_actual_balance').val(po_amount_value_arr[0]);
     $('#po_amount_value').val(po_amount_value_arr[0]);
@@ -1617,9 +1619,9 @@ $('.check-b').on('switchChange.bootstrapSwitch', function (event, state) {
 
 $('.is_admin').on('switchChange.bootstrapSwitch', function (event, state) {
   if(state){
-    $('input#chk_is_admin').val(1);
+    $('input#chk_is_peon').val(1);
   }else{
-    $('input#chk_is_admin').val(0);
+    $('input#chk_is_peon').val(0);
   }
 });
 
@@ -1631,7 +1633,7 @@ $('#new_password').keyup(function(e) {
      
      if (false == enoughRegex.test($(this).val())) {
              $('#passstrength').removeClass('.alert-info').removeClass('alert-warning').removeClass('alert-success').addClass('alert-danger').show();
-             $('#passstrength').html('Add more charactes please, minimum of 7.');
+             $('#passstrength').html('Add more charactes please, minimum of 8.');
              $('form.change_password_form').find('input#confirm_password').prop('disabled', true);
 
      } else if (strongRegex.test($(this).val())) {
@@ -1728,7 +1730,9 @@ $('.set_invoice_modal_submit').click(function(){
 
 
 
-  var proj_ex_gst_total = $('#proj_ex_gst').text();
+  var proj_ex_gst_total = $('input.project_total_raw').val();
+
+  proj_ex_gst_total = Math.round(proj_ex_gst_total * 100) / 100;
 
   var progressArr = id_bttn.split("_");
 
@@ -2649,4 +2653,3 @@ $(".add_shopping_center_project").on("click", function(event){
 */
 
 });
-
