@@ -554,7 +554,13 @@ class Reports extends MY_Controller{
 
 		$records_num = 0;
 
-		$curr_year = date('Y');
+		$curr_year = date('Y')+2;
+
+
+		$doc_type = $data_val['13'];
+
+		$date_created_start = $data_val['14'];
+		$date_created = $data_val['15'];	
 
 
 
@@ -590,6 +596,23 @@ class Reports extends MY_Controller{
 		}else{
 			$date_b = strtotime(str_replace('/', '-', $wip_find_finish_date));
 			$date_filter_b = $wip_find_finish_date;
+		}
+
+
+		if($date_created_start == ''){
+			$date_c = strtotime(str_replace('/', '-', '31/12/1990'));
+			$date_filter_c = '';
+		}else{
+			$date_c = strtotime(str_replace('/', '-', $date_created_start));
+			$date_filter_c = $date_created_start;
+		}
+
+		if($date_created == ''){
+			$date_d = strtotime(str_replace('/', '-', '31/12/'.$curr_year));
+			$date_filter_d = '';
+		}else{
+			$date_d = strtotime(str_replace('/', '-', $date_created));
+			$date_filter_d = $date_created;
 		}
 
 
@@ -679,6 +702,11 @@ class Reports extends MY_Controller{
 			$sort = 'Project Number Desc';
 		}else { $order_q = ''; }
 
+		if($doc_type == 'WIP'){
+			$type = 'AND `project`.`job_date` <> \'\' ';
+		}else{
+			$type = '';
+		}
 
 
 
@@ -687,18 +715,22 @@ class Reports extends MY_Controller{
 
 
 
-    	$content .= '<div class="clearfix header"><img src="./img/focus-logo-print.png" align="left" class="block" /><h1 class="text-right block"><br />WIP List Report</h1></div><br />';
+
+    	$content .= '<div class="clearfix header"><img src="./img/focus-logo-print.png" align="left" class="block" /><h1 class="text-right block"><br />'.$doc_type.' List Report</h1></div><br />';
     	$content .= '<table id="" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead><tr><th>Finish</th><th>Start</th><th>Client</th><th>Project</th><th>Total</th><th>Job Date</th><th>Instal Hrs</th><th>Project No</th><th>Invoiced $</th></tr></thead><tbody>';				
 		//var_dump($_POST['ajax_var']);
-		$wip_list_q = $this->reports_m->select_list_wip($wip_client_q,$wip_pm_q,$selected_cat_q,$order_q);
+		$wip_list_q = $this->reports_m->select_list_wip($wip_client_q,$wip_pm_q,$selected_cat_q,$order_q,$type);
 		$total_list = 0;
 		
 		$arrs = array();
 
+		// $content .= '<tr><td>'.$wip_client_q.' '.$wip_pm_q.' '.$selected_cat_q.' '.$order_q.'</td></tr>';
+
 		foreach ($wip_list_q->result_array() as $row){
 
-			$date_site_finish = strtotime(str_replace('/', '-', $row['date_site_finish']));
-			$date_site_start = strtotime(str_replace('/', '-', $row['date_site_commencement']));
+			$date_site_finish = $row['date_filter_mod'];
+			$date_site_start = $row['start_date_filter_mod'];
+			$date_project_date = strtotime(str_replace('/', '-', $row['project_date']));
 
 
 
@@ -708,38 +740,43 @@ class Reports extends MY_Controller{
 					if($date_a <= $date_site_finish){
 						if($date_site_finish <= $date_b){
 
-							if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
-								$total_list = $row['project_total'];
-							}else{
-								$total_list = $row['budget_estimate_total'];
-							}
-
-							if($wip_cost_total_q >= $total_list){
-
-								if($this->invoice->if_invoiced_all($row['project_id'])  && $this->invoice->if_has_invoice($row['project_id']) > 0 ){
-
-								}else{
-
-									$content .= '<tr><td>'.$row['date_site_finish'].'</td><td>'.$row['date_site_commencement'].'</td><td>'.$row['company_name'].'</td><td>'.$row['project_name'].'</td>';
+							if($date_c <= $date_project_date ){
+								if( $date_project_date <= $date_d ){
 
 									if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
-										$content .= '<td>'.number_format($row['project_total']).'</td>';
+										$total_list = $row['project_total'];
 									}else{
-										$content .= '<td class="green-estimate">'.number_format($row['budget_estimate_total']).'</td>';
+										$total_list = $row['budget_estimate_total'];
 									}
 
-									$content .= '<td>'.$row['job_date'].'</td>';
+									if($wip_cost_total_q >= $total_list){
 
-									if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
-										$content .= '<td>'.number_format($row['install_time_hrs']).'</td>';
-									}else{
-										$content .= '<td class="green-estimate">'.number_format($row['labour_hrs_estimate']).'</td>';
+										if($this->invoice->if_invoiced_all($row['project_id'])  && $this->invoice->if_has_invoice($row['project_id']) > 0 ){
+
+										}else{									
+
+											$content .= '<tr><td>'.$row['date_site_finish'].'</td><td>'.$row['date_site_commencement'].'</td><td>'.$row['company_name'].'</td><td>'.$row['project_name'].'</td>';
+
+											if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
+												$content .= '<td>'.number_format($row['project_total'],2).'</td>';
+											}else{
+												$content .= '<td class="green-estimate">'.number_format($row['budget_estimate_total'],2).'</td>';
+											}
+
+											$content .= '<td>'.$row['job_date'].'</td>';
+
+											if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
+												$content .= '<td>'.number_format($row['install_time_hrs'],2).'</td>';
+											}else{
+												$content .= '<td class="green-estimate">'.number_format($row['labour_hrs_estimate'],2).'</td>';
+											}
+
+											$content .= '<td>'.$row['project_id'].'</td><td>'.number_format($this->invoice->get_project_invoiced($row['project_id'],$row['project_total']),2).'</td></tr>';			
+											$records_num++;
+											array_push($arrs,$row['project_id']);
+
+										}
 									}
-
-									$content .= '<td>'.$row['project_id'].'</td><td>'.number_format($this->invoice->get_project_invoiced($row['project_id'],$row['project_total'])).'</td></tr>';			
-									$records_num++;
-									array_push($arrs,$row['project_id']);
-
 								}
 							}
 						}
@@ -749,18 +786,22 @@ class Reports extends MY_Controller{
 		}
 
 
-		//$arrs = implode(',', $arrs);
+		//var_dump($arrs);
+
 
 		$content .= '</tbody></table>';
+
+		$arrs = implode(',', $arrs);
+
 		//$content .= '<p><br /><hr /><span class="pull-left"><strong>Project Manager:</strong> '.$wip_pm_filter.'</span> <span class="text-right"><strong> Note:</strong> All Prices are EX-GST &nbsp;  &nbsp;  &nbsp; <span class="green-estimate">'.$wip_project_estimate.'</span>    &nbsp;  &nbsp;  &nbsp; '.$wip_project_quoted.'    &nbsp;  &nbsp;  &nbsp; '.$wip_project_total.'   &nbsp;  &nbsp;  &nbsp;   '.$wip_project_total_invoiced.'</span><br /></p><br />';
-		$content .= '<p><br /><hr /><span class="pull-left"><strong>Project Manager:</strong> '.$wip_pm_filter.'</span> <span class="text-right"><strong> Note:</strong> All Prices are EX-GST &nbsp;  &nbsp;  &nbsp; '.$this->wip->sum_total_wip_cost($arrs).'<br /></p><br />';
+		$content .= '<p><br /><hr /><span><strong>Project Manager:</strong> '.$wip_pm_filter.'</span>   &nbsp;   &nbsp; <span><strong> All are EXT-GST</strong>    &nbsp; &nbsp; '.$this->wip->sum_total_wip_cost($arrs).'<br /></p><p><br /></p>';
 
 
 
 
 
 
-		$content .= '<div class="footer"><p>Applied Filters &nbsp; &nbsp; &nbsp; &nbsp; ';
+		$content .= '<div class="footer"><p>';
 		$content .= '<strong> Client :</strong> '.$wip_client_filter.' | ';
 		
 		$content .= '<strong> Category :</strong> '.$selected_cat.' | ';

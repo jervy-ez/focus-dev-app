@@ -33,20 +33,26 @@ class Wip extends MY_Controller{
 
 	public function sum_total_wip_cost($arrs = ''){
 
-		if($arrs == ''){
+	/*	if($arrs == ''){
+			
 			$wip_list = $this->wip_m->display_all_wip_projects();
 			$arrs = array();
 
 			foreach ($wip_list->result_array() as $row){
 				array_push($arrs, $row['project_id']);				
-			}			 
-		}else{
-			//$arrs = explode(',', $arrs);
-
-		}
+			}	
 
 
-		$totals_raw = $arrs;
+
+		}else{*/
+			$arr = explode(',', $arrs);
+
+	//	}
+
+		// var_dump($arrs);
+
+
+		$totals_raw = $arr;
 
 		$project_total = 0;
 		$project_estimate = 0;
@@ -77,11 +83,12 @@ class Wip extends MY_Controller{
 				$project_estimate = $project_details['budget_estimate_total'] + $project_estimate;
 			}
 
-			$project_total = $project_quoted + $project_estimate;
 
 		}
 
-		return '<span class="wip_project_total" style="font-size: 16px;"><strong>Project Total: </strong> $'.number_format($project_total).'</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="wip_project_estimate green-estimate"><strong>Total Estimated:</strong> $'.number_format($project_estimate).'</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="wip_project_quoted"><strong>Total Quoted: </strong> $'.number_format($project_quoted).'</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="wip_project_total_invoiced" ><strong>Total Invoiced:</strong> $'.number_format($total_invoice).'</span>';							
+		$project_total = $project_quoted + $project_estimate;
+
+		return '<span class="wip_project_total" style="font-size: 16px;"><strong>Project Total: </strong> $'.number_format($project_total,2).'</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="wip_project_estimate green-estimate"><strong>Total Estimated:</strong> $'.number_format($project_estimate,2).'</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="wip_project_quoted"><strong>Total Quoted: </strong> $'.number_format($project_quoted,2).'</span> &nbsp;&nbsp;&nbsp;&nbsp; <span class="wip_project_total_invoiced" ><strong>Total Invoiced:</strong> $'.number_format($total_invoice,2).'</span>';							
 
 	}
 

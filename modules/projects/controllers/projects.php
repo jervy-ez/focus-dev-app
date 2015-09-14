@@ -12,6 +12,8 @@ class Projects extends MY_Controller{
 		$this->load->module('admin');
 		$this->load->model('admin_m');
 		$this->load->module('invoice');
+		$this->load->module('wip');
+		$this->load->model('wip_m');
 		if(!$this->users->_is_logged_in() ): 		
 			redirect('', 'refresh');
 		endif;
@@ -19,6 +21,9 @@ class Projects extends MY_Controller{
 	
 
 	public function index(){
+
+		$data['proj_t'] = $this->wip_m->display_all_wip_projects();
+		$data['users'] = $this->user_model->fetch_user();
 		$this->users->_check_user_access('projects',1);
 		$data['main_content'] = 'projects_v';
 		$data['screen'] = 'Projects';

@@ -38,13 +38,13 @@ WHERE `project`.`client_id` = '565'
 
 	}
 
-	public function select_list_wip($wip_client_q,$wip_pm_q,$selected_cat_q,$order_q){
+	public function select_list_wip($wip_client_q,$wip_pm_q,$selected_cat_q,$order_q,$type){
 		$query = $this->db->query("SELECT `project`.*,`users`.*,`company_details`.*,`project_cost_total`.`work_estimated_total`, UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') )  AS 'date_filter_mod', UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_commencement`, '%d/%m/%Y') )  AS 'start_date_filter_mod'
 			FROM  `project`
 			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id` 
 			LEFT JOIN `users` ON `users`.`user_id` = `project`.`project_manager_id`
 			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
-			WHERE `project`.`job_date` <> '' AND `project`.is_active = '1'
+			WHERE `project`.is_active = '1' AND  `project`.`is_paid` = '0' $type 
 			$wip_client_q $wip_pm_q $selected_cat_q $order_q");
 		return $query;
 	}

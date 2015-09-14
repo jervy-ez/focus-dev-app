@@ -67,13 +67,22 @@
 							</div>
 						<?php endif; ?>
 
+
+            <?php $arrs = array(); 
+              foreach ($proj_t->result_array() as $row){
+              if($this->invoice->if_invoiced_all($row['project_id'])  && $this->invoice->if_has_invoice($row['project_id']) > 0 ){     }else{
+                array_push($arrs,$row['project_id']);
+              }
+              $arr = implode(',', $arrs);
+            }?>
+
 						<div class="clearfix"></div>
 
 							<div class="box-head pad-10 clearfix">
 								<div class="pull-right" style="margin-top: -15px;">
 									<div class="clearfix m-top-20">
 										<div class="box-content box-list collapse in prj_cmmnt_area pull-right" style="display:none; visibility: hidden;"><ul><li><p>No posted comments yet!</p></li></ul></div>
-										<div class="box-area  pull-right"  style=""><p class="totals_wip"><?php echo $this->wip->sum_total_wip_cost(); ?></p></div>										
+										<div class="box-area  pull-right"  style=""><p class="totals_wip"><?php echo $this->wip->sum_total_wip_cost($arr); ?></p></div>										
 									</div>
 								</div>
 								<label><?php echo $screen; ?> List</label>							
@@ -254,6 +263,13 @@
       		<input type="text" data-date-format="dd/mm/yyyy" placeholder="To" class="form-control datepicker" id="finish_date" name="finish_date" value="" >
       	</div>
 
+
+    
+
+        <input type="hidden" id="doc_type" name="doc_type" value="WIP" >
+        <input type="hidden" id="date_created_start" name="date_created_start" value="" >
+        <input type="hidden" id="date_created" name="date_created" value="" >
+      
 
 
 
