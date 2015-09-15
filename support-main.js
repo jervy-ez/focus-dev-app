@@ -863,9 +863,10 @@ $('#main-sidebar').simpleSidebar({
 
   });
 
-  $('#po_table_wrapper .dataTables_length').append($('.po_legend').html());
+  $('#po_table_wrapper .dataTables_length').append($('.po_legend_o').html());
+  $('#reconciled_list_table_wrapper .dataTables_length').append($('.po_legend_r').html());
+
   $('#invoice_table_wrapper .dataTables_length').append($('.po_legend').html());
-  $('#reconciled_list_table_wrapper .dataTables_length').append($('.po_legend').html());
   $('#invoice_paid_table_wrapper .dataTables_length').append($('.po_legend').html());
 
 
@@ -2522,6 +2523,17 @@ $('.print-wip').on("click", function(event) {
   var date_created_start = $('#date_created_start').val();
   var date_created = $('#date_created').val();
 
+  if(doc_type == 'WIP'){
+    var prj_status = '';
+  }else{
+    var prj_status = $('select#prj_status').val();
+  }
+
+
+
+
+
+
 
   $('#loading_modal').modal('show');
   //alert(data);
@@ -2538,7 +2550,7 @@ $('.print-wip').on("click", function(event) {
 
       var wip_sort = $('select#wip_sort').val();
 
-      var data = wip_client+'*'+wip_pm+'*'+wip_find_start_finish_date+'*'+wip_find_finish_date+'*'+wip_cost_total+'*'+selected_cat+'*'+wip_project_total+'*'+wip_project_estimate+'*'+wip_project_quoted+'*'+wip_project_total_invoiced+'*'+wip_sort+'*'+wip_start_date_start_a+'*'+wip_start_date_b+'*'+doc_type+'*'+date_created_start+'*'+date_created;
+      var data = wip_client+'*'+wip_pm+'*'+wip_find_start_finish_date+'*'+wip_find_finish_date+'*'+wip_cost_total+'*'+selected_cat+'*'+wip_project_total+'*'+wip_project_estimate+'*'+wip_project_quoted+'*'+wip_project_total_invoiced+'*'+wip_sort+'*'+wip_start_date_start_a+'*'+wip_start_date_b+'*'+doc_type+'*'+date_created_start+'*'+date_created+'*'+prj_status;
 
       $.ajax({
         'url' : base_url+'reports/wip_report',

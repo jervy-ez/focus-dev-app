@@ -219,6 +219,19 @@
       			?>
       		</select>
       	</div>
+
+
+      	<div class="input-group m-bottom-10">
+      		<span class="input-group-addon" id="">
+      			<i class="fa fa-puzzle-piece"></i>
+      		</span>
+      		<select class="form-control prj_status m-bottom-10" id="prj_status">
+      			<option value="notwip">Not WIP</option>
+      			<option value="wip">WIP</option>
+      			<option value="invocied">Invocied</option>
+      			<option value="paid">Paid</option>
+      		</select>
+      	</div>
       	
 
       	<div class="box-area clearfix  m-bottom-10">

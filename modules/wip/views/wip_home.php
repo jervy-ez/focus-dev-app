@@ -261,17 +261,12 @@
       			<i class="fa fa-calendar"></i> Site Finish B
       		</span>
       		<input type="text" data-date-format="dd/mm/yyyy" placeholder="To" class="form-control datepicker" id="finish_date" name="finish_date" value="" >
-      	</div>
-
-
-    
+      	</div>   
 
         <input type="hidden" id="doc_type" name="doc_type" value="WIP" >
         <input type="hidden" id="date_created_start" name="date_created_start" value="" >
         <input type="hidden" id="date_created" name="date_created" value="" >
-      
-
-
+        <input type="hidden" id="prj_status" name="prj_status" value="" >
 
       	<div class="input-group m-bottom-10">
       		<span class="input-group-addon" id="">Sort</span>         
