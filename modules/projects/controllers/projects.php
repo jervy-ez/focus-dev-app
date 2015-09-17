@@ -1103,7 +1103,7 @@ $gp = 0;
 		date_default_timezone_set("Australia/Perth");
 		$this->clear_apost();
 		$raw_project_comment = $_POST['ajax_var'];
-		$project_comment = explode('|', $raw_project_comment);
+		$project_comment = explode('`', $raw_project_comment);
 		$datestring = "%l, %d%S, %F %Y %g:%i:%s %A"; $time = time();  
 
 		$date_posted = mdate($datestring, $time);
@@ -1243,10 +1243,13 @@ $gp = 0;
 			$data['shopping_center'] = $shopping_center->result();
 
 			$this->form_validation->set_rules('project_name', 'Project Name','trim|required|xss_clean');
-			$this->form_validation->set_rules('site_start', 'Site Start','trim|required|xss_clean');
-			$this->form_validation->set_rules('site_finish', 'Site Finish','trim|required|xss_clean');
+			$this->form_validation->set_rules('site_start', 'Site Start','trim|required|exact_length[10]|xss_clean');
+			$this->form_validation->set_rules('site_finish', 'Site Finish','trim|required|exact_length[10]|xss_clean');
 			$this->form_validation->set_rules('job_category', 'Job Category','trim|required|xss_clean');
 			$this->form_validation->set_rules('project_date', 'Project Date','trim|required|xss_clean');
+
+
+			$this->form_validation->set_rules('job_date', 'Job Date','trim|exact_length[10]|xss_clean');
 
 
 			if( $this->input->post('is_shopping_center') != 1){
@@ -1312,6 +1315,10 @@ $gp = 0;
 						$job_date = $prev_project_details['job_date'];
 						$attempt = 1;
 					}
+				}
+
+				if($job_date != ''){
+					$this->form_validation->set_rules('job_date', 'Job Date','trim|exact_length[10]|xss_clean');
 				}
 
 				if(strlen($job_date) == 0 && $prev_project_details['job_date'] == ''){

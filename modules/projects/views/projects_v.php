@@ -225,7 +225,7 @@
       		<span class="input-group-addon" id="">
       			<i class="fa fa-puzzle-piece"></i>
       		</span>
-      		<select class="form-control prj_status m-bottom-10" id="prj_status">
+      		<select class="form-control prj_status m-bottom-10 tooltip-enabled" data-original-title="Notice: Selecting 'Not WIP' refers to projects that is never been accepted by the client as real project. " id="prj_status">
       			<option value="notwip">Not WIP</option>
       			<option value="wip">WIP</option>
       			<option value="invocied">Invocied</option>
@@ -268,7 +268,7 @@
       		<input type="text" placeholder="Less Than Project Total Range" class="form-control number_format" id="cost_total" name="cost_total" value="">
       	</div>
 
-      	<hr />
+      	<hr style="padding: 0;margin: 14px 0;">
 
       	<div class="input-group m-bottom-10">
       		<span class="input-group-addon" id="">
@@ -286,7 +286,7 @@
       	</div>
 
 
-      	<hr />
+      	<hr style="padding: 0;margin: 14px 0;">
 
       	<input type="hidden" id="doc_type" name="doc_type" value="Projects" >
 
@@ -320,12 +320,13 @@
       		</select>       
       	</div>
 
+      	<div class="clearfix">
+      		<button type="button" class="btn btn-primary print-wip pull-right" id="" data-dismiss="modal">Submit</button>
+      		<button type="button" class="btn btn-default pull-right m-right-10" data-dismiss="modal">Cancel</button> 
+      	</div>
 
 
-      </div>
-      <div class="modal-footer">
-      	<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary print-wip" id="" data-dismiss="modal">Submit</button> <!-- id="filter_wip_table" -->
+
       </div>
     </div>
   </div>

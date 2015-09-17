@@ -919,6 +919,36 @@ $('select.user-role-selection').on("change", function(e) {
 
 
 
+
+
+
+$('input.progress_date').on("keydown", function(e) {
+  e.stopPropagation();
+  e.preventDefault();  
+  e.returnValue = false;
+  e.cancelBubble = true;
+  return false;
+});
+
+$('input.datepicker#site_start').on("keydown", function(e) {
+  e.stopPropagation();
+  e.preventDefault();  
+  e.returnValue = false;
+  e.cancelBubble = true;
+  return false;
+});
+
+$('input.datepicker#site_finish').on("keydown", function(e) {
+  e.stopPropagation();
+  e.preventDefault();  
+  e.returnValue = false;
+  e.cancelBubble = true;
+  return false;
+});
+
+
+
+
 $('select#prjc_project_id').on("change", function(e) {
   $('.notes_side_form').hide();
   $('.notes_side_content').empty().append('<div class="notes_line no_posted_comment"><p>Please click search...</p></div>');
@@ -935,7 +965,7 @@ $('.submit_notes_prj').click(function(){
   var prjc_project_id = $('select#prjc_project_id').val();
   var notes_comment_text = $('.notes_comment_text').val();
   var result = '';
-  var dataString = prjc_user_id+'|'+prjc_project_id+'|'+notes_comment_text;
+  var dataString = prjc_user_id+'`'+prjc_project_id+'`'+notes_comment_text;
 
   $('.notes_comment_text').empty().val('');
 
@@ -1750,7 +1780,7 @@ $('.set_invoice_modal_submit').click(function(){
 
   $('.print_job_book_notes').html(invoice_notes);
 
-  var data = project_id+'*'+id_bttn+'*'+cc_emails+'*'+invoice_notes+'*'+date_set_invoice_data+'*'+job_book_details_id+'*'+invoice_item_amount;
+  var data = project_id+'`'+id_bttn+'`'+cc_emails+'`'+invoice_notes+'`'+date_set_invoice_data+'`'+job_book_details_id+'`'+invoice_item_amount;
   $('#set_invoice_modal').modal('hide');
 
   $('input#cc_emails').val('');
