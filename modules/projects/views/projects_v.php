@@ -179,7 +179,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">WIP Filter</h4>
+        <h4 class="modal-title" id="myModalLabel">Projects Report Filters</h4>
       </div>
       <div class="modal-body">
 
@@ -204,6 +204,8 @@
       		</select>
       	</div>
 
+      	<style type="text/css">div.prj_status{ width: 100%; }</style>
+
       	<div class="input-group m-bottom-10">
       		<span class="input-group-addon" id="">
       			<i class="fa fa-user"></i>
@@ -221,15 +223,12 @@
       	</div>
 
 
-      	<div class="input-group m-bottom-10">
-      		<span class="input-group-addon" id="">
-      			<i class="fa fa-puzzle-piece"></i>
-      		</span>
-      		<select class="form-control prj_status m-bottom-10 tooltip-enabled" data-original-title="Notice: Selecting 'Not WIP' refers to projects that is never been accepted by the client as real project. " id="prj_status">
-      			<option value="notwip">Not WIP</option>
-      			<option value="wip">WIP</option>
-      			<option value="invocied">Invocied</option>
-      			<option value="paid">Paid</option>
+      	<div class="tooltip-enabled box-area clearfix " data-original-title="Notice: Selecting 'Not WIP' refers to projects that is never been accepted by the client as real project. 'WIP' are the projects currenlty on WIP. 'Invoiced' these are the projets are fully invoiced but not yet paid. 'Paid' are fully paid projects. ">
+      		<select class="form-control prj_status m-bottom-10  chosen-multi" multiple="multiple" id="prj_status">
+      			<option selected="selected" value="notwip">Not WIP</option>
+      			<option value="wip">Currently WIP</option>
+      			<option value="invoiced">Fully Invoiced</option>
+      			<option value="paid">Fully Paid</option>
       		</select>
       	</div>
       	

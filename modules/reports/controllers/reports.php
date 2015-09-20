@@ -716,32 +716,69 @@ class Reports extends MY_Controller{
 
 		$status = '';
 		$show_invoiced = 0;
+		$show_un_invoiced = 0;
 		$page_type = '';
 
 
-		if($prj_status == 'wip'){
-			$status = ' AND  `project`.`is_paid` = \'0\' AND `project`.`job_date` <> \'\' ';
-			$page_type = 'WIP';
-			$show_invoiced = 0;
-		}elseif($prj_status == 'notwip'){
-			$status = ' AND  `project`.`is_paid` = \'0\' AND `project`.`job_date` = \'\' ';
-			$show_invoiced = 0;
-			$page_type = 'Not WIP';
-		}elseif($prj_status == 'paid'){
-			$status = ' AND  `project`.`is_paid` = \'1\' AND `project`.`job_date` <> \'\' ';
-			$page_type = 'Paid';
-			$show_invoiced = 1;
-		}elseif($prj_status == 'invocied'){
-			$status = ' AND  `project`.`is_paid` = \'0\' AND `project`.`job_date` <> \'\' ';
-			$show_invoiced = 1;
-			$page_type = 'Invocied';
+		if($prj_status != ''){
+
+			$status_list = explode(',',$prj_status);
+			$prj_status_arr_count = count($status_list);
+
+			
+
+
+			if (in_array("wip", $status_list) || in_array("paid", $status_list) || in_array("invoiced", $status_list)){
+				if (!in_array("notwip", $status_list) ){
+					$status .= ' AND `project`.`job_date` <> \'\'  ';
+				}else{
+					$status .= ' AND (`project`.`job_date` = \'\' OR  `project`.`job_date` <> \'\') ';
+				}
+			}
+
+			if(in_array("wip", $status_list) || in_array("notwip", $status_list) || in_array("invoiced", $status_list)){
+				if (!in_array("paid", $status_list) ){;
+					$status .= ' AND  `project`.`is_paid` = \'0\'  ';
+				}else{
+					$status .= ' AND  ( `project`.`is_paid` = \'0\' OR  `project`.`is_paid` = \'1\'  )';						
+				}
+			}
+
+
+	/*		if (!in_array("wip", $status_list) && !in_array("paid", $status_list) ){
+				$status = ' AND `project`.`job_date` <> \'\' AND `project`.`is_paid` = \'1\'  ';
+			}
+*/
+
+
+
+
+
+
+
+			if (in_array("wip", $status_list) || in_array("notwip", $status_list) ){
+				$show_un_invoiced = 1;
+			}
+
+			if (in_array("paid", $status_list) || in_array("invoiced", $status_list) ){
+				$show_invoiced = 1;
+			}
+			
+
+
+			if($prj_status_arr_count == 4 || $prj_status_arr_count == 0 ){
+				$status = '';
+				$show_invoiced = 1;
+				$show_un_invoiced = 1;
+				$page_type = '';
+			}
+			
 		}else{
-			$status = ' AND  `project`.`is_paid` = \'0\'';
-			$show_invoiced = 0;
+			$status = '';
+			$show_invoiced = 1;
+			$show_un_invoiced = 1;
 			$page_type = '';
 		}
-	
-
 
     	$content .= '<div class="clearfix header"><img src="./img/focus-logo-print.png" align="left" class="block" /><h1 class="text-right block"><br />'.$page_type.' '.$doc_type.' List Report</h1></div><br />';
     	$content .= '<table id="" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead><tr><th>Finish</th><th>Start</th><th>Client</th><th>Project</th><th>Total</th><th>Job Date</th><th>Instal Hrs</th><th>Project No</th><th>Invoiced $</th></tr></thead><tbody>';				
@@ -750,14 +787,37 @@ class Reports extends MY_Controller{
 		$total_list = 0;
 		
 		$arrs = array();
+			$color = '';
 
 //		$content .= '<tr><td colspan="5">'.$status.' '.$type.' '.$wip_client_q.' '.$wip_pm_q.' '.$selected_cat_q.' '.$order_q.'</td></tr>';
 
 		foreach ($wip_list_q->result_array() as $row){
 
+			if($row['job_date'] == '' ){
+				$color = 'notwip';
+			}
+
+			if($row['job_date'] != '' ){
+				$color = 'wip';
+			}
+
+			if($this->invoice->if_invoiced_all($row['project_id'])  && $this->invoice->if_has_invoice($row['project_id']) > 0 ){
+				$color = 'invoiced';
+			}
+
+			if($row['is_paid'] == 1){
+				$color = 'paid';
+			}
+
+
+
+
 			$date_site_finish = $row['date_filter_mod'];
 			$date_site_start = $row['start_date_filter_mod'];
 			$date_project_date = strtotime(str_replace('/', '-', $row['project_date']));
+
+
+			if(in_array($color, $status_list)){
 
 			if($date_a_s <= $date_site_start){
 				if($date_site_start <= $date_b_s){
@@ -780,7 +840,7 @@ class Reports extends MY_Controller{
 
 											if($show_invoiced == 1){
 
-												$content .= '<tr><td>'.$row['date_site_finish'].'</td><td>'.$row['date_site_commencement'].'</td><td>'.$row['company_name'].'</td><td>'.$row['project_name'].'</td>';
+												$content .= '<tr class="'.$color.'"><td>'.$row['date_site_finish'].'</td><td>'.$row['date_site_commencement'].'</td><td>'.$row['company_name'].'</td><td>'.$row['project_name'].'</td>';
 
 												if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
 													$content .= '<td>'.number_format($row['project_total'],2).'</td>';
@@ -803,9 +863,9 @@ class Reports extends MY_Controller{
 
 										}else{		
 
-											if($show_invoiced == 0){							
+											if($show_un_invoiced == 1){ 
 
-												$content .= '<tr><td>'.$row['date_site_finish'].'</td><td>'.$row['date_site_commencement'].'</td><td>'.$row['company_name'].'</td><td>'.$row['project_name'].'</td>';
+												$content .= '<tr class="'.$color.'"><td>'.$row['date_site_finish'].'</td><td>'.$row['date_site_commencement'].'</td><td>'.$row['company_name'].'</td><td>'.$row['project_name'].'</td>';
 
 												if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
 													$content .= '<td>'.number_format($row['project_total'],2).'</td>';
@@ -830,7 +890,7 @@ class Reports extends MY_Controller{
 									}
 								}
 							}
-						}
+						}}
 					}
 				}
 			}

@@ -87,3 +87,17 @@ h1{
     color: green !important;
     font-weight: bold !important;
 }
+
+
+
+.invoiced, tr.invoiced td, tr.invoiced td a{
+	color: rgb(255, 0, 252) !important;
+}
+
+.paid, tr.paid td, tr.paid td a{
+	color: #0bb8e4 !important;
+}
+
+.wip, tr.wip td, tr.wip td a{
+	color: #F7901E !important;
+}

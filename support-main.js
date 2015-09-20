@@ -2554,7 +2554,7 @@ $('.print-wip').on("click", function(event) {
   var date_created = $('#date_created').val();
 
   if(doc_type == 'WIP'){
-    var prj_status = '';
+    var prj_status = 'wip,';
   }else{
     var prj_status = $('select#prj_status').val();
   }

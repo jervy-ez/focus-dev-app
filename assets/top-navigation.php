@@ -32,7 +32,7 @@
 						</li>
 						<li role="presentation">
 							<a role="menuitem" tabindex="-1" href="<?php echo base_url(); ?>users">Users</a>
-						</li>						
+						</li>					
 					</ul>
 				</li>
 			</ul>
