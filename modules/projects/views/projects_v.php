@@ -1,6 +1,7 @@
 <?php date_default_timezone_set("Australia/Perth");  // date is set to perth and important setting for diff timezone acounts ?>
 <?php $this->load->module('company'); ?>
 <?php $this->load->module('projects'); ?>
+<?php $this->load->module('bulletin_board'); ?>
 
 <!-- title bar -->
 <div class="container-fluid head-control">
@@ -331,3 +332,9 @@
   </div>
 </div>
 <!-- wip_filter_modal -->
+
+
+
+<?php if($this->session->userdata('is_admin') == 1 ): ?>
+  <?php $this->bulletin_board->list_latest_post(); ?>
+<?php endif; ?>

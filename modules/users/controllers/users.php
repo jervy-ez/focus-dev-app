@@ -94,6 +94,7 @@ class Users extends MY_Controller{
 		$purchase_orders = $_POST['purchase_orders_access'];
 		$invoice = $_POST['invoice_access'];
 		$users = $_POST['users_access'];
+		$bulletin_board = $_POST['bulletin_board'];
 
 
 		$role_raw = $_POST['role'];
@@ -102,7 +103,7 @@ class Users extends MY_Controller{
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id);
+		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
 
@@ -506,6 +507,7 @@ class Users extends MY_Controller{
 			$purchase_orders_access = $this->input->post('purchase_orders_access', true);
 			$invoice_access = $this->input->post('invoice_access', true);
 			$users_access = $this->input->post('users_access', true);
+			$bulletin_board = $this->input->post('bulletin_board', true);
 
 			date_default_timezone_set("Australia/Perth");
 			$user_timestamp_registered = time();
@@ -519,7 +521,7 @@ class Users extends MY_Controller{
 
 			$add_new_user_id = $this->user_model->add_new_user($login_name,$password,$first_name,$last_name,$gender,$department_id,$profile_photo,$user_timestamp_registered,$role_id,$email_id,$skype_id,$skype_password,$contact_number_id,$focus_id,$dob,$user_notes_id,$admin);
 
-			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access);
+			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access,$bulletin_board);
 
 			$this->user_model->insert_user_password($confirm_password,$add_new_user_id);
 

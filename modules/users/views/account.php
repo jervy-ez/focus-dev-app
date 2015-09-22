@@ -762,6 +762,21 @@
 									<input type="hidden" class="" id="users_access" name="users_access" value="<?php echo $users_access_set; ?>">
 								</div>
 							</div>
+
+							<?php $bulletin_board_set = $user_access_arr['11'];  ?>
+
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Bulletin Board</label>											 
+								<div class="col-sm-9">										
+									<div class="bulletin_board">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($bulletin_board_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($bulletin_board_set == 2 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="bulletin_board" name="bulletin_board" value="<?php echo $bulletin_board_set; ?>">
+								</div>
+							</div>
+
+
 							<div class="clearfix"></div>
 							<input type="submit" class="btn btn-primary m-right-10 pull-right m-bottom-10" name="update_user_access" value="Update User Access">
 						</div>

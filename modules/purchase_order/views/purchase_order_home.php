@@ -98,9 +98,9 @@
 													<li class="">
 														<a href="#reconciled" data-toggle="tab"><i class="fa fa-check-square-o fa-lg"></i> Reconciled</a>
 													</li>
-                          <li class="">
-                            <a href="" data-toggle="modal" data-target="#po_date_filter_modal"><i class="fa fa-filter fa-lg"></i> Filter by Date</a>
-                          </li>
+													<li class="">
+														<a href="" data-toggle="modal" data-target="#po_date_filter_modal"><i class="fa fa-filter fa-lg"></i> Filter by Date</a>
+													</li>
 												</ul>
 											</div>
 										</div>
@@ -292,6 +292,7 @@
 <!-- Modal -->
 <div class="modal fade" id="invoice_po_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
+  <form method="post" action="<?php base_url(); ?>purchase_order/insert_work_invoice">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="myModalLabel">Purchase Order</h4>
@@ -410,8 +411,10 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default po_cancel_values" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-success po_set_values"><i class="fa fa-floppy-o"></i> Save</button>
+        <input type="submit" class="hide submit_po_screen" name="submit_po">
       </div>
     </div>
+    </form>
   </div>
 </div>
 

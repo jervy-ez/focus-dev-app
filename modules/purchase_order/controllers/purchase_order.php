@@ -187,15 +187,27 @@ class Purchase_order extends MY_Controller{
 	public function insert_work_invoice(){
 		$this->clear_apost();
 
-		$post_ajax_arr = array();
-		$post_ajax_arr = explode('*',$_POST['ajax_var']);
+		//$post_ajax_arr = array();
 
-		$work_invoice_date = $post_ajax_arr[0];
-		$work_id_po = $post_ajax_arr[1];
-		$notes = $post_ajax_arr[2];
-		$invoice_no = $post_ajax_arr[3];
-		$amount = str_replace( ',', '',$post_ajax_arr[4] );
-		$is_reconciled_value = $post_ajax_arr[5];
+		//$post_ajax_arr = explode('*',$_POST['ajax_var']);
+
+		//po_date_value+'*'+po_number_item+'*'+po_notes_value+'*'+po_reference_value+'*'+po_amount_value+'*'+po_is_reconciled_value;
+
+		if (isset($_POST['is_reconciled'])) {
+			$is_reconciled = 1;
+		}else{
+			$is_reconciled = 0;
+		}
+
+		//var_dump($_POST);
+
+		$work_invoice_date = $_POST['po_date_value'];
+		$work_id_po = $_POST['po_number_item'];
+		$notes = $_POST['po_notes_value'];
+		$invoice_no = $_POST['po_reference_value'];
+		$amount = str_replace( ',', '',$_POST['po_amount_value']);
+		$is_reconciled_value = $is_reconciled;
+
 
 		if (strpos($work_id_po,'-') !== false) {
 
@@ -212,11 +224,14 @@ class Purchase_order extends MY_Controller{
 		}
 
 		$notes_id = $this->company_m->insert_notes($notes);
+
 		$this->purchase_order_m->insert_work_invoice($work_invoice_date,$work_id_po,$joinery_id,$notes_id,$invoice_no,$amount);
 
 		if($is_reconciled_value == 1){
 			$this->purchase_order_m->po_set_reconciled($work_id_po,$work_invoice_date,$joinery_id);
 		}
+
+		redirect('purchase_order', 'refresh');
 
 	}
 

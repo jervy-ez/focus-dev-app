@@ -794,5 +794,3 @@ estimate-->
 
 
 <?php $this->load->view('assets/logout-modal'); ?>
-
-

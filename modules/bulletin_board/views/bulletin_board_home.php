@@ -42,7 +42,7 @@
 
 				<div class="row">
 
-          <?php if($this->session->userdata('is_admin') == 1 ): ?>
+          <?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('bulletin_board') > 1 ): ?>
 
            <div class="col-md-9">
 
@@ -51,8 +51,6 @@
            <div class="col-md-12">
 
            <?php endif; ?>
-
-
 
 						<div class="left-section-box clearfix">
 
@@ -64,7 +62,9 @@
 								<div class="pull-right" style="margin-top: -15px;">							 
 									<div class="clearfix"></div>
 								</div>
-								<label><?php echo $screen; ?></label>															
+								<label><?php echo $screen; ?></label>
+
+								<div class="pull-right"><input type="text" placeholder="Search Title" class="form-control search_title_bb" style="width:250px;"></div>
 							</div>
 
               <?php if(@$this->session->flashdata('error')): ?>
@@ -85,14 +85,14 @@
                 </div>
               <?php endif; ?>
 
-							<div class="clearfix box-area pad-10 m-left-10 m-right-10 pad-top-15">
-                <?php $this->bulletin_board->list_post(); ?>								
+							<div class="clearfix box-area pad-10 m-left-10 m-right-10 pad-top-10 box-area-po">
+                				<?php $this->bulletin_board->list_post(); ?>								
 							</div>
 						</div>
 					</div>
 
 
-          <?php if($this->session->userdata('is_admin') == 1 ): ?>
+          <?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('bulletin_board') > 1 ): ?>
 
             <form class="form-horizontal" role="form" method="post" action="<?php echo base_url(); ?>bulletin_board/post">
               <div class="col-md-3 m-top-5">
@@ -104,13 +104,13 @@
                   <div class="box-area clearfix pad-5">
                     <div class="clearfix m-top-10 m-bottom-10">                    
                       <div class="col-sm-12">
-                        <input type="text" class="form-control" value="<?php echo $this->session->flashdata('title');?>" placeholder="Title" name="title" id="title_of_post">
+                        <input type="text" class="form-control upper_c_each_word" value="<?php echo $this->session->flashdata('title');?>" placeholder="Title" name="title" id="title_of_post">
                       </div>            
                     </div>
 
                     <div class="clearfix m-top-10 m-bottom-10">                    
                       <div class="col-sm-12">
-                        <textarea class="form-control" placeholder="My Post" name="my_post" id="my_post" rows="10"><?php echo $this->session->flashdata('my_post');?></textarea>                      
+                        <textarea class="form-control upper_c_first_word_sentence" placeholder="My Post" name="my_post" id="my_post" rows="10"><?php echo $this->session->flashdata('my_post');?></textarea>                      
                       </div>            
                     </div>
 
@@ -131,8 +131,5 @@
 	</div>
 
 </div>
-   
-       
-
 
 <?php $this->load->view('assets/logout-modal'); ?>
