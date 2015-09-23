@@ -366,10 +366,10 @@ function removeCommas(str) {
 };
 
 
-function user_role_set(db,cmp,prj,wip,po,inv,urs){
+function user_role_set(db,cmp,prj,wip,po,inv,urs,bb){
 
-  var user_role_values = [db,cmp,prj,wip,po,inv,urs];
-  var user_role_areas = ['dashboard_access','company_access','projects_access','wip_access','purchase_orders_access','invoice_access','users_access'];
+  var user_role_values = [db,cmp,prj,wip,po,inv,urs,bb];
+  var user_role_areas = ['dashboard_access','company_access','projects_access','wip_access','purchase_orders_access','invoice_access','users_access','bulletin_board'];
 
   var arrayLength = user_role_areas.length;
   for (var i = 0; i < arrayLength; i++) {
@@ -907,7 +907,7 @@ $('select.user-role-selection').on("change", function(e) {
      var user_access_arr = result.split(",");
 
      setTimeout(function(){
-       user_role_set(user_access_arr['3'],user_access_arr['4'],user_access_arr['5'],user_access_arr['6'],user_access_arr['7'],user_access_arr['8'],user_access_arr['9']);
+       user_role_set(user_access_arr['3'],user_access_arr['4'],user_access_arr['5'],user_access_arr['6'],user_access_arr['7'],user_access_arr['8'],user_access_arr['9'],user_access_arr['11']);
      },500);
 
 
@@ -946,6 +946,22 @@ $('input.datepicker#site_finish').on("keydown", function(e) {
   return false;
 });
 
+
+
+$('input.search_title_bb').keyup(function(){
+  var inputWd = $(this).val().toString().toLowerCase();
+  $('.box-area-po .post_item').each(function () {
+    $(this).hide();
+    var rowText = $(this).text().toString();
+    rowText = rowText.toString().toLowerCase();
+    rowText = rowText.replace(/\s/g,'');
+
+    var find = rowText.indexOf(inputWd);
+    if(find  >= 0){
+      $(this).show();
+    }
+  });
+});
 
 
 
@@ -2357,20 +2373,24 @@ $('.po_set_values').on("click", function(event) {
 
 
     
-    var data = po_date_value+'*'+po_number_item+'*'+po_notes_value+'*'+po_reference_value+'*'+po_amount_value+'*'+po_is_reconciled_value;
+    //var data = po_date_value+'*'+po_number_item+'*'+po_notes_value+'*'+po_reference_value+'*'+po_amount_value+'*'+po_is_reconciled_value;
 
-    ajax_data(data,'purchase_order/insert_work_invoice','');
+    //ajax_data(data,'purchase_order/insert_work_invoice','');
 
+
+    $('.submit_po_screen').trigger('click');
+/*
     $("#po_date_value").val(strDate);
     $("#po_reference_value").val('');
     $('#po_is_reconciled_value').prop('checked', true);
     $("#po_notes_value").val('');
     $("#po_amount_value_inc_gst").val('');
-
+*/
   //  window.location.reload(true);
 
-  $('.po_error').empty();
-  setTimeout(function(){ $('#invoice_po_modal').modal('hide'); window.location.assign(baseurl+"purchase_order?reload=1");}, 1000);
+//  $('.po_error').empty();
+
+  //setTimeout(function(){ $('#invoice_po_modal').modal('hide'); window.location.assign(baseurl+"purchase_order?reload=1");}, 1000);
 
 }else{
   $('.po_error').html('<div class="border-less-box alert alert-danger fade in pad-5 clearfix col-sm-12 "><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><p>Please complete the form having <strong>*</strong></p></div>');

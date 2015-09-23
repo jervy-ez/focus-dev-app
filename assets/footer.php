@@ -605,11 +605,13 @@ var can_add_contact = 1;
  			//$('#add_contact').modal('show');
  		}
  	}); //this is working select callbak!
-
-
-
-
 </script>
+
+<?php if($this->session->userdata('is_admin') == 1 ): ?>
+  <?php if(isset($_COOKIE['is_read_post'])): else: ?>
+    <script type="text/javascript">$('#board').modal('show');</script>
+  <?php endif; ?>
+<?php endif; ?>
 
 </body>
 </html>

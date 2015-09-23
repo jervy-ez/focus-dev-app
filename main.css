@@ -1202,8 +1202,14 @@ tr.active_row_work>td{
     overflow: hidden;
 }
 
-
 .primary_photo_wraper img{
 	width: 100%;
     /*margin-top: -25%;*/
+}
+
+.post_item:nth-child(odd) {
+    background-color: #C3D5DC;
+    border-radius: 7px;
+    color: #333 !important;    
+    border-bottom: 1px solid #ABB4B7;
 }

@@ -28,7 +28,7 @@
 						<a href="<?php echo base_url(); ?>users"> <i class="fa fa-users fa-3x"></i> <label class="control-label">Users</label></a>
 					</li>
 				<?php endif; ?>
-				 <?php if($this->session->userdata('is_admin') == 1 ): ?>
+				 <?php if($this->session->userdata('is_admin') == 1 /*|| $this->session->userdata('bulletin_board') >= 1*/ ): ?>
 				<li>
 					<a href="<?php echo base_url(); ?>bulletin_board"> <i class="fa fa-newspaper-o fa-3x"></i> <label class="control-label">Bulletin Board</label></a>
 				</li>
