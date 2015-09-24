@@ -1070,6 +1070,18 @@ $('#var_update').click(function(){
 
 });
 
+
+$('.delete_post').click(function(e){
+  e.preventDefault;
+  var delete_id_post = $(this).attr('id');
+  $(this).parent().parent().parent().parent().fadeOut(function(){
+    alert('Post is now deleted!')
+  });
+
+  ajax_data(delete_id_post,'bulletin_board/remove_post','');
+
+});
+
 $('.report_btn').click(function(e){
 
   e.preventDefault;
