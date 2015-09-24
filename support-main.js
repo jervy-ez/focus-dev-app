@@ -919,7 +919,12 @@ $('select.user-role-selection').on("change", function(e) {
 
 
 
-
+$('#companyTable_filter input').focus();
+$('#projectTable_filter input').focus();
+$('#wipTable_filter input').focus();
+$('#po_table_filter input').focus();
+$('#invoice_table_filter input').focus();
+$('input.search_title_bb').focus();
 
 
 $('input.progress_date').on("keydown", function(e) {
