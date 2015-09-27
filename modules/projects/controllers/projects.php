@@ -12,8 +12,6 @@ class Projects extends MY_Controller{
 		$this->load->module('admin');
 		$this->load->model('admin_m');
 		$this->load->module('invoice');
-		$this->load->module('wip');
-		$this->load->model('wip_m');
 		if(!$this->users->_is_logged_in() ): 		
 			redirect('', 'refresh');
 		endif;
@@ -21,9 +19,6 @@ class Projects extends MY_Controller{
 	
 
 	public function index(){
-
-		$data['proj_t'] = $this->wip_m->display_all_wip_projects();
-		$data['users'] = $this->user_model->fetch_user();
 		$this->users->_check_user_access('projects',1);
 		$data['main_content'] = 'projects_v';
 		$data['screen'] = 'Projects';
@@ -825,7 +820,7 @@ email
 
 				$considerations_raw = $this->works_m->fetch_considerations($row->works_id);
 				$consdr = array_shift($considerations_raw->result_array());
-				$this->works_m->insert_considerations($work_id,0, $consdr['site_inspection_req'], $consdr['special_conditions'], $consdr['additional_visit_req'], $consdr['operate_during_install'], $consdr['week_work'], $consdr['weekend_work'], $consdr['after_hours_work'], $consdr['new_premises'], $consdr['free_access'], $consdr['other'], $consdr['otherdesc']);
+				$this->works_m->insert_considerations($work_id, $consdr['site_inspection_req'], $consdr['special_conditions'], $consdr['additional_visit_req'], $consdr['operate_during_install'], $consdr['week_work'], $consdr['weekend_work'], $consdr['after_hours_work'], $consdr['new_premises'], $consdr['free_access'], $consdr['other'], $consdr['otherdesc']);
 
 				$this->session->set_flashdata('curr_tab', 'works');
 			}
@@ -1103,7 +1098,7 @@ $gp = 0;
 		date_default_timezone_set("Australia/Perth");
 		$this->clear_apost();
 		$raw_project_comment = $_POST['ajax_var'];
-		$project_comment = explode('`', $raw_project_comment);
+		$project_comment = explode('|', $raw_project_comment);
 		$datestring = "%l, %d%S, %F %Y %g:%i:%s %A"; $time = time();  
 
 		$date_posted = mdate($datestring, $time);
@@ -1243,13 +1238,10 @@ $gp = 0;
 			$data['shopping_center'] = $shopping_center->result();
 
 			$this->form_validation->set_rules('project_name', 'Project Name','trim|required|xss_clean');
-			$this->form_validation->set_rules('site_start', 'Site Start','trim|required|exact_length[10]|xss_clean');
-			$this->form_validation->set_rules('site_finish', 'Site Finish','trim|required|exact_length[10]|xss_clean');
+			$this->form_validation->set_rules('site_start', 'Site Start','trim|required|xss_clean');
+			$this->form_validation->set_rules('site_finish', 'Site Finish','trim|required|xss_clean');
 			$this->form_validation->set_rules('job_category', 'Job Category','trim|required|xss_clean');
 			$this->form_validation->set_rules('project_date', 'Project Date','trim|required|xss_clean');
-
-
-			$this->form_validation->set_rules('job_date', 'Job Date','trim|exact_length[10]|xss_clean');
 
 
 			if( $this->input->post('is_shopping_center') != 1){
@@ -1317,10 +1309,6 @@ $gp = 0;
 					}
 				}
 
-				if($job_date != ''){
-					$this->form_validation->set_rules('job_date', 'Job Date','trim|exact_length[10]|xss_clean');
-				}
-
 				if(strlen($job_date) == 0 && $prev_project_details['job_date'] == ''){
 					$actions = 'Updated project details, with no job date';
 				}elseif($job_date == $prev_project_details['job_date']){
@@ -1334,7 +1322,7 @@ $gp = 0;
 				}
 
 				if($attempt == 1){
-					$actions = 'Updated project details';
+					$actions = 'Tried to change the job date, but failed';
 				}
 
 				$data['unit_level'] = $this->company->if_set($this->input->post('unit_level', true));
@@ -1415,10 +1403,6 @@ $gp = 0;
 
 				$this->company_m->update_notes_comments($data['notes_id'],$comments);
 
-				if($site_finish != ''){
-					$this->projects_m->update_vr_inv_date($site_finish,$site_finish,$project_id );
-				}
-
 
 				if($install_hrs != '' && $install_hrs > 0){
 					$prj_install_hrs = $install_hrs;
@@ -1435,12 +1419,10 @@ $gp = 0;
 						if($row['work_con_sup_id'] == '53'){
 							$joinery_works_id = $works_id;
 						}
-						$this->works_m->update_works(1,$works_id,"",$project_markup,"","","","","","","","","","","","","","","","","","","","","","");
-						//$this->works_m->update_works(1,$works_id,"",$project_markup,"","","","","","","","","","","","","","","","","","","","","");
+						$this->works_m->update_works(1,$works_id,"",$project_markup,"","","","","","","","","","","","","","","","","","","","","");
 						$work_estimate = $row['work_estimate'];
 						$quote = $work_estimate + ($work_estimate * ($project_markup/100));
-						$this->works_m->update_works(8,$works_id,"","","","","","","","","","","","","","","","","","","","","",$work_estimate,$quote,"");
-						//$this->works_m->update_works(8,$works_id,"","","","","","","","","","","","","","","","","","","","","",$work_estimate,$quote);
+						$this->works_m->update_works(8,$works_id,"","","","","","","","","","","","","","","","","","","","","",$work_estimate,$quote);
 					}
 
 					if($joinery_works_id !== "" ){
@@ -1529,13 +1511,13 @@ $gp = 0;
 		$q_proj = $this->projects_m->fetch_complete_project_details($project_id);
 		$prev_project_details = array_shift($q_proj->result_array());
 
-		//if($this->invoice->if_project_invoiced_full($project_id) == 1){
-			//$project_markup = $prev_project_details['markup'];
-			//$install_time_hrs = $prev_project_details['install_time_hrs'];
-		//}else{
+		if($this->invoice->if_project_invoiced_full($project_id) == 1){
+			$project_markup = $prev_project_details['markup'];
+			$install_time_hrs = $prev_project_details['install_time_hrs'];
+		}else{
 			$project_markup = $this->input->post('project_markup');
 			$install_time_hrs = $this->input->post('install_time_hrs');
-		//}
+		}
 
 		if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3 || ( $this->session->userdata('user_role_id') == 7 && $prev_project_details['job_category'] == 'Maintenance' )  ){
 			$job_date = $_POST['job_date'];
@@ -1554,10 +1536,6 @@ $gp = 0;
 			$is_wip = 0;
 		}
 
-		if($site_finish != ''){
-			$this->projects_m->update_vr_inv_date($site_finish,$site_finish,$project_id );
-		}
-
 		if(strlen($job_date) == 0 && $prev_project_details['job_date'] == ''){
 			$actions = 'Updated project details, with no job date';
 		}elseif($job_date == $prev_project_details['job_date']){
@@ -1571,7 +1549,7 @@ $gp = 0;
 		}
 
 		if($attempt == 1){
-			$actions = 'Updated project details';
+			$actions = 'Tried to change the job date, but failed';
 		}
 
 		$has_updated_wip = 0;
@@ -1609,12 +1587,10 @@ $gp = 0;
 				if($row['work_con_sup_id'] == '53'){
 					$joinery_works_id = $works_id;
 				}
-				$this->works_m->update_works(1,$works_id,"",$project_markup,"","","","","","","","","","","","","","","","","","","","","","");
-				//$this->works_m->update_works(1,$works_id,"",$project_markup,"","","","","","","","","","","","","","","","","","","","","");
+				$this->works_m->update_works(1,$works_id,"",$project_markup,"","","","","","","","","","","","","","","","","","","","","");
 				$work_estimate = $row['work_estimate'];
 				$quote = $work_estimate + ($work_estimate * ($project_markup/100));
-				$this->works_m->update_works(8,$works_id,"","","","","","","","","","","","","","","","","","","","","",$work_estimate,$quote,"");
-				//$this->works_m->update_works(8,$works_id,"","","","","","","","","","","","","","","","","","","","","",$work_estimate,$quote);
+				$this->works_m->update_works(8,$works_id,"","","","","","","","","","","","","","","","","","","","","",$work_estimate,$quote);
 			}
 
 			if($joinery_works_id !== "" ){

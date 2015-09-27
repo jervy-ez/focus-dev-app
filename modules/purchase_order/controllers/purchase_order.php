@@ -10,6 +10,8 @@ class Purchase_order extends MY_Controller{
 		$this->load->model('company_m');
 		$this->load->module('works');
 		$this->load->model('works_m');
+		$this->load->model('admin_m');
+		$this->load->model('user_model');
 		if(!$this->users->_is_logged_in() ): 		
 			redirect('', 'refresh');
 		endif;
@@ -258,8 +260,189 @@ class Purchase_order extends MY_Controller{
 	}
 
 
-	// public function get_work_joinery(){
+	public function no_insurance_send_email(){
+		$po_number = $_POST['po_no'];
+		$works_q = $this->works_m->display_works_selected($po_number);
+		foreach ($works_q->result_array() as $row){
+			$contractor_id = $row['company_client_id'];
+			$proj_id = $row['project_id'];
+		}
 
-	// }
+		$proj_q = $this->projects_m->select_particular_project($proj_id);
+		foreach ($proj_q->result_array() as $row){
+			$client_id = $row['company_id'];
+			$compname = $row['company_name'];
+//=== Focus Company Details =========
+			$focus_company_id = $row['focus_company_id'];
+
+			$project_manager_id = $row['project_manager_id'];
+
+			$data['focus_company_id'] = $focus_company_id;
+			$focus_comp_q = $this->admin_m->fetch_single_company_focus($focus_company_id);
+			foreach ($focus_comp_q->result_array() as $focus_comp_row){
+				$data['focus_logo'] = $focus_comp_row['logo'];
+				$data['focus_comp'] = $focus_comp_row['company_name'];
+				$data['office_no'] = $focus_comp_row['area_code']." ".$focus_comp_row['office_number'];
+				$data['acn'] = $focus_comp_row['acn'];
+				$data['focus_abn'] = $focus_comp_row['abn'];
+				$data['focus_email'] = $focus_comp_row['general_email'];
+				$address_id = $focus_comp_row['address_id'];
+				$focus_comp_q = $this->company_m->fetch_complete_detail_address($address_id);
+				foreach ($focus_comp_q->result_array() as $comp_address_row){
+					$po_box = $comp_address_row['po_box'];
+					if($po_box == ""){
+						$data['po_box'] = "";
+					}else{
+						$data['po_box'] = "PO".$comp_address_row['po_box'];
+					}
+					$data['focus_suburb'] = ucfirst(strtolower($comp_address_row['suburb']))." ".$comp_address_row['shortname']." ".$comp_address_row['postcode'];
+				}
+			}
+//=== Focuse Company Details =========
+		}
+
+
+		$contractor_q = $this->works_m->display_works_selected_contractor($po_number,$contractor_id);
+		foreach ($contractor_q->result_array() as $row){
+			$contact_person_id = $row['contact_person_id'];
+			$comp_q = $this->company_m->fetch_all_contact_persons($contact_person_id);
+			foreach ($comp_q->result_array() as $cont_row){
+				$email_id = $cont_row['email_id'];
+				$email_q = $this->company_m->fetch_email($email_id);
+				foreach ($email_q->result_array() as $email_row){
+					$e_mail = $email_row['general_email'];
+				}
+			}
+		}
+		$company_q = $this->company_m->fetch_all_company($contractor_id);
+		foreach ($company_q->result_array() as $comp_row){
+			if($comp_row['public_liability_expiration'] !== ""){
+				$ple_raw_data = $comp_row['public_liability_expiration'];
+				$ple_arr =  explode('/',$ple_raw_data);
+				$ple_day = $ple_arr[0];
+				$ple_month = $ple_arr[1];
+				$ple_year = $ple_arr[2];
+				$ple_date = $ple_year.'-'.$ple_month.'-'.$ple_day;
+			}
+
+			if($comp_row['workers_compensation_expiration'] !== ""){
+				$wce_raw_data = $comp_row['workers_compensation_expiration'];
+				$wce_arr =  explode('/',$wce_raw_data);
+				$wce_day = $wce_arr[0];
+				$wce_month = $wce_arr[1];
+				$wce_year = $wce_arr[2];
+				$wce_date = $wce_year.'-'.$wce_month.'-'.$wce_day;
+			}
+
+			if($comp_row['income_protection_expiration'] !== ""){
+				$ipe_raw_data = $comp_row['income_protection_expiration'];
+				$ipe_arr =  explode('/',$ipe_raw_data);
+				$ipe_day = $ipe_arr[0];
+				$ipe_month = $ipe_arr[1];
+				$ipe_year = $ipe_arr[2];
+				$ipe_date = $ipe_year.'-'.$ipe_month.'-'.$ipe_day;
+			}
+			$today = date('Y-m-d');
+			
+			$complete = 0;
+			$incomplete = 0;
+			
+			if($comp_row['company_type_id'] == '2'){
+				if($comp_row['has_insurance_public_liability'] == 1){
+					if($comp_row['public_liability_expiration'] !== ""){
+						if($ple_date <= $today){
+							$incomplete = 1;
+						}else{
+							if($comp_row['has_insurance_workers_compensation'] == 1){
+								if($comp_row['workers_compensation_expiration'] !== ""){
+									if($wce_date <= $today){
+										$incomplete = 1;
+									}else{
+										$complete = 1;
+									}
+								}else{
+									$incomplete = 1;
+								}
+							}else{
+								if($comp_row['has_insurance_income_protection'] == 1){
+									if($comp_row['income_protection_expiration'] !== ""){
+										if($ipe_date <= $today){
+											$incomplete = 1;
+										}else{
+											$complete = 1;
+										}
+									}else{
+										$incomplete = 1;
+									}
+								}else{
+									$incomplete = 1;
+								}
+							}
+						}
+					}else{
+						$incomplete = 1;
+					}
+					
+				}else{
+					$incomplete = 1;
+				}
+			}
+		}
+
+
+		// $has_invoice = $this->purchase_order_m->has_purchase_order_invoice($po_number);
+		// if($has_invoice == 0){
+			if($incomplete == 1){
+
+				$default_msg_q = $this->admin_m->fetch_admin_default_email_message();
+				foreach ($default_msg_q->result_array() as $row){
+					$message_content = $row['message_content'];
+					$sender_name = $row['sender_name'];
+					$sender_email = $row['sender_email'];
+					$bcc_email = $row['bcc_email'];
+					$subject = $row['subject'];
+				}
+
+				$data['message'] = $message_content;
+				$data['sender'] = $sender_name;
+				$data['send_email'] = $sender_email;
+				$data['comp_phone'] = "Ph. 08 6305 0991";
+				$data['comp_address_line1'] = "Unit 3 / 86 Inspiration Drive";
+				$data['comp_address_line2'] = "Wangara WA 6065";
+				$data['comp_address_line3'] = "PO Box 1326 Wangara DC WA 6947";
+
+				$data['comp_name'] = "FSF Group Pty Ltd";
+				$data['abn1'] = "ABN 61 167 776 678";
+				$data['comp_name2'] = "Focus Shopfit Pty Ltd";
+				$data['abn2'] = "ABN 16 159 087 984";
+				$data['comp_name3'] = "Focus Shopfit NSW Pty Ltd";
+				$data['abn3'] = "ABN 17 164 759 102";
+
+		    	$this->load->library('email');
+
+		    	$this->email->set_mailtype("html");
+				$message = $this->load->view('message_view',$data,TRUE);
+
+		    	$this->load->library('email');
+
+				$this->email->from($sender_email, $sender_name);
+				$this->email->to($e_mail); 
+				//$this->email->cc($cc); 
+				$this->email->bcc($bcc_email); 
+
+				$this->email->subject($subject);
+				$this->email->message($message);
+
+				if ( ! $this->email->send())
+				{
+				    echo "E-mail Not Sent";
+				}else{
+					echo "E-mail Successfully Sent";
+				}
+			}else{
+				echo 0;
+			}
+		//}
+	}
 	
 }
