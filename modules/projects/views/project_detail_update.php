@@ -170,7 +170,7 @@
 																<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 															<?php else: ?>
 																<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled job-date-set text-right" ><?php echo $job_date; ?></p>
-																
+																<input type="hidden" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 															<?php endif; ?>
 														<?php  endif; ?>
 

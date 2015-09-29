@@ -109,16 +109,7 @@
 															<span class="input-group-addon"><i class="fa fa-briefcase  fa-lg"></i></span>
 															<select name="company_prg" class="form-control chosen find_contact_person get_address_invoice" id="company_prg" style="width: 100%;" tabindex="2">
 																<option value=''>Select Client Name*</option>																												
-																<?php $this->company->company_list('dropdown'); ?>
-
-																<?php
-																/*
-																	foreach ($all_company_list as $row){
-																		echo '<option value="'.$row->company_name.'|'.$row->company_id.'">'.$row->company_name.'</option>';
-																	}
-																*/
-																?>
-																	
+																<?php $this->company->company_list('dropdown'); ?>	
 															</select>
 															<script type="text/javascript">$('select#company_prg').val('<?php echo $this->input->post('company_prg'); ?>');</script>
 														</div>

@@ -14,7 +14,7 @@ foreach ($proj_t->result_array() as $row){
 		$status = 'invoiced';
 	}
 
-	if($row['is_paid'] == 1){
+	if($row['is_paid'] == 1 && $row['is_wip'] == 0){
 		$status = 'paid';
 	}
 

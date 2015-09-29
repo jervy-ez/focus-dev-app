@@ -83,10 +83,6 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
-	public function update_vr_inv_date($invoice_date_req,$set_invoice_date,$project_id ){
-		$this->db->query("UPDATE `invoice` SET `invoice_date_req` = '$invoice_date_req', `set_invoice_date` = '$set_invoice_date' WHERE `invoice`.`label` = 'VR' AND `invoice`.`project_id` = '$project_id'");
-	}
-
 	public function fetch_shopping_center_by_name_and_sate($shopping_center_brand_name,$state_id){
 		$query = $this->db->query("SELECT DISTINCT * FROM `shopping_center`
 			LEFT JOIN `address_detail` ON `address_detail`.`address_detail_id` = `shopping_center`.`detail_address_id`
@@ -241,26 +237,5 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
-	public function insert_dropbox_shared_link($project_id,$dropbox_link){
-		$this->db->query("UPDATE `project` SET `dropbox_share_link` = '$dropbox_link' WHERE `project_id` = '$project_id'");	
-	}
 
-	public function get_project_dropbox_link($project_id){
-		$query = $this->db->query("SELECT `dropbox_share_link` from `project` WHERE `project_id` = '$project_id'");	
-		$dropbox_link = "";
-		foreach ($query->result_array() as $row){
-			$dropbox_link = $row['dropbox_share_link'];
-		}
-		return $dropbox_link;
-	}
-
-	public function has_attachment($project_id){
-		$query = $this->db->query("SELECT * from `project_attachments` WHERE `project_id` = '$project_id'");	
-		if($query->num_rows == 0){
-			return 0;
-		}else{
-			return 1;
-		}
-
-	}
 }

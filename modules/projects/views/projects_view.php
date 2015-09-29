@@ -30,10 +30,6 @@
 		$curr_tab = 'attachments';
 	}
 
-	if($this->session->flashdata('curr_tab') == 'send_pdf'){
-		$curr_tab = 'send_pdf';
-	}
-
 	$variation = $this->session->flashdata('variation');
 
 	if($this->invoice->if_has_invoice($project_id) == 0): 
@@ -201,11 +197,11 @@ estimate-->
 										<li class="<?php echo ($curr_tab == 'variations' ? 'active' : '' ); ?>">
 											<a href="#variations" onclick = "load_variation()" data-toggle="tab"><i class="fa fa-cube fa-lg"></i> Variations</a>
 										</li>
-										
+										<?php if($this->session->userdata('is_admin') == 1 ): ?>
 										<li class="<?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>">
 											<a href="#attachments" onclick = "dropbox_connect(<?php echo $project_id ?>)" data-toggle="tab"><i class="fa fa-paperclip fa-lg"></i> Attachments</a>
 										</li>
-
+										<?php endif; ?>
 										<li class="<?php echo ($curr_tab == 'send_pdf' ? 'active' : '' ); ?>">
 											<a href="#send_pdf" data-toggle="tab" onclick = "view_send_contractor()"><i class="fa fa-file-pdf-o fa-lg"></i> Send PDF</a>
 										</li>	
@@ -312,7 +308,7 @@ estimate-->
 																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php else: ?>
 																				<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled job-date-set text-right" ><?php echo $job_date; ?></p>
-																				
+																				<input type="hidden" id="job_date" name="job_date" value="<?php echo $job_date; ?>" class="hide hidden">
 																			<?php endif; ?>
 																		<?php  endif; ?>
 																		</div>
@@ -330,15 +326,15 @@ estimate-->
 																				<input type="hidden" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup hide hidden" tabindex="12" placeholder="Markup %" value="<?php echo $markup; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>	
 																			<?php else: ?>
 
-																				<?php //if($this->invoice->if_project_invoiced_full($project_id)): ?>
-																					<!-- <p class="form-control text-right"><?php //echo $markup; ?></p>
-																					<input type="hidden" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup hide hidden" tabindex="12" placeholder="Markup %" value="<?php //echo $markup; ?>" <?php //echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>	
- -->
-																				<?php //else: ?>
+																				<?php if($this->invoice->if_project_invoiced_full($project_id)): ?>
+																					<p class="form-control text-right"><?php echo $markup; ?></p>
+																					<input type="hidden" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup hide hidden" tabindex="12" placeholder="Markup %" value="<?php echo $markup; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>	
+
+																				<?php else: ?>
 																					<input type="text" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup" tabindex="12" placeholder="Markup %" value="<?php echo $markup; ?>" >
 																					
 
-																				<?php //endif; ?>
+																				<?php endif; ?>
 																				
 																			<?php endif; ?>
 																			
@@ -360,12 +356,12 @@ estimate-->
 																				<input type="hidden" placeholder="Site Hours" class="quick_input form-control text-right hide hidden" id="install_time_hrs"  name="install_time_hrs" value="<?php echo $install_time_hrs; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>
 																			<?php else: ?>
 
-																				<?php //if($this->invoice->if_project_invoiced_full($project_id)): ?>
-																					<!-- <p class="form-control text-right"><?php //echo $install_time_hrs; ?></p>
-																					<input type="hidden" placeholder="Site Hours" class="quick_input form-control text-right hide hidden" id="install_time_hrs"  name="install_time_hrs" value="<?php //echo $install_time_hrs; ?>" <?php //echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>> -->
-																				<?php //else: ?>
+																				<?php if($this->invoice->if_project_invoiced_full($project_id)): ?>
+																					<p class="form-control text-right"><?php echo $install_time_hrs; ?></p>
+																					<input type="hidden" placeholder="Site Hours" class="quick_input form-control text-right hide hidden" id="install_time_hrs"  name="install_time_hrs" value="<?php echo $install_time_hrs; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>
+																				<?php else: ?>
 																					<input type="text" placeholder="Site Hours" class="quick_input form-control text-right" id="install_time_hrs"  name="install_time_hrs" value="<?php echo $install_time_hrs; ?>" >
-																				<?php //endif; ?>
+																				<?php endif; ?>
 
 																			<?php endif; ?>
 																			
@@ -587,13 +583,14 @@ estimate-->
 												?>
 											</div>
 										</div>
+										<?php if($this->session->userdata('is_admin') == 1 ): ?>
 										
 										<div class="tab-pane fade in  clearfix <?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>" id="attachments">
 											<div class="m-bottom-15 clearfix m-top-10">
 												<?php echo $this->attachments->attachments_view(); ?>
 											</div>
 										</div>
-
+										<?php endif; ?>
 										<div class="tab-pane fade in  clearfix <?php echo ($curr_tab == 'send_pdf' ? 'active' : '' ); ?>" id="send_pdf">
 											<div class="m-bottom-15 clearfix m-top-10">
 												<?php echo $this->send_emails->send_pdf(); ?>
@@ -612,22 +609,6 @@ estimate-->
 </div>
 
 <!-- MODAL -->
-<div class="modal fade" id="attachement_loading_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-sm">
-    <div class="modal-content">
-       
-      <div class="modal-body clearfix pad-10">
-
-        <center><h3>Loading Please Wait</h3></center>
-        <center><h2><i class="fa fa-circle-o-notch fa-spin fa-5x"></i></h2></center>
-        <p>&nbsp;</p>
-  
-  
-
-      </div>
-    </div>
-  </div>
-</div>
 <div class="modal fade" id="contract_notes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
 	    <div class="modal-content">
@@ -794,3 +775,5 @@ estimate-->
 
 
 <?php $this->load->view('assets/logout-modal'); ?>
+
+
