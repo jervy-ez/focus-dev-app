@@ -610,7 +610,7 @@ class Invoice extends MY_Controller{
 	}
 
 	public function set_invoice_progress(){
-		$invoice_arr = explode('*',$_POST['ajax_var']);
+		$invoice_arr = explode('`',$_POST['ajax_var']);
  
 		$project_id = $invoice_arr[0];
 		$id_bttn_raw = $invoice_arr[1];
