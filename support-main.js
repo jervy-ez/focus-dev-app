@@ -559,15 +559,19 @@ function validate_progress_dates(date_id){
 
 
 
+
+
   function print_job_book(){
     var contents  = $("#job_book_area").html();
     var printWindow = window.open('', '', 'height=800,width=1050,top=100,left=100,location=no,toolbar=no,resizable=yes,menubar=no,scrollbars=yes');
     printWindow.document.write('<html><head>');
+    printWindow.document.write('<script src="'+baseurl+'js/vendor/jquery-1.11.0.min.js" type="text/javascript" language="javascript" /></script>');
     printWindow.document.write('<link href="'+baseurl+'css/print.css" rel="stylesheet" type="text/css" />');
     printWindow.document.write('</head><body class="print_body">');
     printWindow.document.write('<img src="'+baseurl+'img/focus-logo-print.png" width="206" height="66" />');
     printWindow.document.write(contents);
     printWindow.document.write('<a href="#" onclick="this.parentNode.removeChild(this); window.print(); window.close();" class="print_bttn print_me_now">Print Now!</a>');
+    printWindow.document.write('<script src="'+baseurl+'js/printable.js" type="text/javascript" language="javascript" /></script>');
     printWindow.document.write('</body></html>');
     printWindow.document.close();
   }
@@ -919,7 +923,26 @@ $('select.user-role-selection').on("change", function(e) {
 
 
 
+$('.display_pdf_editor').click(function(){
+    var contents  = $("#job_book_area").html();
+    $('.editor_body').html(contents);
+});
 
+
+$('.hilight_format').click(function(e){
+  e.preventDefault;
+  var highlight = window.getSelection();
+  var spn = '<span class="pdf_highlight_doc_mod">' + highlight + '</span>';
+  var text = $('.editor_body').html();
+  $('.editor_body').html(text.replace(highlight, spn));
+});
+
+$('#companyTable_filter input').focus();
+$('#projectTable_filter input').focus();
+$('#wipTable_filter input').focus();
+$('#po_table_filter input').focus();
+$('#invoice_table_filter input').focus();
+$('input.search_title_bb').focus();
 
 
 $('input.progress_date').on("keydown", function(e) {
@@ -2329,7 +2352,6 @@ $('.payment_set_values').on("click", function(event) {
 });
 
 $('.po_set_values').on("click", function(event) {
-
   var error = 0;
   var po_date_value = $("#po_date_value").val();
   var po_amount_value = $("#po_amount_value").val();
