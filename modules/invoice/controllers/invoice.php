@@ -873,12 +873,12 @@ class Invoice extends MY_Controller{
 			if($row->is_invoiced == 1){
 
 				if($project_id == '35055' && $row->label == ''){
-					$progress_percent = $row->progress_percent + 0.006518;
+					$progress_percent = $row->progress_percent + 0.001168936757;
 
 					$progress_cost = ($project_costs['final_total_quoted']*$progress_percent)/100;
 					$progress_cost = round($progress_cost,2);
 				}elseif($row->label != 'VR' && $row->label != '' && $project_id == '35055'){
-					$progress_percent = $row->progress_percent + 0.006964;
+					$progress_percent = $row->progress_percent + 0.007662126486;
 					$progress_cost = ($project_costs['final_total_quoted']*$progress_percent)/100;
 					$progress_cost = round($progress_cost,2);
 				}else{
@@ -890,9 +890,9 @@ class Invoice extends MY_Controller{
 			}else{
 
 				if($project_id == '35055' && $row->label == ''){
-					$progress_percent = $row->progress_percent + 0.006518;
+					$progress_percent = $row->progress_percent + 0.001168936757;
 				}elseif($row->label != 'VR' && $row->label != '' && $project_id == '35055'){
-					$progress_percent = $row->progress_percent + 0.006964;
+					$progress_percent = $row->progress_percent + 0.007662126486;
 				}else{
 					$progress_percent = $row->progress_percent;
 				}
