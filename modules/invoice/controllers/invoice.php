@@ -871,35 +871,10 @@ class Invoice extends MY_Controller{
 
 
 			if($row->is_invoiced == 1){
-
-				if($project_id == '35055' && $row->label == ''){
-					$progress_percent = $row->progress_percent + 0.001168936757;
-
-					$progress_cost = ($project_costs['final_total_quoted']*$progress_percent)/100;
-					$progress_cost = round($progress_cost,2);
-				}elseif($row->label != 'VR' && $row->label != '' && $project_id == '35055'){
-					$progress_percent = $row->progress_percent + 0.007662126486;
-					$progress_cost = ($project_costs['final_total_quoted']*$progress_percent)/100;
-					$progress_cost = round($progress_cost,2);
-				}else{
-					$progress_percent = $row->progress_percent;
-					$progress_cost = $row->invoiced_amount;
-				}
-
-
+				$progress_cost = $row->invoiced_amount;
 			}else{
-
-				if($project_id == '35055' && $row->label == ''){
-					$progress_percent = $row->progress_percent + 0.001168936757;
-				}elseif($row->label != 'VR' && $row->label != '' && $project_id == '35055'){
-					$progress_percent = $row->progress_percent + 0.007662126486;
-				}else{
-					$progress_percent = $row->progress_percent;
-				}
-
-				$progress_cost = ($project_costs['final_total_quoted']*$progress_percent)/100;
+				$progress_cost = ($project_costs['final_total_quoted']*$row->progress_percent)/100;
 				$progress_cost = round($progress_cost,2);
-
 			}
 
 
@@ -921,7 +896,7 @@ $total_paid = $this->get_amount_total_paid_invoice($row->project_id,$row->invoic
 
 
 			echo '</th>
-<td><div class="input-group"><div class="input-group-addon">%</div><input type="text" '.($row->is_invoiced > 0 ? 'disabled="disabled"' : '').' class="form-control progress-percent" onclick="getHighlight(\'progress-'.($row->label != '' ? '0' : $counter).'-percent\')" onchange="'.($row->label != '' ? 'final_progress' : 'progressPercent').'(this)" value="'.$progress_percent.'" placeholder="Percent" id="progress-'.($row->label != '' ? '0' : $counter).'-percent" name="progress-'.$counter.'-percent"/></div></td>
+<td><div class="input-group"><div class="input-group-addon">%</div><input type="text" '.($row->is_invoiced > 0 ? 'disabled="disabled"' : '').' class="form-control progress-percent" onclick="getHighlight(\'progress-'.($row->label != '' ? '0' : $counter).'-percent\')" onchange="'.($row->label != '' ? 'final_progress' : 'progressPercent').'(this)" value="'.$row->progress_percent.'" placeholder="Percent" id="progress-'.($row->label != '' ? '0' : $counter).'-percent" name="progress-'.$counter.'-percent"/></div></td>
 <td>';
 
 
