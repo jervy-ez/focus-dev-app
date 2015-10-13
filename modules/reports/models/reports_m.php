@@ -20,26 +20,18 @@ class Reports_m extends CI_Model{
 	}
 //`company_details`.`company_id` ASC
 
+
 	public function select_list_invoice($has_where,$project_num_q,$client_q,$invoice_status_q,$progress_claim_q,$project_manager_q,$order_q){
-		$query = $this->db->query("SELECT * FROM `invoice`
+		$query = $this->db->query("SELECT *,`payment`.`payment_id`,`payment`.`project_id` as `payment_project_id`,`invoice`.`project_id` as `invoice_project_id` FROM `invoice`
 			LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
 			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+			LEFT JOIN `payment` ON `payment`.`invoice_id` = `invoice`.`invoice_id`
 			$has_where $project_num_q $progress_claim_q $client_q $invoice_status_q $project_manager_q AND `project`.`job_date` <> '' $order_q");
 		return $query;
-
-
-
-/*
-		SELECT * 
-FROM `invoice`
-LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
-WHERE `project`.`client_id` = '565'
-*/
-
 	}
 
 	public function select_list_wip($wip_client_q,$wip_pm_q,$selected_cat_q,$order_q,$type,$status){
-		$query = $this->db->query("SELECT `project`.*,`users`.*,`company_details`.*,`project_cost_total`.`work_estimated_total`, UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') )  AS 'date_filter_mod', UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_commencement`, '%d/%m/%Y') )  AS 'start_date_filter_mod'
+		$query = $this->db->query("SELECT `project`.*,`users`.*,`company_details`.*,`project_cost_total`.`work_estimated_total`,`project_cost_total`.`variation_total`, UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') )  AS 'date_filter_mod', UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_commencement`, '%d/%m/%Y') )  AS 'start_date_filter_mod'
 			FROM  `project`
 			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id` 
 			LEFT JOIN `users` ON `users`.`user_id` = `project`.`project_manager_id`

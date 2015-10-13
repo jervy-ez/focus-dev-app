@@ -17,7 +17,9 @@
   <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/vendor/jquery-1.11.0.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
   <link href="<?php echo base_url(); ?>css/font-awesome.min.css" rel="stylesheet">
+  <script src="<?php echo base_url(); ?>js/vendor/bootstrap.min.js"></script> 
   <script src="<?php echo base_url(); ?>js/pdf.js"></script>
+
 </head>
 <body class="canvas_body">
 
@@ -36,7 +38,7 @@
   </tr>
 </table>
 
-  <div class="header pad-10 clearfix">
+  <div class="header pad-10 clearfix border-1">
   <table width="100%">
     <tr>
       <td width="70%"><p class="text-left">Client: <strong><?php echo $client_company_name; ?></strong> - <strong><?php echo $job_category; ?></strong><br />Project: <strong><?php echo $project_name; ?> <?php echo $client_po; ?></strong></p></td>
@@ -59,9 +61,11 @@
     </table>     
   </div>
 
+
+
   <div class="clearfix">
 
-  <fieldset class="pad-5 border-2 mgn-top-15 pad-10">
+  <fieldset class="pad-5 border-1 mgn-top-15 pad-10">
     <legend class="pad-l-10 pad-r-10"><strong>Client / Company Address</strong></legend>
 
     <table width="100%">
@@ -89,7 +93,7 @@
 </div>
 
 <div class="clearfix">
-  <fieldset class="pad-5 border-2 mgn-top-15 pad-10">
+  <fieldset class="pad-5 border-1 mgn-top-15 pad-10">
     <legend class="pad-l-10 pad-r-10"><strong>Address</strong></legend>
     <table width="100%">
       <tr>
@@ -108,7 +112,7 @@
 </div>
 
 <div class="clearfix">
-  <fieldset class="pad-5 border-2 mgn-top-15 pad-10">
+  <fieldset class="pad-5 border-1 mgn-top-15 pad-10">
     <legend class="pad-l-10 pad-r-10"><strong>Project Totals</strong></legend>
 
     <table width="100%">
@@ -136,7 +140,7 @@
 
 
 
-        <fieldset class="pad-10 border-2 mgn-top-10 mgn-r-5">
+        <fieldset class="pad-10 border-1 mgn-top-10 mgn-r-5">
           <legend class="pad-l-10 pad-r-10"><strong>Details</strong></legend>
 
 
@@ -171,7 +175,7 @@
 
 
 
-        <fieldset class="pad-10 border-2 mgn-top-10 mgn-l-5">
+        <fieldset class="pad-10 border-1 mgn-top-10 mgn-l-5">
           <legend class="pad-l-10 pad-r-10"><strong>Invoices</strong></legend>
           <div class="full clearfix invoices_list_item">
             <?php $this->projects->list_invoiced_items($project_id,$final_total_quoted,$variation_total); ?>

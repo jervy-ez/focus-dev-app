@@ -433,21 +433,14 @@ class Invoice extends MY_Controller{
 	}
 
 
-	public function get_project_invoiced($project_id,$project_total,$vr_total){
+	public function get_project_invoiced($project_id,$project_total){
 		$total = 0;
 		$fetch_project_jobbook_raw = $this->invoice_m->list_invoiced_items($project_id);
 
 		foreach ($fetch_project_jobbook_raw->result() as $row) {
+			$progress_percent = $row->progress_percent/100;
 
-			if($row->is_invoiced == '1' && $row->label != 'VR'){
-				$progress_percent = $row->progress_percent/100;
-				$total = $total + ($progress_percent*$project_total);
-			}
-
-			if($row->label == 'VR' && $row->is_invoiced == '1'){
-				//$progress_percent = $row->progress_percent/100;
-				$total = $total + $vr_total;
-			}
+			$total = $total + ($progress_percent*$project_total);
 		}
 
 		return $total;
@@ -645,20 +638,6 @@ class Invoice extends MY_Controller{
 
 		$this->invoice_m->update_job_notes($job_book_details_id,$invoice_notes);
 
-
-		// user log invoices
-		$type = 'New Invoice';
-		$inv_curr_set = ($id_bttn[0] == 'F' ? 'F' : $id_bttn_raw);
-		$inv_curr_set = ($id_bttn[0] == 'VR' ? 'VR' : $id_bttn_raw);
-
-		$actions = 'New job book for Project No.'.$project_id.' Invoice No.'.$project_id.''.$inv_curr_set;
-		date_default_timezone_set("Australia/Perth");
-		$user_id = $this->session->userdata('user_id');
-		$date = date("d/m/Y");
-		$time = date("H:i:s");
-		$this->user_model->insert_user_log($user_id,$date,$time,$actions,$project_id,$type,'3');
-		// user log invoices
-
 		echo "ok invocied";
 	}
 
@@ -742,141 +721,6 @@ class Invoice extends MY_Controller{
 		}
 	}
 
-	public function job_book(){
-		$project_id = $this->uri->segment(3);
-
-		$q_proj = $this->projects_m->fetch_complete_project_details($project_id);
-
-		if($q_proj->num_rows > 0){
-			$data = array_shift($q_proj->result_array());
-
-			$q_focus_company = $this->company_m->display_company_detail_by_id($data['focus_company_id']);
-			$focus_company = array_shift($q_focus_company->result_array());
-			$data['focus_company_id'] = $focus_company['company_id'];
-			$data['focus_company_name'] = $focus_company['company_name'];
-
-			$q_client_company = $this->company_m->display_company_detail_by_id($data['client_id']);
-			$client_company = array_shift($q_client_company->result_array());
-			$data['client_company_id'] = $client_company['company_id'];
-			$data['client_company_name'] = $client_company['company_name'];
-
-			$q_contact_person = $this->company_m->fetch_all_contact_persons($data['primary_contact_person_id']);
-			$contact_person = array_shift($q_contact_person->result_array());
-			$data['contact_person_id'] = $contact_person['contact_person_id'];
-			$data['contact_person_fname'] = $contact_person['first_name'];
-			$data['contact_person_lname'] = $contact_person['last_name'];
-
-			$q_fetch_phone = $this->company_m->fetch_phone($contact_person['contact_number_id']);
-			$contact_person_phone = array_shift($q_fetch_phone->result_array());
-			
-
-			if($contact_person_phone['office_number'] != ''): 
-				$data['contact_person_phone_office'] = $contact_person_phone['area_code'].' '.$contact_person_phone['office_number'];
-			else: $data['contact_person_phone_office'] = '';
-			endif;
-
-
-			if($contact_person_phone['direct_number'] != ''): 
-				$data['contact_person_phone_direct'] = $contact_person_phone['area_code'].' '.$contact_person_phone['direct_number'];
-			else: $data['contact_person_phone_direct'] = '';
-			endif;
-
-			if($contact_person_phone['mobile_number'] != ''):
-				$data['contact_person_phone_mobile'] = $contact_person_phone['mobile_number'];
-			else: $data['contact_person_phone_mobile'] = '';
-			endif;
-
-			if($contact_person_phone['after_hours'] != ''):
-				$data['contact_person_phone_afterhours'] = $contact_person_phone['area_code'].' '.$contact_person_phone['after_hours'];
-			else: $data['contact_person_phone_afterhours'] = '';
-			endif;
-
-			$query_client_address = $this->company_m->fetch_complete_detail_address($client_company['address_id']);
-			$temp_data = array_shift($query_client_address->result_array());
-			$data['query_client_address_postcode'] = $temp_data['postcode'];
-			$data['query_client_address_suburb'] = ucwords(strtolower($temp_data['suburb']));
-			$data['query_client_address_po_box'] = $temp_data['po_box'];
-			$data['query_client_address_street'] = ucwords(strtolower($temp_data['street']));
-			$data['query_client_address_unit_level'] = ucwords(strtolower($temp_data['unit_level']));
-			$data['query_client_address_unit_number'] = $temp_data['unit_number'];
-			$data['query_client_address_state'] = $temp_data['name'];
-
-			$q_fetch_contact_details_primary = $this->company_m->fetch_contact_details_primary($client_company['company_id']);
-			$company_contact_details_primary_detail = array_shift($q_fetch_contact_details_primary->result_array());
-
-			$data['company_contact_details_area_code'] = $company_contact_details_primary_detail['area_code'];
-			$data['company_contact_details_office_number'] = $company_contact_details_primary_detail['office_number'];
-			$data['company_contact_details_direct_number'] = $company_contact_details_primary_detail['direct_number'];
-			$data['company_contact_details_mobile_number'] = $company_contact_details_primary_detail['mobile_number'];
-			$data['company_contact_details_after_hours'] = $company_contact_details_primary_detail['after_hours'];
-			$data['company_contact_details_general_email'] = $company_contact_details_primary_detail['general_email'];
-			$data['company_contact_details_direct'] = $company_contact_details_primary_detail['direct'];
-			$data['company_contact_details_accounts'] = $company_contact_details_primary_detail['accounts'];
-			$data['company_contact_details_maintenance'] = $company_contact_details_primary_detail['maintenance'];
-
-			$shopping_center_q = $this->projects_m->select_shopping_center($data['address_id']);
-			$shopping_center = array_shift($shopping_center_q->result_array());
-
-			$data['shopping_center_id'] = $shopping_center['shopping_center_id'];
-			$data['shopping_center_brand_name'] = $shopping_center['shopping_center_brand_name'];
-
-
-
-			$query_address= $this->company_m->fetch_complete_detail_address($data['address_id']);
-			$temp_data = array_shift($query_address->result_array());
-			$data['postcode'] = $temp_data['postcode'];
-			$data['suburb'] = ucwords(strtolower($temp_data['suburb']));
-			$data['po_box'] = $temp_data['po_box'];
-			$data['street'] = ucwords(strtolower($temp_data['street']));
-			$data['unit_level'] = ucwords(strtolower($temp_data['unit_level']));
-			$data['unit_number'] = $temp_data['unit_number'];
-			$data['state'] = $temp_data['name'];
-		// $data['address_id'] = $data['address_id'];
-
-			$data['shortname'] = $temp_data['shortname'];
-			$data['state_id'] =  $temp_data['state_id'];
-			$data['phone_area_code'] = $temp_data['phone_area_code'];	
-
-			$p_query_address = $this->company_m->fetch_complete_detail_address($data['invoice_address_id']);
-			$p_temp_data = array_shift($p_query_address->result_array());
-			$data['i_po_box'] = $p_temp_data['po_box'];
-			$data['i_unit_level'] = ucwords(strtolower($p_temp_data['unit_level']));
-			$data['i_unit_number'] = $p_temp_data['unit_number'];
-			$data['i_street'] = ucwords(strtolower($p_temp_data['street']));
-			$data['i_suburb'] = ucwords(strtolower($p_temp_data['suburb']));
-			$data['i_state'] = $p_temp_data['name'];
-			$data['i_postcode'] = $p_temp_data['postcode'];
-
-
-			$applied_admin_settings_raw = $this->projects->display_project_applied_defaults($project_id);
-			$project_totals_arr = $this->projects->fetch_project_totals($project_id);
-			$data = array_merge($data, $project_totals_arr);
-			$data = array_merge($data, $applied_admin_settings_raw);
-
-			$q_project_manager = $this->user_model->fetch_user($data['project_manager_id']);
-			$project_manager = array_shift($q_project_manager->result_array());
-			$data['pm_user_id'] = $project_manager['user_id'];
-			$data['pm_user_first_name'] = $project_manager['user_first_name'];
-			$data['pm_user_last_name'] = $project_manager['user_last_name'];
-
-			$q_project_admin = $this->user_model->fetch_user($data['project_admin_id']);
-			$project_admin = array_shift($q_project_admin->result_array());
-			$data['pa_user_id'] = $project_admin['user_id'];
-			$data['pa_user_first_name'] = $project_admin['user_first_name'];
-			$data['pa_user_last_name'] = $project_admin['user_last_name'];
-
-			$q_project_estiamator_id = $this->user_model->fetch_user($data['project_estiamator_id']);
-			$project_estiamator = array_shift($q_project_estiamator_id->result_array());
-			$data['pe_user_id'] = $project_estiamator['user_id'];
-			$data['pe_user_first_name'] = $project_estiamator['user_first_name'];
-			$data['pe_user_last_name'] = $project_estiamator['user_last_name'];
-
-
-
-		}
-		$this->load->view('invoice_job_book_canvas',$data);
-	}
-
 	public function list_project_invoice($project_id){
 
 		$project_costs = $this->projects->fetch_project_totals($project_id);
@@ -892,35 +736,10 @@ class Invoice extends MY_Controller{
 
 
 			if($row->is_invoiced == 1){
-
-				if($project_id == '35055' && $row->label == ''){
-					$progress_percent = $row->progress_percent + 0.001168936757;
-
-					$progress_cost = ($project_costs['final_total_quoted']*$progress_percent)/100;
-					$progress_cost = round($progress_cost,2);
-				}elseif($row->label != 'VR' && $row->label != '' && $project_id == '35055'){
-					$progress_percent = $row->progress_percent + 0.007662126486;
-					$progress_cost = ($project_costs['final_total_quoted']*$progress_percent)/100;
-					$progress_cost = round($progress_cost,2);
-				}else{
-					$progress_percent = $row->progress_percent;
-					$progress_cost = $row->invoiced_amount;
-				}
-
-
+				$progress_cost = $row->invoiced_amount;
 			}else{
-
-				if($project_id == '35055' && $row->label == ''){
-					$progress_percent = $row->progress_percent + 0.001168936757;
-				}elseif($row->label != 'VR' && $row->label != '' && $project_id == '35055'){
-					$progress_percent = $row->progress_percent + 0.007662126486;
-				}else{
-					$progress_percent = $row->progress_percent;
-				}
-
-				$progress_cost = ($project_costs['final_total_quoted']*$progress_percent)/100;
+				$progress_cost = ($project_costs['final_total_quoted']*$row->progress_percent)/100;
 				$progress_cost = round($progress_cost,2);
-
 			}
 
 
@@ -942,7 +761,7 @@ $total_paid = $this->get_amount_total_paid_invoice($row->project_id,$row->invoic
 
 
 			echo '</th>
-<td><div class="input-group"><div class="input-group-addon">%</div><input type="text" '.($row->is_invoiced > 0 ? 'disabled="disabled"' : '').' class="form-control progress-percent" onclick="getHighlight(\'progress-'.($row->label != '' ? '0' : $counter).'-percent\')" onchange="'.($row->label != '' ? 'final_progress' : 'progressPercent').'(this)" value="'.$progress_percent.'" placeholder="Percent" id="progress-'.($row->label != '' ? '0' : $counter).'-percent" name="progress-'.$counter.'-percent"/></div></td>
+<td><div class="input-group"><div class="input-group-addon">%</div><input type="text" '.($row->is_invoiced > 0 ? 'disabled="disabled"' : '').' class="form-control progress-percent" onclick="getHighlight(\'progress-'.($row->label != '' ? '0' : $counter).'-percent\')" onchange="'.($row->label != '' ? 'final_progress' : 'progressPercent').'(this)" value="'.$row->progress_percent.'" placeholder="Percent" id="progress-'.($row->label != '' ? '0' : $counter).'-percent" name="progress-'.$counter.'-percent"/></div></td>
 <td>';
 
 

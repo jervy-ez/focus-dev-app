@@ -105,69 +105,69 @@ class Reports extends MY_Controller{
 <div id="highlight_line" class="counter_1 draggable ui-draggable ui-draggable-handle" style="left: 0px; top: 33px; width: 730px; display: block; opacity: 0.5; border:1px solid #000; height: 216px; background-color: blue; position: absolute;"></div></div>
 ';*/
 
-		$my_pdf = $this->html_form($content,'portrait','A4','job_book','inv_jbs',FALSE);
+$my_pdf = $this->html_form($content,'portrait','A4','job_book','inv_jbs',FALSE);
 
 
 	//echo $post_value;
 	//	echo $my_pdf;
 
-	}
+}
 
 
-	public function company_report(){
-		$data_val = explode('*',$_POST['ajax_var']);
+public function company_report(){
+	$data_val = explode('*',$_POST['ajax_var']);
      	//var_dump($_POST['ajax_var']);
 
-		if($data_val['3'] == ''){
-			$data_val['3'] = 'A';
+	if($data_val['3'] == ''){
+		$data_val['3'] = 'A';
+	}
+
+	if($data_val['4'] == ''){
+		$data_val['4'] = 'Z';
+	}
+
+	$letter_segment_a = $data_val['3'];
+	$letter_segment_b = $data_val['4'];
+
+	$segment_a = ord(strtolower($data_val['3']));
+	$segment_b = ord(strtolower($data_val['4']));
+	$company_type = '';
+	
+
+	if($data_val['1'] != ''){
+		$company_type_arr = explode('|',$data_val['1']);
+		$company_type_id = $company_type_arr['1'];
+		$my_company_type = $company_type_arr['0'];
+
+		if($company_type_id != '' && $company_type_id != 8){
+			$company_type = "AND `company_details`.`company_type_id` = '$company_type_id'";
 		}
+	}else{
+		$my_company_type = 'All Company Types';
+	}
 
-		if($data_val['4'] == ''){
-			$data_val['4'] = 'Z';
-		}
+	$query = '';
+	$content = '';
+	$my_activity = '';
 
-		$letter_segment_a = $data_val['3'];
-		$letter_segment_b = $data_val['4'];
+	if($data_val['2'] != ''){
+		$query .= " AND (";
+			$activity_arr = explode(',',$data_val['2']);
+			$activity_loops = count($activity_arr);
 
-		$segment_a = ord(strtolower($data_val['3']));
-		$segment_b = ord(strtolower($data_val['4']));
-		$company_type = '';
-		
+			$client_category_q = '';
+			foreach ($activity_arr as $activity_key => $activity_value) {
+				$activity_item_arr = explode('|',$activity_value);
+				$client_category_q .= '`company_details`.`activity_id` = \''.$activity_item_arr["1"].'\'';
+				$my_activity .= $activity_item_arr["0"].', ';
 
-		if($data_val['1'] != ''){
-			$company_type_arr = explode('|',$data_val['1']);
-			$company_type_id = $company_type_arr['1'];
-			$my_company_type = $company_type_arr['0'];
-
-			if($company_type_id != '' && $company_type_id != 8){
-				$company_type = "AND `company_details`.`company_type_id` = '$company_type_id'";
-			}
-		}else{
-			$my_company_type = 'All Company Types';
-		}
-
-		$query = '';
-		$content = '';
-		$my_activity = '';
-
-		if($data_val['2'] != ''){
-			$query .= " AND (";
-				$activity_arr = explode(',',$data_val['2']);
-				$activity_loops = count($activity_arr);
-
-				$client_category_q = '';
-				foreach ($activity_arr as $activity_key => $activity_value) {
-					$activity_item_arr = explode('|',$activity_value);
-					$client_category_q .= '`company_details`.`activity_id` = \''.$activity_item_arr["1"].'\'';
-					$my_activity .= $activity_item_arr["0"].', ';
-
-					if($activity_key < $activity_loops-1){
-						$client_category_q .= " OR ";
-					}
+				if($activity_key < $activity_loops-1){
+					$client_category_q .= " OR ";
 				}
+			}
 
-				$query .= $client_category_q;
-				$query .= " )";
+			$query .= $client_category_q;
+			$query .= " )";
 }else{
 	$my_activity .= 'All Activities';
 }
@@ -372,6 +372,9 @@ public function invoice_report(){
 				}elseif($value_invoice_stat == '3'){
 					$invoice_status_q .= '`invoice`.`is_paid` = \'1\' ';
 					$status_filter .= 'Paid';
+				}elseif($value_invoice_stat == '4'){
+					$invoice_status_q .= '`invoice`.`is_invoiced` = \'1\' AND `invoice`.`is_paid` = \'0\'';
+					$status_filter .= 'Outstanding';
 				}else{
 
 				}
@@ -495,14 +498,14 @@ foreach ($table_q->result() as $row){
 
 
 
-			$project_total_values = $this->projects->fetch_project_totals($row->project_id);
+			$project_total_values = $this->projects->fetch_project_totals($row->invoice_project_id);
 
 			if($row->label == 'VR'){
 				$progress_order = 'Variation';
 			}elseif($row->label != 'VR' && $row->label != ''){
 				$progress_order = $row->label;
 			}else{
-				$progress_order = $row->project_id.'P'.$row->order_invoice;				
+				$progress_order = $row->invoice_project_id.'P'.$row->order_invoice;				
 			}
 
 			if($progress_order == 'Variation'){
@@ -512,9 +515,14 @@ foreach ($table_q->result() as $row){
 			}
 
 
+				if(   ( $invoice_status != '' && in_array("4",$invoice_status_arr)  && $row->payment_id != '') || ($invoice_status != '' && !in_array("4", $invoice_status_arr) && $row->payment_id == '') || ( $invoice_status != '' && in_array("3", $invoice_status_arr)  )|| ( $invoice_status != '' && in_array("1", $invoice_status_arr)  )  ){
 
+				$outstanding = $this->invoice->get_current_balance($row->invoice_project_id,$row->invoice_id,$project_total_percent);
 
-			$outstanding = $this->invoice->get_current_balance($row->project_id,$row->invoice_id,$project_total_percent);
+				if( $row->is_invoiced == '0'){
+					$outstanding = '0.00';
+				}
+
 
 			$total_project_value = $project_total_percent + $total_project_value;
 			$total_outstading_value = $outstanding + $total_outstading_value;
@@ -522,9 +530,10 @@ foreach ($table_q->result() as $row){
 			$project_total_percent = number_format($project_total_percent,2);
 			$outstanding = number_format($outstanding,2);
 
-			$content .= '<tr><td>'.$row->company_name.'</td><td>'.$row->project_name.'</td><td>'.$row->project_id.'</td><td>'.$row->invoice_date_req.'</td><td>'.$row->date_site_finish.'</td><td>'.$progress_order.'</td><td>'.$row->progress_percent.'</td><td>'.$project_total_percent.'</td><td>'.$outstanding.'</td></tr>';
+			$content .= '<tr><td>'.$row->company_name.'</td><td>'.$row->project_name.'</td><td>'.$row->invoice_project_id.'</td><td>'.$row->invoice_date_req.'</td><td>'.$row->date_site_finish.'</td><td>'.$progress_order.'</td><td>'.$row->progress_percent.'</td><td>'.$project_total_percent.'</td><td>'.$outstanding.'</td></tr>';
 			$records_num++;
 		}
+	}
 	}
 
 }
@@ -878,10 +887,12 @@ if($prj_status != ''){
 
 												if($show_invoiced == 1){
 
+													$prj_total_current = $row['project_total']+$row['variation_total'];
+
 													$content .= '<tr class="'.$color.'"><td>'.$row['date_site_finish'].'</td><td>'.$row['date_site_commencement'].'</td><td>'.$row['company_name'].'</td><td>'.$row['project_name'].'</td>';
 
 													if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
-														$content .= '<td>'.number_format($row['project_total'],2).'</td>';
+														$content .= '<td>'.number_format($prj_total_current ,2).'</td>';
 													}else{
 														$content .= '<td class="green-estimate">'.number_format($row['budget_estimate_total'],2).'</td>';
 													}
@@ -894,7 +905,7 @@ if($prj_status != ''){
 														$content .= '<td class="green-estimate">'.number_format($row['labour_hrs_estimate'],2).'</td>';
 													}
 
-													$content .= '<td>'.$row['project_id'].'</td><td>'.number_format($this->invoice->get_project_invoiced($row['project_id'],$row['project_total']),2).'</td></tr>';			
+													$content .= '<td>'.$row['project_id'].'</td><td>'.number_format($this->invoice->get_project_invoiced($row['project_id'],$row['project_total'],$row['variation_total']),2).'</td></tr>';			
 													$records_num++;
 													array_push($arrs,$row['project_id']);
 												}
@@ -903,10 +914,13 @@ if($prj_status != ''){
 
 												if($show_un_invoiced == 1){ 
 
+
+													$prj_total_current = $row['project_total']+$row['variation_total'];
+
 													$content .= '<tr class="'.$color.'"><td>'.$row['date_site_finish'].'</td><td>'.$row['date_site_commencement'].'</td><td>'.$row['company_name'].'</td><td>'.$row['project_name'].'</td>';
 
 													if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
-														$content .= '<td>'.number_format($row['project_total'],2).'</td>';
+														$content .= '<td>'.number_format($prj_total_current,2).'</td>';
 													}else{
 														$content .= '<td class="green-estimate">'.number_format($row['budget_estimate_total'],2).'</td>';
 													}
@@ -919,7 +933,7 @@ if($prj_status != ''){
 														$content .= '<td class="green-estimate">'.number_format($row['labour_hrs_estimate'],2).'</td>';
 													}
 
-													$content .= '<td>'.$row['project_id'].'</td><td>'.number_format($this->invoice->get_project_invoiced($row['project_id'],$row['project_total']),2).'</td></tr>';			
+													$content .= '<td>'.$row['project_id'].'</td><td>'.number_format($this->invoice->get_project_invoiced($row['project_id'],$row['project_total'],$row['variation_total']),2).'</td></tr>';			
 													$records_num++;
 													array_push($arrs,$row['project_id']);
 												}

@@ -173,6 +173,7 @@
   
 
 <!-- wip_filter_modal -->
+<!-- 
 <div class="modal fade" id="invoiceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -221,6 +222,7 @@
     </div>
   </div>
 </div>
+ -->
 <!-- wip_filter_modal -->
 
 
@@ -530,6 +532,7 @@
               <option value="1">Un-Invoiced</option>
               <option value="2" selected="">Invoiced</option>
               <option value="3">Paid</option>
+              <option value="4">Outstanding</option>
             </select>
 
           </div>

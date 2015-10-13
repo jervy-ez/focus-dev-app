@@ -66,6 +66,9 @@
     $this->invoice->set_invoice_vr($project_id);
   }
 ?>
+
+<div class="test"></div>
+
 <div class="row pad-10">
   <div class="col-xs-12">
 
@@ -263,9 +266,6 @@
         <div class="pull-right">
           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
           <button type="button" class="btn btn-primary set_invoice_modal_submit">Submit</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal" data-toggle="modal" data-target="#pdf_editor">PDF Editor</button>
-
-          
         </div>
 
       </div>
@@ -444,24 +444,6 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default po_cancel_values" data-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-success payment_set_values"><i class="fa fa-floppy-o"></i> Save Payment</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- MODAL -->
-<div class="modal fade" id="pdf_editor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-pdf-editor">
-    <div class="modal-content">
-       
-      <div class="modal-body clearfix pad-10">
-
-
-        <iframe src="<?php echo base_url(); ?>invoice/job_book/<?php echo $project_id; ?>" style="" width="99.6%" height="90%" frameborder="0" class="frame_container"></iframe>
-  
-  
-
       </div>
     </div>
   </div>
