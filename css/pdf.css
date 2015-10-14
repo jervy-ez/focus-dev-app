@@ -2,409 +2,109 @@
  Style for PDF docs only
  ========================================================================== */
 
- *{
+*{
  	font-family: Arial, Helvetica, sans-serif;
  	font-size: 12px;
- 	margin: 0;
- 	padding: 0;
- }
-
- html,body{
- 	margin: 0;
- 	padding: 0;
- }
-
- body{
- 	margin:10px;
- }
-
- table {
-	border-collapse: collapse;
- }
-
- tbody tr:nth-child(odd) {
- 	background-color: #ccc;
- }
-
- table, th, td {
- 	border: 1px solid black;
- }
-
- td,th {
- 	height: 25px;
- 	vertical-align: middle;
- 	padding: 0px 5px;
- }
-
- h1{
- 	font-size: 20px !important;
- 	font-weight: bold;
- }
-
- .header{
- 	border-bottom: 2px solid #000;
- }
-
- .block{
- 	display: block;
- }
-
- .text-right{
- 	text-align: right !important;
- 	display:block;
- }
-
- .text-left{
- 	text-align: left !important;
- 	display:block;
- }
-
- .pull-right{
- 	float: right;
- 	display:block;
- }
-
- .pull-left{
- 	float: left;
- 	display:block;
- }
-
- .container:before,
- .container:after {
- 	content:"";
- 	display:table;
- }
- .container:after {
- 	clear:both;
- }
- .container {
- 	zoom:1; /* For IE 6/7 (trigger hasLayout) */
- }
-
- .footer{
- 	position: absolute;
- 	bottom: 0;
- 	background: #ccc;
- 	padding: 0px 10px;
- 	border:1px solid #000;
- }
-
- .green-estimate{
- 	color: green !important;
- 	font-weight: bold !important;
- }
-
- .invoiced, tr.invoiced td, tr.invoiced td a{
- 	color: rgb(206, 3, 203) !important;
- 	font-weight: bold !important;
- }
-
- .paid, tr.paid td, tr.paid td a{
- 	color: #0398BD  !important;
- 	font-weight: bold !important;
- }
-
- .wip, tr.wip td, tr.wip td a{
- 	color: #C16601 !important;
- 	font-weight: bold !important;
- }
-
- .wip_b, tr.wip_b td, tr.wip_b td a{
- 	color: #000 !important;
- }
-
- .hide{
- 	display: none;
- }
-
- .hidden{
- 	display: none;
- 	visibility: hidden;
- }
-
-.editor_body{
- 	margin: 10px 10px 10px;
- 	position: relative;
-
- 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 14px;
-    line-height: 1.42857143;
-    color: #333;
 }
 
-.editor_body p{
-	margin-bottom: 0;
-
- 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 14px;
-    line-height: 1.42857143;
-    color: #333;
-}
-
-.editor_body strong{
-	font-weight: bold !important; 
-}
-
-.editor_body .green-estimate label,.editor_body .green-estimate{
-	color: green !important;
-	border-color: green !important; 
-	font-weight: bold !important; 
-}
-
-.editor_body .green-estimate .form-control{
-	border-color: green !important;	
-	color: green !important; 
-	font-weight: bold;
-}
-
-.editor_body .green-estimate .input-group-addon{
-	color: green !important;
-	border-color: #555 !important;
-	background: #B0EDB0; 
-	font-weight: bold;
-}
-
-.editor_body td.green-estimate {
-	font-weight: bold;
-	color: green !important; 
-}
-
-.editor_body table{
-	width: 100%;
-}
-
-.editor_body table, .editor_body table tr, .editor_body table tr td{
-	border:0;
+html,body{
+	margin: 20px 15px 50px;
 	padding: 0;
-	margin: 0;
-	background: #fff;
 }
 
-.editor_body table th{
-	font-size:12px;
-	margin-bottom: 10px;
-	border-bottom:1px solid #000 !important;
-	text-align: left;
-	padding-left: 5px;
+table {
+ 	border-collapse: collapse;
+}
+
+tbody tr:nth-child(odd) {
+ 	background-color: #ccc;
+}
+
+table, th, td {
+ 	border: 1px solid black;
+}
+
+td,th {
+  height: 25px;
+  vertical-align: middle;
+  padding: 0px 5px;
+}
+
+h1{
+	font-size: 20px !important;
 	font-weight: bold;
 }
 
-.editor_body table td{
-	padding: 5px;
+.header{
+	border-bottom: 2px solid #000;
 }
 
-.editor_body .clearfix:before,.editor_body .clearfix:after{
-  content: " ";
- /* display: table;*/
+.block{
+	display: block;
 }
 
-.editor_body .clearfix:after,.editor_body .container:after{
-  clear: both;
+.text-right{
+	text-align: right !important;
+	display:block;
 }
 
-.editor_body .pull-right{
+.text-left{
+	text-align: left !important;
+	display:block;
+}
+
+.pull-right{
 	float: right;
+	display:block;
 }
 
-.editor_body .pull-left{
+.pull-left{
 	float: left;
+	display:block;
 }
 
-.editor_body img{
-	margin-bottom: 10px;
+.container:before,
+.container:after {
+  content:"";
+  display:table;
+}
+.container:after {
+  clear:both;
+}
+.container {
+  zoom:1; /* For IE 6/7 (trigger hasLayout) */
 }
 
-.editor_body .header{
-	border:2px solid #000;
-	margin-bottom: 10px;
-}
-
-.editor_body .totals{
-	border:2px solid #000;
-	margin-bottom: 10px;
-	padding: 10px;
-	font-size: 18px;	
-	background: #DDDDDD;
-}
-
-.editor_body .m-left-20{
-	margin-right: 20px;
-}
-
-.editor_body .m-right-20{
-	margin-right: 20px;
-}
-
-.editor_body .footer{
-	border-top:2px solid #000;
-	padding: 10px;
-	font-size: 18px;
+.footer{
 	position: absolute;
 	bottom: 0;
-	width: 96%;
+	background: #ccc;
+	padding: 0px 10px;
+	border:1px solid #000;
 }
 
-.editor_body .print_bttn{
-	background: #429742;
-	color: #fff;
-	border-radius: 5px;
-	padding: 10px 15px;
-	text-decoration: none;
-	position: fixed;
-	right: 10px;
-	top: 10px;
+.green-estimate{
+    color: green !important;
+    font-weight: bold !important;
 }
 
-.editor_body hr{
-	border: none;
-	border-top: 1px solid #000;
-	margin-bottom: 5px;
-	display: block;
-	width: 100%;
-	height: 1px;
-	background: #000;
+
+
+.invoiced, tr.invoiced td, tr.invoiced td a{
+	color: rgb(206, 3, 203) !important;
+	font-weight: bold !important;
 }
 
-.editor_body fieldset {
-  border: none;
+.paid, tr.paid td, tr.paid td a{
+	color: #0398BD  !important;
+	font-weight: bold !important;
 }
 
-.editor_body fieldset legend{
-	background: #fff;
-	width: auto;
-	border-bottom: 0;
-	margin-bottom: -5;
-    font-size: 15px;
+.wip, tr.wip td, tr.wip td a{
+	color: #C16601 !important;
+	font-weight: bold !important;
 }
 
-.editor_body .full{
-  width: 100%;
-}
-
-.editor_body .one-fourth{
-  width: 25%;
-  float: left;
-}
-
-.editor_body .one-third{
-  width: 33.33%;
-  float: left;
-}
-
-.editor_body .one-half{
-  width: 50%;
- /* display: table-cell;*/
-}
-
-.editor_body .border-1{
-	border: 1px solid #000;
-}
-
-.editor_body .border-2{
-	border: 2px solid #000;
-}
-
-.editor_body .border-left-1{
-	border-left: 1px solid #000;
-}
-
-.editor_body .border-left-2{
-	border-left: 2px solid #000;
-}
-
-.editor_body .border-right-1{
-	border-right: 1px solid #000;
-}
-
-.editor_body .border-right-2{
-	border-right: 2px solid #000;
-}
-
-.editor_body .mgn-top-10{
-	margin-top: 10px;
-}
-
-.editor_body .mgn-top-15{
-	margin-top: 15px;
-}
-
-.editor_body .mgn-top-20{
-	margin-top: 20px;
-}
-
-.editor_body .mgn-top-25{
-	margin-top: 25px;
-}
-
-.editor_body .pad-10{
-	padding: 10px;
-}
-
-.editor_body .mgn-10{
-	margin: 10px; 
-}
-
-.editor_body .pad-15{
-	padding: 15px;
-}
-
-.editor_body .mgn-15{
-	margin: 15px; 
-}
-
-.editor_body .pad-20{
-	padding: 20px;
-}
-
-.editor_body .mgn-20{
-	margin: 20px; 
-}
-
-.editor_body .pad-r-10{
-	padding-right: 10px;
-}
-
-.editor_body .pad-r-5{
-	padding-right: 5;
-}
-
-.editor_body .pad-l-10{
-	padding-left: 10px;
-}
-
-.editor_body .mgn-l-5{
-	margin-left: 5px;
-}
-
-.editor_body .pad-r-10{
-	padding-right: 10px;
-}
-
-.editor_body .mgn-r-5{
-	margin-right: 5px;
-}
-
-.editor_body .mgn-b-10{
-	margin-bottom: 10px;
-}
-
-.editor_body .pdf_highlight_doc_mod {
-    color:red;
-    background:yellow;
-
-}
-
-#highlight_line{
-    height: 20px;
-}
-
-#draggable {
-    background: #fff;
-    border: none;
-    color:red;
-    padding: 10px;
-}
-
-#draggable textarea:hover{
-    overflow:visible;
+.wip_b, tr.wip_b td, tr.wip_b td a{
+	color: #000 !important;
 }

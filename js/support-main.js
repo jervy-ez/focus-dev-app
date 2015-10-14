@@ -10,32 +10,6 @@ function get_wip_cost_total(){
   ajax_data(project_ids_wip,'wip/sum_total_wip_cost','.totals_wip');
 }
 
-function remove_elam_email(obj){
-  var elm_val = obj.value;
-
-  var element = document.getElementById(elm_val);
-  element.outerHTML = "";
-  delete element;
-
-
-  var email_list_raw = $('input.email-list').val();
-  var email_list_arr = email_list_raw.split(';');
-
-
-  for(var i = email_list_arr.length - 1; i >= 0; i--) {
-    if(email_list_arr[i] === elm_val) {
-      email_list_arr.splice(i, 1);
-    }
-  }
-
-  var new_set_array_email = email_list_arr.join(';');
-
-  $('input.email-list').val(new_set_array_email);
-
-
-
-}
-
 function remove_last(po_trans_id,work_id,joinery_id){
   var data = po_trans_id+'*'+work_id+'*'+joinery_id;
   ajax_data(data,'purchase_order/remove_last_trans','');
@@ -261,11 +235,11 @@ function invoice_payment_modal(element_obj){
   $('button.invoice_remove_trans').attr('id',data_history);
 }
 
-
+/*
 function open_invoice_filter(){
   $('#invoiceModal').modal('show');
 }
-
+*/
 
 function numberWithCommas(x) {
   var parts = x.toString().split(".");
@@ -312,7 +286,7 @@ function progressPercent(element_obj){
 
     new_val = 100 - Math.abs(new_val);
 
-    new_val = Math.round(new_val * 100) / 100;
+  new_val = Math.round(new_val * 100) / 100;
 
     $("input#"+var_elem_id).val(new_val);
 
@@ -326,7 +300,7 @@ function progressPercent(element_obj){
     var percent_remain = 100 - count_percent();
 
     var new_val = parseFloat(next_item_val) + percent_remain;
-    new_val = Math.round(new_val * 100) / 100;
+  new_val = Math.round(new_val * 100) / 100;
 
     $('input#'+next_item).val(new_val);
   }
@@ -585,18 +559,15 @@ function validate_progress_dates(date_id){
 
 
 
-
-
   function print_job_book(){
     var contents  = $("#job_book_area").html();
     var printWindow = window.open('', '', 'height=800,width=1050,top=100,left=100,location=no,toolbar=no,resizable=yes,menubar=no,scrollbars=yes');
     printWindow.document.write('<html><head>');
-    printWindow.document.write('<script src="'+baseurl+'js/vendor/jquery-1.11.0.min.js" type="text/javascript" language="javascript" /></script>');
     printWindow.document.write('<link href="'+baseurl+'css/print.css" rel="stylesheet" type="text/css" />');
     printWindow.document.write('</head><body class="print_body">');
+    printWindow.document.write('<img src="'+baseurl+'img/focus-logo-print.png" width="206" height="66" />');
     printWindow.document.write(contents);
     printWindow.document.write('<a href="#" onclick="this.parentNode.removeChild(this); window.print(); window.close();" class="print_bttn print_me_now">Print Now!</a>');
-    printWindow.document.write('<script src="'+baseurl+'js/printable.js" type="text/javascript" language="javascript" /></script>');
     printWindow.document.write('</body></html>');
     printWindow.document.close();
   }
@@ -788,29 +759,29 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
     });
 
 
-    $('#main-sidebar').simpleSidebar({
-      opener: '.sb-open-right',
-      wrapper: '#main',
-      animation: {
-        easing: "easeOutQuint"
-      },
-      sidebar: {
-        align: 'right',
-        closingLinks: '.close-sb',
-        width: 360,
-      },
-      sbWrapper: {
-        display: true
-      },
-      mask: {
-        display: true
-      }
-    });
+$('#main-sidebar').simpleSidebar({
+                    opener: '.sb-open-right',
+                    wrapper: '#main',
+                    animation: {
+                        easing: "easeOutQuint"
+                    },
+                    sidebar: {
+                        align: 'right',
+                        closingLinks: '.close-sb',
+                        width: 360,
+                    },
+                    sbWrapper: {
+                        display: true
+                    },
+                    mask: {
+                        display: true
+                    }
+                });
 
-
+ 
  //   $.slidebars({ scrollLock: true });
 
- jQuery.fn.reverse = [].reverse;
+    jQuery.fn.reverse = [].reverse;
 
   //$('.variation_total_cost').text($('.variation_total').text());
 
@@ -820,7 +791,6 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
 
 
     $('input.progress_invoice_id').val(progress_invoice);
-
 
 
     $('input.invoice_item_amount').val(progress_cost_value);
@@ -901,39 +871,39 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
 
 
 
-  $('.proj_comments_search_bttn').click(function(){
-    $(this).find('i').addClass('fa-spin');
+$('.proj_comments_search_bttn').click(function(){
+  $(this).find('i').addClass('fa-spin');
 
-    setTimeout(function(){   
-      $('.proj_comments_search_bttn').find('i').removeClass('fa-spin');
-    },1000);
+  setTimeout(function(){   
+    $('.proj_comments_search_bttn').find('i').removeClass('fa-spin');
+  },1000);
 
 
-    var prjc_project_id = $('select#prjc_project_id').val();
-    $('.notes_side_content').empty().append('<div class="notes_line no_posted_comment"><p><i class="fa fa-cog fa-spin"></i> Searching...</p></div>');
+  var prjc_project_id = $('select#prjc_project_id').val();
+  $('.notes_side_content').empty().append('<div class="notes_line no_posted_comment"><p><i class="fa fa-cog fa-spin"></i> Searching...</p></div>');
 
-    $.post(baseurl+"projects/list_project_comments",{ 'project_id': prjc_project_id },function(result){    
-      if(result == 'Error'){
-        $('.notes_side_form').hide();
-        setTimeout(function(){   
-          $('.notes_side_content').empty().append('<div class="notes_line no_posted_comment"><p>Project Not Found!</p></div>');
-        },1000);
-      }else{
-        setTimeout(function(){   
-          $('.notes_side_form').show();         
-          $('.notes_side_content').empty().append(result);
-        },1000);
-      }    
-    });
+  $.post(baseurl+"projects/list_project_comments",{ 'project_id': prjc_project_id },function(result){    
+    if(result == 'Error'){
+      $('.notes_side_form').hide();
+      setTimeout(function(){   
+        $('.notes_side_content').empty().append('<div class="notes_line no_posted_comment"><p>Project Not Found!</p></div>');
+      },1000);
+    }else{
+      setTimeout(function(){   
+        $('.notes_side_form').show();         
+        $('.notes_side_content').empty().append(result);
+      },1000);
+    }    
   });
+});
 
-  $('select.user-role-selection').on("change", function(e) {
-    var data = $(this).val();
+$('select.user-role-selection').on("change", function(e) {
+  var data = $(this).val();
 
 
-    $.post(baseurl+"users/fetch_user_access",{ 
-      'ajax_var': data
-    },function(result){
+  $.post(baseurl+"users/fetch_user_access",{ 
+    'ajax_var': data
+  },function(result){
      var user_access_arr = result.split(",");
 
      setTimeout(function(){
@@ -942,83 +912,78 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
 
 
 
-   });
-
-
-  });
-
-  $("#draggable").draggable();
-
-  $('#companyTable_filter input').focus();
-  $('#projectTable_filter input').focus();
-  $('#wipTable_filter input').focus();
-  $('#po_table_filter input').focus();
-  $('#invoice_table_filter input').focus();
-  $('input.search_title_bb').focus();
-
-
-  $('input.progress_date').on("keydown", function(e) {
-    e.stopPropagation();
-    e.preventDefault();  
-    e.returnValue = false;
-    e.cancelBubble = true;
-    return false;
-  });
-
-  $('input.datepicker#site_start').on("keydown", function(e) {
-    e.stopPropagation();
-    e.preventDefault();  
-    e.returnValue = false;
-    e.cancelBubble = true;
-    return false;
-  });
-
-  $('input.datepicker#site_finish').on("keydown", function(e) {
-    e.stopPropagation();
-    e.preventDefault();  
-    e.returnValue = false;
-    e.cancelBubble = true;
-    return false;
   });
 
 
+});
 
-  $('input.search_title_bb').keyup(function(){
-    var inputWd = $(this).val().toString().toLowerCase();
-    $('.box-area-po .post_item').each(function () {
-      $(this).hide();
-      var rowText = $(this).text().toString();
-      rowText = rowText.toString().toLowerCase();
-      rowText = rowText.replace(/\s/g,'');
 
-      var find = rowText.indexOf(inputWd);
-      if(find  >= 0){
-        $(this).show();
-      }
-    });
+
+
+
+
+$('input.progress_date').on("keydown", function(e) {
+  e.stopPropagation();
+  e.preventDefault();  
+  e.returnValue = false;
+  e.cancelBubble = true;
+  return false;
+});
+
+$('input.datepicker#site_start').on("keydown", function(e) {
+  e.stopPropagation();
+  e.preventDefault();  
+  e.returnValue = false;
+  e.cancelBubble = true;
+  return false;
+});
+
+$('input.datepicker#site_finish').on("keydown", function(e) {
+  e.stopPropagation();
+  e.preventDefault();  
+  e.returnValue = false;
+  e.cancelBubble = true;
+  return false;
+});
+
+
+
+$('input.search_title_bb').keyup(function(){
+  var inputWd = $(this).val().toString().toLowerCase();
+  $('.box-area-po .post_item').each(function () {
+    $(this).hide();
+    var rowText = $(this).text().toString();
+    rowText = rowText.toString().toLowerCase();
+    rowText = rowText.replace(/\s/g,'');
+
+    var find = rowText.indexOf(inputWd);
+    if(find  >= 0){
+      $(this).show();
+    }
   });
+});
 
 
 
-  $('select#prjc_project_id').on("change", function(e) {
-    $('.notes_side_form').hide();
-    $('.notes_side_content').empty().append('<div class="notes_line no_posted_comment"><p>Please click search...</p></div>');
-  });
+$('select#prjc_project_id').on("change", function(e) {
+  $('.notes_side_form').hide();
+  $('.notes_side_content').empty().append('<div class="notes_line no_posted_comment"><p>Please click search...</p></div>');
+});
 
-  $('.submit_notes_prj').click(function(){
+$('.submit_notes_prj').click(function(){
 
 
-    $('.no_posted_comment').remove();
+  $('.no_posted_comment').remove();
 
-    var prjc_user_id = $('.prjc_user_id').val();
-    var prjc_user_first_name = $('.prjc_user_first_name').val();
-    var prjc_user_last_name = $('.prjc_user_last_name').val();
-    var prjc_project_id = $('select#prjc_project_id').val();
-    var notes_comment_text = $('.notes_comment_text').val();
-    var result = '';
-    var dataString = prjc_user_id+'`'+prjc_project_id+'`'+notes_comment_text;
+  var prjc_user_id = $('.prjc_user_id').val();
+  var prjc_user_first_name = $('.prjc_user_first_name').val();
+  var prjc_user_last_name = $('.prjc_user_last_name').val();
+  var prjc_project_id = $('select#prjc_project_id').val();
+  var notes_comment_text = $('.notes_comment_text').val();
+  var result = '';
+  var dataString = prjc_user_id+'`'+prjc_project_id+'`'+notes_comment_text;
 
-    $('.notes_comment_text').empty().val('');
+  $('.notes_comment_text').empty().val('');
 
   //$('.notes_side_content').prepend('<div class="notes_line"><p>'+notes_comment_text+'</p><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small></div>');
 
@@ -1034,39 +999,39 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
 
 });
 
-$('.remove_invoice').click(function(){
-  var invoice_raw = $(this).attr('id');
-  var invoice_arr = invoice_raw.split("-");
+  $('.remove_invoice').click(function(){
+    var invoice_raw = $(this).attr('id');
+    var invoice_arr = invoice_raw.split("-");
 
-  $('.progress_invoice_button').remove();
+    $('.progress_invoice_button').remove();
 
-  var progress = invoice_arr['1'];
+    var progress = invoice_arr['1'];
 
-  $(this).parent().parent().parent().parent().parent().find('.progress_date').prop('disabled', false);
-  $(this).parent().parent().parent().parent().parent().find('.progress-percent').prop('disabled', false);
-  $(".invoices_list_item").find('.invoices_list').last().remove();
+    $(this).parent().parent().parent().parent().parent().find('.progress_date').prop('disabled', false);
+    $(this).parent().parent().parent().parent().parent().find('.progress-percent').prop('disabled', false);
+    $(".invoices_list_item").find('.invoices_list').last().remove();
 
-  $(this).parent().parent().parent().parent().html('<div class="progress_invoice_button"><button class="btn btn-primary  m-right-5 progress_invoice" id="'+progress+'" data-toggle="modal" onclick="progress_invoice(this);" data-target="#set_invoice_modal"><i class="fa fa-file-text-o"></i> Set Invoice</button></div>');
+    $(this).parent().parent().parent().parent().html('<div class="progress_invoice_button"><button class="btn btn-primary  m-right-5 progress_invoice" id="'+progress+'" data-toggle="modal" onclick="progress_invoice(this);" data-target="#set_invoice_modal"><i class="fa fa-file-text-o"></i> Set Invoice</button></div>');
 
-  var invoice_id = invoice_arr['0'];
-  var project_id = invoice_arr['2'];
-
-
-
-  $(".job_book_notes").find('.notes_line').first().remove();
-  var job_book_notes =  $(".job_book_notes").html();
-
-  var data = invoice_id+'*'+project_id+'*'+job_book_notes;
-  ajax_data(data,'invoice/un_invoice_item','');
+    var invoice_id = invoice_arr['0'];
+    var project_id = invoice_arr['2'];
 
 
-  var each_remove_invoice_x = 0;
-  $('.remove_invoice').reverse().each(function( index ){
-    if(each_remove_invoice_x > 0){
-      $(this).parent().hide();
-    }else{
-      $(this).parent().show();
-    }
+
+    $(".job_book_notes").find('.notes_line').first().remove();
+    var job_book_notes =  $(".job_book_notes").html();
+
+    var data = invoice_id+'*'+project_id+'*'+job_book_notes;
+    ajax_data(data,'invoice/un_invoice_item','');
+
+
+    var each_remove_invoice_x = 0;
+    $('.remove_invoice').reverse().each(function( index ){
+      if(each_remove_invoice_x > 0){
+        $(this).parent().hide();
+      }else{
+        $(this).parent().show();
+      }
 
     //var line_text = $(this).parent().parent().parent().parent().parent().find('.progress-item').text();
 
@@ -1075,7 +1040,7 @@ $('.remove_invoice').click(function(){
     each_remove_invoice_x++;
   });
 
-});
+  });
 
 
 
@@ -1296,8 +1261,8 @@ $('input.amount_inc_gst').on("keyup", function(e) {
 
 
 $("#profile_photo").change(function(){
-  readURL(this,'.user_avatar');
-});
+        readURL(this,'.user_avatar');
+    });
 
 $('.invoice_payment_bttn').click(function(){
   var invoice_payment_date = $('#invoice_payment_date').val();
@@ -1590,7 +1555,9 @@ $('#invoice_paid_table_wrapper #invoice_paid_table_filter').append('<p class="m-
 
 $('#invoice_table_wrapper #invoice_table_filter').append('<p class="m-top-5" style="float:left;">Total Invoice (ext-gst): <strong class="total-invoiced-head ex-gst"> $'+total_invoiced_row+'</strong>  &nbsp; Outstanding (ex-gst): <strong class="total-outstanding-head ex-gst"> $'+total_invoiced_outstanding_row+'</strong></p>')
 
+/*
 $('#invoice_table_wrapper #invoice_table_filter').prepend('<button class="btn btn-sm btn-primary pull-right m-left-10 m-right-5" onclick="open_invoice_filter()">Open Filter Screen</button>');
+*/
 
 $('#progress_payment_amount_value').on("keyup", function(e) {
 
@@ -1721,47 +1688,47 @@ $('.is_admin').on('switchChange.bootstrapSwitch', function (event, state) {
 
 
 $('#new_password').keyup(function(e) {
- var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
- var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
- var enoughRegex = new RegExp("(?=.{6,}).*", "g");
+     var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
+     var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
+     var enoughRegex = new RegExp("(?=.{6,}).*", "g");
+     
+     if (false == enoughRegex.test($(this).val())) {
+             $('#passstrength').removeClass('.alert-info').removeClass('alert-warning').removeClass('alert-success').addClass('alert-danger').show();
+             $('#passstrength').html('Add more charactes please, minimum of 8.');
+             $('form.change_password_form').find('input#confirm_password').prop('disabled', true);
 
- if (false == enoughRegex.test($(this).val())) {
-   $('#passstrength').removeClass('.alert-info').removeClass('alert-warning').removeClass('alert-success').addClass('alert-danger').show();
-   $('#passstrength').html('Add more charactes please, minimum of 8.');
-   $('form.change_password_form').find('input#confirm_password').prop('disabled', true);
+     } else if (strongRegex.test($(this).val())) {
+             $('#passstrength').removeClass('.alert-info').removeClass('alert-warning').removeClass('alert-danger').addClass('alert-success').show();
+             $('#passstrength').html('Strong Password!');
+             $('form.change_password_form').find('input#confirm_password').prop('disabled', false);
 
- } else if (strongRegex.test($(this).val())) {
-   $('#passstrength').removeClass('.alert-info').removeClass('alert-warning').removeClass('alert-danger').addClass('alert-success').show();
-   $('#passstrength').html('Strong Password!');
-   $('form.change_password_form').find('input#confirm_password').prop('disabled', false);
-
-
-
-
- } else if (mediumRegex.test($(this).val())) {
-   $('#passstrength').removeClass('.alert-info').removeClass('alert-danger').removeClass('alert-success').addClass('alert-warning').show();
-   $('#passstrength').html('Try mixing it with Symbols, Numbers and a Upper-Case Letter for the new password.');
-   $('form.change_password_form').find('input#confirm_password').prop('disabled', true);
+             
 
 
- } else {
-   $('#passstrength').removeClass('.alert-info').removeClass('alert-warning').removeClass('alert-success').addClass('alert-danger').show();
-   $('#passstrength').html('Weak Password, are you sure about this?');
-   $('form.change_password_form').find('input#confirm_password').prop('disabled', true);
- }
+     } else if (mediumRegex.test($(this).val())) {
+             $('#passstrength').removeClass('.alert-info').removeClass('alert-danger').removeClass('alert-success').addClass('alert-warning').show();
+             $('#passstrength').html('Try mixing it with Symbols, Numbers and a Upper-Case Letter for the new password.');
+             $('form.change_password_form').find('input#confirm_password').prop('disabled', true);
+             
 
- var new_pass = $('#new_password').val();
- var confirm_password = $('#confirm_password').val();
+     } else {
+             $('#passstrength').removeClass('.alert-info').removeClass('alert-warning').removeClass('alert-success').addClass('alert-danger').show();
+             $('#passstrength').html('Weak Password, are you sure about this?');
+             $('form.change_password_form').find('input#confirm_password').prop('disabled', true);
+     }
 
- if(new_pass == confirm_password){
-  $('form.change_password_form').find('.change_passwprd_button').remove();
-  $('form.change_password_form').append('<input type="submit" name="update_password" value="Update Password" class="pull-right btn btn-danger m-right-5 m-bottom-10 change_passwprd_button">');
-}else{
-  $('form.change_password_form').find('.change_passwprd_button').remove();
-}
+     var new_pass = $('#new_password').val();
+     var confirm_password = $('#confirm_password').val();
+
+     if(new_pass == confirm_password){
+      $('form.change_password_form').find('.change_passwprd_button').remove();
+      $('form.change_password_form').append('<input type="submit" name="update_password" value="Update Password" class="pull-right btn btn-danger m-right-5 m-bottom-10 change_passwprd_button">');
+    }else{
+      $('form.change_password_form').find('.change_passwprd_button').remove();
+    }
 
 
-return true;
+     return true;
 });
 
 
@@ -1802,49 +1769,11 @@ $('.check-swtich').on('switchChange.bootstrapSwitch', function (event, state) {
      var accessVal = $(this).data('checkbox') - 1;
    }
 
-   var inputId = $(this).parent().parent().parent().attr('class');
+  var inputId = $(this).parent().parent().parent().attr('class');
 
    $('#'+inputId).val(accessVal);
- });
-
-
-$('input#cc_emails').keyup(function(e){
-
-  var inputted_email = $(this).val();
-
-  inputted_email = inputted_email.replace(";", "");
-  inputted_email = inputted_email.replace(",", "");
-  inputted_email = inputted_email.replace(" ", "");
-
-  var currnt_emails = $('input.email-list').val();
-
-  if(currnt_emails.length == 0){
-    var new_set_email = inputted_email;
-  }else{
-    var new_set_email = currnt_emails+','+inputted_email;
-  }
-
-  if(inputted_email.length > 0){
-
-    if(e.keyCode == 186){
-      $('input.email-list').val(new_set_email);
-      $('input#cc_emails').val('');
-      $('.email-container').prepend('<button type="button" id="'+inputted_email+'" value="'+inputted_email+'" class="m-right-5 btn btn-default btn-xs inputted_email_btn pull-left m-bottom-5" onclick="remove_elam_email(this)">'+inputted_email+'</button>');
-    }
-    if(e.keyCode == 188){
-      $('input.email-list').val(new_set_email);
-      $('input#cc_emails').val('');
-      $('.email-container').prepend('<button type="button" id="'+inputted_email+'" value="'+inputted_email+'" class="m-right-5 btn btn-default btn-xs inputted_email_btn pull-left m-bottom-5" onclick="remove_elam_email(this)">'+inputted_email+'</button>');
-    }
-    if(e.keyCode == 32){
-      $('input.email-list').val(new_set_email);
-      $('input#cc_emails').val('');
-      $('.email-container').prepend('<button type="button" id="'+inputted_email+'" value="'+inputted_email+'" class="m-right-5 btn btn-default btn-xs inputted_email_btn pull-left m-bottom-5" onclick="remove_elam_email(this)">'+inputted_email+'</button>');
-    } 
-  }
-
-
 });
+
 
 $('.set_invoice_modal_submit').click(function(){
   var project_id = $('input.project_number').val();
@@ -1875,7 +1804,6 @@ $('.set_invoice_modal_submit').click(function(){
   invoice_notes = '<div class="notes_line"><p><strong>'+project_id+progressArr[0]+progressArr[1]+'&nbsp; - '+invoice_percent_value+'% of $'+proj_ex_gst_total+' <span class="pull-right"><strong>$'+invoice_item_amount+' EX-GST</strong></span></strong></p><p>'+invoice_notes+'</p><br /></div>'+job_book_notes;
 
 
-$('input.raw_invoice_notes').val(invoice_notes);
 
   var date_set_invoice_data = $('input.date_set_invoice_data').val();
   var job_book_details_id = $('input.job_book_details_id').val();
@@ -1885,71 +1813,25 @@ $('input.raw_invoice_notes').val(invoice_notes);
   var data = project_id+'`'+id_bttn+'`'+cc_emails+'`'+invoice_notes+'`'+date_set_invoice_data+'`'+job_book_details_id+'`'+invoice_item_amount;
   $('#set_invoice_modal').modal('hide');
 
-  //$('input#cc_emails').val('');
-
-  $("iframe.frame_container").contents().find('.print_job_book_notes').html(invoice_notes);
-  $("iframe.frame_container").contents().find('.canvas_area').each( function(){ 
-    $(this).html($(this).html().replace(/style="/g,'pdf_mrkp_styl="'));
-  });
-  
-  $('#set_invoice_modal').modal('hide');
-  $('#pdf_editor').modal('hide');
-  $('show_loading').trigger('click');
-
-  var canvas_area = $("iframe.frame_container").contents().find('.canvas_area').html();
-  $('textarea#content').val(canvas_area);
-  $('input.submit_invoice_set').trigger('click');
-
-
-
-
-
-
+  $('input#cc_emails').val('');
 
    //alert(data);
    //ajax_data(data,'invoice/set_invoice_progress','');
-/*
-   $.ajax({
-    'url' : base_url+'invoice/set_invoice_progress',
-    'type' : 'POST',
-    'data' : {'ajax_var' : data },
-    'success' : function(data){
-      if(data){
-        print_job_book();
-        window.location.assign("?submit_invoice="+project_id);
-      }
-    }
-  });
 
-*/
+   $.ajax({
+      'url' : base_url+'invoice/set_invoice_progress',
+      'type' : 'POST',
+      'data' : {'ajax_var' : data },
+      'success' : function(data){
+        if(data){
+          print_job_book();
+          window.location.assign("?submit_invoice="+project_id);
+        }
+      }
+    });
+
 
  });
-
-
-$('.pdf_editor_bttn').click(function(){
-
-  var invoice_notes = $('textarea#invoice_notes').val();
-  var id_bttn = $('input.progress_invoice_id').val();
-  var job_book_notes = $('.job_book_notes').html();
-  var project_id = $('input.project_number').val();
-  var progressArr = id_bttn.split("_");
-  var invoice_percent_value = $('input.invoice_percent_value').val();
-  var proj_ex_gst_total = $('input.project_total_raw').val();
-  var invoice_item_amount = $('input.invoice_item_amount').val();
-
-  proj_ex_gst_total = Math.round(proj_ex_gst_total * 100) / 100;
-
-  if(progressArr[0]=='F'){
-    progressArr[1] = '';
-  }
-
-  invoice_notes = invoice_notes.replace(/'/g, '&apos;');
-  invoice_notes = invoice_notes.replace(/\r?\n/g, '<br />');
-  invoice_notes = '<div class="notes_line"><p><strong>'+project_id+progressArr[0]+progressArr[1]+'&nbsp; - '+invoice_percent_value+'% of $'+proj_ex_gst_total+' <span class="pull-right"><strong>$'+invoice_item_amount+' EX-GST</strong></span></strong></p><p>'+invoice_notes+'</p><br /></div>';
-
-
-  $("iframe.frame_container").contents().find('.print_job_book_notes').prepend(invoice_notes);
-});
 
 $('.save_progress_values').click(function(){
   update_project_invoice();
@@ -2324,7 +2206,7 @@ $('#po_is_reconciled_value').click(function(){
     $('#po_amount_value_inc_gst').val(0.00);
 
   }
-  */
+*/
 });
 
 
@@ -2449,6 +2331,7 @@ $('.payment_set_values').on("click", function(event) {
 });
 
 $('.po_set_values').on("click", function(event) {
+
   var error = 0;
   var po_date_value = $("#po_date_value").val();
   var po_amount_value = $("#po_amount_value").val();
@@ -2498,7 +2381,8 @@ $('.po_set_values').on("click", function(event) {
     var po_no = $("#po_number_item").val();
     $.post(baseurl+"purchase_order/no_insurance_send_email", 
     {
-      po_no:po_no
+      po_no:po_no,
+      po_reference_value: po_reference_value
     }, 
     function(result){
       if(result !== '0'){
@@ -2537,7 +2421,7 @@ $('.po_set_values').on("click", function(event) {
     $('#po_is_reconciled_value').prop('checked', true);
     $("#po_notes_value").val('');
     $("#po_amount_value_inc_gst").val('');
-    */
+*/
   //  window.location.reload(true);
 
 //  $('.po_error').empty();
@@ -2671,7 +2555,7 @@ $("select#job_category").on("change", function(e) {
     $("select#project_manager").val('');
     $("select#project_administrator").val('');
     $("select#estimator").val('');
-    */
+*/
   }
 });
 
@@ -2695,13 +2579,13 @@ $(".set_copy_work").on("click", function(event) {
   }); //this is working select callbak!
 
 
-var project_ids_wip = [];
-$("table#wipTable").find('tbody tr').each(function( index ) {
-  project_ids_wip.push($(this).find('td:first-child').text());
-  project_ids_wip.toString();
-});
+  var project_ids_wip = [];
+  $("table#wipTable").find('tbody tr').each(function( index ) {
+    project_ids_wip.push($(this).find('td:first-child').text());
+    project_ids_wip.toString();
+  });
 
-ajax_data(project_ids_wip,'wip/sum_total_wip_cost','.totals_wip_default');
+  ajax_data(project_ids_wip,'wip/sum_total_wip_cost','.totals_wip_default');
 
 $('.read_more').on("click", function(event) {
   event.preventDefault(); 
@@ -2781,12 +2665,12 @@ $('.print-wip').on("click", function(event) {
         }
       });  
     }, 1000);  
-}
+  }
 
 
 
-var wipTable = $('#wipTable').dataTable();
-wipTable.fnFilter();
+  var wipTable = $('#wipTable').dataTable();
+  wipTable.fnFilter();
 });
 
 
