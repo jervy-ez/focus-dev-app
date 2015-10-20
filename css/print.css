@@ -19,6 +19,15 @@ body{
 	position: relative;
 }
 
+.hide{
+	display: none;
+}
+
+.hidden{
+	display: none;
+	visibility: hidden;
+}
+
 .green-estimate label,.green-estimate{
 	color: green !important;
 	border-color: green !important; 

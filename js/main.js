@@ -1,4 +1,4 @@
-var segment_index = 5;  // 5 if live |||   6 is local
+var segment_index = 6;  // 5 if live |||   6 is local
 
     //dynamic_value_ajax
     function ajax_data(value,controller_method,classLocation){
@@ -199,39 +199,7 @@ $(document).ready(function() {
     $("ul.dropdown-menu").hide();
     $("dropdown-menu").hide();
   });
-//Dropbox================
-window.dropbox_connect = function(project_id){
-  $('#attachement_loading_modal').modal('show');
-  window.open(baseurl+'attachments/dropbox_authenticate?proj_id='+project_id, '_self', true);
-}
 
-$.post(baseurl+"attachments/view_attachment_type",
-{
-  type: 1
-},
-function(result){
-  $('#attachment_type').html(result);
-});
-
-$("#attachment_type").change(function(){
-  var attachment_type = $("#attachment_type").val();
-  if(attachment_type == 'Add_New'){
-    $('.modal').modal('hide');
-    $("#attachment_type_modal").modal('show');
-    $.post(baseurl+"attachments/view_attachment_type",
-    {
-      type:2
-    },
-    function(result){
-      $('#table_attachment_type').html(result);
-      $("#txt_attachment_type").val("");
-      $("#btn_add_attachment_type").show();
-      $("#btn_update_attachment_type").hide();
-      $("#btn_delete_attachment_type").hide();
-    });
-  }
-});
-//Dropbox================ 
 //Insurance 
 $("#attach_pl").click(function(){
   $(".insurance_title").html("Public Liability Insurance");
@@ -249,88 +217,45 @@ $("#attach_ip").click(function(){
 });
 
 $("#update_insurance_pl").click(function(){
-  var comp_id = $("#company_id_data").val();
   var expiration = $("#pl_expiration").val();
-  if(expiration == ""){
-    $.post(baseurl+"company/if_insurance_not_exist",
-    {
-      comp_id: comp_id,
-      ins_stat: 1
-    },
-    function(result){
-      alert("You provide a blank Expiration Date, Insurance now removed!");
-      $(".pl_insurance_"+comp_id).hide();
-      $(".pl_sdate").val("");
-      $(".pl_expdate").val("");
-    });
-  }else{
-    $.post(baseurl+"company/update_insurance_exp_date",
-    {
-      comp_id: comp_id,
-      insurance_type: 1,
-      expiration: expiration
-    },
-    function(result){
-      alert("Insurance Updated!");
-    });
-  }
-  
+  var comp_id = $("#company_id_data").val();
+  $.post(baseurl+"company/update_insurance_exp_date",
+  {
+    comp_id: comp_id,
+    insurance_type: 1,
+    expiration: expiration
+  },
+  function(result){
+    alert("Insurance Updated!");
+  });
 });
 
 $("#update_insurance_wc").click(function(){
   var expiration = $("#wc_expiration").val();
   var comp_id = $("#company_id_data").val();
-  if(expiration == ""){
-    $.post(baseurl+"company/if_insurance_not_exist",
-    {
-      comp_id: comp_id,
-      ins_stat: 2
-    },
-    function(result){
-      alert("You provide a blank Expiration Date, Insurance now removed!");
-      $(".wc_insurance_"+comp_id).hide();
-      $(".wc_sdate").val("");
-      $(".wc_expdate").val("");
-    });
-  }else{
-    $.post(baseurl+"company/update_insurance_exp_date",
-    {
-      comp_id: comp_id,
-      insurance_type: 2,
-      expiration: expiration
-    },
-    function(result){
-      alert("Insurance Updated!");
-    });
-  }
+  $.post(baseurl+"company/update_insurance_exp_date",
+  {
+    comp_id: comp_id,
+    insurance_type: 2,
+    expiration: expiration
+  },
+  function(result){
+    alert("Insurance Updated!");
+  });
 });
 
 $("#update_insurance_ip").click(function(){
   var expiration = $("#ip_expiration").val();
   var comp_id = $("#company_id_data").val();
-  if(expiration == ""){
-    $.post(baseurl+"company/if_insurance_not_exist",
-    {
-      comp_id: comp_id,
-      ins_stat: 3
-    },
-    function(result){
-      alert("You provide a blank Expiration Date, Insurance now removed!");
-      $(".ip_insurance_"+comp_id).hide();
-      $(".ip_sdate").val("");
-      $(".ip_expdate").val("");
-    });
-  }else{
-    $.post(baseurl+"company/update_insurance_exp_date",
-    {
-      comp_id: comp_id,
-      insurance_type: 3,
-      expiration: expiration
-    },
-    function(result){
-      alert("Insurance Updated!");
-    });
-  }
+  $.post(baseurl+"company/update_insurance_exp_date",
+  {
+    comp_id: comp_id,
+    insurance_type: 3,
+    expiration: expiration
+  },
+  function(result){
+    alert("Insurance Updated!");
+  });
 });
 $("#complete_print").click(function(){
   $("#contractorlist_modal_title").html("with Complete Insurance");
@@ -375,89 +300,7 @@ $("#incomplete_print").click(function(){
     printWindow.document.close();
   });
 });
-window.clk_pl_insurance = function(comp_id){
-  $.ajax({
-    url: baseurl+'uploads/company/insurance/'+comp_id+'/'+comp_id+'_Public_Liability.pdf',
-    type:'HEAD',
-    error: function()
-    {
-      $.post(baseurl+"company/if_insurance_not_exist",
-      {
-        comp_id: comp_id,
-        ins_stat: 1
-      },
-      function(result){
-        alert("Insurance Doesn't Exist!");
-        $(".pl_insurance_"+comp_id).hide();
-        $(".pl_sdate").val("");
-        $(".pl_expdate").val("");
-      });
-    },
-    success: function()
-    {
-      var d = new Date();
-      var n = d.getTime();
-      window.open(baseurl+'uploads/company/insurance/'+comp_id+'/'+comp_id+'_Public_Liability.pdf?'+n);
-    }
-  });
-  return false;
-}
 
-window.clk_wc_insurance = function(comp_id){
-  $.ajax({
-    url: baseurl+'uploads/company/insurance/'+comp_id+'/'+comp_id+'_Workers_Compensation.pdf',
-    type:'HEAD',
-    error: function()
-    {
-      $.post(baseurl+"company/if_insurance_not_exist",
-      {
-        comp_id: comp_id,
-        ins_stat: 2
-      },
-      function(result){
-        alert("Insurance Doesn't Exist!");
-        $(".wc_insurance_"+comp_id).hide();
-        $(".wc_sdate").val("");
-        $(".wc_expdate").val("");
-      });
-    },
-    success: function()
-    {
-        var d = new Date();
-        var n = d.getTime();
-        window.open(baseurl+'uploads/company/insurance/'+comp_id+'/'+comp_id+'_Workers_Compensation.pdf?'+n);
-    }
-  });
-  return false;
-}
-
-window.clk_ip_insurance = function(comp_id){
-  $.ajax({
-    url: baseurl+'uploads/company/insurance/'+comp_id+'/'+comp_id+'_Income_Protection.pdf',
-    type:'HEAD',
-    error: function()
-    {
-      $.post(baseurl+"company/if_insurance_not_exist",
-      {
-        comp_id: comp_id,
-        ins_stat: 3
-      },
-      function(result){
-        alert("Insurance Doesn't Exist!");
-        $(".ip_insurance_"+comp_id).hide();
-        $(".ip_sdate").val("");
-        $(".ip_expdate").val("");
-      });
-    },
-    success: function()
-    {
-        var d = new Date();
-        var n = d.getTime();
-        window.open(baseurl+'uploads/company/insurance/'+comp_id+'/'+comp_id+'_Income_Protection.pdf?'+n);
-    }
-  });
-  return false;
-}
 //Insurance
 
 var variation_id = $("#var_id").val();
@@ -560,67 +403,24 @@ window.create_contract = function(a){
   if(prog_payment_stat == 0){
     alert("Progress Payment is not yest set!");
   }else{
-    $("#contract_notes_reports_tab").modal("show");
+    $("#contract_notes").modal("show");
     var project_id = a;
     $.post(baseurl+"works/get_contract_notes",
     { project_id : project_id },
     function(result){
       var proj_notes = result.split( '|' );
 
-      $("#reports_contract_date").val(proj_notes[0]);
-      $("#reports_plans_elv_draw").val(proj_notes[1]);
-      $("#reports_sched_work_quotation").val(proj_notes[2]);
-      $("#reports_condition_quote_contract").val(proj_notes[3]);
+      $("#contract_date").val(proj_notes[0]);
+      $("#plans_elv_draw").val(proj_notes[1]);
+      $("#sched_work_quotation").val(proj_notes[2]);
+      $("#condition_quote_contract").val(proj_notes[3]);
     });
   }
   return false;
 }
 $("#create_contract").click(function(){
     var project_id = get_project_id();
-    var contract_date = $("#contract_date").val();
-    var plans_elv_draw = "";
-    var sched_work_quotation = "";
-    var condition_quote_contract = "";
 
-    if(contract_date == ""){
-      contract_date = $("#reports_contract_date").val();
-      plans_elv_draw = $("#reports_plans_elv_draw").val();
-      sched_work_quotation = $("#reports_sched_work_quotation").val();
-      condition_quote_contract = $("#reports_condition_quote_contract").val();
-    }else{
-      contract_date = $("#contract_date").val();
-      plans_elv_draw = $("#plans_elv_draw").val();
-      sched_work_quotation = $("#sched_work_quotation").val();
-      condition_quote_contract = $("#condition_quote_contract").val();
-    }
-
-    $.post(baseurl+"works/insert_contract_notes",
-    { 
-      project_id : project_id,
-      cont_date: contract_date,
-      plans_elv_draw: plans_elv_draw,
-      sched_works_qoute: sched_work_quotation,
-      cond_quote_cont: condition_quote_contract
-    },
-    function(result){
-      $.post(baseurl+"works/view_send_pdf", 
-      {
-      }, 
-      function(result){
-        $.post(baseurl+"send_emails/display_proj_pdf_list", 
-        { 
-          project_id: project_id
-        }, 
-        function(result){
-          $("#project_pdf_list").html(result);
-          window.open(baseurl+'works/contract_tot_rfntf/'+project_id);
-        });
-      });
-    });
-});
-
-$("#create_contract_send_pdf").click(function(){ 
-    var project_id = get_project_id();
     $.post(baseurl+"works/insert_contract_notes",
     { 
       project_id : project_id,
@@ -630,24 +430,9 @@ $("#create_contract_send_pdf").click(function(){
       cond_quote_cont: $("#condition_quote_contract").val()
     },
     function(result){
-      
-      $.post(baseurl+"works/view_send_pdf", 
-      {
-      }, 
-      function(result){
-        $.post(baseurl+"send_emails/display_proj_pdf_list", 
-        { 
-          project_id: project_id
-        }, 
-        function(result){
-          $("#project_pdf_list").html(result);
-          setTimeout(window.open(baseurl+'works/contract_tot_rfntf/'+project_id), 10000);
-        });
-      });
+       window.open(baseurl+'works/contract_tot_rfntf/'+project_id);
     });
-
-    
-})
+});
 //Contract===
 //================= IDLE ================
   // $.post(baseurl+"users/user_login",
@@ -764,8 +549,38 @@ $("#create_contract_send_pdf").click(function(){
           });
         }else{
           $("#idle_log_in_form").modal('hide');
-          localStorage.idle = Number(localStorage.idle) + 1;
-        } 
+        }
+        // $.post(baseurl+"users/count_user_log_min",
+        // {},
+        //  function(result){
+        //   alert(result);
+        //   idleTime = result;
+        //   if (idleTime > 2) { // 15 minutes
+        //     if(idleTime == 3){
+        //       alert("idle 3");
+        //       set_modal_show();
+        //     }
+
+        //     check_modal_show();
+
+        //     $('#idle_log_in_form').modal({
+        //       backdrop: 'static',
+        //       keyboard: false
+        //     })
+        //     $("#idle_log_in_form").modal('show');
+            
+
+            
+
+        //       // $.post(baseurl+"users/logout",
+        //       // {},
+        //       // function(result){
+        //       //     alert("You are logged off!");
+        //       //     window.location.reload();
+        //       // });
+        //   }
+        // });
+      localStorage.idle = Number(localStorage.idle) + 1;
     }, 60000);
   }
 
@@ -1110,7 +925,7 @@ $("#filter_po_bydate").click(function(){
     start_date: start_date,
     end_date: end_date
   }, 
-  function(result){ 
+  function(result){   
       if(start_date == "" || end_date == ""){
         alert("Start Date and End Date is Required!");
       }else{
@@ -1161,7 +976,6 @@ $("#filter_po_bydate").click(function(){
 $("#lbl_attached").hide();
 $("#lbl_no_attached").show();
 $("#project_forms").change(function(){
-
   var form = $("#project_forms").val();
   switch(form){
     case "1":
@@ -1172,14 +986,7 @@ $("#project_forms").change(function(){
       {
       }, 
       function(result){
-        //window.open(baseurl+"projects/view/"+proj_id, '_self', true); 
-        $.post(baseurl+"send_emails/display_proj_pdf_list", 
-        { 
-          project_id: proj_id
-        }, 
-        function(result){
-          $("#project_pdf_list").html(result);
-        });
+        window.open(baseurl+"projects/view/"+proj_id, '_self', true); 
       });
       break;
     case "2":
@@ -1190,14 +997,7 @@ $("#project_forms").change(function(){
       {
       }, 
       function(result){
-        //window.open(baseurl+"projects/view/"+proj_id, '_self', true); 
-        $.post(baseurl+"send_emails/display_proj_pdf_list", 
-        { 
-          project_id: proj_id
-        }, 
-        function(result){
-          $("#project_pdf_list").html(result);
-        });
+        window.open(baseurl+"projects/view/"+proj_id, '_self', true); 
       });
       break;
     case "3":
@@ -1208,14 +1008,7 @@ $("#project_forms").change(function(){
       {
       }, 
       function(result){
-        //window.open(baseurl+"projects/view/"+proj_id, '_self', true); 
-        $.post(baseurl+"send_emails/display_proj_pdf_list", 
-        { 
-          project_id: proj_id
-        }, 
-        function(result){
-          $("#project_pdf_list").html(result);
-        });
+        window.open(baseurl+"projects/view/"+proj_id, '_self', true); 
       });
       break;
     case "4":
@@ -1226,60 +1019,30 @@ $("#project_forms").change(function(){
       {
       }, 
       function(result){
-        //window.open(baseurl+"projects/view/"+proj_id, '_self', true); 
-        $.post(baseurl+"send_emails/display_proj_pdf_list", 
-        { 
-          project_id: proj_id
-        }, 
-        function(result){
-          $("#project_pdf_list").html(result);
-        });
+        window.open(baseurl+"projects/view/"+proj_id, '_self', true); 
       });
       break;
     case "5":
-      var file_path = baseurl+"works/variation_summary/"+proj_id;
-      window.open(file_path,"_blank");
-       $.post(baseurl+"works/view_send_pdf", 
-      {
-      }, 
-      function(result){
-        //window.open(baseurl+"projects/view/"+proj_id, '_self', true); 
-        $.post(baseurl+"send_emails/display_proj_pdf_list", 
-        { 
-          project_id: proj_id
-        }, 
-        function(result){
-          $("#project_pdf_list").html(result);
-        });
-      });
+      alert("No variation yet");
       break;
     case "6":
       alert("No variation yet");
       break;
     case "7":
-      var prog_payment_stat = $("#prog_payment_stat").val();
-      if(prog_payment_stat == 0){
-        alert("Progress Payment is not yest set!");
-      }else{
-        $("#contract_notes").modal("show");
-        var project_id = proj_id;
-        $.post(baseurl+"works/get_contract_notes",
-        { project_id : project_id },
-        function(result){
-          var proj_notes = result.split( '|' );
-
-          $("#contract_date").val(proj_notes[0]);
-          $("#plans_elv_draw").val(proj_notes[1]);
-          $("#sched_work_quotation").val(proj_notes[2]);
-          $("#condition_quote_contract").val(proj_notes[3]);
-        });
-      }
+      //var project_id = get_project_id();
+      var file_path = baseurl+"works/contract_tot_rfntf/"+proj_id;
+      window.open(file_path,"_blank");
+      $.post(baseurl+"works/view_send_pdf", 
+      {
+      }, 
+      function(result){
+        window.open(baseurl+"projects/view/"+proj_id, '_self', true); 
+      });
       break;
     case "8":
       window.open(baseurl+'reports/Request_for_New_Trade_Deptor_Form.pdf', '_blank', 'fullscreen=yes');
       break;
   }
-  
 });
 $("#merge_attach").click(function(){
   $("#lbl_attached").show();
@@ -1306,13 +1069,11 @@ $("#send_attachment").click(function(){
     if(subject !== ""){
       //var project_id = get_project_id();
       var email = $("#client_email").val();
-      var cc = $("#cc_email").val();
       var msg = $("#message_to_client").val();
       $.post(baseurl+"send_emails/send_email_to_client",
       {
         proj_id: proj_id,
         clien_email: email,
-        cc: cc,
         subject: subject,
         message: msg
       },
@@ -1330,59 +1091,17 @@ $("#send_attachment").click(function(){
  // ========Send to contracotr ============
 window.view_send_contractor = function(){
   //var project_id = get_project_id();
-  $.post(baseurl+"works/job_date_entered",
-  {
-    proj_id: proj_id
-  },
-  function(result){
-    job_date = result;
-    if(job_date == ""){
-      $("#tab_send_contractor_cpo").hide();
-    }else{
-      $("#tab_send_contractor_cpo").show();
-    }
-    $.post(baseurl+"send_emails/display_work_contractor_list", 
-    { 
-      project_id: proj_id
-    }, 
-    function(result){
-      $("#contractor_list").html(result);
-    });
-    $.post(baseurl+"send_emails/display_proj_pdf_list", 
-    { 
-      project_id: proj_id
-    }, 
-    function(result){
-      $("#project_pdf_list").html(result);
-    });
-  });
-  
-}
-
-window.view_send_client = function(){
-  $.post(baseurl+"send_emails/display_proj_pdf_list", 
+  $.post(baseurl+"send_emails/display_work_contractor_list", 
   { 
     project_id: proj_id
   }, 
   function(result){
-    $("#project_pdf_list").html(result);
+    $("#contractor_list").html(result);
   });
 }
-
-window.view_send_contractor_cpo = function(){
-  //var project_id = get_project_id();
-  $.post(baseurl+"send_emails/display_work_contractor_list_cpo", 
-  { 
-    project_id: proj_id
-  }, 
-  function(result){
-    $("#contractor_list_cpo").html(result);
-  });
-}
-
 
 window.check_all = function(){
-  if($('.checkall_contractor').is(':checked')){
+  if($('#checkall_contractor').is(':checked')){
     $(".cont_checkbox").each(function(){
       this.checked = true;
     });
@@ -1392,19 +1111,6 @@ window.check_all = function(){
     });
   }
 }
-
-window.check_all_cpo = function(){
-  if($('.checkall_contractor_cpo').is(':checked')){
-    $(".cont_checkbox_cpo").each(function(){
-      this.checked = true;
-    });
-  }else{
-     $(".cont_checkbox_cpo").each(function(){
-      this.checked = false;
-    });
-  }
-}
-
 $("#btn_creat_cqr").click(function(){
   //var checkboxValues_contractor = [];
   //var project_id = get_project_id();
@@ -1457,8 +1163,7 @@ $("#btn_create_cpo").click(function(){
     if(job_date == ""){
       alert("Cannot Create CPO, Job Date Required!");
     }else{
-      $('input[class=cont_checkbox_cpo]:checked').map(function(){
-        
+      $('input[class=cont_checkbox]:checked').map(function(){
         work_contractor_id = $(this).val();
         $.post(baseurl+"works/fetch_works_contractors", 
         { 
@@ -1481,11 +1186,6 @@ $("#btn_create_cpo").click(function(){
               }, 
               function(result){
                 $("#contractor_list").html(result);
-
-                var proj_job_cat = $("#send_pdf_proj_job_category").val();
-                if(proj_job_cat == "Maintenance"){
-                  window.open(baseurl+"works/maintenance_site_sheet/"+proj_id+"/"+work_id);
-                }
               });
             });
           }
@@ -1524,14 +1224,12 @@ window.show_joinery_cpo = function(a){
   });
 }
 $("#btn_send_cqr").click(function(){
-  var project_id = get_project_id();
+  //var project_id = get_project_id();
   var contractor_email = ""
   send_email = 1;
   no_cqr = 0;
-  var contractor_selected = 0;
   $('input[class=cont_checkbox]:checked').map(function() {
     //checkboxValues_contractor.push($(this).val());
-    contractor_selected++;
     work_contractor_id = $(this).val();
     $.post(baseurl+"works/fetch_works_contractors", 
     { 
@@ -1551,42 +1249,23 @@ $("#btn_send_cqr").click(function(){
         work_id:work_id
       }, 
       function(result){
-        if(result !== ""){
-          if(contractor_email == ""){
-            contractor_email = result;
-          }else{
-            contractor_email = contractor_email+","+result;
-          }
-          $("#contractor_email_add").val(contractor_email);
-          $.post(baseurl+"attachments/get_project_shared_link",
-          { 
-            proj_id: project_id
-          }, 
-          function(result){
-             $("#contractor_email_message").val(result);
-          });
+        if(contractor_email == ""){
+          contractor_email = result;
         }else{
-          alert("One of the selected Contractor/Suppliers has no E-mail Address");
+          contractor_email = contractor_email+","+result;
         }
+        $("#contractor_email_add").val(contractor_email);
       });
     });
   });
-  if(contractor_selected > 1){
-    $("#contractor_alt_email_add").attr('disabled','disabled');;
-  }else{
-    $("#contractor_alt_email_add").removeAttr('disabled');
-  }
   $('button[id="send_email"]').removeAttr('disabled');
 });
 $("#btn_send_cpo").click(function(){
-  var project_id = get_project_id();
-  var contractor_selected = 0;
   //var project_id = get_project_id();
   var contractor_email = "";
   send_email = 2;
   no_cpo = 0;
-  $('input[class=cont_checkbox_cpo]:checked').map(function() {
-    contractor_selected++;
+  $('input[class=cont_checkbox]:checked').map(function() {
     //checkboxValues_contractor.push($(this).val());
     work_contractor_id = $(this).val();
     $.post(baseurl+"works/fetch_works_contractors", 
@@ -1609,38 +1288,19 @@ $("#btn_send_cpo").click(function(){
           work_id:work_id
         }, 
         function(result){
-          if(result !== ""){
-            if(contractor_email == ""){
-              contractor_email = result;
-            }else{
-              contractor_email = contractor_email+","+result;
-            }
-            $("#contractor_email_add").val(contractor_email);
-            $.post(baseurl+"attachments/get_project_shared_link",
-            { 
-              proj_id: project_id
-            }, 
-            function(result){
-               $("#contractor_email_message").val(result);
-            });
+          if(contractor_email == ""){
+            contractor_email = result;
           }else{
-            alert("One of the selected Contractor/Suppliers has no E-mail Address");
+            contractor_email = contractor_email+","+result;
           }
+          $("#contractor_email_add").val(contractor_email);
         });
       }
     });
   });
-
-  if(contractor_selected > 1){
-    $("#contractor_alt_email_add").attr('disabled','disabled');;
-  }else{
-    $("#contractor_alt_email_add").removeAttr('disabled');
-  }
-
   $('button[id="send_email"]').removeAttr('disabled');
 });
-$("#sending_button").hide();
-var counter = 0;
+    var counter = 0;
 $("#send_email").click(function(){
   counter = 0;
   if(send_email == 1){
@@ -1676,9 +1336,7 @@ $("#send_email").click(function(){
 
 
             // on 3 second
-            
-            $("#send_email").hide();
-            $("#sending_button").show();
+            setTimeout(function(){
             $.post(baseurl+"send_emails/send_email_to_contractor_cqr",
             { 
               contractor_email: result,
@@ -1695,33 +1353,28 @@ $("#send_email").click(function(){
              /* if(result == 1){
 
               }*/
-              setTimeout(function(){
-                $.post(baseurl+"send_emails/display_work_contractor_list", 
-                { 
-                  project_id: proj_id
-                }, 
-                function(result){
-                  if(counter == 0 ){
-                    alert("E-mail Successfully Sent");
-                  }
-                  $("#send_email").show();
-                  $("#sending_button").hide();
-
-                  $("#contractor_email_add").val("");
-                  $("#contractor_alt_email_add").val("");
-                  $("#contractor_cc").val("");
-                  $("#contractor_bcc").val("");
-                  $("#contractor_subject").val("");
-                  $("#contractor_email_message").val("");
-                  $('button[id="send_email"]').attr('disabled','disabled');
-                  
-                  counter++;
-                  $("#contractor_list").html(result);
-                });
-              }, 5000);  // on 5 second
+              $.post(baseurl+"send_emails/display_work_contractor_list", 
+              { 
+                project_id: proj_id
+              }, 
+              function(result){
+                $("#contractor_email_add").val("");
+                $("#contractor_alt_email_add").val("");
+                $("#contractor_cc").val("");
+                $("#contractor_bcc").val("");
+                $("#contractor_subject").val("");
+                $("#contractor_email_message").val("");
+                $('button[id="send_email"]').attr('disabled','disabled');
+                alert("E-mail Succssfully Send");
+                counter++;
+                $("#contractor_list").html(result);
+                alert(counter);
+              });
             });
 
-                
+            }, 3000);  // on 3 second
+            
+    
           });
         });
       });
@@ -1733,7 +1386,7 @@ $("#send_email").click(function(){
       //var project_id = get_project_id();
       var contractor_email = ""
       send_email = 1;
-      $('input[class=cont_checkbox_cpo]:checked').map(function() {
+      $('input[class=cont_checkbox]:checked').map(function() {
         //checkboxValues_contractor.push($(this).val());
         work_contractor_id = $(this).val();
         $.post(baseurl+"works/fetch_works_contractors", 
@@ -1757,11 +1410,6 @@ $("#send_email").click(function(){
               var bcc_email = $("#contractor_bcc").val();
               var cont_email_subject = $("#contractor_subject").val();
               var cont_email_msg = $("#contractor_email_message").val();
-              var proj_job_cat = $("#send_pdf_proj_job_category").val();
-
-              $("#send_email").hide();
-              $("#sending_button").show();
-
               $.post(baseurl+"send_emails/send_email_to_contractor_cpo",
               { 
                 contractor_email: result,
@@ -1773,34 +1421,23 @@ $("#send_email").click(function(){
                 project_id: proj_id,
                 work_id: work_id,
                 comp_id: comp_id,
-                proj_job_cat: proj_job_cat
               }, 
               function(result){
-                setTimeout(function(){
-                  $.post(baseurl+"send_emails/display_work_contractor_list", 
-                  { 
-                    project_id: proj_id
-                  }, 
-                  function(result){
-                    if(counter == 0 ){
-                      alert("E-mail Successfully Sent");
-                    }
-
-                    $("#send_email").show();
-                    $("#sending_button").hide();
-
-                    $("#contractor_email_add").val("");
-                    $("#contractor_alt_email_add").val("");
-                    $("#contractor_cc").val("");
-                    $("#contractor_bcc").val("");
-                    $("#contractor_subject").val("");
-                    $("#contractor_email_message").val("");
-                    $('button[id="send_email"]').attr('disabled','disabled');
-                    $("#contractor_list").html(result);
-
-                    counter++;
-                  });
-                }, 5000);  // on 5 second
+                $.post(baseurl+"send_emails/display_work_contractor_list", 
+                { 
+                  project_id: proj_id
+                }, 
+                function(result){
+                  $("#contractor_email_add").val("");
+                  $("#contractor_alt_email_add").val("");
+                  $("#contractor_cc").val("");
+                  $("#contractor_bcc").val("");
+                  $("#contractor_subject").val("");
+                  $("#contractor_email_message").val("");
+                  $('button[id="send_email"]').attr('disabled','disabled');
+                  alert("E-mail Succssfully Send");
+                  $("#contractor_list").html(result);
+                });
               });
             });
           }
@@ -2011,29 +1648,8 @@ window.view_file = function(a){
      project_attachments_id: project_attachment_id,
   },
   function(result){
-    var result_arr = result.split('|');
-    var file_name = result_arr[0];
-    var is_selected = result_arr[1];
-    if(is_selected == 0){
-      $("#show_attachment_modal").modal('show');
-      $("#attachment_filename").html(result);
-      $('#iframe_view_attachment').attr('src', baseurl+'/uploads/project_attachments/'+proj_id+'/'+file_name);
-    }else{
-      alert("Cant view file, selected file is on dropbox, unselect item to view it here or go to the dropbox acount to view it");
-    }
-    
-  });
-
-  $("#remove_attachment").click(function(){
-    $.post(baseurl+"attachments/remove_attachment",
-    {
-      project_attachments_id: project_attachment_id,
-      proj_id: proj_id
-    },
-    function(result){
-      $("#attachement_loading_modal").modal("show");
-      window.open(baseurl+'attachments/refresh_attachment_page?proj_id='+proj_id, '_self', true);
-    });
+    $("#attachment_filename").html(result);
+    $('#iframe_view_attachment').attr('src', baseurl+'/uploads/project_attachments/'+proj_id+'/'+result)
   });
   /*var attach_file = a.split( '|' );
   proj_id = attach_file[0];
@@ -2123,27 +1739,21 @@ $("#change_attach_type_yes").click(function(){
 });
 window.chk_select_attachment = function(a){
   project_attachments_id = a;
-  var proj_id = get_project_id();
-  $('#attachement_loading_modal').modal('show');
   if($("#chck_isselected_"+a).is(':checked')){
     $.post(baseurl+"attachments/attachment_isselected",
     {
       project_attachments_id: project_attachments_id,
-      proj_attachment_status: 1,
-      proj_id: proj_id
+      proj_attachment_status: 1
     },
     function(result){
-       $('#attachement_loading_modal').modal('hide');
     });
   }else{
     $.post(baseurl+"attachments/attachment_isselected",
     {
       project_attachments_id: project_attachments_id,
-      proj_attachment_status: 0,
-      proj_id: proj_id
+      proj_attachment_status: 0
     },
     function(result){
-      $('#attachement_loading_modal').modal('hide');
     });
   }
 }
@@ -2201,7 +1811,7 @@ window.chk_select_attachment = function(a){
   $("#worktype").change(function(){
     var wtype = $("#worktype").val();
     if(wtype == '2_82'){
-      $('#other_work_description').css('display', 'block').focus();
+      $('#other_work_description').css('display', 'block');
     }else{
       $('#other_work_description').css('display', 'none');
     }
@@ -4308,7 +3918,6 @@ $('.work_contractor_click').click(function () {
     //});
   });
 
-  $("#cont_saving_button").hide();
   $("#save_contractor").click(function(){
     var date_entered = $("#contractor_date_entered").val();
     var result = $("#work_contructor_name").val();
@@ -4324,10 +3933,7 @@ $('.work_contractor_click').click(function () {
       if(contact_person_id == "" || contact_person_id == 0 || contact_person_id == undefined){
         alert("Please Select Contact person!");
       }else{
-        $("#save_contractor").hide();
-        $("#cont_saving_button").show();
         if(joinery_work_id == 0){
-
           $.post(baseurl+"works/insert_contractor", 
           { 
             var_acceptance_date:var_acceptance_date,
@@ -4338,12 +3944,8 @@ $('.work_contractor_click').click(function () {
             contact_person_id: contact_person_id
           }, 
           function(result){
-            setTimeout(function(){
-              $("#save_contractor").show();
-              $("#cont_saving_button").hide();
-              $("#work_contractors").html(result);
-              $(".modal").modal("hide");
-            }, 5000);  // on 5 second
+            $("#work_contractors").html(result);
+            $(".modal").modal("hide");
           });
         }else{
           $.post(baseurl+"works/insert_contractor", 
@@ -4356,12 +3958,8 @@ $('.work_contractor_click').click(function () {
             contact_person_id: contact_person_id
           }, 
           function(result){
-            setTimeout(function(){
-              $("#save_contractor").show();
-              $("#cont_saving_button").hide();
-              $("#work_contractors").html(result);
-              $(".modal").modal("hide");
-            }, 5000);  // on 5 second
+            $("#work_contractors").html(result);
+            $(".modal").modal("hide");
           });
         }
       }
@@ -4369,7 +3967,6 @@ $('.work_contractor_click').click(function () {
     }
   });
 
-  $("#cont_saving_var_button").hide();
   $("#save_var_contractor").click(function(){
     var date_entered = $("#contractor_date_entered").val();
     var result = $("#var_work_contructor_name").val();
@@ -4381,8 +3978,6 @@ $('.work_contractor_click').click(function () {
     if(date_entered == "" || result == "" || contact_person_id == ""){
       alert("Please fill in required fields");
     }else{
-      $("#save_var_contractor").hide();
-      $("#cont_saving_var_button").show();
       //var proj_id = get_project_id();
       if(joinery_work_id == 0){
         $.post(baseurl+"works/var_insert_contractor", 
@@ -4395,12 +3990,8 @@ $('.work_contractor_click').click(function () {
           contact_person_id: contact_person_id
         }, 
         function(result){
-          setTimeout(function(){
-            $("#save_var_contractor").show();
-            $("#cont_saving_var_button").hide();
-            $("#var_work_contractors").html(result);
-            $(".modal").modal("hide");
-          }, 5000);  // on 5 second
+          $("#var_work_contractors").html(result);
+          $(".modal").modal("hide");
         });
       }else{
         $.post(baseurl+"works/var_insert_contractor", 
@@ -4413,12 +4004,8 @@ $('.work_contractor_click').click(function () {
           contact_person_id: contact_person_id
         }, 
         function(result){
-          setTimeout(function(){
-            $("#save_var_contractor").show();
-            $("#cont_saving_var_button").hide();
-            $("#var_work_contractors").html(result);
-            $(".modal").modal("hide");
-          }, 5000);  // on 5 second
+          $("#var_work_contractors").html(result);
+          $(".modal").modal("hide");
         });
       }
     }
@@ -4444,7 +4031,6 @@ $('.work_contractor_click').click(function () {
       var inc_gst = output[4];
       work_is_selected = output[5];
       var is_reconciled = output[6];
-      var cont_person_id = output[7];
       if(is_reconciled == 1){
         $("#delete_contractor").hide();
       }
@@ -4540,84 +4126,74 @@ $('.work_contractor_click').click(function () {
     var  contact_person_id= $("#contact_person").val();
    
     var var_acceptance_date = $("#variation_acceptance_date").val();
-   
-    if(date_entered == "" || result == "" || contact_person_id == ""){
-      alert("Please fill in required fields");
-    }else{
-      //var proj_id = get_project_id();
-      if(contact_person_id == "" || contact_person_id == 0 || contact_person_id == undefined){
-        alert("Please Select Contact person!");
-      }else{
     /*var inc_gst = $("#inc_gst").val();
     var ex_gst = $("#price_ex_gst").val();
     inc_gst = inc_gst.replace(",", "");
     ex_gst = ex_gst.replace(",", "");*/
     //var proj_id = get_project_id();
-        if(joinery_work_id == 0){
-          $.post(baseurl+"works/update_contractor", 
-          { 
-            var_acceptance_date: var_acceptance_date,
-            proj_id: proj_id,
-            work_contractor_id: work_contractor_id,
-            work_id: work_id,
-            date_added: date_entered,
-            comp_id: comp_id,
-            contact_person_id: contact_person_id,
-            work_is_selected: work_is_selected
-            // inc_gst: inc_gst,
-            // ex_gst: ex_gst
-          }, 
-          function(result){
-            $("#work_contractors").html(result);
-            if(work_is_selected == 1){
-              var comp_name_work = $('tr.cont-'+work_contractor_id).find('.item-cont-'+work_contractor_id+'-comp a').text();
-              $('tbody tr#row-work-'+work_id).find('.work-set-comp-'+work_id+' a').text(comp_name_work);
-            //   $.post(baseurl+"works/update_work",
-            //   {
-            //     proj_id: proj_id,
-            //     work_id: work_id,
-            //     contact_person_id: contact_person_id,
-            //     update_stat: 9
-            //   },
-            //   function(result){
-            //     // ex_gst = numberWithCommas(Math.round(ex_gst));
-            //     // $(".work-set-price-"+work_id).val(ex_gst);
-            //   });
-            }
-          });
-        }else{
-          $.post(baseurl+"works/update_contractor", 
-          { 
-            var_acceptance_date: var_acceptance_date,
-            proj_id: proj_id,
-            work_contractor_id: work_contractor_id,
-            work_id: joinery_work_id,
-            date_added: date_entered,
-            comp_id: comp_id,
-            contact_person_id: contact_person_id,
-            work_is_selected: work_is_selected
-            // inc_gst: inc_gst,
-            // ex_gst: ex_gst
-          }, 
-          function(result){
-            $("#work_contractors").html(result);
-            if(work_is_selected == 1){
-              var comp_name_work = $('tr.cont-'+work_contractor_id).find('.item-cont-'+work_contractor_id+'-comp a').text();
-              $('tbody tr#row-work-'+work_id).find('.work-set-comp-'+work_id+' a').text(comp_name_work);
-              // $.post(baseurl+"works/update_work",
-              // {
-              //   work_id: work_id,
-              //   contact_person_id: contact_person_id,
-              //   update_stat: 9
-              // },
-              // function(result){
-              //   // ex_gst = numberWithCommas(Math.round(ex_gst));
-              //   // $(".work-set-price-"+work_id).val(ex_gst);
-              // });
-            }
-          });
+    if(joinery_work_id == 0){
+      $.post(baseurl+"works/update_contractor", 
+      { 
+        var_acceptance_date: var_acceptance_date,
+        proj_id: proj_id,
+        work_contractor_id: work_contractor_id,
+        work_id: work_id,
+        date_added: date_entered,
+        comp_id: comp_id,
+        contact_person_id: contact_person_id,
+        work_is_selected: work_is_selected
+        // inc_gst: inc_gst,
+        // ex_gst: ex_gst
+      }, 
+      function(result){
+        $("#work_contractors").html(result);
+        if(work_is_selected == 1){
+          var comp_name_work = $('tr.cont-'+work_contractor_id).find('.item-cont-'+work_contractor_id+'-comp a').text();
+          $('tbody tr#row-work-'+work_id).find('.work-set-comp-'+work_id+' a').text(comp_name_work);
+        //   $.post(baseurl+"works/update_work",
+        //   {
+        //     proj_id: proj_id,
+        //     work_id: work_id,
+        //     contact_person_id: contact_person_id,
+        //     update_stat: 9
+        //   },
+        //   function(result){
+        //     // ex_gst = numberWithCommas(Math.round(ex_gst));
+        //     // $(".work-set-price-"+work_id).val(ex_gst);
+        //   });
         }
-      }
+      });
+    }else{
+      $.post(baseurl+"works/update_contractor", 
+      { 
+        var_acceptance_date: var_acceptance_date,
+        proj_id: proj_id,
+        work_contractor_id: work_contractor_id,
+        work_id: joinery_work_id,
+        date_added: date_entered,
+        comp_id: comp_id,
+        contact_person_id: contact_person_id,
+        work_is_selected: work_is_selected
+        // inc_gst: inc_gst,
+        // ex_gst: ex_gst
+      }, 
+      function(result){
+        $("#work_contractors").html(result);
+        if(work_is_selected == 1){
+          var comp_name_work = $('tr.cont-'+work_contractor_id).find('.item-cont-'+work_contractor_id+'-comp a').text();
+          $('tbody tr#row-work-'+work_id).find('.work-set-comp-'+work_id+' a').text(comp_name_work);
+          // $.post(baseurl+"works/update_work",
+          // {
+          //   work_id: work_id,
+          //   contact_person_id: contact_person_id,
+          //   update_stat: 9
+          // },
+          // function(result){
+          //   // ex_gst = numberWithCommas(Math.round(ex_gst));
+          //   // $(".work-set-price-"+work_id).val(ex_gst);
+          // });
+        }
+      });
     }
     
   });
@@ -5633,18 +5209,15 @@ $('.work_contractor_click').click(function () {
     var proj_id = $("#proj_id").val();
     var update_work_notes = $("#update_work_notes").val();
 
-    var work_joinery_id = $("#work_joinery_id").val();
-
     $.post(baseurl+"works/update_work", 
     { 
       work_id: work_id,
       proj_id: proj_id,
       update_work_notes: update_work_notes,
-      work_joinery_id: work_joinery_id,
       update_stat: 3
     }, 
     function(result){
-      window.open(baseurl+"works/update_work_details/"+proj_id+"/"+work_id+"/"+work_joinery_id, '_self', true);
+      window.open(baseurl+"works/update_work_details/"+proj_id+"/"+work_id, '_self', true);
       $('#work_notes').prop('readonly', true);
       $("#edit_notes").show();
       $("#save_notes").hide();
@@ -5662,7 +5235,6 @@ $('.work_contractor_click').click(function () {
   $("#save_work_dates").click(function(){
     var work_id = $("#work_id").val();
     var proj_id = $("#proj_id").val();
-    var work_joinery_id = $("#work_joinery_id").val();
     var work_replyby_date = $("#work_replyby_date").val();
     var update_replyby_desc = $("#update_replyby_desc").val();
     var goods_deliver_by_date = $("#goods_deliver_by_date").val();
@@ -5675,7 +5247,6 @@ $('.work_contractor_click').click(function () {
     $.post(baseurl+"works/update_work", 
     { 
       work_id: work_id,
-      work_joinery_id: work_joinery_id,
       proj_id: proj_id,
       work_replyby_date: work_replyby_date,
       update_replyby_desc: update_replyby_desc,
@@ -5684,7 +5255,7 @@ $('.work_contractor_click').click(function () {
       update_stat: 2
     }, 
     function(result){
-      window.open(baseurl+"works/update_work_details/"+proj_id+"/"+work_id+"/"+work_joinery_id, '_self', true);
+      window.open(baseurl+"works/update_work_details/"+proj_id+"/"+work_id, '_self', true);
       $("#edit_work_dates").show();
       $("#save_work_dates").hide();
       $("#work_date").show();
@@ -5701,7 +5272,6 @@ $('.work_contractor_click').click(function () {
     $("#edit_considerations_list").show();
   });
   $("#save_considerations").click(function(){
-    var work_joinery_id = $("#work_joinery_id").val();
     var work_id = $("#work_id").val();
     var proj_id = $("#proj_id").val();
     if($('#chkcons_site_inspect').is(':checked')){
@@ -5760,7 +5330,6 @@ $('.work_contractor_click').click(function () {
     { 
       work_id: work_id,
       proj_id: proj_id,
-      work_joinery_id: work_joinery_id,
       chkcons_site_inspect: chkcons_site_inspect,
       chckcons_week_work: chckcons_week_work,
       chckcons_spcl_condition: chckcons_spcl_condition,
@@ -5775,7 +5344,7 @@ $('.work_contractor_click').click(function () {
       update_stat: 4
     }, 
     function(result){
-      window.open(baseurl+"works/update_work_details/"+proj_id+"/"+work_id+"/"+work_joinery_id, '_self', true);
+      window.open(baseurl+"works/update_work_details/"+proj_id+"/"+work_id, '_self', true);
       $("#edit_considerations").show();
       $("#save_considerations").hide();
       $("#considerations").show();
@@ -5807,106 +5376,6 @@ $('.work_contractor_click').click(function () {
       }
       return false;
   });
-
-//===================== Maintenance Site Sheet ====================
-  $("#maintenance_site_sheet").click(function(){
-    if(work_id == 0 || work_id == ""){
-      alert("No Work selected!");
-    }else{
-      if($(".add_comp_badge_"+work_id).is(":visible") == false){
-        window.open(baseurl+"works/maintenance_site_sheet/"+proj_id+"/"+work_id);
-      }else{
-        alert("No CPO yet!");
-      }
-    }
-    return false;  
-  });
-
-  //var segmentlength = segments.length;
-  //alert(segmentlength);
-  if(segmentlength >= (segment_index-1)){
-    var update_project = segments[segment_index-1];
-    if(update_project == 'add'){
-      $(".maintenance_site_cont_form").hide();
-    }else{
-      if($("#update_proj_type").val() !== "Maintenance"){
-        $(".maintenance_site_cont_form").hide();
-      }
-    }
-  }
-
-  $("#job_category").change(function(){
-
-    if($(this).val() == "Maintenance"){
-      $(".maintenance_site_cont_form").show();
-    }else{
-      $(".maintenance_site_cont_form").hide();
-    }
-  });
-
-  $("#btn_create_mss").click(function(){
-    if(job_date == ""){
-      alert("Cannot Create CPO, Job Date Required!");
-    }else{
-      $('input[class=cont_checkbox]:checked').map(function(){
-        work_contractor_id = $(this).val();
-        $.post(baseurl+"works/fetch_works_contractors", 
-        { 
-          work_contractor_id: work_contractor_id
-        }, 
-        function(result){
-          var result = result.split( '|' );
-          var is_selected = result[2];
-          var work_id = result[1];
-          if(is_selected == 1){
-            window.open(baseurl+"works/maintenance_site_sheet/"+proj_id+"/"+work_id);
-          }
-        });
-      });
-    }
-  });
-
-  $('#work_notes').bind('change keyup', function(event) {
-    //Option 1: Limit to # of rows in textarea
-    var project_type = $("#project_type").val();
-    if(project_type == "Maintenance"){
-      rows = $(this).attr('rows');
-      //Optiion 2: Limit to arbitrary # of rows
-      rows = 14;
-
-      var value = '';
-      var splitval = $(this).val().split("\n");
-
-      for(var a=0;a<rows && typeof splitval[a] != 'undefined';a++) {
-        if(a>0) value += "\n";
-        value += splitval[a];
-      }
-      $(this).val(value);
-    }
-  });
-
-  $('#update_work_notes').bind('change keyup', function(event) {
-    //Option 1: Limit to # of rows in textarea
-    var project_type = $("#project_type").val();
-    if(project_type == "Maintenance"){
-       rows = $(this).attr('rows');
-      //Optiion 2: Limit to arbitrary # of rows
-      rows = 14;
-
-      var value = '';
-      var splitval = $(this).val().split("\n");
-
-      for(var a=0;a<rows && typeof splitval[a] != 'undefined';a++) {
-        if(a>0) value += "\n";
-        value += splitval[a];
-      }
-      $(this).val(value);
-    }
-   
-  });
-
-  
-//=================== Maintenance Site Sheet
   $("#work_cont_quote_req").click(function(){
     //var proj_id = get_project_id();
     if(work_id == 0){
@@ -6864,44 +6333,21 @@ $('input.input-wd').keyup(function(){
     }
    });
 
-    //$("#abn").focusout(function(){
-  window.add_comp_abn_blur = function(){
-    var type = $("#type").val();
-    if(type == ""){
-      alert("Please select type first.");
-      $("#abn").val("");
+    $("#abn").focusout(function(){
+    if($(this).val() == ''){
+      //$('.is_wip').prop('checked', false);
+      $("#acn").val('');
     }else{
-      if($("#abn").val() == ''){
-        //$('.is_wip').prop('checked', false);
-        $("#acn").val('');
-      }else{
+      var abn = $(this).val().replace(/[^\d]/g, "");
 
-        var type_arr = type.split("|");
-        type = type_arr[1];
+      var new_abn_val = abn.substring( -2,2)+' '+abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
+      $(this).val(new_abn_val);
 
-        var abn = $("#abn").val().replace(/[^\d]/g, "");
+      var acn_val = abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
 
-        $.post(baseurl+"company/check_company_exist",
-        {
-          abn: abn,
-          type: type
-        },
-        function(result){
-          if(result == 1){
-            alert("ABN already exist!");
-            $("#abn").val("");
-          }else{
-            var new_abn_val = abn.substring( -2,2)+' '+abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
-            $("#abn").val(new_abn_val);
-
-            var acn_val = abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
-
-            $("#acn").val(acn_val);
-          }
-        });
-      }
+      $("#acn").val(acn_val);
     }
-  };
+   });
 
 /*
     $( ".mobile_number_assign" ).keyup(function() {
@@ -7080,7 +6526,7 @@ $('input.input-wd').keyup(function(){
       var is_set_as_primary = 0;
 
         //alert(contactType+' - '+contactPersonItem+' - '+contactSetCount);
-        $('.add-contact-area').append('<div class="item-form item-form-'+contactSetAddCount+'" ><div class="clearfix"></div> <div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="contact_f_name_'+contactSetAddCount+'" class="col-sm-3 control-label">First Name*</label><div class="col-sm-9"><input type="text" class="form-control" id="contact_f_name_'+contactSetAddCount+'" placeholder="First Name" name="contact_f_name_'+contactSetAddCount+'" value=""></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="contact_l_name_'+contactSetAddCount+'" class="col-sm-3 control-label">Last Name*</label><div class="col-sm-9"><input type="text" class="form-control" id="contact_l_name_'+contactSetAddCount+'" placeholder="Last Name" name="contact_l_name_'+contactSetAddCount+'" value=""></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="gender_'+contactSetAddCount+'" class="col-sm-3 control-label">Gender*</label><div class="col-sm-9"><select name="contact_gender_'+contactSetAddCount+'"  class="form-control gender_add_set" id="gender_'+contactSetAddCount+'"><option value="Male">Male</option><option value="Female">Female</option></select></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="contact_email_'+contactSetAddCount+'" class="col-sm-3 control-label">Email*</label><div class="col-sm-9"><input type="email" class="form-control" id="contact_email_'+contactSetAddCount+'" placeholder="Email" name="contact_email_'+contactSetAddCount+'" value=""></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="contact_number_'+contactSetAddCount+'" class="col-sm-3 control-label">Office Contact</label><div class="col-sm-9"><div class="input-group"><span class="input-group-addon" id="area-code-text-'+contactSetAddCount+'"></span><input type="text" class="form-control contact_number_assign"  onchange="contact_number_assign(\'contact_number_'+contactSetAddCount+'\')" id="contact_number_'+contactSetAddCount+'" placeholder="Office Contact Number" name="contact_number_'+contactSetAddCount+'" value=""></div></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="mobile_number_'+contactSetAddCount+'" class="col-sm-3 control-label">Mobile</label><div class="col-sm-9"><input type="text" class="form-control mobile_number_assign mobile_number_assign"  onchange="mobile_number_assign(\'mobile_number_'+contactSetAddCount+'\')" id="mobile_number_'+contactSetAddCount+'" placeholder="Mobile Number" name="mobile_number_'+contactSetAddCount+'" value=""></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label class="col-sm-3 control-label" for="after_hours_'+contactSetAddCount+'">After Hours</label><div class="col-sm-9"><div class="input-group"><span class="input-group-addon" id="mobile-area-code-text-'+contactSetAddCount+'"></span><input type="text" value="" name="after_hours_'+contactSetAddCount+'" placeholder="After Hours Contact Number" onchange="contact_number_assign(\'after_hours_'+contactSetAddCount+'\')" id="after_hours_'+contactSetAddCount+'" class="form-control after_hours_assign"></div></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="contact_type_'+contactSetAddCount+'" class="col-sm-3 control-label">Contact Type</label><div class="col-sm-9"><select name="contact_type_'+contactSetAddCount+'" id="contact_type_'+contactSetAddCount+'" class="form-control"><option value="General">General</option><option value="Maintenance">Maintenance</option><option value="Accounts">Accounts</option><option value="Other">Other</option></select></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label class="col-sm-3 control-label" for="set_as_primary_'+contactSetAddCount+'">Set as Primary</label><input type="checkbox" name="set_as_primary_'+contactSetAddCount+'" id="set_as_primary_'+contactSetAddCount+'" class="set_as_primary" onclick="contact_set_primary(\'set_as_primary_'+contactSetAddCount+'\')" style="margin-top: 10px; margin-left: 5px;"></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><div class="btn btn-warning pull-right" id="remove-form-_'+contactSetAddCount+'" onClick="removeFormAdd(\'item-form-'+contactSetAddCount+'\')">Remove Form</div></div><div class="clearfix"></div><hr /></div>');
+        $('.add-contact-area').append('<div class="item-form item-form-'+contactSetAddCount+'" ><div class="clearfix"></div> <div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="contact_f_name_'+contactSetAddCount+'" class="col-sm-3 control-label">First Name*</label><div class="col-sm-9"><input type="text" class="form-control" id="contact_f_name_'+contactSetAddCount+'" placeholder="First Name" name="contact_f_name_'+contactSetAddCount+'" value=""></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="contact_l_name_'+contactSetAddCount+'" class="col-sm-3 control-label">Last Name*</label><div class="col-sm-9"><input type="text" class="form-control" id="contact_l_name_'+contactSetAddCount+'" placeholder="Last Name" name="contact_l_name_'+contactSetAddCount+'" value=""></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="gender_'+contactSetAddCount+'" class="col-sm-3 control-label">Gender*</label><div class="col-sm-9"><select name="contact_gender_'+contactSetAddCount+'"  class="form-control gender_add_set" id="gender_'+contactSetAddCount+'"><option value="Male">Male</option><option value="Female">Female</option></select></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="contact_email_'+contactSetAddCount+'" class="col-sm-3 control-label">Email</label><div class="col-sm-9"><input type="email" class="form-control" id="contact_email_'+contactSetAddCount+'" placeholder="Email" name="contact_email_'+contactSetAddCount+'" value=""></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="contact_number_'+contactSetAddCount+'" class="col-sm-3 control-label">Office Contact</label><div class="col-sm-9"><div class="input-group"><span class="input-group-addon" id="area-code-text-'+contactSetAddCount+'"></span><input type="text" class="form-control contact_number_assign"  onchange="contact_number_assign(\'contact_number_'+contactSetAddCount+'\')" id="contact_number_'+contactSetAddCount+'" placeholder="Office Contact Number" name="contact_number_'+contactSetAddCount+'" value=""></div></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="mobile_number_'+contactSetAddCount+'" class="col-sm-3 control-label">Mobile</label><div class="col-sm-9"><input type="text" class="form-control mobile_number_assign mobile_number_assign"  onchange="mobile_number_assign(\'mobile_number_'+contactSetAddCount+'\')" id="mobile_number_'+contactSetAddCount+'" placeholder="Mobile Number" name="mobile_number_'+contactSetAddCount+'" value=""></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label class="col-sm-3 control-label" for="after_hours_'+contactSetAddCount+'">After Hours</label><div class="col-sm-9"><div class="input-group"><span class="input-group-addon" id="mobile-area-code-text-'+contactSetAddCount+'"></span><input type="text" value="" name="after_hours_'+contactSetAddCount+'" placeholder="After Hours Contact Number" onchange="contact_number_assign(\'after_hours_'+contactSetAddCount+'\')" id="after_hours_'+contactSetAddCount+'" class="form-control after_hours_assign"></div></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label for="contact_type_'+contactSetAddCount+'" class="col-sm-3 control-label">Contact Type</label><div class="col-sm-9"><select name="contact_type_'+contactSetAddCount+'" id="contact_type_'+contactSetAddCount+'" class="form-control"><option value="General">General</option><option value="Maintenance">Maintenance</option><option value="Accounts">Accounts</option><option value="Other">Other</option></select></div></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><label class="col-sm-3 control-label" for="set_as_primary_'+contactSetAddCount+'">Set as Primary</label><input type="checkbox" name="set_as_primary_'+contactSetAddCount+'" id="set_as_primary_'+contactSetAddCount+'" class="set_as_primary" onclick="contact_set_primary(\'set_as_primary_'+contactSetAddCount+'\')" style="margin-top: 10px; margin-left: 5px;"></div><div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix"><div class="btn btn-warning pull-right" id="remove-form-_'+contactSetAddCount+'" onClick="removeFormAdd(\'item-form-'+contactSetAddCount+'\')">Remove Form</div></div><div class="clearfix"></div><hr /></div>');
         
 
 
@@ -7341,118 +6787,6 @@ $('select.all_company_project').on("change", function(e) {
  $('.datepicker').datepicker()
 });
 
-$("#pl_expiration").keyup(function(){
-  if ($(this).val().length == 2){
-    $(this).val($(this).val() + "/");
-  }else if ($(this).val().length == 5){
-    $(this).val($(this).val() + "/");
-  }
-});
-
-$("#wc_expiration").keyup(function(){
-  if ($(this).val().length == 2){
-    $(this).val($(this).val() + "/");
-  }else if ($(this).val().length == 5){
-    $(this).val($(this).val() + "/");
-  }
-});
-
-$("#ip_expiration").keyup(function(){
-  if ($(this).val().length == 2){
-    $(this).val($(this).val() + "/");
-  }else if ($(this).val().length == 5){
-    $(this).val($(this).val() + "/");
-  }
-});
-
-window.comp_abn_blur = function(){
-    var type = $("#type").val();
-    if(type == ""){
-      alert("Please select type first.");
-      $("#abn").val("");
-    }else{
-      if($("#abn").val() == ''){
-        //$('.is_wip').prop('checked', false);
-        $("#acn").val('');
-      }else{
-
-        var type_arr = type.split("|");
-        type = type_arr[1];
-
-        var abn = $("#abn").val().replace(/[^\d]/g, "");
-
-        $.post(baseurl+"company/check_company_exist",
-        {
-          abn: abn,
-          type: type
-        },
-        function(result){
-          if(result == 1){
-            alert("ABN already exist!");
-            location.reload();
-          }else{
-            var new_abn_val = abn.substring( -2,2)+' '+abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
-            $("#abn").val(new_abn_val);
-
-            var acn_val = abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
-
-            $("#acn").val(acn_val);
-          }
-        });
-      }
-    }
-}
-
-window.comp_type_change = function(){
-  var comp_type = 0;
-  var comp_type_name = "";
-  var url = $(location).attr('href').split("/").splice(0, 8).join("/");
-  var segments = url.split( '/' );
-  var comp_id = segments[segment_index];
-  $.post(baseurl+"company/check_company_type",
-  {
-    comp_id: comp_id
-  },
-  function(result){
-     
-    comp_type = result;
-    switch(comp_type){
-      case '1':
-        comp_type_name = "Client";
-        break;
-      case '2':
-        comp_type_name = "Contractor";
-        break;
-      case '3':
-        comp_type_name = "Supplier";
-        break;
-    }
-
-    var abn = $("#abn").val();
-    var type = $("#type").val();
-    var type_arr = type.split( '|' );
-    var type = type_arr[1];
-
-    if(comp_type !== type){
-      $.post(baseurl+"company/check_company_exist",
-      {
-        abn: abn,
-        type: type
-      },
-      function(result){
-
-        if(result == 1){
-          alert("Selected Company Type has the same ABN. Page will refresh");
-          var val_comp_type = comp_type_name+"|"+comp_type;
-          $("select#type").val(val_comp_type);
-          location.reload();
-        }
-      }); 
-    }
-  }); 
-  
-  
-}
 
 function removeElem(value){
   $("."+value).remove();
