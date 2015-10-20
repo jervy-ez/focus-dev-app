@@ -26,6 +26,21 @@
 		</div>
 	</div>
 	<?php endif; ?>
+
+
+	<?php if(@$this->session->flashdata('new_pass_msg')): ?>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-md-6 col-md-offset-3">
+				<div class="border-less-box alert alert-success fade in">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true"> × </button>
+					<h4>The new password is been set!</h4>
+					<?php echo $this->session->flashdata('new_pass_msg');?>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php endif; ?>
 			
 	<div class="container pad-20">
 		<div class="row">

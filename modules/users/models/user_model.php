@@ -131,6 +131,11 @@ class User_model extends CI_Model{
 		return $query;
 	}
 
+	public function fetch_user_passwords($user_id){
+		$query = $this->db->query("SELECT * FROM `user_passwords` WHERE  `user_passwords`.`user_id` = '$user_id' ");
+		return $query;
+	}
+
 	public function select_static_defaults(){
 		$query = $this->db->query("SELECT * FROM `static_defaults` ORDER BY `static_defaults_id` DESC LIMIT 1");
 		return $query;

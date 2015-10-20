@@ -65,12 +65,23 @@
 							<div class="box-area clearfix">
 
 
-								<?php if(@$user_password_updated): ?>
+								<?php if(@$this->session->flashdata('new_pass_msg')): ?>
 									<div class="no-pad-t m-bottom-10 pad-left-10">
 										<div class="border-less-box alert alert-success fade in">
 											<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-											<h4>Congratulations!</h4>
-										<?php echo $user_password_updated;?>
+											<h4>The new password is been set!</h4>
+											<?php echo $this->session->flashdata('new_pass_msg');?>
+										</div>
+									</div>
+								<?php endif; ?>
+
+
+								<?php if(@$this->session->flashdata('account_update_msg')): ?>
+									<div class="no-pad-t m-bottom-10 pad-left-10">
+										<div class="border-less-box alert alert-success fade in">
+											<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+											<h4>Cheers!</h4>
+											<?php echo $this->session->flashdata('account_update_msg');?>
 										</div>
 									</div>
 								<?php endif; ?>

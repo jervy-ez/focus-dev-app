@@ -138,6 +138,7 @@ $config = Array(
 
 		$focus = $this->admin_m->fetch_all_company_focus();
 		$data['focus'] = $focus->result();
+		$error_password = 0;
 /*
 		$access = $this->user_model->fetch_all_access();
 		$data['all_access'] = $access->result();
@@ -175,8 +176,25 @@ $config = Array(
 			$this->form_validation->set_rules('new_password', 'New Password','trim|required|xss_clean');
 			$this->form_validation->set_rules('confirm_password', 'Confirm Password','trim|required|xss_clean');
 
-			if($this->form_validation->run() === false){
+			$new_password = $this->input->post('new_password', true);
+			$confirm_password = $this->input->post('confirm_password', true);
+
+			$old_passwords_q = $this->user_model->fetch_user_passwords($user_id);
+
+			foreach ($old_passwords_q->result_array() as $row){
+				if($row['password'] == $new_password){
+					$error_password = 1;
+				}
+			}
+
+
+
+			if($this->form_validation->run() === false || $error_password == 1){
 				$data['error'] = validation_errors();
+
+				if($error_password == 1){
+					$data['error'] .= '<p><strong>New Password Error:</strong> This password is already used. Please Try again.</p>';
+				}
 
 			}else{
 
@@ -186,13 +204,11 @@ $config = Array(
 				$static_defaults_q = $this->user_model->select_static_defaults();
 				$static_defaults = array_shift($static_defaults_q->result_array());
 
-				$new_password = $this->input->post('new_password', true);
-				$confirm_password = $this->input->post('confirm_password', true);
-
 				if($new_password == $confirm_password){					
 
 					$this->user_model->change_user_password($new_password,$user_id,$static_defaults['days_psswrd_exp']);
-					$data['user_password_updated'] = 'Your password is now changed';
+					//$data['user_password_updated'] = 'Your password is now changed';
+					$this->session->set_flashdata('new_pass_msg', 'An email was sent for confirmation. Please sign-in with your new password.');
 
 					$send_to = $data['user'][0]->general_email;
 
@@ -202,8 +218,10 @@ $config = Array(
 						//$this->email->bcc('them@their-example.com'); 
 
 					$this->email->subject('Password Change');
-					$this->email->message("Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group 2015");	
+					$curr_year = date('Y');
+					$this->email->message("Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group ".$curr_year);	
 					$this->email->send();
+					redirect('users/account/'.$user_id, 'refresh');
 
 				}else{
 					$data['error'] = 'New Password and Confirm Password did not match';
@@ -304,17 +322,20 @@ $config = Array(
 				$profile = $file_upload_arr[1];
 			}else{
 				$profile = $profile_raw;
-				$data['upload_error'] = $file_upload_arr[1];
+				if(array_key_exists('1',$file_upload_arr)){
+					$data['upload_error'] = $file_upload_arr[1];
+				}
 			}
 
-
-
+			$this->session->set_flashdata('account_update_msg', 'User account is now updated.');
 
 			$this->user_model->update_user_details($user_id,$login_name,$first_name,$last_name,$skype_id,$skype_password,$gender,$dob,$department_id,$focus_id,$user_comments_id,$profile);
 
 			$this->user_model->update_contact_email($email_id,$email,$contact_number_id,$direct_landline,$mobile_number,$after_hours);
-			 
-			redirect($this->uri->uri_string());
+
+			redirect($this->uri->uri_string(),'refresh');
+
+			
 
 		}
 
@@ -330,10 +351,10 @@ $config = Array(
 		$data['upload_error'] = '';
 
 		$config['upload_path'] = './uploads/'.$dir.'/';
-		$config['allowed_types'] = 'gif|jpg|png';
-		$config['max_size']	= '1024';
-		$config['max_width']  = '1024';
-		$config['max_height']  = '768';
+		$config['allowed_types'] = 'gif|jpg|png|jpeg';
+		$config['max_size']	= '0';
+		$config['max_width']  = '0';
+		$config['max_height']  = '0';
 
 		$time = mdate("%h%i%s%m%d%Y", time());
 		$config['file_name']  = 'user_'.$time;
@@ -784,7 +805,7 @@ $config = Array(
 
 			        $this->_fetch_system_defaults();
 					$this->session->set_userdata($data);
-					redirect('');
+					redirect('', 'refresh');
 					break;
 			}
 			/*if($userdata){
@@ -842,6 +863,7 @@ $config = Array(
 	public function re_password(){
 
 		$user_id = $this->uri->segment(3);
+		$error_password = 0;
 
 		if(!$user_id){
 			redirect('');			
@@ -878,23 +900,40 @@ $config = Array(
 				$this->form_validation->set_rules('new_password', 'New Password','trim|required|xss_clean');
 				$this->form_validation->set_rules('confirm_password', 'Confirm Password','trim|required|xss_clean');
 
-				if($this->form_validation->run() === false){
+				$new_password = $this->input->post('new_password', true);
+				$confirm_password = $this->input->post('confirm_password', true);
+
+				$old_passwords_q = $this->user_model->fetch_user_passwords($user_id);
+
+				foreach ($old_passwords_q->result_array() as $row){
+					if($row['password'] == $new_password){
+						$error_password = 1;
+					}
+				}
+
+
+
+				if($this->form_validation->run() === false || $error_password == 1){
 					$data['error'] = validation_errors();
+
+					if($error_password == 1){
+						$data['error'] .= '<p><strong>New Password Error:</strong> This password is already used. Please Try again.</p>';
+					}
 
 				}else{
 
 					$current_password_raw = $this->input->post('current_password', true);
 					$current_password = md5($current_password_raw);
 
-					$new_password = $this->input->post('new_password', true);
-					$confirm_password = $this->input->post('confirm_password', true);
 
 					$static_defaults_q = $this->user_model->select_static_defaults();
 					$static_defaults = array_shift($static_defaults_q->result_array());
 
-					var_dump($static_defaults);
+					//var_dump($static_defaults);
 
-					if($new_password == $confirm_password && $new_password != $this->session->userdata('re_pass_curr')){			
+					if($new_password == $confirm_password && $new_password != $this->session->userdata('re_pass_curr')){	
+
+						$this->session->set_flashdata('new_pass_msg', 'An email was sent for confirmation. Please sign-in with your new password.');
 
 						$this->user_model->change_user_password($new_password,$user_id,$static_defaults['days_psswrd_exp']);
 
@@ -908,9 +947,9 @@ $config = Array(
 						//$this->email->bcc('them@their-example.com'); 
 
 						$this->email->subject('Password Change');
-					$this->email->message("Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group 2015");	
+						$curr_year = date('Y');
+						$this->email->message("Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group".$curr_year);	
 						$this->email->send();
-
 						redirect('');
 
 					}else{
