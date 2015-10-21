@@ -1231,6 +1231,10 @@ tr.active_row_work>td{
 	display: block !important;
 }
 
+.post_content:hover  a.edit_post{
+	display: block !important;
+}
+
 
 .modal-pdf-editor {
 	width: 820px !important;

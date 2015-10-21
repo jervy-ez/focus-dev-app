@@ -31,12 +31,13 @@ class Bulletin_board extends MY_Controller{
 	}
 
 	public function post(){
-
 		if($this->session->userdata('is_admin') != 1 ){
 			if( $this->session->userdata('bulletin_board') < 2){
 				redirect('/bulletin_board', 'refresh');
 			}
 		}
+
+		$is_urget = 0;
 
 		date_default_timezone_set("Australia/Perth");
 		$datestring = "%l, %d%S, %F %Y %g:%i:%s %A";
@@ -67,15 +68,49 @@ class Bulletin_board extends MY_Controller{
 			$expiry_date = date('d/m/Y', strtotime("+4 days"));
 		}else{
 			$expiry_date = date('d/m/Y', strtotime("+2 day"));
-		}		
+		}
 
-		$this->bulletin_board_m->insert_post($title, $my_post, $user_id, $date_posted, $expiry_date);
+		if(isset($_POST['set_urgent'])){
+			$is_urget = 1;
+			$expiry_date = date('d/m/Y');
+		}
+
+		$this->bulletin_board_m->insert_post($title, $my_post, $user_id, $date_posted, $expiry_date, $is_urget);
 
 		$this->session->set_flashdata('success_post', 'Post is now submitted and be expired at. '.$expiry_date);
 		$this->session->set_flashdata('title','');
 		$this->session->set_flashdata('my_post','');
 
 		redirect('/bulletin_board', 'refresh');
+
+	}
+
+	public function update_post(){
+		$this->clear_apost();
+		date_default_timezone_set("Australia/Perth");
+
+		$title = $this->input->post('post_title');
+		$post_details = $this->input->post('post_content');
+		$post_id = $this->input->post('post_id');
+		$expiry_date = $this->input->post('expiry_date');
+		$bulletin_board_id = $this->input->post('post_id');
+
+		$is_urgent = 0;
+
+
+		if(isset($_POST['set_urgent_edit'])){
+			$is_urgent = 1;
+			$expiry_date = date('d/m/Y');
+		}
+
+		if($title == '' || $post_details == ''){
+			$this->session->set_flashdata('error', 'Incomplete form, please check all fields.');
+			redirect('/bulletin_board', 'refresh');
+		}else{
+			$this->bulletin_board_m->update_post($title,$post_details,$expiry_date,$is_urgent,$bulletin_board_id);
+			redirect('/bulletin_board', 'refresh');
+		}
+
 	}
 
 	public function list_post(){
@@ -87,10 +122,12 @@ class Bulletin_board extends MY_Controller{
 			echo '<img src="'.base_url().'uploads/users/'.$post->user_profile_photo.'" style="border-bottom: 1px solid #000;" class="img-circle img-responsive center-block"></div></div><div class="col-sm-10 col-md-11"><div class="post_content pad-left-5">';
 
 			if($this->session->userdata('is_admin') == 1):	
-				echo '<span class="pull-right"><a href="#" style="display:none;" class="delete_post" id="'.$post->bulletin_board_id.'"><i class="fa fa-trash"></i></a></span>';
+				echo '<span class="pull-right">
+					<a href="#" style="display:none;" class="delete_post badge pull-right pad-top-5 pad-bottom-5" id="'.$post->bulletin_board_id.'"><i class="fa fa-trash"></i></a>
+					<a href="#" style="display:none;" class="edit_post badge pull-right m-right-5 pad-top-5 pad-bottom-5" id="'.$post->bulletin_board_id.'*'.$post->expiry_date.'*'.$post->is_urgent.'" data-target="#edit_post" data-toggle="modal" ><i class="fa fa-pencil"></i></a></span>';
 			endif;
 
-			echo '<p class="h4"><strong>'.$post->title.'</strong></p><p>';
+			echo '<p class="h4 post_title"><strong>'.($post->is_urgent == 1 ? '<i class="fa fa-exclamation-triangle"></i>' : '').' '.$post->title.'</strong></p><p>';
 
 			//$post->post_details
 
@@ -102,7 +139,7 @@ class Bulletin_board extends MY_Controller{
 				echo $post->post_details;
 			}
 
-			echo '</p><small><i class="fa fa-calendar"></i> '.$post->date_posted.'</small></div></div></div>';
+			echo '</p><span class="hide hidden_post_details">'.$post->post_details.'</span><small><i class="fa fa-calendar"></i> '.$post->date_posted.'</small></div></div></div>';
 		}
 	}
 
@@ -126,7 +163,10 @@ class Bulletin_board extends MY_Controller{
 		$limit_date_tmsmp = strtotime(str_replace('/', '-', $limit_date));
 
 		$list_post_q = $this->bulletin_board_m->list_latest_post();
-		$has_post = 0;	
+		$has_post = 0;
+		$post_ids = '';
+		$has_urgent_post = 0;
+		$set_flash = 0;
 
 		//delete_cookie('show_post');
 		//delete_cookie('is_read_post');
@@ -134,8 +174,15 @@ class Bulletin_board extends MY_Controller{
 		foreach ($list_post_q->result() as $post) {
 			if($curr_date_tmsmp <= $post->expiry_date_mod && $limit_date_tmsmp > $post->expiry_date_mod){
 				$has_post ++;
+				$post_ids .= $post->bulletin_board_id.',';
 			}
 		}
+
+		$post_ids = rtrim($post_ids, ',');
+		$post_ids_arr = explode(',', $post_ids);
+		asort($post_ids_arr);
+		$post_ids = implode(',', $post_ids_arr);
+		$this->session->set_userdata('is_read_post_list',$post_ids);
 
 		if($has_post > 0){
 
@@ -144,19 +191,45 @@ class Bulletin_board extends MY_Controller{
 
 			foreach ($list_post_q->result() as $post) {
 				if($curr_date_tmsmp <= $post->expiry_date_mod && $limit_date_tmsmp > $post->expiry_date_mod){
-					echo '<h4>'.$post->title.'</h4><p>'.$post->post_details.'<br /><small class="block m-top-5"><i class="fa fa-user"></i> '.$post->user_first_name.' '.$post->user_last_name.' &nbsp; &nbsp; &nbsp; &nbsp; <i class="fa fa-calendar"></i> '.$post->date_posted.'</small></p><p><hr /></p>';
+
+					//if (!in_array($post->bulletin_board_id, $displayed_post_arr)){
+					//	echo '<h4>'.($post->is_urgent == 1 ? '<i class="fa fa-exclamation-triangle"></i>' : '').' '.$post->title.'</h4><p>'.$post->post_details.'<br /><small class="block m-top-5"><i class="fa fa-user"></i> '.$post->user_first_name.' '.$post->user_last_name.' &nbsp; &nbsp; &nbsp; &nbsp; <i class="fa fa-calendar"></i> '.$post->date_posted.'</small></p><p><hr /></p>';
+						//$post_ids .= $post->bulletin_board_id.',';
+					//}
+
+					if($this->session->userdata('is_read_post')){
+						$post_ids_arr_shown = explode(',',$this->session->userdata('is_read_post'));
+
+
+						if (!in_array($post->bulletin_board_id, $post_ids_arr_shown)){
+							echo '<h4>'.($post->is_urgent == 1 ? '<i class="fa fa-exclamation-triangle"></i>' : '').' '.$post->title.'</h4><p>'.$post->post_details.'<br /><small class="block m-top-5"><i class="fa fa-user"></i> '.$post->user_first_name.' '.$post->user_last_name.' &nbsp; &nbsp; &nbsp; &nbsp; <i class="fa fa-calendar"></i> '.$post->date_posted.'</small></p><p><hr /></p>';
+							$this->session->set_userdata('show_more_bb','1');
+						}else{
+							
+						}
+
+					}else{
+						echo '<h4>'.($post->is_urgent == 1 ? '<i class="fa fa-exclamation-triangle"></i>' : '').' '.$post->title.'</h4><p>'.$post->post_details.'<br /><small class="block m-top-5"><i class="fa fa-user"></i> '.$post->user_first_name.' '.$post->user_last_name.' &nbsp; &nbsp; &nbsp; &nbsp; <i class="fa fa-calendar"></i> '.$post->date_posted.'</small></p><p><hr /></p>';
+
+					}
+
+
 
 				}
 			}
 			echo '</div></div></div></div></div></div>';
 
+
 			$cookie = array(
 				'name'   => 'is_read_post',
-				'value'  => 1,
+				'value'  => $post_ids,
 				'expire' => 43200,
 				'secure' => false
 				);
+
+
 			$this->input->set_cookie($cookie);
+
 		}
 	}
-}
+} 

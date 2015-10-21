@@ -608,10 +608,18 @@ var can_add_contact = 1;
 </script>
 
 
-<?php if(isset($_COOKIE['is_read_post'])): else: ?>
+<?php if(isset($_COOKIE['is_read_post']) ): ?>
+  <?php $this->session->set_userdata('is_read_post',$this->session->userdata('is_read_post_list')); ?>
+<?php else: ?>
+  <?php $this->session->set_userdata('is_read_post',$this->session->userdata('is_read_post_list')); ?>
   <script type="text/javascript">$('#board').modal('show');</script>
 <?php endif; ?>
 
+<?php if($this->session->userdata('show_more_bb')): ?>
+  <?php $this->session->set_userdata('is_read_post',$this->session->userdata('is_read_post_list')); ?>
+  <?php $this->session->unset_userdata('show_more_bb'); ?>
+  <script type="text/javascript">$('#board').modal('show');</script>
+<?php endif; ?>
 
 </body>
 </html>

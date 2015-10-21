@@ -2,8 +2,8 @@
 
 class Bulletin_board_m extends CI_Model{
 
-	public function insert_post($title, $post_details, $user_id, $date_posted, $expiry_date){
-		$this->db->query("INSERT INTO `bulletin_board` (`title`, `post_details`, `user_id`, `date_posted`, `expiry_date`) VALUES ('$title', '$post_details', '$user_id', '$date_posted', '$expiry_date');");
+	public function insert_post($title, $post_details, $user_id, $date_posted, $expiry_date, $set_urgent ){
+		$this->db->query("INSERT INTO `bulletin_board` (`title`, `post_details`, `user_id`, `date_posted`, `expiry_date`, `is_urgent`) VALUES ('$title', '$post_details', '$user_id', '$date_posted', '$expiry_date', '$set_urgent');");
 		return $this->db->insert_id();	
 	}
 
@@ -19,6 +19,11 @@ class Bulletin_board_m extends CI_Model{
 
 	public function delete_post($post_id){
 		$query = $this->db->query("UPDATE `bulletin_board` SET `is_active` = '0' WHERE `bulletin_board`.`bulletin_board_id` = '$post_id'");
+		return $query;
+	}
+
+	public function update_post($title,$post_details,$expiry_date,$is_urgent,$bulletin_board_id){
+		$query = $this->db->query("UPDATE `bulletin_board` SET `title` = '$title', `post_details` = '$post_details', `expiry_date` = '$expiry_date', `is_urgent` = '$is_urgent' WHERE `bulletin_board`.`bulletin_board_id` = '$bulletin_board_id' ");
 		return $query;
 	}
 

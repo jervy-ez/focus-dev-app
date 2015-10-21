@@ -117,6 +117,9 @@
                     <input type="hidden" class="form-control" value="<?php echo $this->session->userdata('user_id'); ?>" name="token">
 
                     <button type="submit" name="submit" class="btn btn-success pull-right m-bottom-10 m-right-5"><i class="fa fa-floppy-o"></i> Submit</button>
+                    <div class="m-left-5">
+                    	<input class="check-swtich" type="checkbox" name="set_urgent" data-on-text="Yes" data-off-text="No" data-label-text="Is it urgent?">
+                    </div>
 
                   </div>
                 </div>
@@ -133,3 +136,62 @@
 </div>
 
 <?php $this->load->view('assets/logout-modal'); ?>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="edit_post" tabindex="-1" role="dialog" aria-labelledby="edit_post" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <form method="post"  action="<?php echo base_url(); ?>bulletin_board/update_post">
+      <div class="modal-header">
+
+      	<div class="pull-right">            		
+      		<input class="check-swtich set_urgent_edit" type="checkbox" name="set_urgent_edit" id="set_urgent_edit" data-on-text="Yes" data-off-text="No" data-label-text="Is it urgent?">
+      	</div>
+        <h4 class="modal-title" id="myModalLabel">Edit Post</h4>
+      </div>
+      	<div class="modal-body pad-10">
+      		<div class="container-fluid">
+      			<div class="row">
+
+      				<div class="col-sm-12">
+      					<div class="input-group m-bottom-10">
+      						<span class="input-group-addon" id=""><strong>Title</strong></span>
+      						<input type="text" placeholder="Post Title" class="form-control" id="post_title" name="post_title" value="">
+      					</div>
+
+      					<div class="box m-top-15 ">
+      						<div class="box-head pad-5">
+      							<label for="email_msg_no_insurance">Content</label>
+      						</div>
+
+      						<div class="box-area pad-5 clearfix ">
+      							<div class="clearfix ">
+      								<div class="">
+      									<textarea class="form-control" id="post_content" name="post_content" rows="10"></textarea>												
+      								</div>
+      							</div>
+      						</div>
+      					</div>
+
+      					<input type="hidden" name="expiry_date" id="expiry_date">
+      					<input type="hidden" name="post_id" id="post_id">
+      					<input type="hidden" name="is_urgent" id="is_urgent">
+
+      				</div>
+
+      			</div>
+      		</div>
+      	</div>
+      	<div class="modal-footer">
+      		<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      		<button type="submit" class="btn btn-success">Save Changes</button>
+      	</div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<?php // $this->bulletin_board->list_latest_post(); ?>
