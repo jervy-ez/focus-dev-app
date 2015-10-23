@@ -33,6 +33,7 @@ class Reports extends MY_Controller{
 
 	private function pdf_create($html, $orientation='portrait', $paper='A4',$filename='report',$folder_type='general' ,$auto_clear=TRUE,$stream=TRUE){
 		$dompdf = new DOMPDF();
+		$html = mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8');
 
 		$dompdf->set_paper($paper,$orientation);
 		$dompdf->load_html($html);

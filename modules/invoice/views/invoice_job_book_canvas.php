@@ -158,7 +158,7 @@
         </div>
       </fieldset>
       <p>&nbsp;</p>
-      <div class="i_edit clearfix">
+      <div class="i_edit clearfix job_book_notes">
         <p><strong>Notes</strong></p>
         <div class="print_job_book_notes "><?php echo $show_job_book_details['notes']; ?></div>
       </div>
@@ -172,6 +172,5 @@
 </div>
 <link href="<?php echo base_url(); ?>css/bootstrap.min.css" rel="stylesheet" type="text/css"> 
 <link href="<?php echo base_url(); ?>css/main.css" rel="stylesheet" type="text/css">
-
 </body>
 </html>

@@ -1557,3 +1557,10 @@ tr.active_row_work>td{
     -ms-user-select: none;
     user-select: none;
 }
+
+
+
+.job_book_notes .notes_line p span.pull-right{
+	float: none !important;
+	display: block;
+}

@@ -399,7 +399,7 @@ class Invoice extends MY_Controller{
 			$variation_total = 0;
 		}
 
-		echo '<p>&nbsp;</p><p>&nbsp;</p><hr /><p><strong>Total EX-GST  &nbsp; &nbsp; : $'.number_format($total+$variation_total,2).'</strong></p>';
+		echo '<p>&nbsp;</p><p>&nbsp;</p><hr /><p class="m_edit"><strong>Total EX-GST  &nbsp; &nbsp; : $'.number_format($total+$variation_total,2).'</strong></p>';
 	}
 
 

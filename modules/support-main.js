@@ -1110,11 +1110,21 @@ $('#var_update').click(function(){
 $('.delete_post').click(function(e){
   e.preventDefault;
   var delete_id_post = $(this).attr('id');
-  $(this).parent().parent().parent().parent().fadeOut(function(){
-    alert('Post is now deleted!')
-  });
 
-  ajax_data(delete_id_post,'bulletin_board/remove_post','');
+
+  var confirm_action = confirm("Are you sure to delete this post?");
+  if (confirm_action == true) {
+
+    $(this).parent().parent().parent().parent().fadeOut();
+
+    ajax_data(delete_id_post,'bulletin_board/remove_post','');
+
+
+  } else {
+   // txt = "You pressed Cancel!";
+ }
+
+
 
 });
 
@@ -1974,6 +1984,35 @@ $('.update_progress_values').click(function(){
   },1000);
 });
 
+
+$('.edit_post').click(function(e){
+ e.preventDefault();
+
+ var title = $(this).parent().parent().find('.post_title').text();
+ var post_content = $(this).parent().parent().find('span.hidden_post_details').text();
+
+
+
+ var post_details = $(this).attr('id');
+ var post_details_arr = post_details.split("*");
+
+ $('input#expiry_date').val(post_details_arr['1']);
+ $('input#post_id').val(post_details_arr['0']);
+ $('input#is_urgent').val(post_details_arr['2']);
+ $('input#post_title').val(title);
+ $('textarea#post_content').val(post_content);
+
+
+ if(post_details_arr['2'] == 1){
+  $('input.set_urgent_edit').bootstrapSwitch('state', true);
+}else{
+  $('input.set_urgent_edit').bootstrapSwitch('state', false);
+
+}
+
+
+});
+
   // custom counter container and text
   $("#project_name").maxlength({
     counterContainer: $(".char-counter-remains"),
@@ -2507,7 +2546,7 @@ $('.po_set_values').on("click", function(event) {
     }, 
     function(result){
       if(result !== '0'){
-        //alert(result);
+       // alert(result);
         var d = new Date();
         var strDate = d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
 
