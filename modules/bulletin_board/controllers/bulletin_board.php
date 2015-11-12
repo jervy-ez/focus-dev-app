@@ -72,7 +72,7 @@ class Bulletin_board extends MY_Controller{
 
 		if(isset($_POST['set_urgent'])){
 			$is_urget = 1;
-			$expiry_date = date('d/m/Y');
+			$expiry_date = date('d/m/Y', strtotime("+1 day"));
 		}
 
 		$this->bulletin_board_m->insert_post($title, $my_post, $user_id, $date_posted, $expiry_date, $is_urget);
@@ -100,7 +100,7 @@ class Bulletin_board extends MY_Controller{
 
 		if(isset($_POST['set_urgent_edit'])){
 			$is_urgent = 1;
-			$expiry_date = date('d/m/Y');
+			$expiry_date = date('d/m/Y', strtotime("+1 day"));
 		}
 
 		if($title == '' || $post_details == ''){

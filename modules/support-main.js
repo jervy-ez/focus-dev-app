@@ -1955,7 +1955,7 @@ $('.pdf_editor_bttn').click(function(){
   }
 
   invoice_notes = invoice_notes.replace(/'/g, '&apos;');
-  invoice_notes = invoice_notes.replace(/\r?\n/g, '<br />');
+  invoice_notes = invoice_notes.replace(/\r?\n/g, '<br class="block" />');
   invoice_notes = '<div class="notes_line"><p class="clearfix"><strong><span class="pull-left block text-left">'+project_id+progressArr[0]+progressArr[1]+'&nbsp; - '+invoice_percent_value+'% of $'+numberWithCommas(proj_ex_gst_total)+'</span> <span class="pull-right block text-right"><strong>$'+numberWithCommas(invoice_item_amount)+' EX-GST</strong></span></strong></p><p class="clearfix"><br />'+invoice_notes+'</p></div>';
 
 
