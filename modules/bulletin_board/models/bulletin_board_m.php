@@ -27,4 +27,8 @@ class Bulletin_board_m extends CI_Model{
 		return $query;
 	}
 
+	public function update_seen_post($bulletin_board_id,$seen_ids){
+		$query = $this->db->query("UPDATE `bulletin_board` SET `seen_by_ids` = '$seen_ids' WHERE `bulletin_board`.`bulletin_board_id` = '$bulletin_board_id' ");
+		return $query;		
+	}
 }

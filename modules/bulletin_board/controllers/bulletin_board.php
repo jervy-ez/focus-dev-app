@@ -154,6 +154,7 @@ class Bulletin_board extends MY_Controller{
 
 
 	public function list_latest_post(){
+
 		date_default_timezone_set("Australia/Perth");
 
 		$curr_date = date('d/m/Y');
@@ -167,6 +168,10 @@ class Bulletin_board extends MY_Controller{
 		$post_ids = '';
 		$has_urgent_post = 0;
 		$set_flash = 0;
+		$show_post = 0;
+		$is_show_counter_bb = 0;
+
+		$user_id = $this->session->userdata('user_id');
 
 		//delete_cookie('show_post');
 		//delete_cookie('is_read_post');
@@ -183,6 +188,7 @@ class Bulletin_board extends MY_Controller{
 		asort($post_ids_arr);
 		$post_ids = implode(',', $post_ids_arr);
 		$this->session->set_userdata('is_read_post_list',$post_ids);
+		$show_post = 0;
 
 		if($has_post > 0){
 
@@ -192,44 +198,27 @@ class Bulletin_board extends MY_Controller{
 			foreach ($list_post_q->result() as $post) {
 				if($curr_date_tmsmp <= $post->expiry_date_mod && $limit_date_tmsmp > $post->expiry_date_mod){
 
-					//if (!in_array($post->bulletin_board_id, $displayed_post_arr)){
-					//	echo '<h4>'.($post->is_urgent == 1 ? '<i class="fa fa-exclamation-triangle"></i>' : '').' '.$post->title.'</h4><p>'.$post->post_details.'<br /><small class="block m-top-5"><i class="fa fa-user"></i> '.$post->user_first_name.' '.$post->user_last_name.' &nbsp; &nbsp; &nbsp; &nbsp; <i class="fa fa-calendar"></i> '.$post->date_posted.'</small></p><p><hr /></p>';
-						//$post_ids .= $post->bulletin_board_id.',';
-					//}
+					$viewed = explode(',',$post->seen_by_ids);
 
-					if($this->session->userdata('is_read_post')){
-						$post_ids_arr_shown = explode(',',$this->session->userdata('is_read_post'));
+					if(!in_array($user_id,$viewed)){
+						$show_post = 1; // not urgent
 
-
-						if (!in_array($post->bulletin_board_id, $post_ids_arr_shown)){
-							echo '<h4>'.($post->is_urgent == 1 ? '<i class="fa fa-exclamation-triangle"></i>' : '').' '.$post->title.'</h4><p>'.$post->post_details.'<br /><small class="block m-top-5"><i class="fa fa-user"></i> '.$post->user_first_name.' '.$post->user_last_name.' &nbsp; &nbsp; &nbsp; &nbsp; <i class="fa fa-calendar"></i> '.$post->date_posted.'</small></p><p><hr /></p>';
-							$this->session->set_userdata('show_more_bb','1');
-						}else{
-							
-						}
-
-					}else{
+						array_push($viewed, $user_id);
+						$seen_ids = implode(',', $viewed);
+						$this->bulletin_board_m->update_seen_post($post->bulletin_board_id,$seen_ids);
 						echo '<h4>'.($post->is_urgent == 1 ? '<i class="fa fa-exclamation-triangle"></i>' : '').' '.$post->title.'</h4><p>'.$post->post_details.'<br /><small class="block m-top-5"><i class="fa fa-user"></i> '.$post->user_first_name.' '.$post->user_last_name.' &nbsp; &nbsp; &nbsp; &nbsp; <i class="fa fa-calendar"></i> '.$post->date_posted.'</small></p><p><hr /></p>';
-
+						$this->session->set_userdata('is_show_test','1');
+						$is_show_counter_bb++;
 					}
-
-
-
 				}
 			}
 			echo '</div></div></div></div></div></div>';
-
-
-			$cookie = array(
-				'name'   => 'is_read_post',
-				'value'  => $post_ids,
-				'expire' => 43200,
-				'secure' => false
-				);
-
-
-			$this->input->set_cookie($cookie);
-
+		}else{
+			$this->session->set_userdata('is_show_test','0');
 		}
+
+
+		$this->session->set_userdata('is_show_counter_bb',$is_show_counter_bb);
+
 	}
 } 
