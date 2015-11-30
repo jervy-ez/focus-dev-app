@@ -1,9 +1,7 @@
 	<div class="container-fluid">
 		<div class="row">	
 			<footer>
-				<hr />
 
-  
 <!-- Modal -->
 <div class="modal fade" id="idle_log_in_form" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -59,11 +57,10 @@
 		</div>
 	</div>
 
+<p><br/>&nbsp;<br/></p>
+<p><br/>&nbsp;<br/></p>
 
-
-
-
-<p class="text-center">&copy; FSF Group <?php echo date("Y"); ?></p>
+<p class="text-center m-top-20">&copy; FSF Group <?php echo date("Y"); ?></p>
 
 
 
@@ -608,18 +605,16 @@ var can_add_contact = 1;
 </script>
 
 
-<?php if(isset($_COOKIE['is_read_post']) ): ?>
-  <?php $this->session->set_userdata('is_read_post',$this->session->userdata('is_read_post_list')); ?>
+<?php if($this->session->userdata('is_show_test') > 0): ?>
+  <script type="text/javascript">
+    $('#board').modal('show');
+    $('.side-tools i#bulletin_board_lbl_sb').after('<span class="is_show_counter_bb"><?php echo $this->session->userdata("is_show_counter_bb"); ?></span>');
+  </script>
+  <?php $this->session->set_userdata('is_show_test','0'); ?>
 <?php else: ?>
-  <?php $this->session->set_userdata('is_read_post',$this->session->userdata('is_read_post_list')); ?>
-  <script type="text/javascript">$('#board').modal('show');</script>
+  <script type="text/javascript">$('.is_show_counter_bb').remove();</script>
 <?php endif; ?>
 
-<?php if($this->session->userdata('show_more_bb')): ?>
-  <?php $this->session->set_userdata('is_read_post',$this->session->userdata('is_read_post_list')); ?>
-  <?php $this->session->unset_userdata('show_more_bb'); ?>
-  <script type="text/javascript">$('#board').modal('show');</script>
-<?php endif; ?>
 
 </body>
 </html>

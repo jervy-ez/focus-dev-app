@@ -589,14 +589,16 @@ function validate_progress_dates(date_id){
 
   function print_job_book(){
     var contents  = $("#job_book_area").html();
-    var printWindow = window.open('', '', 'height=800,width=1050,top=100,left=100,location=no,toolbar=no,resizable=yes,menubar=no,scrollbars=yes');
+    var printWindow = window.open('', '', 'height=800,width=1100,top=100,left=100,location=no,toolbar=no,resizable=yes,menubar=no,scrollbars=yes');
     printWindow.document.write('<html><head>');
     printWindow.document.write('<script src="'+baseurl+'js/vendor/jquery-1.11.0.min.js" type="text/javascript" language="javascript" /></script>');
+    printWindow.document.write('<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script><script type="text/javascript" src="http://rawgit.com/masayuki0812/c3/master/c3.js"></script>');
     printWindow.document.write('<link href="'+baseurl+'css/print.css" rel="stylesheet" type="text/css" />');
+    printWindow.document.write('<link href="'+baseurl+'css/c3.css" rel="stylesheet" type="text/css" />');
     printWindow.document.write('</head><body class="print_body">');
     printWindow.document.write(contents);
     printWindow.document.write('<a href="#" onclick="this.parentNode.removeChild(this); window.print(); window.close();" class="print_bttn print_me_now">Print Now!</a>');
-    printWindow.document.write('<script src="'+baseurl+'js/printable.js" type="text/javascript" language="javascript" /></script>');
+    printWindow.document.write('<script src="'+baseurl+'js/printable.js" type="text/javascript" language="javascript" /></script><style type="text/css" media="print">@page { size: landscape; } .c3-legend-item-hidden{ display:none !important; visibility:hidden !important; }</style>');
     printWindow.document.write('</body></html>');
     printWindow.document.close();
   }
@@ -1110,11 +1112,21 @@ $('#var_update').click(function(){
 $('.delete_post').click(function(e){
   e.preventDefault;
   var delete_id_post = $(this).attr('id');
-  $(this).parent().parent().parent().parent().fadeOut(function(){
-    alert('Post is now deleted!')
-  });
 
-  ajax_data(delete_id_post,'bulletin_board/remove_post','');
+
+  var confirm_action = confirm("Are you sure to delete this post?");
+  if (confirm_action == true) {
+
+    $(this).parent().parent().parent().parent().fadeOut();
+
+    ajax_data(delete_id_post,'bulletin_board/remove_post','');
+
+
+  } else {
+   // txt = "You pressed Cancel!";
+ }
+
+
 
 });
 
@@ -1859,7 +1871,7 @@ $('.set_invoice_modal_submit').click(function(){
   var invoice_notes = $('textarea#invoice_notes').val();
 
   invoice_notes = invoice_notes.replace(/'/g, '&apos;');
-  invoice_notes = invoice_notes.replace(/\r?\n/g, '<br />');
+  invoice_notes = invoice_notes.replace(/\r?\n/g, '<br class="block"/>');
 
 
 
@@ -1873,7 +1885,7 @@ $('.set_invoice_modal_submit').click(function(){
     progressArr[1] = '';
   }
 
-  invoice_notes = '<div class="notes_line"><p class="clearfix"><strong><span class="pull-left block text-left">'+project_id+progressArr[0]+progressArr[1]+'&nbsp; - '+invoice_percent_value+'% of $'+proj_ex_gst_total+'</span> <span class="pull-right block text-right"><strong>$'+invoice_item_amount+' EX-GST</strong></span></strong></p><p class="clearfix"><br />'+invoice_notes+'</p></div>'+job_book_notes;
+  invoice_notes = '<div class="notes_line"><p class="clearfix"><strong><span class="pull-left block text-left">'+project_id+progressArr[0]+progressArr[1]+'&nbsp; - '+invoice_percent_value+'% of $'+numberWithCommas(proj_ex_gst_total)+'</span> <span class="pull-right block text-right"><strong>$'+numberWithCommas(invoice_item_amount)+' EX-GST</strong></span></strong></p><p class="clearfix"><br />'+invoice_notes+'</p></div>'+job_book_notes;
 
 
 $('input.raw_invoice_notes').val(invoice_notes);
@@ -1945,8 +1957,8 @@ $('.pdf_editor_bttn').click(function(){
   }
 
   invoice_notes = invoice_notes.replace(/'/g, '&apos;');
-  invoice_notes = invoice_notes.replace(/\r?\n/g, '<br />');
-  invoice_notes = '<div class="notes_line"><p class="clearfix"><strong><span class="pull-left block text-left">'+project_id+progressArr[0]+progressArr[1]+'&nbsp; - '+invoice_percent_value+'% of $'+proj_ex_gst_total+'</span> <span class="pull-right block text-right"><strong>$'+invoice_item_amount+' EX-GST</strong></span></strong></p><p class="clearfix"><br />'+invoice_notes+'</p></div>';
+  invoice_notes = invoice_notes.replace(/\r?\n/g, '<br class="block"/>');
+  invoice_notes = '<div class="notes_line"><p class="clearfix"><strong><span class="pull-left block text-left">'+project_id+progressArr[0]+progressArr[1]+'&nbsp; - '+invoice_percent_value+'% of $'+numberWithCommas(proj_ex_gst_total)+'</span> <span class="pull-right block text-right"><strong>$'+numberWithCommas(invoice_item_amount)+' EX-GST</strong></span></strong></p><p class="clearfix"><br />'+invoice_notes+'</p></div>';
 
 
   $("iframe.frame_container").contents().find('.print_job_book_notes').prepend(invoice_notes);
@@ -1972,6 +1984,35 @@ $('.update_progress_values').click(function(){
   setTimeout(function(){
     update_project_invoice();
   },1000);
+});
+
+
+$('.edit_post').click(function(e){
+ e.preventDefault();
+
+ var title = $(this).parent().parent().find('.post_title').text();
+ var post_content = $(this).parent().parent().find('span.hidden_post_details').text();
+
+
+
+ var post_details = $(this).attr('id');
+ var post_details_arr = post_details.split("*");
+
+ $('input#expiry_date').val(post_details_arr['1']);
+ $('input#post_id').val(post_details_arr['0']);
+ $('input#is_urgent').val(post_details_arr['2']);
+ $('input#post_title').val(title);
+ $('textarea#post_content').val(post_content);
+
+
+ if(post_details_arr['2'] == 1){
+  $('input.set_urgent_edit').bootstrapSwitch('state', true);
+}else{
+  $('input.set_urgent_edit').bootstrapSwitch('state', false);
+
+}
+
+
 });
 
   // custom counter container and text
@@ -2496,14 +2537,18 @@ $('.po_set_values').on("click", function(event) {
   }
 
   if (error == 0){
+    // changed 10/16/2015 jrv
     var po_no = $("#po_number_item").val();
+    var po_reference_value = $("#po_reference_value").val();
+    var data = po_no+'*'+po_reference_value;
+    // changed 10/16/2015 jrv
     $.post(baseurl+"purchase_order/no_insurance_send_email", 
     {
-      po_no:po_no
+      'ajax_var':data // changed 10/16/2015 jrv
     }, 
     function(result){
       if(result !== '0'){
-        alert(result);
+       // alert(result);
         var d = new Date();
         var strDate = d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear();
 
@@ -2657,7 +2702,108 @@ $("#po_amount_value_inc_gst").keyup(function( event ) {
 });
 
 
+$('.stored_rfc').click(function(event){
+  event.preventDefault();
 
+  var record_values = $(this).attr('id');
+  var record_values_arr = record_values.split("-");
+  var index = 0;
+  var basic_data = [];
+
+  var rfc_id = $(this).parent().parent().attr('id');
+
+
+  $('input#rfc_token').val(rfc_id);
+
+
+  $('a.delete_cancel').attr('href','?delete_rfc='+rfc_id);
+
+
+  $(this).parent().parent().find('td').each(function( index ) {
+    basic_data.push($(this).text());
+  });
+
+  $('form#forecast_form').fadeOut(300,function(){
+
+    $(".monthly_breakdown").find('input').each(function( index ) {
+      $(this).val(record_values_arr[index]);
+      index++;
+    });
+
+    $('select#data_year').val(basic_data[0]);
+    $('select#data_type').val(basic_data[1]);
+
+    if(basic_data[3] == 'Focus Shopfit Pty Ltd'){
+      $('select#focus_company').val(5);
+    }else if(basic_data[3] == 'Focus Shopfit NSW Pty Ltd'){
+      $('select#focus_company').val(6);
+    }else{
+      $('select#focus_company').val();
+    }  
+
+    $('input#data_name').val(basic_data[2]);
+    $('input#data_amount').val(basic_data[4]);
+
+    $('form#forecast_form').attr('action',base_url+'dashboard/update_sales_forecast');
+
+    $('strong.data_label').text('Update Data');
+    $('input.data_submit').val('Update Data').removeClass('btn-success').addClass('btn-info');
+    $('.form_forecast_update_tools').show();
+
+  });
+
+  $('form#forecast_form').fadeIn(300);
+
+  $('form#forecast_form').find('input.form-control').each(function( index ) {
+    $(this).parent().removeClass('has-error');
+  });
+
+});
+
+
+$('.data_cancel').click(function(event){
+  event.preventDefault();
+
+  $('form#forecast_form').fadeOut(300,function(){
+    document.getElementById("forecast_form").reset();
+    $('form#forecast_form').attr('action',base_url+'dashboard/add_data_sales_forecast');
+    $('.form_forecast_update_tools').hide();
+    $('strong.data_label').text('New Data');
+    $('input.data_submit').val('Save Data').removeClass('btn-info').addClass('btn-success');
+  });
+
+  $('form#forecast_form').fadeIn(300);
+});
+
+/*
+$('.add_data_chart').click(function(){
+
+  var data_name = $('input.data_name').val();
+  var year = $('input.year').val();
+  var display_type = $('select.display_type').val();
+  var values_item = $('textarea.value_items').val();
+ 
+
+setTimeout(function () {
+    chart.load({
+        columns:[ [data_name, 660, 630,620, 650, 640, 660, 650] ],
+        type: display_type,
+        colors: { data_name: '#CB0073' }
+    });
+}, 2000);
+
+
+
+chart.select([data_name]);
+
+});
+  
+*/
+
+$("select.sf_chart_dateSelection").on("change", function(e) {
+  var year_selection = $(this).val();
+  window.location.assign(baseurl+"dashboard/sales_forecast/year_selection/"+year_selection);
+});
 
 $("select#job_category").on("change", function(e) {
 
@@ -2719,6 +2865,25 @@ $('.read_less').on("click", function(event) {
   $(this).prev('.remain').prev('.read_more').show();
 });
 
+
+
+$('.box-widg-head .tabs').click(function(){
+  var tab_target = $(this).attr('id');
+
+  $('.box-widg-head .tabs').each(function( index ) {
+    $(this).removeClass('active');
+  });
+
+  $(this).addClass('active');
+
+  var target = tab_target+'_area';
+
+  $('.tab_container .tab_area').hide();
+  $('.tab_container #'+target).fadeIn();
+
+});
+
+
 $('.print-wip').on("click", function(event) {
   event.preventDefault();
   var totals_wip = $('.totals_wip').html();
@@ -2745,8 +2910,6 @@ $('.print-wip').on("click", function(event) {
   }else{
     var prj_status = $('select#prj_status').val();
   }
-
-
 
 
 

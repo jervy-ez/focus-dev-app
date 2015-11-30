@@ -27,6 +27,11 @@ if(company == 'company'){
 }
 
 
+$('#dataTable_noCustom').dataTable({
+    "iDisplayLength": 8,
+    "aLengthMenu": [[8, 14, 21, 28, -1], [8, 14, 21, 28, "All"]]
+});
+
 $('#shoppingCenterTable').dataTable({
     "iDisplayLength": 13,
     "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
