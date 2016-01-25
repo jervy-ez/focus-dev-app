@@ -75,183 +75,214 @@
 										<span class="label label-default pull-right pointer" data-dismiss="alert" style="display: block; margin: 6px 9px;">x</span>									
 										<div class="widg-head box-widg-head pad-5"><i class="fa fa-exclamation-triangle"></i> <strong><?php echo $this->session->flashdata('record_update');?></strong> </div>									
 									</div>
-								<?php endif; ?>	
-
+								<?php endif; ?>							
 
 								<div class="widget wid-type-a widg-head-styled">
-									<div class="widg-head box-widg-head pad-5"><i class="fa fa-cog"></i> 
-										<strong class="pointer collapsed" data-toggle="collapse" data-target=".data_forecast">Forecast Settings</strong>
-										<span class="badges pull-right m-right-10"> 
-											<span class="tabs active" id="tab_addnew">Add New</span> 
-											<span class="tabs" id="tab_forecasts">Forecasts</span> 
-										</span>
-									</div>
-								
-									<div class="box-area clearfix data_forecast collapse <?php echo(@$form_toggle ? 'in' : 'out'); ?>  ">
+									<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
+									<div class="widg-head box-widg-head pad-5"><i class="fa fa-cog"></i> <strong class="pointer" data-toggle="collapse" data-target=".data_forecast">Forecast Settings</strong> <span class="pull-right m-top-3" data-toggle="collapse" data-target=".data_forecast"><i class="fa fa-caret-square-o-down fa-lg pointer"></i></span></div>
+									<div class="box-area clearfix data_forecast collapse <?php echo (@$this->session->flashdata('error_add_fs')? 'in' : 'out'); ?>">
 										<div class="widg-content clearfix">
-											<div class="tab_container">
-												<div id="tab_addnew_area" class="tab_area active clearfix row pad-0-imp no-m-imp">
+
+											<div class="clearfix row pad-0-imp no-m-imp">
+												<div class="col-md-7 col-sm-12 col-xs-12" id="">
+													<strong class="m-bottom-10 block data_label"><?php echo (@$this->session->flashdata('is_update')? 'Update Data' : 'New Data'); ?></strong> <small><em>All of these fieds are required.</em></small>
+
+
 													<form method="post" id="forecast_form" class="m-top-5 m-bottom-5" action="<?php echo base_url(); echo (@$this->session->flashdata('is_update')? 'dashboard/update_sales_forecast' : 'dashboard/add_data_sales_forecast'); ?>">
 
-													<div class="col-md-8 col-sm-12 col-xs-12" id="">
-														<strong class="m-bottom-10 block data_label"><?php echo (@$this->session->flashdata('is_update')? 'Update Data' : 'Add New Data'); ?></strong> <small class="block m-bottom-10"><em>Note: The sales from calendar year <strong>"<u><?php echo $old_year; ?></u>"</strong> is being used.</em></small>
-														<script type="text/javascript"> //$('select#data_year').val('<?php if(@$this->session->flashdata("data_year")){ echo $this->session->flashdata("data_year"); } ?>');</script>
+														<div class="clearfix row pad-0-imp no-m-imp">
 
-															<div class="clearfix row pad-0-imp no-m-imp">
+															<div class="col-lg-4 col-md-6 col-xs-6" id="">		
+																<div class="input-group m-bottom-10 <?php if(@$this->session->flashdata('error_data_type')){ echo 'has-error'; } ?> ">
+																	<span class="input-group-addon" id=""><i class="fa fa-file-text-o"></i></span>
+																	<select name="data_type" id="data_type" class="form-control m-bottom-10">	
+																		<option selected value="" style="display:none;">Select Data Type</option>
+																		<option value="Forecast">Forecast</option>
+																		<option value="Record">Record</option>
+																	</select>
+																	<script type="text/javascript">$('select#data_type').val('<?php if(@$this->session->flashdata("data_type")){ echo $this->session->flashdata("data_type"); } ?>');</script>
+																</div>
+															</div>
 
-																<div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 clearfix ">
+															<div class="col-lg-4 col-md-6 col-xs-6" id="">		
+																<div class="input-group m-bottom-10 <?php if(@$this->session->flashdata('error_data_year')){ echo "has-error"; } ?>">
+																	<span class="input-group-addon" id=""><i class="fa fa-calendar"></i></span>      		
+																	<select name="data_year" id="data_year" class="form-control m-bottom-10">
+																		<option selected value="" style="display:none;">Select Year</option>
+																		<?php $year = date("Y"); for($i=0; $i < 6; $i++){																		
+																			echo '<option value="'.($year+$i).'">'.($year+$i).'</option>';
+																		}?>
+																	</select>
+																	<script type="text/javascript">$('select#data_year').val('<?php if(@$this->session->flashdata("data_year")){ echo $this->session->flashdata("data_year"); } ?>');</script>
+																</div>
+															</div>
+
+															<div class="col-lg-4 col-md-6 col-xs-6" id="">		
+																<div class="input-group m-bottom-10 <?php if(@$this->session->flashdata('error_focus_company')){ echo "has-error"; } ?>">
+																	<span class="input-group-addon" id=""><i class="fa fa-briefcase"></i></span>
+																	<select name="focus_company" id="focus_company" class="form-control m-bottom-10">
+																		<option selected value="" style="display:none;">Select Focus Company</option>
+																		<?php foreach ($focus as $key => $value): ?>
+																			<?php if($value->company_name != 'FSF Group Pty Ltd'): ?>
+																				<option value="<?php echo $value->company_id; ?>"><?php echo $value->company_name; ?></option>
+																			<?php endif; ?>
+																		<?php endforeach; ?>
+																	</select>
+																	<script type="text/javascript">$('select#focus_company').val('<?php if(@$this->session->flashdata("focus_company")){ echo $this->session->flashdata("focus_company"); } ?>');</script>
+																</div>
+															</div>
+
+															<div class="col-lg-4 col-md-6 col-xs-6" id="">	
+																<div class="input-group m-bottom-10 <?php if(@$this->session->flashdata('error_data_name')){ echo "has-error"; } ?>">
+																	<span class="input-group-addon" id=""><i class="fa fa-pencil-square-o"></i></span>  
+																	<input type="text" class="form-control m-bottom-10 data_name" id="data_name" name="data_name" placeholder="Data Name" value="<?php if(@$this->session->flashdata("data_name")){ echo $this->session->flashdata("data_name"); } ?>">
+																</div>
+															</div>
+
+
+															<div class="col-lg-4 col-xs-6" id="">	
+																<div class="input-group m-bottom-10 <?php if(@$this->session->flashdata('error_data_amount')){ echo "has-error"; } ?>">
+																	<span class="input-group-addon" id=""><strong>$</strong></span>      		
+																	<input type="text" class="form-control m-bottom-10 data_name number_format" id="data_amount" name="data_amount" placeholder="Total Amount" value="<?php if(@$this->session->flashdata("data_amount")){ echo $this->session->flashdata("data_amount"); } ?>">
+																	<span class="input-group-addon" id=""><strong>EX-GST</strong></span> 
+																</div>
+															</div>
+
+															<div class="clearfix"></div>
+															<hr class="block m-bottom-15 m-top-5">
+
+															<strong class="m-bottom-10 block">Monthly Breakdown</strong>
+
+															<div class="row pad-0-imp no-m-imp monthly_breakdown">
+
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
 																	<div class="input-group m-bottom-10">
-																		<span class="input-group-addon">Forecast Year</span>
-																		<select name="data_year" id="data_year" class="form-control m-bottom-10 input-sm">
-																			<option selected value="" style="display:none;">Select Year</option>
-																			<?php $year = date('Y'); for($i=0; $i < 2; $i++){																		
-																				echo '<option value="'.($year+$i).'">'.($year+$i).'</option>';
-																			}?>
-																		</select>
-																		<script type="text/javascript">$('select#data_year').val('<?php if(@$this->session->flashdata("data_year")){ echo $this->session->flashdata("data_year"); }else{ echo $old_year+1;  } ?>');</script>
+																		<span class="input-group-addon">Jan</span>      		
+																		<input type="text" class="form-control number_format" id="jan" name="jan" value="<?php if(@$this->session->flashdata("jan")){ echo $this->session->flashdata("jan"); } ?>">
 																	</div>
 																</div>
 
-																<?php foreach ($focus as $key => $value): ?>
-																	<?php if($value->company_name != 'FSF Group Pty Ltd'): ?>
-																		<div class="col-lg-4 col-md-6 col-xs-6" id="">	
-																			<div class="input-group m-bottom-10">
-																				<span class="input-group-addon" id=""><?php echo $value->company_name; ?></span> 
-																				<input type="text" class="form-control m-bottom-10 data_name input-sm number_format focus_comp_split click_select" id="focus_id_<?php echo $value->company_id; ?>" name="focus_id_<?php echo $value->company_id; ?>" placeholder="%" value="<?php if(@$this->session->flashdata("focus_id_$value->company_id")){ echo $this->session->flashdata("focus_id_$value->company_id"); } ?>">
-																				<span class="input-group-addon" id="">
-																					<strong><?php echo $this->dashboard->_get_focus_splits($old_year,$value->company_id); ?>%</strong>
-																				</span>  	
-																			</div>
-																		</div>
-																	<?php endif; ?>
-																<?php endforeach; ?>
-
-																<?php $group = 0; $group_min = 0; $add_custom_min = 0; $start = 0; $counter = 0;?>
-																<?php foreach ($pm_names as $key => $names): ?>
-	 
-
-																	<?php $start = $names->user_focus_company_id; ?>
-
-																	<?php if($counter > 0 && $start != $add_custom_min): ?>
-																		<div class="col-lg-4 col-md-6 col-xs-6" id="">	
-																			<div class="input-group m-bottom-10">
-																				<span class="input-group-addon" id="">Maintenance</span>
-																				<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select focus_pm_split focus_comp_id_<?php echo $add_custom_min; ?>" id="focus_id_m_<?php echo $add_custom_min; ?>" name="focus_id_m_<?php echo $add_custom_min; ?>" placeholder="%" value="<?php if(@$this->session->flashdata("focus_id_m_$add_custom_min")){ echo $this->session->flashdata("focus_id_m_$add_custom_min"); } ?>">
-																				<span class="input-group-addon" id=""><strong><?php echo $this->dashboard->_get_focus_pm_splits($old_year,'5','29'); ?>%</strong></span> 
-																				<span class="input-group-addon pointer add_custom_pm" id=""><strong>+</strong></span> 
-																			</div>
-																		</div>
-
-																	<?php endif; ?>
-
-																	<?php if($group != $names->user_focus_company_id ): $group = $names->user_focus_company_id;?>
-																		<div class="clearfix"></div><hr class="block m-bottom-5 m-top-5"><strong class="m-bottom-10 block data_label"><?php echo $names->company_name; ?></strong><div class="clearfix"></div>
-																	<?php endif; ?>
-
-																	<div class="col-lg-4 col-md-6 col-xs-6" id="">	
-																		<div class="input-group m-bottom-10">
-																			<span class="input-group-addon" id=""><?php echo $names->user_pm; ?></span>
-																			<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select focus_pm_split focus_comp_id_<?php echo $names->user_focus_company_id; ?>" id="focus_pmid_<?php echo $names->user_id; ?>" name="focus_pmid_<?php echo $names->user_id; ?>" placeholder="%" value="<?php if(@$this->session->flashdata("focus_pmid_$names->user_id")){ echo $this->session->flashdata("focus_pmid_$names->user_id"); } ?>">
-																			<span class="input-group-addon" id=""><strong><?php echo $this->dashboard->_get_focus_pm_splits($old_year,$names->user_focus_company_id,$names->user_id); ?>%</strong></span> 
-																		</div>
-																	</div>																	
-
-																	<?php $counter++; ?>
-																	<?php $add_custom_min = $names->user_focus_company_id; ?>
-																	<?php $last_focus_id = $names->user_focus_company_id; ?>
-
-																<?php endforeach; ?>
-
-																<div class="col-lg-4 col-md-6 col-xs-6" id="">	
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
 																	<div class="input-group m-bottom-10">
-																		<span class="input-group-addon" id="">Maintenance</span>
-																		<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select focus_pm_split focus_comp_id_<?php echo $last_focus_id; ?>" id="focus_id_m_<?php echo $last_focus_id; ?>" name="focus_id_m_<?php echo $last_focus_id; ?>" placeholder="%" value="<?php if(@$this->session->flashdata("focus_id_m_$last_focus_id")){ echo $this->session->flashdata("focus_id_m_$last_focus_id"); } ?>">
-																		<span class="input-group-addon" id=""><strong><?php echo $this->dashboard->_get_focus_pm_splits($old_year,'6','29'); ?>%</strong></span>
-																		<span class="input-group-addon pointer add_custom_pm" id=""><strong>+</strong></span>  
+																		<span class="input-group-addon">Feb</span>      		
+																		<input type="text" class="form-control number_format" id="feb" name="feb" value="<?php if(@$this->session->flashdata("feb")){ echo $this->session->flashdata("feb"); } ?>">
+																	</div>
+																</div>
+
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
+																	<div class="input-group m-bottom-10">
+																		<span class="input-group-addon">Mar</span>      		
+																		<input type="text" class="form-control number_format" id="mar" name="mar" value="<?php if(@$this->session->flashdata("mar")){ echo $this->session->flashdata("mar"); } ?>">
 																	</div>
 																</div>
 
 
-																<div class="clearfix"></div>
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
+																	<div class="input-group m-bottom-10">
+																		<span class="input-group-addon">Apr</span>      		
+																		<input type="text" class="form-control number_format" id="apr" name="apr" value="<?php if(@$this->session->flashdata("apr")){ echo $this->session->flashdata("apr"); } ?>">
+																	</div>
+																</div>
 
-															</div>
-															<input type="hidden" name="rfc_token" id="rfc_token" class="rfc_token" value="<?php if(@$this->session->flashdata("rfc_token")){ echo $this->session->flashdata("rfc_token"); } ?>">
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
+																	<div class="input-group m-bottom-10">
+																		<span class="input-group-addon" >May</span>      		
+																		<input type="text" class="form-control number_format" id="may" name="may" value="<?php if(@$this->session->flashdata("may")){ echo $this->session->flashdata("may"); } ?>">
+																	</div>
+																</div>
 
-															<?php if(@$this->session->flashdata('is_update')): ?> 
-																<input type="submit" class="btn btn-sm m-top-5 data_submit btn-info pull-left" value="Update Data">
-															<?php else: ?>	
-																<input type="submit" class="btn btn-success btn-sm m-top-5 data_submit" name="data_submit" value="Save Data" />
-															<?php endif; ?>
-
-															<div class="form_forecast_update_tools pull-right" style="<?php echo (@$this->session->flashdata('is_update')? '' : 'display:none;'); ?>">
-																<a href="#" class="btn btn-danger btn-sm m-top-5 m-right-15 delete_cancel">Delete Data</a>
-																<a href="#" class="btn btn-warning btn-sm m-top-5 m-right-5 data_cancel">Cancel Update</a>
-															</div>
-
-														
-													</div>
-
-													<div class="col-md-4 col-sm-12  col-xs-12" id="">
-														<div class="pad-right-5 pad-left-5">
-															 
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
+																	<div class="input-group m-bottom-10">
+																		<span class="input-group-addon" >Jun</span>      		
+																		<input type="text" class="form-control number_format" id="jun" name="jun" value="<?php if(@$this->session->flashdata("jun")){ echo $this->session->flashdata("jun"); } ?>">
+																	</div>
+																</div>
 															
-																<strong class="m-bottom-10 block">Monthly Breakdown</strong>
-																<small class="block m-bottom-10"><em>Suggested values are provided.</em></small>
-
-																<div class="row pad-0-imp no-m-imp monthly_breakdown">
-																	
-
-																<div class="col-lg-6 col-xs-12" id="">	
-																	<div class="input-group m-bottom-10 <?php if(@$this->session->flashdata('error_data_amount')){ echo "has-error"; } ?>">
-																		<span class="input-group-addon" id="">Total</span>      		
-																		<input type="text" class="form-control m-bottom-10 data_name number_format input-sm" id="data_amount" name="data_amount" placeholder="$ EX-GST" value="<?php if(@$this->session->flashdata("data_amount")){ echo $this->session->flashdata("data_amount"); } ?>">
-																		
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
+																	<div class="input-group m-bottom-10">
+																		<span class="input-group-addon">Jul</span>      		
+																		<input type="text" class="form-control number_format" id="jul" name="jul" value="<?php if(@$this->session->flashdata("jul")){ echo $this->session->flashdata("jul"); } ?>">
 																	</div>
 																</div>
 
-
-
-																	<div class="clearfix"></div>
-																	
-
-																	<?php $months = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"); ?>
-
-																	<?php for ($x=0; $x < 12; $x++): ?>
-																		<div class="col-md-6 col-sm-6 col-xs-6 clearfix ">
-																			<div class="input-group m-bottom-10">
-																				<span class="input-group-addon"><?php echo $months[$x]; ?></span>      		
-																				<input type="text" class="form-control number_format input-sm number_format click_select focus_month_split" id="month_<?php echo $x; ?>" name="month_<?php echo $x; ?>" placeholder="%" value="<?php if(@$this->session->flashdata("month_$x")){ echo $this->session->flashdata("month_$x"); } ?>">
-																				<span class="input-group-addon">
-																					<strong style="<?php echo ($monthly_split[$x] == 0 ? 'color: red;' : '');  ?>">
-																						<?php echo $this->dashboard->_check_monthly_share_adjust($old_year,$monthly_split[$x],$months[$x]); ?>%
-																					</strong>
-																				</span>   
-																			</div>
-																		</div>
-																	<?php endfor; ?>
-
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
+																	<div class="input-group m-bottom-10">
+																		<span class="input-group-addon">Aug</span>      		
+																		<input type="text" class="form-control number_format" id="aug" name="aug" value="<?php if(@$this->session->flashdata("aug")){ echo $this->session->flashdata("aug"); } ?>">
+																	</div>
 																</div>
+
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
+																	<div class="input-group m-bottom-10">
+																		<span class="input-group-addon">Sep</span>      		
+																		<input type="text" class="form-control number_format" id="sep" name="sep" value="<?php if(@$this->session->flashdata("sep")){ echo $this->session->flashdata("sep"); } ?>">
+																	</div>
+																</div>
+
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
+																	<div class="input-group m-bottom-10">
+																		<span class="input-group-addon">Oct</span>      		
+																		<input type="text" class="form-control number_format" id="oct" name="oct" value="<?php if(@$this->session->flashdata("oct")){ echo $this->session->flashdata("oct"); } ?>">
+																	</div>
+																</div>
+
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
+																	<div class="input-group m-bottom-10">
+																		<span class="input-group-addon">Nov</span>      		
+																		<input type="text" class="form-control number_format" id="nov" name="nov" value="<?php if(@$this->session->flashdata("nov")){ echo $this->session->flashdata("nov"); } ?>">
+																	</div>
+																</div>
+
+																<div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 clearfix ">
+																	<div class="input-group m-bottom-10">
+																		<span class="input-group-addon">Dec</span>      		
+																		<input type="text" class="form-control number_format" id="dec" name="dec" value="<?php if(@$this->session->flashdata("dec")){ echo $this->session->flashdata("dec"); } ?>">
+																	</div>
+																</div>
+
+															</div>
 														</div>
-													</div> 
-													</form>  
+														<input type="hidden" name="rfc_token" id="rfc_token" class="rfc_token" value="<?php if(@$this->session->flashdata("rfc_token")){ echo $this->session->flashdata("rfc_token"); } ?>">
 
-													<?php //echo "$old_year"; ?>
+														<?php if(@$this->session->flashdata('is_update')): ?> 
+															<input type="submit" class="btn btn-sm m-top-5 data_submit btn-info pull-left" value="Update Data">
+														<?php else: ?>	
+															<input type="submit" class="btn btn-success btn-sm m-top-5 data_submit" value="Save Data" />
+														<?php endif; ?>
 
+														<div class="form_forecast_update_tools pull-right" style="<?php echo (@$this->session->flashdata('is_update')? '' : 'display:none;'); ?>">
+															<a href="#" class="btn btn-danger btn-sm m-top-5 m-right-15 delete_cancel">Delete Data</a>
+															<a href="#" class="btn btn-warning btn-sm m-top-5 m-right-5 data_cancel">Cancel Update</a>
+														</div>
 
-												</div>		
-
-												<div id="tab_forecasts_area" class="tab_area" style="display:none;">
-													<div class="col-md-7 col-sm-12 col-xs-12" id="">
-														<strong class="m-bottom-10 block data_label">Saved Forecasts</strong> <small class="block m-bottom-10"><em>Lorem ipsum.</em></small>
-													</div>
+													</form>
 												</div>
-											</div>
 
+												<div class="col-md-5 col-sm-12  col-xs-12" id="">
+													<div class="pad-right-5 pad-left-5">
+														<strong class="m-bottom-10 block">Stored Data</strong>
+														<table id="dataTable_noCustom" class="table table-striped table-bordered table-condensed" cellspacing="0" width="100%">
+															<thead> <tr> <th>Data Name</th> <th>Type</th><th>Year</th>  <th>Company</th> <th>Total</th></tr> </thead>
+															<tbody>
+																<?php foreach ($stored_revenue_forecast as $key => $value): ?>
+																	<tr id="<?php echo $value->revenue_forecast_id; ?>">
+																		<td><a href="#" class="stored_rfc" id="<?php echo number_format($value->jan_breakdown,2).'-'.number_format($value->feb_breakdown,2).'-'.number_format($value->mar_breakdown,2).'-'.number_format($value->apr_breakdown,2).'-'.number_format($value->may_breakdown,2).'-'.number_format($value->jun_breakdown,2).'-'.number_format($value->jul_breakdown,2).'-'.number_format($value->aug_breakdown,2).'-'.number_format($value->sep_breakdown,2).'-'.number_format($value->oct_breakdown,2).'-'.number_format($value->nov_breakdown,2).'-'.number_format($value->dec_breakdown,2); ?>"><?php echo $value->data_name; ?></a></td>
+																		<td><?php echo $value->data_type; ?></td>
+																		<td><?php echo $value->year; ?></td>
+																		<td><?php echo $value->company_name; ?></td>
+																		<td><?php echo number_format($value->total_amount,2); ?></td>
+																	</tr>
+																<?php endforeach; ?>
+															</tbody>
+														</table>
+													</div>
+												</div>   
+
+
+											</div>									
 										</div>
 									</div>
-								</div>						
-
-								
+								</div>
 							</div>
 
 						<?php endif; ?>
@@ -348,7 +379,7 @@
 									<div class="pull-right" style="margin: -5px -10px -8px;">
 										<select class="form-control sf_chart_dateSelection" style="height: 31px;    border-radius: 0;    border: none;    font-weight: bold;">
 											<option selected="" value="" style="display:none;">Select Year</option>
-											<?php $year = date('Y'); for($i=0; $i < 6; $i++){
+											<?php $year = 2015; for($i=0; $i < 6; $i++){
 												echo '<option value="'.($year+$i-1).'-'.($year+$i).'">July '.($year+$i-1).' - June '.($year+$i).'</option>';
 											}?>
 										</select>
@@ -684,7 +715,7 @@
           ['x', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
 
 			<?php // echo $this->dashboard->_fetch_pm_data($minYear,$maxYear); ?>
-/*
+
 			<?php foreach ($revenue_forecast as $key => $forecast): ?>
 
 
@@ -702,18 +733,17 @@
 
 	          	['<?php echo $forecast->data_name; ?>', <?php echo $segment_a.','.$segment_b; ?>],
 	      	<?php endforeach; ?>
-*/
+
         ],
         selection: {enabled: true},
         type: 'bar',
-        types: { /* <?php foreach ($revenue_forecast as $key => $forecast): ?><?php if($forecast->data_type == 'Forecast'){ echo "'$forecast->data_name' : 'line',"; } ?><?php endforeach; ?> */
+        types: {<?php foreach ($revenue_forecast as $key => $forecast): ?><?php if($forecast->data_type == 'Forecast'){ echo "'$forecast->data_name' : 'line',"; } ?><?php endforeach; ?>
         },
         groups: [ 
 
         
         	[
 	        	<?php $group_a = 0;  ?>
-/*
 	        	<?php foreach ($revenue_forecast as $key => $forecast): ?>
 		        	<?php
 			        	if($group_a == 0 ){
@@ -727,13 +757,10 @@
 			        	}
 		        	?>
 	        	<?php endforeach; ?>
-*/
 	        ],
 
         	[
 	        	<?php $group = 0;  ?>
-
-/*
 	        	<?php foreach ($pm_names as $key => $names): ?>
 		        	<?php
 			        	if($group == 0 ){
@@ -747,8 +774,6 @@
 			        	}
 		        	?>
 	        	<?php endforeach; ?>
-*/
-
 	        ],
 
       	// ['Alan Liddell','Trevor Gamble'],
