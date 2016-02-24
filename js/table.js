@@ -27,11 +27,6 @@ if(company == 'company'){
 }
 
 
-$('#dataTable_noCustom').dataTable({
-    "iDisplayLength": 8,
-    "aLengthMenu": [[8, 14, 21, 28, -1], [8, 14, 21, 28, "All"]]
-});
-
 $('#shoppingCenterTable').dataTable({
     "iDisplayLength": 13,
     "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
@@ -285,13 +280,13 @@ $('#shoppingCenterTable_prj_filter').append($('.state_select_list').html());
 $('#po_table_filter select#outstading_pm').on("change", function(e) { 
     var companyTable = $('#po_table').dataTable();
     var searchA = $(this).val();
-    companyTable.fnFilter(searchA,'7');
+    companyTable.fnFilter(searchA,'8');
 });
 
 $('#reconciled_list_table_filter select#outstading_pm').on("change", function(e) { 
     var companyTable = $('#reconciled_list_table').dataTable();
     var searchA = $(this).val();
-    companyTable.fnFilter(searchA,'7');
+    companyTable.fnFilter(searchA,'8');
 });
 /*
 $('.add_shopping_center_project').click(function(){

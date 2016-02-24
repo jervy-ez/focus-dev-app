@@ -101,6 +101,13 @@ function if_first_date_higher(firstValue,secondValue){
 }
 
 
+function remove_custom_pm(element_obj){
+  value = element_obj.value;
+  var_elem_id = element_obj.getAttribute("id");
+  $("#"+var_elem_id).parent().parent().remove();
+}
+
+
 var counter = 0;
 
 var progres_total = $('input.num_progress').val();
@@ -420,6 +427,91 @@ function user_role_set(db,cmp,prj,wip,po,inv,urs,bb){
 
 
 
+var add_custom_pm_cntr = 0;
+
+
+function add_custom_pm(classGroup,id){
+  var comp_id = classGroup.split("_");
+  add_custom_pm_cntr++;
+  $('#'+id).parent().parent().after('<div class="col-lg-4 col-md-6 col-xs-6" id=""><div class="input-group m-bottom-10"><input type="text" class="form-control m-bottom-10 input-sm " id="'+comp_id[3]+'_other_nm_'+add_custom_pm_cntr+'" name="'+comp_id[3]+'_other_nm_'+add_custom_pm_cntr+'" placeholder="Other" value="" style="width: 50%;"><input type="text" class="'+classGroup+' form-control m-bottom-10 data_name input-sm click_select focus_percent_val_pm" id="'+comp_id[3]+'_other_pm_'+add_custom_pm_cntr+'" name="'+comp_id[3]+'_other_pm_'+add_custom_pm_cntr+'" placeholder="%" value="" style="width: 50%;" onkeyup="check_split(\''+classGroup+'\',\''+comp_id[3]+'_other_pm_'+add_custom_pm_cntr+'\');"><input type="text" disabled="disabled"  readonly="readonly" value="" class="form-control input-sm focus_computed"  id="focus_computed_other_'+add_custom_pm_cntr+'" style="display:none; width: 50%;" /><span class="input-group-addon pointer remove_custom_pm" onClick="remove_custom_pm(this);" id="rm_bttn_otr_'+add_custom_pm_cntr+'"><strong><i class="fa fa-trash-o"></i></strong></span></div></div>');
+}
+
+
+
+function check_split(classGroup,id){
+
+  var numInputs = $('input.'+classGroup).length;
+  var input_value_item = $('input#'+id).val();
+
+  if(input_value_item!=''){
+    $('input#'+id).addClass('addedSplit');
+  }else{
+    $('input#'+id).val('').removeClass('addedSplit');
+  }
+
+
+  if(input_value_item.indexOf('.') !== -1 ) {
+    var decimal_part = input_value_item.split(".");
+    if(decimal_part[1].length > 2){
+      var newInputValue = decimal_part[0]+'.'+decimal_part[1].substring(0,2);
+      $('input#'+id).val(newInputValue);
+    }
+  }
+
+  if(input_value_item > 100 ){
+    $('input#'+id).val('').removeClass('addedSplit');
+  }
+
+  var total_shares = 0.00;
+  $('input.'+classGroup+'.addedSplit').each(function () {
+    var input_value = $(this).val();
+    if(input_value!=''){
+      total_shares = total_shares + parseFloat($(this).val());
+    }
+  });
+
+  if(total_shares > 100){
+    $('input#'+id).val('').removeClass('addedSplit');
+  }
+
+  var numHasAdded = $('input.'+classGroup+'.addedSplit').length;
+
+  var total_shares_added = 0.00;
+  $('input.'+classGroup+'.addedSplit').each(function () {
+    var input_value = $(this).val();
+    if(input_value!=''){
+      total_shares_added = total_shares_added + parseFloat($(this).val());
+    }
+  });
+
+  var numRemain = numInputs - numHasAdded;
+  var remain_shares = 100 - total_shares_added;
+
+  var share = remain_shares/numRemain;
+
+  var num_length = share.toString();
+
+  if(num_length.length > 4){
+    //var split_share = Math.floor(share * 100)/100;
+  }else{
+  }
+
+    var split_share = Math.ceil(share * 100)/100;
+
+  //alert(split_share);
+  //alert(remain_shares+'--'+total_shares+'--'+total_shares_added+'--'+share+'--'+numRemain);
+
+  $('input.'+classGroup).each(function () {
+    if(!$(this).hasClass('addedSplit') ){
+      $(this).val(split_share);
+    }
+  });
+
+
+
+
+}
+
 function validate_progress_dates(date_id){
 
   var input_date = $('input#'+date_id).val();
@@ -584,7 +676,25 @@ function validate_progress_dates(date_id){
   }
 
 
-
+/*
+  function print_job_book(){
+    var contents  = $("#job_book_area").html();
+    var printWindow = window.open('', '', 'height=900,width=800,top=50,left=50,location=no,toolbar=no,resizable=yes,menubar=no,scrollbars=yes');
+    printWindow.document.write('<html><head>');
+    printWindow.document.write('<script src="'+baseurl+'js/vendor/jquery-1.11.0.min.js" type="text/javascript" language="javascript" /></script>');
+    //printWindow.document.write('<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script><script type="text/javascript" src="http://rawgit.com/masayuki0812/c3/master/c3.js"></script>');
+    printWindow.document.write('<link href="'+baseurl+'css/print.css" rel="stylesheet" type="text/css" />');
+    //printWindow.document.write('<link href="'+baseurl+'css/c3.css" rel="stylesheet" type="text/css" />');
+    printWindow.document.write('</head><body class="print_body">');
+    printWindow.document.write(contents);
+    printWindow.document.write('<a href="#" onclick="this.parentNode.removeChild(this); window.print(); window.close();" class="print_bttn print_me_now">Print Now!</a>');
+    //printWindow.document.write('<script src="'+baseurl+'js/printable.js" type="text/javascript" language="javascript" /></script>');
+    //printWindow.document.write('<style type="text/css" media="print">.c3-legend-item-hidden{ display:none !important; visibility:hidden !important; }</style>');
+    printWindow.document.write('<style type="text/css" media="print">@page { size: portrait; } </style>');
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+  }
+*/
 
 
   function print_job_book(){
@@ -617,14 +727,18 @@ function validate_progress_dates(date_id){
 
 //alert(data);
 
-ajax_data(data,'invoice/insert_invoice_progress','');
+  ajax_data(data,'invoice/insert_invoice_progress','');
      $('#loading_modal').modal('show');
 
 });
 
+
  setTimeout(function(){
-    window.location.assign("?submit_invoice="+project_id);
+      window.location.assign("?submit_invoice="+project_id);
  },8000);
+    
+
+
   }
 
 
@@ -649,7 +763,7 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
 
 
  setTimeout(function(){
-    window.location.assign("?submit_invoice="+project_id);
+      window.location.assign("?submit_invoice="+project_id);
  },8000);
 
   }
@@ -987,6 +1101,222 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
   });
 
 
+
+  $('input.click_select').click(function(){
+    $(this).select();
+  });
+
+  
+  $('.toggle_percent_amount').click(function(){
+    var id_atrb = $(this).attr('id');
+
+    var form_arr = id_atrb.split("-");
+    var form_id = form_arr[1];
+
+    $(this).find('i').addClass('fa-spin');
+
+    setTimeout(function(){
+      $('.toggle_percent_amount').find('i').removeClass('fa-spin');
+    },1000);
+
+    $('form#'+form_id+' input.focus_computed').toggle();
+    $('form#'+form_id+' input.focus_percent_val').toggle();
+    $('form#'+form_id+' input.focus_percent_val_pm').toggle();
+    $('form#'+form_id+' input.focus_month_split').toggle();
+    $('form#'+form_id+' input.focus_month_split_edt').toggle();
+    $('form#'+form_id+' input.focus_percent_val_pm_edt').toggle();
+
+
+
+    var data_amount = removeCommas($('form#'+form_id+' input#data_amount').val());
+
+    $('form#'+form_id+' input.focus_percent_val').each(function (){
+      var percent_value = parseFloat($(this).val());
+
+      if(percent_value>0 && percent_value != ''){
+        var computed = data_amount * (percent_value/100);
+        var computed_rounded = numberWithCommas(Math.ceil(computed * 100)/100);
+      }else{
+        var computed_rounded = 0;
+      }
+
+      if(data_amount == '' || data_amount == 0){
+        var computed_rounded = 0;
+      }
+
+      $(this).next().val('$'+computed_rounded);
+    });
+
+
+
+
+    $('form#'+form_id+' input.focus_month_split').each(function (){
+      var percent_value = parseFloat($(this).val());
+
+      if(percent_value>0 && percent_value != ''){
+        var computed = data_amount * (percent_value/100);
+        var computed_rounded_mns = numberWithCommas(Math.ceil(computed * 100)/100);
+      }else{
+        var computed_rounded_mns = 0;
+      }
+
+      if(data_amount == '' || data_amount == 0){
+        var computed_rounded_mns = 0;
+      }
+
+      $(this).next().val('$'+computed_rounded_mns);
+    });
+
+// edit xomputation
+    $('form#'+form_id+' input.focus_month_split_edt').each(function (){
+      var percent_value = parseFloat($(this).val());
+
+      if(percent_value>0 && percent_value != ''){
+        var computed = data_amount * (percent_value/100);
+        var computed_rounded_mns = numberWithCommas(Math.ceil(computed * 100)/100);
+      }else{
+        var computed_rounded_mns = 0;
+      }
+
+      if(data_amount == '' || data_amount == 0){
+        var computed_rounded_mns = 0;
+      }
+
+      $(this).next().val('$'+computed_rounded_mns);
+    });
+// edit xomputation
+
+
+
+    $('form#'+form_id+' input.focus_percent_val_pm').each(function (){
+
+      var input_id = $(this).attr('id');
+      var focus_arr = input_id.split("_");
+      var data_amount_f = removeCommas($('input#focus_id_'+focus_arr[0]).val());
+
+      var percent_value = parseFloat($(this).val());
+
+      if(percent_value>0 && percent_value != ''){
+        var percent_value = parseFloat($(this).val());
+        var computed_pm = data_amount_f * (percent_value/100);
+        var computed = data_amount * (computed_pm/100);
+        var computed_rounded_pm = numberWithCommas(Math.ceil(computed * 100)/100);
+      }else{
+        var computed_rounded_pm = 0;
+      }
+
+      if(data_amount == '' || data_amount == 0){
+        var computed_rounded_pm = 0;
+      }
+
+      $(this).next().val('$'+computed_rounded_pm);
+
+    });
+
+
+
+// edit xomputation
+    $('form#'+form_id+' input.focus_percent_val_pm_edt').each(function (){
+
+
+      var input_id = $(this).attr('id');
+      var focus_arr = input_id.split("_");
+      var data_amount_f = removeCommas($('input#focus_idedt_'+focus_arr[0]).val());
+
+      var percent_value = parseFloat($(this).val());
+
+      if(percent_value>0 && percent_value != ''){
+        var percent_value = parseFloat($(this).val());
+        var computed_pm = data_amount_f * (percent_value/100);
+        var computed = data_amount * (computed_pm/100);
+        var computed_rounded_pm = numberWithCommas(Math.ceil(computed * 100)/100);
+      }else{
+        var computed_rounded_pm = 0;
+      }
+
+      if(data_amount == '' || data_amount == 0){
+        var computed_rounded_pm = 0;
+      }
+
+      $(this).next().val('$'+computed_rounded_pm);
+
+    });
+// edit xomputation
+
+  });
+
+  
+
+
+  $('input.focus_pm_split').on("keyup", function(e) {
+    var split_value = $(this).val();
+
+    if(split_value != ''){
+
+      $(this).addClass('addedSplit');
+      var splits = $('input.focus_pm_split').length;
+      var remaining_split = splits-1;
+
+      if(remaining_split == 1){
+        var share = (100 - split_value);
+      }else{
+        var share = (100 - split_value) / remaining_split;
+      }
+
+      share = Math.round(share * 100) / 100;
+
+    //   alert(split_value+' '+share+' '+splits+' '+remaining_split);
+
+      $('input.focus_pm_split').each(function () {
+        if(!$(this).hasClass('addedSplit') ){
+          $(this).val(share);
+        }
+      });
+    }else{
+      $('input.focus_pm_split').each(function () {
+        $(this).removeClass('addedSplit');
+        $(this).val('');
+      });
+    }
+  });
+
+
+
+/*
+  $('input.focus_month_split').on("keyup", function(e) {
+    var split_value = $(this).val();
+
+    if(split_value != ''){
+
+      $(this).addClass('addedSplit');
+      var splits = $('input.focus_month_split').length;
+      var remaining_split = splits-1;
+
+      if(remaining_split == 1){
+        var share = (100 - split_value);
+      }else{
+        var share = (100 - split_value) / remaining_split;
+      }
+
+      share = Math.round(share * 100) / 100;
+
+      // alert(split_value+' '+share+' '+splits+' '+remaining_split);
+
+      $('input.focus_month_split').each(function () {
+        if(!$(this).hasClass('addedSplit') ){
+          $(this).val(share);
+        }
+      });
+    }else{
+      $('input.focus_month_split').each(function () {
+        $(this).removeClass('addedSplit');
+        $(this).val('');
+      });
+    }
+  });
+
+
+*/
 
   $('input.search_title_bb').keyup(function(){
     var inputWd = $(this).val().toString().toLowerCase();
@@ -1444,7 +1774,9 @@ $('.vr_paid').click(function(){
   $('input#invoice_id_progress').val(invoice_id);
   $('input#invoice_outstanding').val(progress_outstanding);
 
-  // var po_total_mod_inc_gst = po_total_mod_inc_gst.toFixed(2); /* dont remember this anymore */
+ // alert(po_total_mod_inc_gst);
+
+ // var po_total_mod_inc_gst = po_total_mod_inc_gst.toFixed('2');
   $('.po_total_mod_inc_gst').text(inc_gst_cost);
 
 
@@ -1737,9 +2069,10 @@ $('.is_admin').on('switchChange.bootstrapSwitch', function (event, state) {
 
 
 $('#new_password').keyup(function(e) {
- var inputPassword = $(this).val();
- var noSpacePassword = inputPassword.replace(/\s/g, ''); //remove space
- $(this).val(noSpacePassword);
+
+  var inputPassword = $(this).val();
+  var noSpacePassword = inputPassword.replace(/\s/g, ''); //remove space
+  $(this).val(noSpacePassword);
 
  var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
  var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
@@ -2256,6 +2589,45 @@ $('.chosen_type').on("change", function(e) {
   $('select#activity').val(null).trigger("change");
 });
 
+
+$('select#data_year').on("change", function(e) {
+  var year_selection = $(this).val();
+  window.location.assign(baseurl+"dashboard/sales_forecast/"+year_selection);
+
+ // window.location.assign(baseurl+"dashboard/sales_forecast/year_selection/"+year_selection);
+});
+
+
+$('select#calendar_view').on("change", function(e) {
+  var calendar_view = $(this).val();
+  var calendar_year = $('select#calendar_year').val();
+
+  var current_url = window.location.href;
+  var n = current_url.indexOf("?");
+  var basic_url = current_url.substring(0, n);
+
+  window.location = basic_url+'?calendar_view='+calendar_view+'&calendar_year='+calendar_year;
+
+
+
+ // window.location.assign(baseurl+"dashboard/sales_forecast/year_selection/"+year_selection);
+});
+
+
+$('select#calendar_year').on("change", function(e) {
+  var calendar_year = $(this).val();
+  var calendar_view = $('select#calendar_view').val();
+
+  var current_url = window.location.href;
+  var n = current_url.indexOf("?");
+  var basic_url = current_url.substring(0, n);
+
+  window.location = basic_url+'?calendar_view='+calendar_view+'&calendar_year='+calendar_year;
+
+ // window.location.assign(baseurl+"dashboard/sales_forecast/year_selection/"+year_selection);
+});
+
+
 $(".shopping_center_state").on("change", function(e) {
   var stateRaw = $(this).val().split("|");
   var data = stateRaw[3]+'|dropdown|state_id|'+stateRaw[1]+'|'+stateRaw[2];    
@@ -2716,6 +3088,113 @@ $("#po_amount_value_inc_gst").keyup(function( event ) {
 
 
 
+/*
+$('.stored_rfc').click(function(event){
+  event.preventDefault();
+
+  var record_values = $(this).attr('id');
+  var record_values_arr = record_values.split("-");
+  var index = 0;
+  var basic_data = [];
+
+  var rfc_id = $(this).parent().parent().attr('id');
+
+
+  $('input#rfc_token').val(rfc_id);
+
+
+  $('a.delete_cancel').attr('href','?delete_rfc='+rfc_id);
+
+
+  $(this).parent().parent().find('td').each(function( index ) {
+    basic_data.push($(this).text());
+  });
+
+  $('form#forecast_form').fadeOut(300,function(){
+
+    $(".monthly_breakdown").find('input').each(function( index ) {
+      $(this).val(record_values_arr[index]);
+      index++;
+    });
+
+    $('select#data_year').val(basic_data[2]);
+    $('select#data_type').val(basic_data[1]);
+
+    if(basic_data[3] == 'Focus Shopfit Pty Ltd'){
+      $('select#focus_company').val(5);
+    }else if(basic_data[3] == 'Focus Shopfit NSW Pty Ltd'){
+      $('select#focus_company').val(6);
+    }else{
+      $('select#focus_company').val();
+    }  
+
+    $('input#data_name').val(basic_data[0]);
+    $('input#data_amount').val(basic_data[4]);
+
+    $('form#forecast_form').attr('action',base_url+'dashboard/update_sales_forecast');
+
+    $('strong.data_label').text('Update Data');
+    $('input.data_submit').val('Update Data').removeClass('btn-success').addClass('btn-info');
+    $('.form_forecast_update_tools').show();
+
+  });
+
+  $('form#forecast_form').fadeIn(300);
+
+  $('form#forecast_form').find('input.form-control').each(function( index ) {
+    $(this).parent().removeClass('has-error');
+  });
+
+});
+
+*/
+
+/*
+$('.data_cancel').click(function(event){
+  event.preventDefault();
+
+  $('form#forecast_form').fadeOut(300,function(){
+    document.getElementById("forecast_form").reset();
+    $('form#forecast_form').attr('action',base_url+'dashboard/add_data_sales_forecast');
+    $('.form_forecast_update_tools').hide();
+    $('strong.data_label').text('New Data');
+    $('input.data_submit').val('Save Data').removeClass('btn-info').addClass('btn-success');
+  });
+
+  $('form#forecast_form').fadeIn(300);
+});
+*/
+/*
+$('.add_data_chart').click(function(){
+
+  var data_name = $('input.data_name').val();
+  var year = $('input.year').val();
+  var display_type = $('select.display_type').val();
+  var values_item = $('textarea.value_items').val();
+ 
+
+setTimeout(function () {
+    chart.load({
+        columns:[ [data_name, 660, 630,620, 650, 640, 660, 650] ],
+        type: display_type,
+        colors: { data_name: '#CB0073' }
+    });
+}, 2000);
+
+
+
+chart.select([data_name]);
+
+});
+  
+*/
+/*
+
+$("select.sf_chart_dateSelection").on("change", function(e) {
+  var year_selection = $(this).val();
+  window.location.assign(baseurl+"dashboard/sales_forecast/year_selection/"+year_selection);
+});
+*/
 $("select#job_category").on("change", function(e) {
 
   var job_category = $(this).val();
@@ -2775,6 +3254,30 @@ $('.read_less').on("click", function(event) {
   $(this).prev('.remain').hide();
   $(this).prev('.remain').prev('.read_more').show();
 });
+
+
+
+$('.box-widg-head .tabs').click(function(){
+  var tab_target = $(this).attr('id');
+
+  $('.box-widg-head .tabs').each(function( index ) {
+    $(this).removeClass('active');
+  });
+
+  $(this).addClass('active');
+
+  var target = tab_target+'_area';
+
+  $('.tab_container .tab_area').hide();
+  $('.tab_container #'+target).fadeIn();
+
+
+  $(this).parent().parent().parent().find('.collapse.out').removeClass('out');
+
+  $(this).parent().parent().parent().find('.collapse').css('height','auto').addClass('in');
+
+});
+
 
 $('.print-wip').on("click", function(event) {
   event.preventDefault();
