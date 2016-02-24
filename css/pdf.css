@@ -45,6 +45,10 @@
  	border-bottom: 2px solid #000;
  }
 
+ .block{
+ 	display: block;
+ }
+
  .text-right{
  	text-align: right !important;
  	display:block;
@@ -397,7 +401,7 @@
 
 #highlight_line{
     height: 24px;
-    margin-left: -5px !important;
+    margin-left: -3px !important;
 }
 
 #draggable {
@@ -450,16 +454,12 @@
 	margin-top: 15px !important;
 }
 
-.m_edit{
-	margin-top: -20px !important;
-}
-
 .pad-20{
 	padding: 20px;
 }
 
 .def_page{
-	margin:20px 15px 50px;
+	margin:20px 15px 40px;
 }
 
 .def_page table{
@@ -472,28 +472,3 @@
 .def_page .footer{
 	padding: 5px;
 }
-
-.job_book_notes .notes_line p span.pull-right{
-	float: none !important;
-	display: block;
-}
-
-.notes_line br{
-	display: none;
-}
-
-.notes_line br.block{
- 	display: block !important;
- 	width: 100% !important;
- 	height: auto !important;
- 	float: none !important;
-}
-
-.block{
-	display: block !important;
-}
-
-
-.editor_body  .invoices_list_item{
- 	font-family: DejaVu Sans, Arial, Helvetica, sans-serif !important;
- }

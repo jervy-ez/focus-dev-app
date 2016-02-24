@@ -740,7 +740,7 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
     $('#po_is_reconciled_value').prop('checked', true);
 
     $('.po_number_mod').text(po_item_row[0]);
-    $('.po_desc_mod').text(po_item_row[2]);
+    $('.po_desc_mod').text(po_item_row[3]);
     $('.po_balance_mod').text('$0.00');
     $('.po_number_item').val(po_item_row[0]);
     $('input.po_project_id').val(po_item_row[1]);
@@ -1444,7 +1444,7 @@ $('.vr_paid').click(function(){
   $('input#invoice_id_progress').val(invoice_id);
   $('input#invoice_outstanding').val(progress_outstanding);
 
-  var po_total_mod_inc_gst = po_total_mod_inc_gst.toFixed('2');
+  // var po_total_mod_inc_gst = po_total_mod_inc_gst.toFixed(2); /* dont remember this anymore */
   $('.po_total_mod_inc_gst').text(inc_gst_cost);
 
 

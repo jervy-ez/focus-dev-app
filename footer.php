@@ -1,7 +1,9 @@
 	<div class="container-fluid">
 		<div class="row">	
 			<footer>
+				<hr />
 
+  
 <!-- Modal -->
 <div class="modal fade" id="idle_log_in_form" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -57,10 +59,11 @@
 		</div>
 	</div>
 
-<p><br/>&nbsp;<br/></p>
-<p><br/>&nbsp;<br/></p>
 
-<p class="text-center m-top-20">&copy; FSF Group <?php echo date("Y"); ?></p>
+
+
+
+<p class="text-center">&copy; FSF Group <?php echo date("Y"); ?></p>
 
 
 
@@ -380,7 +383,11 @@ if ($('input#set_as_primary_'+target).prop('checked')) {
   dynamic_value_ajax(other,'update_contact_primary');
  
 }
- window.location.reload(true);
+
+       setTimeout(function(){
+        window.location.reload(true);
+
+      },1000);
 });
 
 
@@ -401,14 +408,31 @@ var can_add_contact = 1;
   var general_email = $("#other_general_email").val();
   var other_area_code = $("#other_area_code").text();
   var comp_id = $('#company_id_data').val();
+  var error_message = '';
 
 
  
-      if(last_name == '' || first_name == ''){
-        alert('Please Fill First and Last Name');
-        can_add_contact = 0;
+  if(last_name == '' || first_name == ''){
+    error_message = 'Please Fill First and Last Name';
+    can_add_contact = 0;
+  }
 
-      }else{
+  if(office_number == '' && mobile_number == ''){
+    error_message = error_message+'\nPlease assign Office Number or Mobile Number';
+    can_add_contact = 0;
+  }
+
+  if(general_email == ''){
+    error_message = error_message+'\nPlease assign Email';
+    can_add_contact = 0;
+  }
+
+
+if(can_add_contact == 0){
+  alert(error_message);
+}
+
+if(can_add_contact == 1){
       
         $('.new_contact_area').hide();
         $("#add_new_contact").hide();
@@ -419,7 +443,12 @@ var can_add_contact = 1;
 
         dynamic_value_ajax(data,'add_new_contact_dynamic');
         //location.reload();
+        
+       setTimeout(function(){
         window.location.reload(true);
+      },1000);
+
+
       }
 
 
@@ -604,7 +633,6 @@ var can_add_contact = 1;
  	}); //this is working select callbak!
 </script>
 
-
 <?php if($this->session->userdata('is_show_test') > 0): ?>
   <script type="text/javascript">
     $('#board').modal('show');
@@ -614,7 +642,6 @@ var can_add_contact = 1;
 <?php else: ?>
   <script type="text/javascript">$('.is_show_counter_bb').remove();</script>
 <?php endif; ?>
-
 
 </body>
 </html>

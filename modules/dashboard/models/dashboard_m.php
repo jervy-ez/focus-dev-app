@@ -2,20 +2,49 @@
 
 class Dashboard_m extends CI_Model{
 	
-	public function insert_revenue_forecast($data_type,$year,$focus_company_id,$data_name,$total_amount,$jul_breakdown,$aug_breakdown,$sep_breakdown,$oct_breakdown,$nov_breakdown,$dec_breakdown,$jan_breakdown,$feb_breakdown,$mar_breakdown,$apr_breakdown,$may_breakdown,$jun_breakdown){
-		$this->db->query("INSERT INTO `revenue_forecast` (`data_type`, `year`, `focus_company_id`, `data_name`, `total_amount`, `jul_breakdown`, `aug_breakdown`, `sep_breakdown`, `oct_breakdown`, `nov_breakdown`, `dec_breakdown`, `jan_breakdown`, `feb_breakdown`, `mar_breakdown`, `apr_breakdown`, `may_breakdown`, `jun_breakdown`) 
-			VALUES ('$data_type', '$year', '$focus_company_id', '$data_name', '$total_amount', '$jul_breakdown', '$aug_breakdown', '$sep_breakdown', '$oct_breakdown', '$nov_breakdown', '$dec_breakdown', '$jan_breakdown', '$feb_breakdown', '$mar_breakdown', '$apr_breakdown', '$may_breakdown', '$jun_breakdown')");
+	public function insert_revenue_forecast_y($forecast_label, $total, $year, $forecast_jan, $forecast_feb, $forecast_mar, $forecast_apr, $forecast_may, $forecast_jun, $forecast_jul, $forecast_aug, $forecast_sep, $forecast_oct, $forecast_nov, $forecast_dec){
+		$this->db->query("INSERT INTO `revenue_forecast` (`forecast_label`, `total`, `year`, `forecast_jan`, `forecast_feb`, `forecast_mar`, `forecast_apr`, `forecast_may`, `forecast_jun`, `forecast_jul`, `forecast_aug`, `forecast_sep`, `forecast_oct`, `forecast_nov`, `forecast_dec`)
+			VALUES ('$forecast_label', '$total', '$year', '$forecast_jan', '$forecast_feb',  '$forecast_mar', '$forecast_apr', '$forecast_may', '$forecast_jun', '$forecast_jul', '$forecast_aug', '$forecast_sep', '$forecast_oct', '$forecast_nov', '$forecast_dec')");
 		return $this->db->insert_id();	
 	}
-/*
-	public function list_stored_revenue_forecast(){
-		$query = $this->db->query("SELECT `revenue_forecast`.*,`company_details`.`company_name` FROM `revenue_forecast` LEFT JOIN `company_details` ON `company_details`.`company_id` = `revenue_forecast`.`focus_company_id` WHERE `is_active` = '1' AND `revenue_forecast`.`data_type` = 'Forecast' ORDER BY `revenue_forecast`.`revenue_forecast_id` DESC");
-		return $query;		
+
+	public function insert_revenue_forecast($comp_id, $pm_id, $other, $forecast_percent, $year, $yearly_id){
+		$this->db->query("INSERT INTO `revenue_forecast_individual` (`comp_id`, `pm_id`, `other`, `forecast_percent`, `year`, `yearly_id`) VALUES ('$comp_id', '$pm_id', '$other', '$forecast_percent', '$year', '$yearly_id')");
+		return $this->db->insert_id();	
 	}
-*/
-	public function diactivate_stored_revenue_forecast($id){
+
+	public function fetch_revenue_forecast($id=''){
+		if($id != ''){
+			$query = $this->db->query("SELECT * FROM `revenue_forecast`
+				WHERE `revenue_forecast`.`is_active` = '1' AND `revenue_forecast`.`revenue_forecast_id` = '$id'
+				ORDER BY `revenue_forecast`.`revenue_forecast_id` ");
+
+		}else{
+			$query = $this->db->query("SELECT * FROM `revenue_forecast`
+				WHERE `revenue_forecast`.`is_active` = '1'
+				ORDER BY `revenue_forecast`.`revenue_forecast_id` ");
+		}
+		return $query;
+	}
+
+	public function fetch_individual_forecast($year_id){
+		$query = $this->db->query("SELECT `revenue_forecast_individual`.*, CONCAT( `users`.`user_first_name`,' ',`users`.`user_last_name`) AS `pm_name`,`company_details`.`company_name`
+			FROM `revenue_forecast_individual`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `revenue_forecast_individual`.`comp_id`
+			LEFT JOIN `users` ON `users`.`user_id` = `revenue_forecast_individual`.`pm_id`
+			WHERE `revenue_forecast_individual`.`yearly_id` = '$year_id'
+			ORDER BY `revenue_forecast_individual`.`revenue_forecast_individual_id`  ASC");
+		return $query;
+	}
+
+	public function deactivate_stored_revenue_forecast($id){
 		$query = $this->db->query("UPDATE `revenue_forecast` SET `is_active` = '0' WHERE `revenue_forecast`.`revenue_forecast_id` = '$id'");
 		return $query;		
+	}
+
+	public function set_primary_revenue_forecast($id,$year){
+		$this->db->query("UPDATE `revenue_forecast` SET `revenue_forecast`.`is_primary` = '0' WHERE `revenue_forecast`.`year` = '$year' ");
+		$this->db->query("UPDATE `revenue_forecast` SET `revenue_forecast`.`is_primary` = '1' WHERE `revenue_forecast`.`revenue_forecast_id` = '$id' ");
 	}
 	
 	public function update_revenue_forecast($revenue_forecast_id,$data_type,$year,$focus_company_id,$data_name,$total_amount,
@@ -135,10 +164,19 @@ class Dashboard_m extends CI_Model{
 	}
 
 
+	public function get_sales_focus_yearly($year){
+		$query = $this->db->query("SELECT SUM(`rev_jan`) + SUM(`rev_feb`) + SUM(`rev_mar`) + SUM(`rev_apr`) + SUM(`rev_may`) + SUM(`rev_jun`) + SUM(`rev_jul`) + SUM(`rev_aug`) + SUM(`rev_sep`) + SUM(`rev_oct`) + SUM(`rev_nov`) + SUM(`rev_dec`) AS `total_sales`
+			FROM `revenue_focus` WHERE `revenue_focus`.`year` = '$year'");
+		return $query;
+	}
+
+
 	public function get_old_month_sales($rev_month,$year){
 		$query = $this->db->query("SELECT SUM(`$rev_month`) AS `sum_old_month` FROM `revenue_focus` WHERE `revenue_focus`.`year` = '$year'");
 		return $query;
 	}
+
+
 
 
 /*

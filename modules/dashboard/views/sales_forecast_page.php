@@ -7,7 +7,7 @@
 		<div class="row">
 
 			<div class="col-md-6 col-sm-4 col-xs-12 pull-left">
-				<header class="page-header">
+				<header class="page-header"> 
 					<h3><?php $datestring = "%l, %F %d, %Y"; $time = time(); //use time() for timestamp  ?>
 						<?php echo $screen; ?><br><small><?php echo mdate($datestring, $time); #echo date("l, F d, Y"); ?></small>
 					</h3>
@@ -21,9 +21,6 @@
 					</li>  
 					<li>
 						<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
-					</li>
-					<li>
-						<a href="#" data-toggle="collapse" data-target=".data_forecast" ><i class="fa fa-cog"></i> Forecast Settings</a>
 					</li>
 					<!-- 
 						<li>
@@ -53,10 +50,27 @@
 					<div class="widget_area row pad-0-imp no-m-imp">
 
 						<!-- ************************ -->
+							 
 
 						<?php if($this->session->userdata('is_admin') == 1 ): ?>
 
 							<div class="col-xs-12 box-widget pad-10">
+
+
+								<?php if(@$error): ?>
+									<div class="widget wid-type-d widg-head-styled pad-0-imp m-bottom-20">
+										<span class="label label-default pull-right pointer" data-dismiss="alert" style="display: block; margin: 6px 9px;">x</span>									
+										<div class="widg-head box-widg-head pad-5"><i class="fa fa-exclamation-triangle"></i> <strong><?php echo $error; ?></strong> </div>									
+									</div> 
+								<?php endif; ?>
+
+
+								<?php if(@$this->session->flashdata('save_success')): ?> 
+									<div class="widget wid-type-b widg-head-styled pad-0-imp m-bottom-20">
+										<span class="label label-default pull-right pointer" data-dismiss="alert" style="display: block; margin: 6px 9px;">x</span>									
+										<div class="widg-head box-widg-head pad-5"><i class="fa fa-exclamation-triangle"></i> <strong><?php echo $this->session->flashdata('save_success');?></strong> </div>									
+									</div>
+								<?php endif; ?>
 
 								<?php if(@$this->session->flashdata('error_add_fs')): ?> 
 									<div class="widget wid-type-d widg-head-styled pad-0-imp m-bottom-20">
@@ -70,6 +84,8 @@
 									</div>
 								<?php endif; ?>
 
+
+
 								<?php if(@$this->session->flashdata('record_update')): ?> 
 									<div class="widget wid-type-b widg-head-styled pad-0-imp m-bottom-20">
 										<span class="label label-default pull-right pointer" data-dismiss="alert" style="display: block; margin: 6px 9px;">x</span>									
@@ -82,19 +98,21 @@
 									<div class="widg-head box-widg-head pad-5"><i class="fa fa-cog"></i> 
 										<strong class="pointer collapsed" data-toggle="collapse" data-target=".data_forecast">Forecast Settings</strong>
 										<span class="badges pull-right m-right-10"> 
-											<span class="tabs active" id="tab_addnew">Add New</span> 
-											<span class="tabs" id="tab_forecasts">Forecasts</span> 
+											<span class="tabs <?php if($tab_view == 'form'){ echo 'active';  } ?>" id="tab_addnew">Add New</span> 
+											<span class="tabs <?php if($tab_view == 'view'){ echo 'active';  } ?>" id="tab_forecasts">Forecasts</span> 
 										</span>
 									</div>
+
+
 								
-									<div class="box-area clearfix data_forecast collapse <?php echo(@$form_toggle ? 'in' : 'out'); ?>  ">
+									<div class="box-area clearfix data_forecast collapse <?php if(isset($form_toggle)){ echo 'in'; }else{ echo 'out'; } ?>">
 										<div class="widg-content clearfix">
 											<div class="tab_container">
-												<div id="tab_addnew_area" class="tab_area active clearfix row pad-0-imp no-m-imp">
-													<form method="post" id="forecast_form" class="m-top-5 m-bottom-5" action="<?php echo base_url(); echo (@$this->session->flashdata('is_update')? 'dashboard/update_sales_forecast' : 'dashboard/add_data_sales_forecast'); ?>">
+												<div id="tab_addnew_area" class="tab_area active clearfix row pad-0-imp no-m-imp"  <?php if($tab_view != 'form'){ echo 'style="display:none;"';  } ?> >
+													<form method="post" id="forecast_form" class="m-top-5 m-bottom-5 clearfix" action="">
 
 													<div class="col-md-8 col-sm-12 col-xs-12" id="">
-														<strong class="m-bottom-10 block data_label"><?php echo (@$this->session->flashdata('is_update')? 'Update Data' : 'Add New Data'); ?></strong> <small class="block m-bottom-10"><em>Note: The sales from calendar year <strong>"<u><?php echo $old_year; ?></u>"</strong> is being used.</em></small>
+														<strong class="m-bottom-10 block data_label">Add New Data</strong> <small class="block m-bottom-10"><em>Note: The sales from calendar year <strong>"<u><?php echo $old_year; ?></u>"</strong> is being used.</em></small>
 														<script type="text/javascript"> //$('select#data_year').val('<?php if(@$this->session->flashdata("data_year")){ echo $this->session->flashdata("data_year"); } ?>');</script>
 
 															<div class="clearfix row pad-0-imp no-m-imp">
@@ -108,18 +126,30 @@
 																				echo '<option value="'.($year+$i).'">'.($year+$i).'</option>';
 																			}?>
 																		</select>
-																		<script type="text/javascript">$('select#data_year').val('<?php if(@$this->session->flashdata("data_year")){ echo $this->session->flashdata("data_year"); }else{ echo $old_year+1;  } ?>');</script>
+																		<script type="text/javascript">$('select#data_year').val('<?php echo $old_year+1; ?>');</script>
 																	</div>
 																</div>
 
+																<div class="col-lg-4 col-xs-12" id="">	
+																	<div class="input-group m-bottom-15 <?php if(form_error('data_label')){ echo 'has-error has-feedback';} ?>">
+																		<span class="input-group-addon" id="">Label</span>      		
+																		<input type="text" class="form-control m-bottom-10 data_label input-sm" name="data_label" id="data_label" placeholder="Forecast Label" value="<?php echo $this->input->post('data_label'); ?>">
+																	</div>
+																</div>
+
+																<div class="clearfix"></div>
+																<?php $focus_comp_list = array(); ?>
+
 																<?php foreach ($focus as $key => $value): ?>
 																	<?php if($value->company_name != 'FSF Group Pty Ltd'): ?>
-																		<div class="col-lg-4 col-md-6 col-xs-6" id="">	
-																			<div class="input-group m-bottom-10">
+																		<?php $focus_comp_list[$value->company_id] = $value->company_name; ?>
+																		<div class="col-lg-5 col-md-6 col-xs-6" id="">	
+																			<div class="input-group m-bottom-10 <?php if(form_error('focus_id_'.$value->company_id)){ echo 'has-error has-feedback';} ?>">
 																				<span class="input-group-addon" id=""><?php echo $value->company_name; ?></span> 
-																				<input type="text" class="form-control m-bottom-10 data_name input-sm number_format focus_comp_split click_select" id="focus_id_<?php echo $value->company_id; ?>" name="focus_id_<?php echo $value->company_id; ?>" placeholder="%" value="<?php if(@$this->session->flashdata("focus_id_$value->company_id")){ echo $this->session->flashdata("focus_id_$value->company_id"); } ?>">
-																				<span class="input-group-addon" id="">
-																					<strong><?php echo $this->dashboard->_get_focus_splits($old_year,$value->company_id); ?>%</strong>
+																				<input type="text" class="form-control m-bottom-10 data_name input-sm number_format focus_comp_split click_select focus_percent_val" id="focus_id_<?php echo $value->company_id; ?>" onKeyUp="check_split('focus_comp_split','focus_id_<?php echo $value->company_id; ?>');" name="focus_id_<?php echo $value->company_id; ?>" placeholder="%" value="<?php echo $this->input->post('focus_id_'.$value->company_id); ?>">
+																				<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed"  id="focus_computed_<?php echo $value->company_id; ?>" style="display:none;" />
+																				<span class="input-group-addon">
+																					<strong id="focus_percent_<?php echo $value->company_id; ?>"><?php echo $this->dashboard->_get_focus_splits($old_year,$value->company_id); ?>%</strong>
 																				</span>  	
 																			</div>
 																		</div>
@@ -134,13 +164,32 @@
 
 																	<?php if($counter > 0 && $start != $add_custom_min): ?>
 																		<div class="col-lg-4 col-md-6 col-xs-6" id="">	
-																			<div class="input-group m-bottom-10">
+																			<div class="input-group m-bottom-10 <?php if(form_error($add_custom_min.'_focus_pmid_'.$maintenance_id)){ echo 'has-error has-feedback';} ?>">
 																				<span class="input-group-addon" id="">Maintenance</span>
-																				<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select focus_pm_split focus_comp_id_<?php echo $add_custom_min; ?>" id="focus_id_m_<?php echo $add_custom_min; ?>" name="focus_id_m_<?php echo $add_custom_min; ?>" placeholder="%" value="<?php if(@$this->session->flashdata("focus_id_m_$add_custom_min")){ echo $this->session->flashdata("focus_id_m_$add_custom_min"); } ?>">
+																				<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select  focus_comp_id_<?php echo $add_custom_min; ?> focus_percent_val_pm" id="<?php echo $add_custom_min; ?>_focus_pmid_<?php echo $maintenance_id; ?>"  onKeyUp="check_split('focus_comp_id_<?php echo $add_custom_min; ?>','<?php echo $add_custom_min; ?>_focus_pmid_<?php echo $maintenance_id; ?>');"   name="<?php echo $add_custom_min; ?>_focus_pmid_<?php echo $maintenance_id; ?>" placeholder="%" value="<?php echo $this->input->post($add_custom_min."_focus_pmid_".$maintenance_id); ?>">
+																				<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed"  id="focus_computed_<?php echo $add_custom_min; ?>" style="display:none;" />
 																				<span class="input-group-addon" id=""><strong><?php echo $this->dashboard->_get_focus_pm_splits($old_year,'5','29'); ?>%</strong></span> 
-																				<span class="input-group-addon pointer add_custom_pm" id=""><strong>+</strong></span> 
+																				<span class="input-group-addon pointer add_custom_pm" id="add_custom_id_<?php echo $add_custom_min; ?>" onClick="add_custom_pm('focus_comp_id_<?php echo $add_custom_min; ?>','add_custom_id_<?php echo $add_custom_min; ?>');"><strong>+</strong></span> 
 																			</div>
 																		</div>
+
+																		<?php if(!empty($other)): ?>
+																			<?php foreach ($other as $key => $value): ?>
+																				<?php $other_data = explode('_', $value);  ?>
+																				<?php if($other_data[0] == $add_custom_min): $new_id = $other_data[3].'x'; ?>
+
+																					<div class="col-lg-4 col-md-6 col-xs-6" id="">
+																						<div class="input-group m-bottom-10">
+																							<input type="text" class="form-control m-bottom-10 input-sm " id="<?php echo $add_custom_min; ?>_other_nmx_<?php echo $new_id; ?>" name="<?php echo $add_custom_min; ?>_other_nm_<?php echo $new_id; ?>" placeholder="Other" value="<?php echo $this->input->post($add_custom_min.'_other_nm_'.$other_data[3]); ?>" style="width: 50%;">
+																							<input type="text" class="focus_comp_id_<?php echo $add_custom_min; ?> form-control m-bottom-10 data_name input-sm click_select focus_percent_val_pm" id="<?php echo $add_custom_min; ?>_other_pmx_<?php echo $new_id; ?>" name="<?php echo $add_custom_min; ?>_other_pm_<?php echo $new_id; ?>" placeholder="%" value="<?php echo $this->input->post($add_custom_min.'_other_pm_'.$other_data[3]); ?>" style="width: 50%;" onkeyup="check_split('focus_comp_id_<?php echo $add_custom_min; ?>','<?php echo $add_custom_min; ?>_other_pmx_<?php echo $new_id; ?>');">
+																							<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed" id="focus_computed_other_<?php echo $new_id; ?>" style="display:none; width: 50%;">
+																							<span class="input-group-addon pointer remove_custom_pm" onclick="remove_custom_pm(this);" id="rm_bttn_otr_<?php echo $new_id; ?>"><strong><i class="fa fa-trash-o"></i></strong></span>
+																						</div>
+																					</div>
+																				<?php endif; ?>
+																			<?php endforeach; ?>
+																		<?php endif; ?>
+
 
 																	<?php endif; ?>
 
@@ -149,9 +198,10 @@
 																	<?php endif; ?>
 
 																	<div class="col-lg-4 col-md-6 col-xs-6" id="">	
-																		<div class="input-group m-bottom-10">
+																		<div class="input-group m-bottom-10 <?php if(form_error($names->user_focus_company_id.'_focus_pmid_'.$names->user_id)){ echo 'has-error has-feedback';} ?>">
 																			<span class="input-group-addon" id=""><?php echo $names->user_pm; ?></span>
-																			<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select focus_pm_split focus_comp_id_<?php echo $names->user_focus_company_id; ?>" id="focus_pmid_<?php echo $names->user_id; ?>" name="focus_pmid_<?php echo $names->user_id; ?>" placeholder="%" value="<?php if(@$this->session->flashdata("focus_pmid_$names->user_id")){ echo $this->session->flashdata("focus_pmid_$names->user_id"); } ?>">
+																			<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select  focus_comp_id_<?php echo $names->user_focus_company_id; ?> focus_percent_val_pm" id="<?php echo $names->user_focus_company_id; ?>_focus_pmid_<?php echo $names->user_id; ?>"  onKeyUp="check_split('focus_comp_id_<?php echo $names->user_focus_company_id; ?>','<?php echo $names->user_focus_company_id; ?>_focus_pmid_<?php echo $names->user_id; ?>');"   name="<?php echo $names->user_focus_company_id; ?>_focus_pmid_<?php echo $names->user_id; ?>" placeholder="%" value="<?php echo $this->input->post($names->user_focus_company_id.'_focus_pmid_'.$names->user_id); ?>">
+																			<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed"  id="focus_computed_<?php echo $names->user_focus_company_id; ?>" style="display:none;" />
 																			<span class="input-group-addon" id=""><strong><?php echo $this->dashboard->_get_focus_pm_splits($old_year,$names->user_focus_company_id,$names->user_id); ?>%</strong></span> 
 																		</div>
 																	</div>																	
@@ -163,30 +213,45 @@
 																<?php endforeach; ?>
 
 																<div class="col-lg-4 col-md-6 col-xs-6" id="">	
-																	<div class="input-group m-bottom-10">
+																	<div class="input-group m-bottom-10 <?php if(form_error($last_focus_id.'_focus_pmid_'.$maintenance_id)){ echo 'has-error has-feedback';} ?>">
 																		<span class="input-group-addon" id="">Maintenance</span>
-																		<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select focus_pm_split focus_comp_id_<?php echo $last_focus_id; ?>" id="focus_id_m_<?php echo $last_focus_id; ?>" name="focus_id_m_<?php echo $last_focus_id; ?>" placeholder="%" value="<?php if(@$this->session->flashdata("focus_id_m_$last_focus_id")){ echo $this->session->flashdata("focus_id_m_$last_focus_id"); } ?>">
+																		<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select  focus_comp_id_<?php echo $last_focus_id; ?> focus_percent_val_pm" id="<?php echo $last_focus_id; ?>_focus_pmid_<?php echo $maintenance_id; ?>"  onKeyUp="check_split('focus_comp_id_<?php echo $last_focus_id; ?>','<?php echo $last_focus_id; ?>_focus_pmid_<?php echo $maintenance_id; ?>');"   name="<?php echo $last_focus_id; ?>_focus_pmid_<?php echo $maintenance_id; ?>" placeholder="%" value="<?php echo $this->input->post($last_focus_id.'_focus_pmid_'.$maintenance_id); ?>">
+																		<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed"  id="focus_computed_<?php echo $last_focus_id; ?>" style="display:none;" />
 																		<span class="input-group-addon" id=""><strong><?php echo $this->dashboard->_get_focus_pm_splits($old_year,'6','29'); ?>%</strong></span>
-																		<span class="input-group-addon pointer add_custom_pm" id=""><strong>+</strong></span>  
+																		<span class="input-group-addon pointer add_custom_pm" id="add_custom_id_<?php echo $last_focus_id; ?>" onClick="add_custom_pm('focus_comp_id_<?php echo $last_focus_id; ?>','add_custom_id_<?php echo $last_focus_id; ?>');"><strong>+</strong></span>  
 																	</div>
 																</div>
 
+																<?php if(!empty($other)): ?>
+																	<?php foreach ($other as $key => $value): ?>
+																		<?php $other_data = explode('_', $value);  ?>
+																		<?php if($other_data[0] == $last_focus_id): $new_id = $other_data[3].'x'; ?>
+
+																		<div class="col-lg-4 col-md-6 col-xs-6" id="">
+																			<div class="input-group m-bottom-10">
+																				<input type="text" class="form-control m-bottom-10 input-sm " id="<?php echo $last_focus_id; ?>_other_nmx_<?php echo $new_id; ?>" name="<?php echo $last_focus_id; ?>_other_nm_<?php echo $new_id; ?>" placeholder="Other" value="<?php echo $this->input->post($last_focus_id.'_other_nm_'.$other_data[3]); ?>" style="width: 50%;">
+																				<input type="text" class="focus_comp_id_<?php echo $last_focus_id; ?> form-control m-bottom-10 data_name input-sm click_select focus_percent_val_pm" id="<?php echo $last_focus_id; ?>_other_pmx_<?php echo $new_id; ?>" name="<?php echo $last_focus_id; ?>_other_pm_<?php echo $new_id; ?>" placeholder="%" value="<?php echo $this->input->post($last_focus_id.'_other_pm_'.$other_data[3]); ?>" style="width: 50%;" onkeyup="check_split('focus_comp_id_<?php echo $last_focus_id; ?>','<?php echo $last_focus_id; ?>_other_pmx_<?php echo $new_id; ?>');">
+																				<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed" id="focus_computed_other_<?php echo $new_id; ?>" style="display:none; width: 50%;">
+																				<span class="input-group-addon pointer remove_custom_pm" onclick="remove_custom_pm(this);" id="rm_bttn_otr_<?php echo $new_id; ?>"><strong><i class="fa fa-trash-o"></i></strong></span>
+																			</div>
+																		</div>
+
+
+																		<?php endif; ?>																	 
+
+																	<?php endforeach; ?>
+
+																<?php endif; ?>
 
 																<div class="clearfix"></div>
 
-															</div>
-															<input type="hidden" name="rfc_token" id="rfc_token" class="rfc_token" value="<?php if(@$this->session->flashdata("rfc_token")){ echo $this->session->flashdata("rfc_token"); } ?>">
 
-															<?php if(@$this->session->flashdata('is_update')): ?> 
-																<input type="submit" class="btn btn-sm m-top-5 data_submit btn-info pull-left" value="Update Data">
-															<?php else: ?>	
-																<input type="submit" class="btn btn-success btn-sm m-top-5 data_submit" name="data_submit" value="Save Data" />
-															<?php endif; ?>
-
-															<div class="form_forecast_update_tools pull-right" style="<?php echo (@$this->session->flashdata('is_update')? '' : 'display:none;'); ?>">
-																<a href="#" class="btn btn-danger btn-sm m-top-5 m-right-15 delete_cancel">Delete Data</a>
-																<a href="#" class="btn btn-warning btn-sm m-top-5 m-right-5 data_cancel">Cancel Update</a>
 															</div>
+
+
+															<input type="hidden" name="form_type" id="form_type" class="form_type" value="1">
+
+															<input type="submit" class="btn btn-primary btn-sm m-top-5 data_submit" name="data_submit" value="Save Data" />
 
 														
 													</div>
@@ -196,34 +261,44 @@
 															 
 															
 																<strong class="m-bottom-10 block">Monthly Breakdown</strong>
-																<small class="block m-bottom-10"><em>Suggested values are provided.</em></small>
+																<small class="block m-bottom-10"><em>Suggested values are provided. <?php  echo $this->session->flashdata("error_data_amount");  ?></em> <span class="pull-right">Sales: <strong>$<?php echo number_format($sales_focus_yearly,2); ?></strong> Ex-GST</span></small>
 
 																<div class="row pad-0-imp no-m-imp monthly_breakdown">
+
+																	<?php $months = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"); ?>
+
+																	<?php $temp_total_past = 0; ?>
+																	<?php for ($x=0; $x < 12; $x++): ?>
+																		<?php if($monthly_split[$x] == 0): ?>
+																			<?php $temp_total_past = $temp_total_past + $this->dashboard->_check_monthly_share_adjust($old_year,$monthly_split[$x],$months[$x]); ?>
+																		<?php endif; ?>
+																	<?php endfor; ?>				
+
+
+																
 																	
-
-																<div class="col-lg-6 col-xs-12" id="">	
-																	<div class="input-group m-bottom-10 <?php if(@$this->session->flashdata('error_data_amount')){ echo "has-error"; } ?>">
-																		<span class="input-group-addon" id="">Total</span>      		
-																		<input type="text" class="form-control m-bottom-10 data_name number_format input-sm" id="data_amount" name="data_amount" placeholder="$ EX-GST" value="<?php if(@$this->session->flashdata("data_amount")){ echo $this->session->flashdata("data_amount"); } ?>">
-																		
+																	<div class="col-lg-6 col-xs-12" id="">	
+																		<div class="input-group m-bottom-15 <?php if(form_error('data_amount')){ echo 'has-error has-feedback';} ?>">
+																			<span class="input-group-addon" id="">Total</span>      		
+																			<input type="text" class="form-control m-bottom-10 data_name number_format input-sm" name="data_amount" id="data_amount" placeholder="$ EX-GST" value="<?php echo $this->input->post('data_amount'); ?>">
+																			<span class="input-group-addon toggle_percent_amount" id="mainForm-forecast_form"><strong><i class="fa fa-refresh"></i></strong></span> 
+																		</div>
 																	</div>
-																</div>
-
-
 
 																	<div class="clearfix"></div>
 																	
 
-																	<?php $months = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"); ?>
-
 																	<?php for ($x=0; $x < 12; $x++): ?>
 																		<div class="col-md-6 col-sm-6 col-xs-6 clearfix ">
-																			<div class="input-group m-bottom-10">
+																			<div class="input-group m-bottom-15 <?php if(form_error('month_'.$x)){ echo 'has-error has-feedback';} ?>">
 																				<span class="input-group-addon"><?php echo $months[$x]; ?></span>      		
-																				<input type="text" class="form-control number_format input-sm number_format click_select focus_month_split" id="month_<?php echo $x; ?>" name="month_<?php echo $x; ?>" placeholder="%" value="<?php if(@$this->session->flashdata("month_$x")){ echo $this->session->flashdata("month_$x"); } ?>">
+																				
+																				<input type="text" class="form-control number_format input-sm number_format click_select focus_month_split" id="month_<?php echo $x; ?>"  onKeyUp="check_split('focus_month_split','month_<?php echo $x; ?>');" name="month_<?php echo $x; ?>" placeholder="%"  <?php if($x == 11){ echo 'readonly="readonly"'; } ?>  value="<?php echo $this->input->post('month_'.$x); ?>">
+																				<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed"  id="focus_computed_month_<?php echo $x; ?>" style="display:none;" />
+
 																				<span class="input-group-addon">
 																					<strong style="<?php echo ($monthly_split[$x] == 0 ? 'color: red;' : '');  ?>">
-																						<?php echo $this->dashboard->_check_monthly_share_adjust($old_year,$monthly_split[$x],$months[$x]); ?>%
+																						<?php echo $this->dashboard->_check_monthly_share_adjust($old_year,$monthly_split[$x],$months[$x],$sales_focus_yearly,$temp_total_past); ?>%
 																					</strong>
 																				</span>   
 																			</div>
@@ -233,6 +308,9 @@
 																</div>
 														</div>
 													</div> 
+
+													
+
 													</form>  
 
 													<?php //echo "$old_year"; ?>
@@ -240,16 +318,387 @@
 
 												</div>		
 
-												<div id="tab_forecasts_area" class="tab_area" style="display:none;">
-													<div class="col-md-7 col-sm-12 col-xs-12" id="">
-														<strong class="m-bottom-10 block data_label">Saved Forecasts</strong> <small class="block m-bottom-10"><em>Lorem ipsum.</em></small>
+												<div id="tab_forecasts_area" class="tab_area" <?php if($tab_view != 'view'){ echo 'style="display:none;"';  } ?>>
+													<div class="col-lg-5 col-sm-12 col-xs-12" id="">
+														<strong class="m-bottom-10 block data_label">Saved Forecasts</strong>
+
+														<table id="dataTable_noCustom" class="table table-striped table-bordered" cellspacing="0" width="100%">
+														<thead> <tr> <th>Title</th> <th>Year</th> <th>Total</th></tr> </thead> 
+
+															<tbody>
+
+																<?php foreach ($saved_forecast->result_array() as $forecast): ?>
+																	<tr>
+																		<td><a href="<?php echo base_url(); ?>dashboard/sales_forecast/view_<?php echo $forecast['revenue_forecast_id']; ?>" id="" ><?php echo $forecast['forecast_label']; ?></a><?php if($forecast['is_primary'] == 1): ?> <i class="fa fa-check-square" style="color: #4cae4c;"></i><?php endif; ?>     <?php if($forecast['is_primary'] == 0): ?> <a href="./?delete_rfc=<?php echo $forecast['revenue_forecast_id']; ?>" class="btn btn-primary btn-xs btn_smc  btn-danger"><i class="fa fa-trash"></i></a>  <a href="./?primary_rfc=<?php echo $forecast['revenue_forecast_id'].'_'.$forecast['year']; ?>" class="btn btn-primary btn-xs btn_smc"><i class="fa fa-check-square"></i></a><?php endif; ?>  <a href="<?php echo base_url(); ?>dashboard/sales_forecast/edit_<?php echo $forecast['revenue_forecast_id']; ?>" class="btn btn-info btn-xs btn_smc"><i class="fa fa-pencil"></i></a></td>
+																		<td><?php echo $forecast['year']; ?></td>
+																		<td>$<?php echo number_format($forecast['total'],2); ?></td>
+																	</tr>
+																<?php endforeach; ?>
+
+															</tbody>
+														</table>
 													</div>
+
+
+													<div class="col-lg-7 col-sm-12 col-xs-12" id="">
+
+														<div class="clearfix">
+
+
+
+															<div class="col-lg-9 col-sm-6 col-xs-12" id="">
+																<?php if(isset($saved_forecast_item)): ?>
+																<strong class="m-bottom-10 block data_label m-left-5">Forecast: <?php echo $saved_forecast_item['forecast_label'].' - '.$saved_forecast_item['year'].' at $'.number_format($saved_forecast_item['total'],2); ?> &nbsp;   <a href="<?php echo base_url(); ?>dashboard/sales_forecast/edit_<?php echo $saved_forecast_item['revenue_forecast_id']; ?>" class="pull-right"><i class="fa fa-pencil"></i> Update</a></strong>
+													
+
+
+																	<table class="table table-condensed m-botom-0">
+																		<thead>
+																		<tr><th>Name</th> <th>Percent</th> <th>Amount</th></tr>
+																		</thead>
+																		<tbody>
+																			<?php $fcom = 0; $fpm = 0; $fgrp = 0; ?>
+
+																			<?php foreach ($individual_forecast->result_array() as $indv_forecast):  $fpm = $indv_forecast['comp_id']; ?>
+
+																				<?php if($indv_forecast['pm_id'] == 0 && $indv_forecast['other'] == ''): $fcom = 1; ?>
+																					<tr> <td> <?php echo $indv_forecast['company_name']; ?></td><td><strong><?php echo $indv_forecast['forecast_percent']; ?>%</strong></td><td><?php $amount = $saved_forecast_item['total']*($indv_forecast['forecast_percent']/100);  echo number_format($amount,2); ?></td></tr>
+																				<?php else:  ?>
+																					<?php if($fcom == 1){$fcom = 2;}?>
+																				<?php endif; ?>
+
+																				<?php if($fcom == 2): $fcom = 0; $fgrp = 0;?> 
+																					<!-- <tr style="background-color: #f9f9f9;"><td colspan="3"></td></tr> -->
+																				<?php endif; ?>
+
+																				<?php if($fgrp != $fpm && $fcom == 0): $fgrp = $fpm;?> 
+																					<tr style="background-color: #f9f9f9;"><td colspan="3"></td></tr>
+																				<?php endif; ?>
+
+
+																				<?php if($indv_forecast['pm_id'] > 0 && $indv_forecast['other'] == ''):    ?>
+																					<tr> <td> <?php echo $indv_forecast['pm_name']; ?></td><td><strong><?php echo $indv_forecast['forecast_percent']; ?>%</strong></td><td><?php $amount = $saved_forecast_item['total']*($indv_forecast['forecast_percent']/100);  echo number_format($amount,2); ?></td></tr>
+																				<?php endif; ?>
+
+																				<?php if($indv_forecast['pm_id'] == 0 && $indv_forecast['other'] != ''): ?>
+																					<tr> <td> <strong>Other - </strong> <?php echo $indv_forecast['other']; ?></td><td><strong><?php echo $indv_forecast['forecast_percent']; ?>%</strong></td><td><?php $amount = $saved_forecast_item['total']*($indv_forecast['forecast_percent']/100);  echo number_format($amount,2); ?></td></tr>
+																				<?php endif; ?>
+
+																			<?php endforeach; ?>
+																		</tbody>
+																	</table>
+
+
+<!-- 
+
+																	 <span>Label: <strong><?php echo $forecast['forecast_label']; ?></strong> &nbsp; &nbsp; &nbsp; Year:   <?php echo $saved_forecast_item['forecast_dec']; ?>%</span>
+																		  
+
+
+																	<p>Year <strong><?php echo $saved_forecast_item['year']; ?></strong></p>
+																	<p>Total <strong><?php echo number_format($saved_forecast_item['total'],2); ?></strong></p>
+ -->
+
+
+
+
+																<?php endif; ?>
+
+															</div>
+															<div class="col-lg-3 col-sm-6 col-xs-12" id="">
+																<?php if(isset($saved_forecast_item)): ?>
+																<table class="table table-condensed m-botom-0">
+																	<thead>
+																		<tr><th>Month</th> <th>Percent</th></tr>
+																	</thead>
+																	<tbody>
+																		<tr> <td>Jan </td> <td><strong><?php echo $saved_forecast_item['forecast_jan']; ?>%</strong></td> </tr>
+																		<tr> <td>Feb </td> <td><strong><?php echo $saved_forecast_item['forecast_feb']; ?>%</strong></td> </tr> 
+																		<tr> <td>Mar </td> <td><strong><?php echo $saved_forecast_item['forecast_mar']; ?>%</strong></td> </tr> 
+																		<tr> <td>Apr </td> <td><strong><?php echo $saved_forecast_item['forecast_apr']; ?>%</strong></td> </tr> 
+																		<tr> <td>May </td> <td><strong><?php echo $saved_forecast_item['forecast_may']; ?>%</strong></td> </tr> 
+																		<tr> <td>Jun </td> <td><strong><?php echo $saved_forecast_item['forecast_jun']; ?>%</strong></td> </tr> 
+																		<tr> <td>Jul </td> <td><strong><?php echo $saved_forecast_item['forecast_jul']; ?>%</strong></td> </tr> 
+																		<tr> <td>Aug </td> <td><strong><?php echo $saved_forecast_item['forecast_aug']; ?>%</strong></td> </tr> 
+																		<tr> <td>Sep </td> <td><strong><?php echo $saved_forecast_item['forecast_sep']; ?>%</strong></td> </tr> 
+																		<tr> <td>Oct </td> <td><strong><?php echo $saved_forecast_item['forecast_oct']; ?>%</strong></td> </tr> 
+																		<tr> <td>Nov </td> <td><strong><?php echo $saved_forecast_item['forecast_nov']; ?>%</strong></td> </tr> 
+																		<tr> <td>Dec </td> <td><strong><?php echo $saved_forecast_item['forecast_dec']; ?>%</strong></td> </tr>
+																	</tbody>
+																</table>
+															<?php endif; ?>
+															</div>
+
+														</div>
+ 
+
+													</div>
+
+
+
 												</div>
 											</div>
 
 										</div>
 									</div>
-								</div>						
+								</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+								<?php if($tab_view == 'edit'): ?>
+
+
+								<div class="widget wid-type-b widg-head-styled m-top-20">
+									<div class="widg-head box-widg-head pad-5"><i class="fa fa-pencil"></i>
+										<strongs>Update Forecast</strong>
+									</div>
+
+
+								
+									<div class="box-area clearfix">
+										<div class="widg-content clearfix">
+											<div class="">
+												<div id="" class="clearfix row pad-0-imp no-m-imp" >
+													<form method="post" id="update_forecast_form" class="m-top-5 m-bottom-5 clearfix" action="">
+
+													<div class="col-md-8 col-sm-12 col-xs-12" id="">
+														<strong class="m-bottom-10 block data_label">Update Data</strong> <small class="block m-bottom-10"><em>Note: The sales from calendar year <strong>"<u><?php echo $old_year; ?></u>"</strong> is being used.</em></small>
+														<script type="text/javascript"> //$('select#data_year').val('<?php if(@$this->session->flashdata("data_year")){ echo $this->session->flashdata("data_year"); } ?>');</script>
+
+															<div class="clearfix row pad-0-imp no-m-imp">
+
+																<div class="col-lg-4 col-xs-12" id="">	
+																	<div class="input-group m-bottom-15 <?php if(form_error('data_label')){ echo 'has-error has-feedback';} ?>">
+																		<span class="input-group-addon" id="">Label</span>      		
+																		<input type="text" class="form-control m-bottom-10 data_label input-sm" name="data_label_edt" id="data_label" placeholder="<?php echo $saved_forecast_item['forecast_label']; ?>" value="<?php if($this->input->post('data_label_edt')){ echo $this->input->post('data_label_edt'); }else{  echo $saved_forecast_item['forecast_label']; } ?>">
+																	</div>
+																</div>
+
+																<div class="clearfix"></div>
+
+																<?php $fcom = 0; $fpm = 0; $fgrp = 0; ?>
+
+
+																<?php foreach ($individual_forecast->result_array() as $indv_forecast):  $fpm = $indv_forecast['comp_id']; ?>
+
+																	<?php if($indv_forecast['pm_id'] == 0 && $indv_forecast['other'] == ''): $fcom = 1; ?>
+																		<div class="col-lg-5 col-md-6 col-xs-6" id="">	
+																			<div class="input-group m-bottom-10 <?php if(form_error('focus_id_'.$indv_forecast['comp_id'])){ echo 'has-error has-feedback';} ?>">
+																				<span class="input-group-addon" id=""><?php echo $indv_forecast['company_name']; ?></span> 
+																				<input type="text" class="form-control m-bottom-10 data_name input-sm number_format focus_comp_split_edt click_select focus_percent_val" id="focus_idedt_<?php echo $indv_forecast['comp_id']; ?>" onKeyUp="check_split('focus_comp_split_edt','focus_idedt_<?php echo $indv_forecast['comp_id']; ?>');" name="focus_idedt_<?php echo $indv_forecast['comp_id']; ?>" placeholder="%" value="<?php if($this->input->post('focus_idedt_'.$indv_forecast['comp_id'])){  echo $this->input->post('focus_idedt_'.$indv_forecast['comp_id']);    }else{ echo $indv_forecast['forecast_percent'];  }?>">
+																				<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed"  id="focus_computedEdt_<?php echo $indv_forecast['comp_id']; ?>" style="display:none;" />
+																				<span class="input-group-addon">
+																					<strong id="focus_percentEdt_<?php echo $indv_forecast['comp_id']; ?>"><?php echo $this->dashboard->_get_focus_splits($old_year,$indv_forecast['comp_id']); ?>%</strong>
+																				</span>  	
+																			</div>
+																		</div>
+																	<?php else:  ?>
+																		<?php if($fcom == 1){$fcom = 2;}?>
+																	<?php endif; ?>
+
+																	<?php if($fcom == 2): $fcom = 0; $fgrp = 0;?> 
+																		<!-- <tr style="background-color: #f9f9f9;"><td colspan="3"></td></tr> -->
+																	<?php endif; ?>
+
+																	<?php if($fgrp != $fpm && $fcom == 0): $fgrp = $fpm;?> 
+																		<div class="clearfix"></div>
+
+																		<hr class="block m-bottom-5 m-top-5">
+
+																		<strong class="m-bottom-10 block data_label"><?php echo $focus_comp_list[$fgrp]; ?></strong>
+																	<?php endif; ?>
+
+
+
+																	<?php if($indv_forecast['pm_id'] > 0 && $indv_forecast['other'] == ''):    ?>
+
+
+
+
+
+
+
+
+
+
+
+<div class="col-lg-4 col-md-6 col-xs-6" id="">	
+<div class="input-group m-bottom-10 <?php if(form_error($indv_forecast['comp_id'].'_comp_idEdt_'.$indv_forecast['revenue_forecast_individual_id'])){ echo 'has-error has-feedback';} ?>">
+<span class="input-group-addon" id=""><?php echo $indv_forecast['pm_name']; ?></span>
+<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select  focus_comp_idEdt_<?php echo $indv_forecast['comp_id']; ?> focus_percent_val_pm_edt" id="<?php echo $indv_forecast['comp_id']; ?>_comp_idEdt_<?php echo $indv_forecast['revenue_forecast_individual_id']; ?>"  onKeyUp="check_split('focus_comp_idEdt_<?php echo $indv_forecast['comp_id']; ?>','<?php echo $indv_forecast['comp_id']; ?>_comp_idEdt_<?php echo $indv_forecast['revenue_forecast_individual_id']; ?>');"   name="<?php echo $indv_forecast['comp_id']; ?>_comp_idEdt_<?php echo $indv_forecast['revenue_forecast_individual_id']; ?>" placeholder="<?php echo $indv_forecast['forecast_percent']; ?>" value="<?php if($this->input->post($indv_forecast['comp_id'].'_comp_idEdt_'.$indv_forecast['revenue_forecast_individual_id'])){ echo $this->input->post($indv_forecast['comp_id'].'_comp_idEdt_'.$indv_forecast['revenue_forecast_individual_id']); }else{ echo $indv_forecast['forecast_percent'];}   ?>">
+<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed"  id="focus_computed_<?php echo $indv_forecast['comp_id']; ?>" style="display:none;" />
+<span class="input-group-addon" id=""><strong><?php echo $this->dashboard->_get_focus_pm_splits($old_year,$indv_forecast['comp_id'],$indv_forecast['pm_id']); ?>%</strong></span> 
+</div>
+</div>
+
+
+<!-- 
+																		<tr> <td> <?php echo $indv_forecast['pm_name']; ?></td><td><strong><?php echo $indv_forecast['forecast_percent']; ?>%</strong></td><td><?php $amount = $saved_forecast_item['total']*($indv_forecast['forecast_percent']/100);  echo number_format($amount,2); ?></td></tr>
+																	 -->
+
+
+																	<?php endif; ?>
+
+
+
+
+
+																				<?php if($indv_forecast['pm_id'] == 0 && $indv_forecast['other'] != ''): ?>
+
+
+<div class="col-lg-4 col-md-6 col-xs-6" id="">	
+<div class="input-group m-bottom-10 <?php if(form_error($indv_forecast['comp_id'].'_comp_idEdt_'.$indv_forecast['revenue_forecast_individual_id'])){ echo 'has-error has-feedback';} ?>">
+<span class="input-group-addon" id=""><?php echo $indv_forecast['other']; ?></span>
+<input type="text" class="form-control m-bottom-10 data_name input-sm number_format click_select  focus_comp_idEdt_<?php echo $indv_forecast['comp_id']; ?> focus_percent_val_pm_edt" id="<?php echo $indv_forecast['comp_id']; ?>_comp_idEdt_<?php echo $indv_forecast['revenue_forecast_individual_id']; ?>"  onKeyUp="check_split('focus_comp_idEdt_<?php echo $indv_forecast['comp_id']; ?>','<?php echo $indv_forecast['comp_id']; ?>_comp_idEdt_<?php echo $indv_forecast['revenue_forecast_individual_id']; ?>');"   name="<?php echo $indv_forecast['comp_id']; ?>_comp_idEdt_<?php echo $indv_forecast['revenue_forecast_individual_id']; ?>" placeholder="<?php echo $indv_forecast['forecast_percent']; ?>" value="<?php if($this->input->post($indv_forecast['comp_id'].'_comp_idEdt_'.$indv_forecast['revenue_forecast_individual_id'])){ echo $this->input->post($indv_forecast['comp_id'].'_comp_idEdt_'.$indv_forecast['revenue_forecast_individual_id']); }else{ echo $indv_forecast['forecast_percent'];}   ?>">
+<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed"  id="focus_computed_<?php echo $indv_forecast['comp_id']; ?>" style="display:none;" /> 
+</div>
+</div>
+
+																					<!-- 
+																					<tr> <td> <strong>Other - </strong> <?php echo $indv_forecast['other']; ?></td><td><strong><?php echo $indv_forecast['forecast_percent']; ?>%</strong></td><td><?php $amount = $saved_forecast_item['total']*($indv_forecast['forecast_percent']/100);  echo number_format($amount,2); ?></td></tr>
+																				 -->
+
+
+																				<?php endif; ?>
+
+
+
+
+																<?php endforeach; ?>
+
+
+																<!-- focus pms and other -->
+
+																<div class="clearfix"></div>
+
+
+															</div>
+
+
+															<input type="hidden" name="form_type" id="form_type" class="form_type" value="2">
+
+															<input type="submit" class="btn btn-success btn-sm m-top-5 data_update" name="data_update" value="Update Data" />
+
+														
+													</div>
+
+													<div class="col-md-4 col-sm-12  col-xs-12" id="">
+														<div class="pad-right-5 pad-left-5">
+															 
+															
+																<strong class="m-bottom-10 block">Monthly Breakdown</strong>
+																<small class="block m-bottom-10"><em>Suggested values are provided. <?php  echo $this->session->flashdata("error_data_amount");  ?></em> <span class="pull-right">Sales: <strong>$<?php echo number_format($sales_focus_yearly,2); ?></strong> Ex-GST</span></small>
+
+																<div class="row pad-0-imp no-m-imp monthly_breakdown">
+
+																	<?php $months = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"); ?>
+
+																	<?php $temp_total_past = 0; ?>
+																	<?php for ($x=0; $x < 12; $x++): ?>
+																		<?php if($monthly_split[$x] == 0): ?>
+																			<?php $temp_total_past = $temp_total_past + $this->dashboard->_check_monthly_share_adjust($old_year,$monthly_split[$x],$months[$x]); ?>
+																		<?php endif; ?>
+																	<?php endfor; ?>				
+
+
+																
+																	
+																	<div class="col-lg-6 col-xs-12" id="">	
+																		<div class="input-group m-bottom-15 <?php if(form_error('data_amount')){ echo 'has-error has-feedback';} ?>">
+																			<span class="input-group-addon" id="">Total</span>      		
+																			<input type="text" class="form-control m-bottom-10 data_name number_format input-sm" name="data_amount_edt" id="data_amount" placeholder="<?php echo number_format($saved_forecast_item['total'],2); ?>" value="<?php if($this->input->post('data_amount_edt')){ echo $this->input->post('data_amount_edt'); }else{ echo number_format($saved_forecast_item['total'],2); } ?>">
+																			<span class="input-group-addon toggle_percent_amount" id="mainForm-update_forecast_form"><strong><i class="fa fa-refresh"></i></strong></span> 
+																		</div>
+																	</div>
+
+																	<div class="clearfix"></div>
+																	
+
+																	<?php for ($x=0; $x < 12; $x++): ?>
+																		<div class="col-md-6 col-sm-6 col-xs-6 clearfix ">
+																			<div class="input-group m-bottom-15 <?php if(form_error('month_'.$x)){ echo 'has-error has-feedback';} ?>">
+																				<span class="input-group-addon"><?php echo $months[$x]; ?></span> 
+
+																				<?php $mnth_lbl = strtolower($months[$x]);  ?>     		
+
+
+
+
+																				
+																				<input type="text" class="form-control number_format input-sm number_format click_select focus_month_split_edt" id="month_edt_<?php echo $x; ?>"  onKeyUp="check_split('focus_month_split_edt','month_edt_<?php echo $x; ?>');" name="month_edt_<?php echo $x; ?>" placeholder="<?php echo $saved_forecast_item['forecast_'.$mnth_lbl]; ?>%"  <?php if($x == 11){ echo 'readonly="readonly"'; } ?>  value="<?php if($this->input->post('month_edt_'.$x)){ echo $this->input->post('month_edt_'.$x); }else{ echo $saved_forecast_item['forecast_'.$mnth_lbl]; } ; ?>">
+																				
+
+
+
+
+																				<input type="text" disabled="disabled" readonly="readonly" value="" class="form-control input-sm focus_computed"  id="focus_computed_month_edt_<?php echo $x; ?>" style="display:none;" />
+
+																				<span class="input-group-addon">
+																					<strong style="<?php echo ($monthly_split[$x] == 0 ? 'color: red;' : '');  ?>">
+																						<?php echo $this->dashboard->_check_monthly_share_adjust($old_year,$monthly_split[$x],$months[$x],$sales_focus_yearly,$temp_total_past); ?>%
+																					</strong>
+																				</span>   
+
+
+																				
+
+
+																			</div>
+																		</div>
+																	<?php endfor; ?>
+
+																</div>
+														</div>
+													</div> 
+
+													
+
+													</form>  
+
+													<?php //echo "$old_year"; ?>
+
+
+												</div>		
+
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+
+							<?php endif; ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 								
 							</div>
@@ -258,7 +707,7 @@
 
 						<!-- ************************ -->
 
-
+<!--
 
 
 						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
@@ -334,6 +783,8 @@
 							</div>
 						</div>
 						
+
+				-->
 						<div class="clearfix"></div>
 						<!-- ************************ -->
 
@@ -346,13 +797,18 @@
 								<div class="widg-head box-widg-head pad-5 clearfix">
 									<strong>Sales Forecast</strong>
 									<div class="pull-right" style="margin: -5px -10px -8px;">
+
+<?php /*
+										<!-- 
 										<select class="form-control sf_chart_dateSelection" style="height: 31px;    border-radius: 0;    border: none;    font-weight: bold;">
 											<option selected="" value="" style="display:none;">Select Year</option>
 											<?php $year = date('Y'); for($i=0; $i < 6; $i++){
-												echo '<option value="'.($year+$i-1).'-'.($year+$i).'">July '.($year+$i-1).' - June '.($year+$i).'</option>';
+												//echo '<option value="'.($year+$i-1).'-'.($year+$i).'">July '.($year+$i-1).' - June '.($year+$i).'</option>';
 											}?>
 										</select>
-										<script type="text/javascript"> $('select.sf_chart_dateSelection').val('<?php echo $minYear."-".$maxYear; ?>');</script>
+										  -->
+										<script type="text/javascript"> // $('select.sf_chart_dateSelection').val('<?php echo $minYear."-".$maxYear; ?>'); </script>
+*/ ?>
 									</div>
 								</div>
 
@@ -684,8 +1140,10 @@
           ['x', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
 
 			<?php // echo $this->dashboard->_fetch_pm_data($minYear,$maxYear); ?>
+
+			<?php 
 /*
-			<?php foreach ($revenue_forecast as $key => $forecast): ?>
+			 foreach ($revenue_forecast as $key => $forecast): ?>
 
 
 				<?php if($forecast->data_type == 'Forecast'): ?>
@@ -701,12 +1159,16 @@
 	          	<?php endif; ?>
 
 	          	['<?php echo $forecast->data_name; ?>', <?php echo $segment_a.','.$segment_b; ?>],
-	      	<?php endforeach; ?>
+	      	<?php endforeach;
+
+
 */
+	      	 ?>
+
         ],
         selection: {enabled: true},
         type: 'bar',
-        types: { /* <?php foreach ($revenue_forecast as $key => $forecast): ?><?php if($forecast->data_type == 'Forecast'){ echo "'$forecast->data_name' : 'line',"; } ?><?php endforeach; ?> */
+        types: {  <?php /* foreach ($revenue_forecast as $key => $forecast): ?><?php if($forecast->data_type == 'Forecast'){ echo "'$forecast->data_name' : 'line',"; } ?><?php endforeach; */ ?>
         },
         groups: [ 
 
@@ -714,7 +1176,9 @@
         	[
 	        	<?php $group_a = 0;  ?>
 /*
-	        	<?php foreach ($revenue_forecast as $key => $forecast): ?>
+	        	<?php 
+/*
+	        	foreach ($revenue_forecast as $key => $forecast): ?>
 		        	<?php
 			        	if($group_a == 0 ){
 			        		$group_a = $forecast->focus_company_id;
@@ -726,7 +1190,10 @@
 			        		echo "'$forecast->data_name',";
 			        	}
 		        	?>
-	        	<?php endforeach; ?>
+	        	<?php endforeach;
+*/
+
+	        	 ?>
 */
 	        ],
 
