@@ -27,6 +27,11 @@ if(company == 'company'){
 }
 
 
+$('#dataTable_noCustom').dataTable({
+    "iDisplayLength": 7,
+    "aLengthMenu": [[7, 14, 21, 28, -1], [7, 14, 21, 28, "All"]]
+});
+
 $('#shoppingCenterTable').dataTable({
     "iDisplayLength": 13,
     "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
@@ -110,9 +115,17 @@ var variationTable = $('#variationTable').dataTable({
 });
    
 var table = $('#projectTable').dataTable({
-	"iDisplayLength": 13,
-    "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]],
+	"iDisplayLength": 20,
+    "aLengthMenu": [[20, 25, 50,75, -1], [ 20, 25, 50,75, "All"]],
     "order": [[ 0, "desc" ]],
+    "aoColumns" : [
+            { sWidth: '10%' },
+            { sWidth: '30%' },
+            { sWidth: '30%' },
+            { sWidth: '10%' },
+            { sWidth: '10%' },
+            { sWidth: '10%' }
+        ],
    "aoColumnDefs": [{ "bVisible": false, "aTargets":[6] },{ "bVisible": false, "aTargets":[7] }] 
 });
 
