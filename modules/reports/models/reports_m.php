@@ -25,7 +25,10 @@ class Reports_m extends CI_Model{
 			LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
 			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
 			LEFT JOIN `payment` ON `payment`.`invoice_id` = `invoice`.`invoice_id`
-			$has_where $project_num_q $progress_claim_q $client_q $invoice_status_q $project_manager_q AND `project`.`job_date` <> '' GROUP BY `invoice`.`invoice_id`  $order_q ");
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			$has_where $project_num_q $progress_claim_q $client_q $invoice_status_q $project_manager_q
+			AND `project`.is_active = '1'
+			AND `project`.`job_date` <> '' GROUP BY `invoice`.`invoice_id`  $order_q ");
 		return $query;
 
 

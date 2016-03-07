@@ -18,6 +18,8 @@ class Reports extends MY_Controller{
 		$this->load->module('invoice');
 		$this->load->module('wip');
 
+		date_default_timezone_set("Australia/Perth");
+
 	}
 
 	public function index(){}
@@ -307,7 +309,11 @@ public function invoice_report(){
 	$invoice_sort = $data_val['6'];
 	$project_manager = $data_val['7'];
 
+	$invoiced_date_a = $data_val['8'];
+	$invoiced_date_b = $data_val['9'];
+
 	$curr_year = date('Y');
+	$inv_date_type = 0;
 
 
 	if($invoice_date_a == ''){
@@ -316,6 +322,7 @@ public function invoice_report(){
 	}else{
 		$date_a = strtotime(str_replace('/', '-', $invoice_date_a));
 		$date_filter_a = $invoice_date_a;
+		$inv_date_type = 1;
 	}
 
 	if($invoice_date_b == ''){
@@ -324,7 +331,24 @@ public function invoice_report(){
 	}else{
 		$date_b = strtotime(str_replace('/', '-', $invoice_date_b));
 		$date_filter_b = $invoice_date_b;
+		$inv_date_type = 1;
 	}
+
+
+
+	if($invoiced_date_a != ''){
+		$date_a = strtotime(str_replace('/', '-', $invoiced_date_a));
+		$date_filter_a = $invoiced_date_a;
+		$inv_date_type = 2;
+	}
+
+	if($invoiced_date_b != ''){
+		$date_b = strtotime(str_replace('/', '-', $invoiced_date_b));
+		$date_filter_b = $invoiced_date_b;
+		$inv_date_type = 2;
+	}
+
+
 
 
 
@@ -478,10 +502,29 @@ if($project_num_q != '' || $progress_claim_q != '' || $client_q != '' || $invoic
 }
 
 $table_q = $this->reports_m->select_list_invoice($has_where,$project_num_q,$client_q,$invoice_status_q,$progress_claim_q,$project_manager_q,$order_q);
+
+//$content .="----$has_where,$project_num_q,$client_q,$invoice_status_q,$progress_claim_q,$project_manager_q,$order_q--$inv_date_type--";
+
+
 $records_num = 0;
 
 $content .= '<div class="def_page"><div class="clearfix header"><img src="./img/focus-logo-print.png" align="left" class="block" style="margin-top:-30px; " /><h1 class="text-right block"  style="margin-top:-10px; margin-bottom:10px;" ><br />Invoices List Report</h1></div><br />';
-$content .= '<table id="" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead><tr><th width="20%">Client Name</th><th width="20%">Project Name</th><th>Project No</th><th>Invoicing Date</th><th>Finish Date</th><th>Progress Claim</th><th>Percent</th><th>Amount</th><th>Outstanding</th></tr></thead><tbody>';				
+$content .= '<table id="" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead><tr><th width="20%">Client Name</th><th width="20%">Project Name</th><th>Project No</th>';
+
+if($inv_date_type == 2){
+	$content .= '<th>Invoiced Date</th>';
+
+}else{
+	$content .= '<th>Invoicing Date</th>';
+
+}
+
+
+
+
+$content .= '<th>Finish Date</th><th>Progress Claim</th><th>Percent</th><th>Amount</th><th>Outstanding</th></tr></thead><tbody>';
+
+
 		//var_dump($_POST['ajax_var']);
 
 $total_project_value = 0;
@@ -489,7 +532,13 @@ $total_outstading_value = 0;
 
 
 foreach ($table_q->result() as $row){
-	$invoiced_date = strtotime(str_replace('/', '-', $row->invoice_date_req));
+
+	if($inv_date_type == 2){
+		$invoiced_date = strtotime(str_replace('/', '-', $row->set_invoice_date));
+	}else{
+		$invoiced_date = strtotime(str_replace('/', '-', $row->invoice_date_req));
+	}
+
 
 	if($date_a <= $invoiced_date){
 		if($invoiced_date <= $date_b){
@@ -507,13 +556,14 @@ foreach ($table_q->result() as $row){
 
 
 				if($progress_order == 'Variation'){
-					$project_total_percent = $project_total_values['variation_total'];
+					//$project_total_percent = $project_total_values['variation_total'];
+					$project_total_percent = $row->variation_total;
 				}else{
 					$project_total_percent = $row->project_total * ($row->progress_percent/100);
 				}
 
 
-if($project_total_percent>0){
+//if($row->project_total >0){
 		/*		if(
 					( $invoice_status != '' && $invoice_status == '4' && $row->payment_id != '')  || 
 					( $invoice_status != '' && $invoice_status != '4' && $row->payment_id == '') || 
@@ -529,21 +579,28 @@ if($project_total_percent>0){
 					$outstanding = '0.00';
 				}
 
-				$total_project_value = $project_total_percent + $total_project_value;
+				$total_project_value = $total_project_value + $project_total_percent;
 				$total_outstading_value = $outstanding + $total_outstading_value;
 
 				$project_total_percent = number_format($project_total_percent,2);
 				$outstanding = number_format($outstanding,2);
 
-					$content .= '<tr><td>'.$row->company_name.'</td><td>'.$row->project_name.'</td><td>'.$row->invoice_project_id.'</td><td>'.$row->invoice_date_req.'</td><td>'.$row->date_site_finish.'</td><td>'.$progress_order.'</td><td>'.$row->progress_percent.'</td><td>'.$project_total_percent.'</td><td>'.$outstanding.'</td></tr>';
-				
+					$content .= '<tr><td>'.$row->company_name.'</td><td>'.$row->project_name.'</td><td>'.$row->invoice_project_id.'</td>';
 
+					if($inv_date_type == 2){
+						$content .= '<td>'.$row->set_invoice_date.'</td>';
+					}else{
+						$content .= '<td>'.$row->invoice_date_req.'</td>';
+					}
+
+					$content .= '<td>'.$row->date_site_finish.'</td><td>'.$progress_order.'</td><td>'.$row->progress_percent.'</td><td>'.$project_total_percent.'</td><td>'.$outstanding.'</td></tr>';
+				
 				$records_num++;
 
 //}
 
 
-			}
+		//	}
 
 
 		}

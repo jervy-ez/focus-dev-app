@@ -29,7 +29,7 @@
 					<li class="hide">
 						<a href="" class="btn-small"><i class="fa fa-magic"></i> Tour</a>
 					</li>
-          <li class="">
+          <li>
             <a href=""  class="report_btn" data-toggle="tab"><i class="fa fa-print"></i> Report</a>
           </li>     
           <li>
@@ -485,24 +485,6 @@
           </div>
         </div>
 
-        <div class="col-md-6 col-sm-6 col-xs-12 clearfix" style="margin-left: -5px;">
-          <div class="input-group m-bottom-10">
-            <span class="input-group-addon" id="">
-              Invoicing Date A
-            </span>         
-            <input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" class="form-control letter_segment datepicker invoice_date_a" id="invoice_date_a" name="invoice_date_a" value="">
-          </div>
-        </div>
-
-
-        <div class="col-md-6 col-sm-6 col-xs-12 clearfix ">
-          <div class="input-group m-bottom-10">
-            <span class="input-group-addon" id="">
-              Invoicing Date B
-            </span>         
-            <input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" class="form-control letter_segment datepicker invoice_date_b" id="invoice_date_b" name="invoice_date_b" value="">
-          </div>
-        </div>
 
 
 
@@ -529,13 +511,58 @@
             </span>
              
 
-            <select class="invoice_status chosen" id="invoice_status">
+            <select class="invoice_status chosen " id="invoice_status" >
               <option value="1">Un-Invoiced</option>
               <option value="2" selected="">Invoiced</option>
               <option value="3">Paid</option>
               <option value="4">Outstanding</option>
             </select>
 
+          </div>
+        </div>
+
+
+
+
+        <div class="col-md-6 col-sm-6 col-xs-12 clearfix invoice_date" style="margin-left: -5px; display:none;">
+          <div class="input-group m-bottom-10">
+            <span class="input-group-addon" id="">
+              Invoicing Date A
+            </span>         
+            <input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" class="form-control letter_segment datepicker invoice_date_a" id="invoice_date_a" name="invoice_date_a" value="">
+          </div>
+        </div>
+
+
+        <div class="col-md-6 col-sm-6 col-xs-12 clearfix invoice_date" style="display:none;">
+          <div class="input-group m-bottom-10">
+            <span class="input-group-addon" id="">
+              Invoicing Date B
+            </span>         
+            <input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" class="form-control letter_segment datepicker invoice_date_b" id="invoice_date_b" name="invoice_date_b" value="">
+          </div>
+        </div>
+
+
+
+
+
+        <div class="col-md-6 col-sm-6 col-xs-12 clearfix invoiced_date" style="margin-left: -5px;  display:block;">
+          <div class="input-group m-bottom-10">
+            <span class="input-group-addon" id="">
+              Invoiced Date A
+            </span>         
+            <input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" class="form-control datepicker invoiced_date_a" id="invoiced_date_a" name="invoiced_date_a" value="">
+          </div>
+        </div>
+
+
+        <div class="col-md-6 col-sm-6 col-xs-12 clearfix invoiced_date"  style="display:block;">
+          <div class="input-group m-bottom-10">
+            <span class="input-group-addon" id="">
+              Invoiced Date B
+            </span>         
+            <input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" class="form-control datepicker invoiced_date_b" id="invoiced_date_b" name="invoiced_date_b" value="">
           </div>
         </div>
 

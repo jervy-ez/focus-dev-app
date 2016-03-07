@@ -2434,17 +2434,52 @@ $('.edit_post').click(function(e){
 
   });
 
+
+
+  $('select#invoice_status').change(function(){
+    var invoice_status = $('select#invoice_status').val();
+
+    if(invoice_status=='2'){
+      $('.invoice_date').hide();
+      $('.invoiced_date').show();
+    }else{
+      $('.invoice_date').show();
+      $('.invoiced_date').hide();
+    }
+
+    $('input.invoice_date_a').val('');
+    $('input.invoice_date_b').val('');
+    $('input.invoiced_date_a').val('');
+    $('input.invoiced_date_b').val('');
+
+ 
+  });
+
+
+
   $('.invoice_filter_submit').click(function(){
 
     var project_number = $('.project_number').val();
     var progress_claim = $('select#progress_claim').val();
     var clinet = $('select#client_invoice').val();
+
     var invoice_date_a = $('.invoice_date_a').val();
     var invoice_date_b = $('.invoice_date_b').val();
+
+    var invoiced_date_a = $('.invoiced_date_a').val();
+    var invoiced_date_b = $('.invoiced_date_b').val();
+
     var invoice_status = $('select#invoice_status').val();
     var invoice_sort = $('select.invoice_sort').val();
     var project_manager = $('select.project_manager').val();
 
+
+
+/*
+
+    invoice_date
+invoiced_date
+*/
     var has_error = 0;
 
     progress_claim = progress_claim || '';
@@ -2468,7 +2503,7 @@ $('.edit_post').click(function(e){
      $('#loading_modal').modal('show');
    }
 
-   var data = project_number+'*'+progress_claim+'*'+clinet+'*'+invoice_date_a+'*'+invoice_date_b+'*'+invoice_status+'*'+invoice_sort+'*'+project_manager;
+   var data = project_number+'*'+progress_claim+'*'+clinet+'*'+invoice_date_a+'*'+invoice_date_b+'*'+invoice_status+'*'+invoice_sort+'*'+project_manager+'*'+invoiced_date_a+'*'+invoiced_date_b;
   //alert(data);
   $('.report_result').html('');
 
@@ -2855,7 +2890,7 @@ $('.payment_set_values').on("click", function(event) {
 
     $("#po_date_value").val(strDate);
     $("#invoice_payment_reference_no").val('');
-    $('#is_paid_check').prop('checked', true);
+    //$('#is_paid_check').prop('checked', true);
     $("#po_notes_value").val('');
 
     $('.po_error').empty();
@@ -3306,14 +3341,16 @@ $('.print-wip').on("click", function(event) {
     var prj_status = $('select#prj_status').val();
   }
 
-
-
+ 
 
 
 
 
   $('#loading_modal').modal('show');
-  //alert(data);
+  
+
+
+
   $('.report_result').html('');
 
 
@@ -3329,6 +3366,8 @@ $('.print-wip').on("click", function(event) {
 
       var data = wip_client+'*'+wip_pm+'*'+wip_find_start_finish_date+'*'+wip_find_finish_date+'*'+wip_cost_total+'*'+selected_cat+'*'+wip_project_total+'*'+wip_project_estimate+'*'+wip_project_quoted+'*'+wip_project_total_invoiced+'*'+wip_sort+'*'+wip_start_date_start_a+'*'+wip_start_date_b+'*'+doc_type+'*'+date_created_start+'*'+date_created+'*'+prj_status;
 
+ // alert(data);
+
       $.ajax({
         'url' : base_url+'reports/wip_report',
         'type' : 'POST',
@@ -3341,6 +3380,8 @@ $('.print-wip').on("click", function(event) {
           }
         }
       });  
+
+
     }, 1000);  
 }
 
