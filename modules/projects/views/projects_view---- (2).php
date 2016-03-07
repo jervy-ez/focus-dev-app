@@ -30,14 +30,7 @@
 		$curr_tab = 'attachments';
 	}
 
-	if($this->session->flashdata('curr_tab') == 'send_pdf'){
-		$curr_tab = 'send_pdf';
-	}
-	$variation = "";
-	if(isset($_GET['variation'])){
-		$variation = 'variation';//$this->session->flashdata('variation');
-	}
-	
+	$variation = $this->session->flashdata('variation');
 
 	if($this->invoice->if_has_invoice($project_id) == 0): 
 		$prog_payment_stat = 0;
@@ -201,14 +194,14 @@ estimate-->
 											<a href="#works" data-toggle="tab"><i class="fa fa-cubes fa-lg"></i> Works</a>
 										</li>
 										
-										<li class="<?php // echo ($curr_tab == 'variations' ? 'active' : '' ); ?>">
+										<li class="<?php echo ($curr_tab == 'variations' ? 'active' : '' ); ?>">
 											<a href="#variations" onclick = "load_variation()" data-toggle="tab"><i class="fa fa-cube fa-lg"></i> Variations</a>
 										</li>
-										<!-- 
-										<!-- <li class="<?php //echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>">
-											<a href="#attachments" onclick = "dropbox_connect(<?php //echo $project_id ?>)" data-toggle="tab"><i class="fa fa-paperclip fa-lg"></i> Attachments</a>
-										</li> -->
-
+										<?php if($this->session->userdata('is_admin') == 1 ): ?>
+										<li class="<?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>">
+											<a href="#attachments" onclick = "dropbox_connect(<?php echo $project_id ?>)" data-toggle="tab"><i class="fa fa-paperclip fa-lg"></i> Attachments</a>
+										</li>
+										<?php endif; ?>
 										<li class="<?php echo ($curr_tab == 'send_pdf' ? 'active' : '' ); ?>">
 											<a href="#send_pdf" data-toggle="tab" onclick = "view_send_contractor()"><i class="fa fa-file-pdf-o fa-lg"></i> Send PDF</a>
 										</li>	
@@ -226,12 +219,6 @@ estimate-->
 												<li><a href="<?php echo base_url(); ?>works/proj_details/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Project Details</a></li>
 												<li><a href="" id = "work_cont_quote_req"><i class="fa fa-file-pdf-o"></i> Contractor Quote Request</a></li>
 												<li><a href="" id = "work_cont_po"><i class="fa fa-file-pdf-o"></i> Contractor Purchase Order</a></li>
-												<?php if($job_category == "Maintenance"){
-												?>
-												<li><a href="#" id = "maintenance_site_sheet"><i class="fa fa-file-pdf-o"></i> Maintenance Site Sheet</a></li>
-												<?php
-													} 
-												?>
 												<?php if($this->session->userdata('is_admin') == 1 ): ?>
 												<li><a href="amplemod/print_pdf"><i class="fa fa-file-pdf-o"></i> Quotation and Contract</a></li>
 												<?php endif; ?>
@@ -321,7 +308,7 @@ estimate-->
 																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php else: ?>
 																				<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled job-date-set text-right" ><?php echo $job_date; ?></p>
-																				
+																				<input type="hidden" id="job_date" name="job_date" value="<?php echo $job_date; ?>" class="hide hidden">
 																			<?php endif; ?>
 																		<?php  endif; ?>
 																		</div>
@@ -339,15 +326,15 @@ estimate-->
 																				<input type="hidden" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup hide hidden" tabindex="12" placeholder="Markup %" value="<?php echo $markup; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>	
 																			<?php else: ?>
 
-																				<?php //if($this->invoice->if_project_invoiced_full($project_id)): ?>
-																					<!-- <p class="form-control text-right"><?php //echo $markup; ?></p>
-																					<input type="hidden" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup hide hidden" tabindex="12" placeholder="Markup %" value="<?php //echo $markup; ?>" <?php //echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>	
- -->
-																				<?php //else: ?>
+																				<?php if($this->invoice->if_project_invoiced_full($project_id)): ?>
+																					<p class="form-control text-right"><?php echo $markup; ?></p>
+																					<input type="hidden" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup hide hidden" tabindex="12" placeholder="Markup %" value="<?php echo $markup; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>	
+
+																				<?php else: ?>
 																					<input type="text" name="project_markup" id="project_markup" class="quick_input form-control text-right project_markup" tabindex="12" placeholder="Markup %" value="<?php echo $markup; ?>" >
 																					
 
-																				<?php //endif; ?>
+																				<?php endif; ?>
 																				
 																			<?php endif; ?>
 																			
@@ -369,12 +356,12 @@ estimate-->
 																				<input type="hidden" placeholder="Site Hours" class="quick_input form-control text-right hide hidden" id="install_time_hrs"  name="install_time_hrs" value="<?php echo $install_time_hrs; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>
 																			<?php else: ?>
 
-																				<?php //if($this->invoice->if_project_invoiced_full($project_id)): ?>
-																					<!-- <p class="form-control text-right"><?php //echo $install_time_hrs; ?></p>
-																					<input type="hidden" placeholder="Site Hours" class="quick_input form-control text-right hide hidden" id="install_time_hrs"  name="install_time_hrs" value="<?php //echo $install_time_hrs; ?>" <?php //echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>> -->
-																				<?php //else: ?>
+																				<?php if($this->invoice->if_project_invoiced_full($project_id)): ?>
+																					<p class="form-control text-right"><?php echo $install_time_hrs; ?></p>
+																					<input type="hidden" placeholder="Site Hours" class="quick_input form-control text-right hide hidden" id="install_time_hrs"  name="install_time_hrs" value="<?php echo $install_time_hrs; ?>" <?php echo ($job_date != '' ? 'style="z-index: -1;"' : ''); ?>>
+																				<?php else: ?>
 																					<input type="text" placeholder="Site Hours" class="quick_input form-control text-right" id="install_time_hrs"  name="install_time_hrs" value="<?php echo $install_time_hrs; ?>" >
-																				<?php //endif; ?>
+																				<?php endif; ?>
 
 																			<?php endif; ?>
 																			
@@ -556,7 +543,7 @@ estimate-->
 																			<div class="pad-15 no-pad-t">
 																				<hr />
 																				<h4><i class="fa fa-book"></i> Project Notes</h4>
-																				<?php echo nl2br($project_comments); ?>
+																				<?php echo $project_comments; ?>
 																			</div>
 																		</div>
 
@@ -596,13 +583,14 @@ estimate-->
 												?>
 											</div>
 										</div>
+										<?php if($this->session->userdata('is_admin') == 1 ): ?>
 										
 										<div class="tab-pane fade in  clearfix <?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>" id="attachments">
 											<div class="m-bottom-15 clearfix m-top-10">
-												<?php // echo $this->attachments->attachments_view(); ?>
+												<?php echo $this->attachments->attachments_view(); ?>
 											</div>
 										</div>
-
+										<?php endif; ?>
 										<div class="tab-pane fade in  clearfix <?php echo ($curr_tab == 'send_pdf' ? 'active' : '' ); ?>" id="send_pdf">
 											<div class="m-bottom-15 clearfix m-top-10">
 												<?php echo $this->send_emails->send_pdf(); ?>
@@ -621,23 +609,7 @@ estimate-->
 </div>
 
 <!-- MODAL -->
-<div class="modal fade" id="attachement_loading_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-sm">
-    <div class="modal-content">
-       
-      <div class="modal-body clearfix pad-10">
-
-        <center><h3>Loading Please Wait</h3></center>
-        <center><h2><i class="fa fa-circle-o-notch fa-spin fa-5x"></i></h2></center>
-        <p>&nbsp;</p>
-  
-  
-
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="contract_notes_reports_tab" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="contract_notes" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
 	    <div class="modal-content">
 	        <div class="modal-header">
@@ -650,7 +622,7 @@ estimate-->
 					<div class="col-sm-8">														
 						<div class="input-group <?php if(form_error('company_prg')){ echo 'has-error has-feedback';} ?>">
 							<span class="input-group-addon"><i class="fa fa-calendar  fa-lg"></i></span>
-							<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" class="form-control datepicker" id="reports_contract_date" name="contract_date">
+							<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" class="form-control datepicker" id="contract_date" name="contract_date">
 						</div>
 					</div>
 				</div>
@@ -658,19 +630,19 @@ estimate-->
 	          	<div class="col-sm-12 m-bottom-10 clearfix">
 					<label for="company_prg" class="col-sm-4 control-label">Plans, Elevations and Drawings:</label>
 					<div class="col-sm-8">														
-						<textarea class = "form-control input-sm" id = "reports_plans_elv_draw" maxlength="43"></textarea>
+						<textarea class = "form-control input-sm" id = "plans_elv_draw" maxlength="43"></textarea>
 					</div>
 				</div>
 				<div class="col-sm-12 m-bottom-10 clearfix">
 					<label for="company_prg" class="col-sm-4 control-label">Schedule of Works Include in Quotation:</label>
 					<div class="col-sm-8">														
-						<textarea class = "form-control input-sm" id = "reports_sched_work_quotation" maxlength="43"></textarea>
+						<textarea class = "form-control input-sm" id = "sched_work_quotation" maxlength="43"></textarea>
 					</div>
 				</div>
 				<div class="col-sm-12 m-bottom-10 clearfix">
 					<label for="company_prg" class="col-sm-4 control-label">Condition of Quotation and Contract</label>
 					<div class="col-sm-8">
-						<textarea class = "form-control input-sm" id = "reports_condition_quote_contract" maxlength="43"></textarea>
+						<textarea class = "form-control input-sm" id = "condition_quote_contract" maxlength="43"></textarea>
 					</div>
 				</div>
 	        </div>
@@ -684,11 +656,10 @@ estimate-->
 
 
 <div id="job_book_area" style="display:none">
-	<img src="<?php echo base_url(); ?>img/focus-logo-print.png" width="206" height="66" />
 	<strong class="pull-right" style="margin-top: 48px;font-size: 16px;"><?php echo $focus_company_name; ?></strong>
-	<div class="header clearfix border-1">
-		<p class="pull-left">Client: <strong><?php echo $client_company_name; ?></strong> - <strong><?php echo $job_category; ?></strong><br />Project: <strong><?php echo $project_name; ?> <?php echo $client_po; ?></strong></p>
-		<p class="pull-right"><strong>Job Book</strong><br />Project No. <strong><?php echo $project_id; ?></strong></p>
+	<div class="header clearfix">
+	<p class="pull-left">Client: <strong><?php echo $client_company_name; ?></strong> - <strong><?php echo $job_category; ?></strong><br />Project: <strong><?php echo $project_name; ?> <?php echo $client_po; ?></strong></p>
+	<p class="pull-right"><strong>Job Book</strong><br />Project No. <strong><?php echo $project_id; ?></strong></p>
 	</div>
 	<hr />
 	<div class="full clearfix mgn-10">
@@ -698,7 +669,7 @@ estimate-->
 		<div class="one-fourth"><p><?php if($contact_person_phone_direct != ''): echo 'Direct No: <strong>'.$contact_person_phone_direct.'</strong>'; endif; ?></p></div>
 	</div>
 
-	<fieldset class="pad-10 border-1">
+	<fieldset class="pad-10 border-2">
 		<legend class="pad-l-10 pad-r-10"><strong>Client / Company Address</strong></legend>
 		<div class="full clearfix">
 			<div class="one-third">
@@ -721,7 +692,7 @@ estimate-->
 		</div>
 	</fieldset>
 
-	<fieldset class="pad-10 border-1 mgn-top-10">
+	<fieldset class="pad-10 border-2 mgn-top-10">
 		<legend class="pad-l-10 pad-r-10"><strong>Address</strong></legend>
 		<div class="full clearfix">
 			<div class="one-half">
@@ -740,7 +711,7 @@ estimate-->
 		</div>
 	</fieldset>
 
-	<fieldset class="pad-10 border-1 mgn-top-10">
+	<fieldset class="pad-10 border-2 mgn-top-10">
 		<legend class="pad-l-10 pad-r-10"><strong>Project Totals</strong></legend>
 		<div class="full clearfix">
 			<div class="one-half">
@@ -763,7 +734,7 @@ estimate-->
 	<div class="full clearfix">
 		<div class="one-half">
 			<div class="pad-r-10">
-				<fieldset class="pad-10 border-1 mgn-top-10">
+				<fieldset class="pad-10 border-2 mgn-top-10">
 					<legend class="pad-l-10 pad-r-10"><strong>Details</strong></legend>
 					<div class="full clearfix">
 						<p class="">Representative : <strong class="pull-right"><?php echo "$pm_user_first_name $pm_user_last_name"; ?></strong></p>
@@ -781,7 +752,7 @@ estimate-->
 
 		<div class="one-half">
 			<div class="pad-l-10">
-				<fieldset class="pad-10 border-1 mgn-top-10">
+				<fieldset class="pad-10 border-2 mgn-top-10">
 					<legend class="pad-l-10 pad-r-10"><strong>Invoices</strong></legend>
 					<div class="full clearfix invoices_list_item">
 						<?php $this->projects->list_invoiced_items($project_id,$final_total_quoted,$variation_total); ?>
@@ -804,3 +775,5 @@ estimate-->
 
 
 <?php $this->load->view('assets/logout-modal'); ?>
+
+

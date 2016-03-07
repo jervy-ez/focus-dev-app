@@ -42,7 +42,7 @@
 </div>
 <!-- title bar -->
 
-<div class="container-fluid adv"  style="background: #FFF;">
+<div class="container-fluid adv"  style="background: #ECF0F5;">
 	<!-- Example row of columns -->
 	<div class="row">				
 		<?php $this->load->view('assets/sidebar'); ?>

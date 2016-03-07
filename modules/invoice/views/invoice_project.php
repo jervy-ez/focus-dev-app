@@ -488,19 +488,6 @@
 
 
 
-<!-- Modal -->
-<div class="modal fade" id="loading_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-sm">
-    <div class="modal-content">
-      <div class="modal-body clearfix pad-10">
-      	<center><h3>Loading Please Wait</h3></center>
-      	<center><h2><i class="fa fa-circle-o-notch fa-spin fa-5x"></i></h2></center>
-      	<p>&nbsp;</p>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 <!-- MODAL -->
 <div class="modal fade" id="pdf_editor" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -1059,9 +1059,9 @@ $gp = 0;
 	public function job_cat_list_no_other(){
 		$jobs_cat_type = $this->projects_m->display_all_job_category_type('');		
 		foreach ($jobs_cat_type->result() as $row){
-			//if($row->job_category !== 'Other'){
+			if($row->job_category !== 'Other'){
 				echo '<option value="2_'.$row->job_category_id.'">'.$row->job_category.'</option>';
-			//}
+			}
 		}		
 	}
 
@@ -1096,7 +1096,7 @@ $gp = 0;
 					$fetch_user= $this->user_model->fetch_user($row['user_id']);
 					$user = array_shift($fetch_user->result_array());
 
-					echo '<div class="notes_line"><p class="">'.ucfirst (nl2br($row['project_comments'])).'</p><small><i class="fa fa-user"></i> '.$user['user_first_name'].' '.$user['user_last_name'].'<br /><i class="fa fa-calendar"></i> '.$row['date_posted'].'</small></div>';
+					echo '<div class="notes_line"><p class="">'.ucfirst (nl2br($row['project_comments'])).'</p><small><i class="fa fa-user"></i> '.$user['user_first_name'].'<br /><i class="fa fa-calendar"></i> '.$row['date_posted'].'</small></div>';
 				} 
 			}else{
 				echo '<div class="notes_line no_posted_comment"><p>No posted comments yet!</p></div>';

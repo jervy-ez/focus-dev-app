@@ -314,21 +314,17 @@ class Dashboard extends MY_Controller{
 			$n_year = date("Y")+1;
 		}
 
-
 		$date_a_tmsp = mktime(0, 0, 0, $c_month,'01', $c_year);
 		$date_b_tmsp = mktime(0, 0, 0, $n_month,'01', $n_year);
 		$rev_month = 'rev_'.strtolower(date('M'));
 
 /*
-		$c_month = '03';
-		$date_a_tmsp = mktime(0, 0, 0, '03','01', '2016'); # manual update of sales set date
-		$date_b_tmsp = mktime(0, 0, 0, '04','01', '2016'); # manual update of sales set date
-		$rev_month = 'rev_mar'; # manual update of sales set date
+		$c_month = '01';
+		$date_a_tmsp = mktime(0, 0, 0, '01','01', '2016'); # manual update of sales set date
+		$date_b_tmsp = mktime(0, 0, 0, '02','01', '2016'); # manual update of sales set date
+		$rev_month = 'rev_jan'; # manual update of sales set date
 		$currentYear = '2016'; # manual update of sales set date
 */
-
-
-
 
 	//	echo $date_a_tmsp.'-------'.$date_b_tmsp.'<br />';
 

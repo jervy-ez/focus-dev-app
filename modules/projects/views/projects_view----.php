@@ -33,11 +33,8 @@
 	if($this->session->flashdata('curr_tab') == 'send_pdf'){
 		$curr_tab = 'send_pdf';
 	}
-	$variation = "";
-	if(isset($_GET['variation'])){
-		$variation = 'variation';//$this->session->flashdata('variation');
-	}
-	
+
+	$variation = $this->session->flashdata('variation');
 
 	if($this->invoice->if_has_invoice($project_id) == 0): 
 		$prog_payment_stat = 0;
@@ -201,13 +198,13 @@ estimate-->
 											<a href="#works" data-toggle="tab"><i class="fa fa-cubes fa-lg"></i> Works</a>
 										</li>
 										
-										<li class="<?php // echo ($curr_tab == 'variations' ? 'active' : '' ); ?>">
+										<li class="<?php echo ($curr_tab == 'variations' ? 'active' : '' ); ?>">
 											<a href="#variations" onclick = "load_variation()" data-toggle="tab"><i class="fa fa-cube fa-lg"></i> Variations</a>
 										</li>
-										<!-- 
-										<!-- <li class="<?php //echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>">
-											<a href="#attachments" onclick = "dropbox_connect(<?php //echo $project_id ?>)" data-toggle="tab"><i class="fa fa-paperclip fa-lg"></i> Attachments</a>
-										</li> -->
+										
+										<li class="<?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>">
+											<a href="#attachments" onclick = "dropbox_connect(<?php echo $project_id ?>)" data-toggle="tab"><i class="fa fa-paperclip fa-lg"></i> Attachments</a>
+										</li>
 
 										<li class="<?php echo ($curr_tab == 'send_pdf' ? 'active' : '' ); ?>">
 											<a href="#send_pdf" data-toggle="tab" onclick = "view_send_contractor()"><i class="fa fa-file-pdf-o fa-lg"></i> Send PDF</a>
@@ -556,7 +553,7 @@ estimate-->
 																			<div class="pad-15 no-pad-t">
 																				<hr />
 																				<h4><i class="fa fa-book"></i> Project Notes</h4>
-																				<?php echo nl2br($project_comments); ?>
+																				<?php echo $project_comments; ?>
 																			</div>
 																		</div>
 
@@ -599,7 +596,7 @@ estimate-->
 										
 										<div class="tab-pane fade in  clearfix <?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>" id="attachments">
 											<div class="m-bottom-15 clearfix m-top-10">
-												<?php // echo $this->attachments->attachments_view(); ?>
+												<?php echo $this->attachments->attachments_view(); ?>
 											</div>
 										</div>
 
