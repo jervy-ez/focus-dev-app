@@ -40,8 +40,7 @@
 </div>
 <!-- title bar -->
 
-<!-- <div class="container-fluid"  style="background: #ECF0F5;"> -->
-<div class="container-fluid adv"  style="background: #FFF;">
+<div class="container-fluid"  style="background: #ECF0F5;">
 	<!-- Example row of columns -->
 	<div class="row">				
 		<?php $this->load->view('assets/sidebar'); ?>
@@ -95,8 +94,8 @@
 									<div class="box-area clearfix data_forecast collapse <?php if(isset($form_toggle)){ echo 'in'; }else{ echo 'out'; } ?>">
 										<div class="widg-content clearfix">
 											<div class="tab_container">
-												<div id="tab_addnew_area" class="tab_area active clearfix row pad-right-10  pad-left-10 no-pad-t"  <?php if($tab_view != 'form'){ echo 'style="display:none;"';  } ?> >
-													<form method="post" id="forecast_form" class="m-top-0 m-bottom-5 clearfix" action="">
+												<div id="tab_addnew_area" class="tab_area active clearfix row pad-0-imp no-m-imp"  <?php if($tab_view != 'form'){ echo 'style="display:none;"';  } ?> >
+													<form method="post" id="forecast_form" class="m-top-5 m-bottom-5 clearfix" action="">
 
 													<div class="col-md-8 col-sm-12 col-xs-12" id="">
 														<strong class="m-bottom-10 block data_label">Add New Data</strong> <small class="block m-bottom-10"><em>Note: The sales from calendar year <strong>"<u><?php echo $old_year; ?></u>"</strong> is being used.</em></small>
@@ -734,6 +733,84 @@
 
 						<!-- ************************ -->
 
+<!--
+
+
+						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-d small-widget">
+								<div class="box-area clearfix row">
+									<div class="widg-icon-inside col-xs-3"><i class="fa fa-angle-double-down fa-3x text-center"></i></div>
+									<div class="widg-content col-xs-9 clearfix">
+										<div class="pad-right-15 m-right-5">
+											<p>This Month's Sales</p>
+											<p class="value">$<strong>150,000.00</strong></p>
+											<div class="progress m-bottom-3 m-top-3 slim tooltip-enabled" title="15.95% Sales Drop">
+												<div class="progress-bar progress-bar-danger" style="width: 15.95%"></div>
+											</div>
+											<p>Forecast Nov 2014: $<strong>250,200.00</strong></p>	
+										</div>	
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-b small-widget">
+								<div class="box-area clearfix row">
+									<div class="widg-icon-inside col-xs-3"><i class="fa fa-angle-double-up text-center fa-3x"></i></div>
+									<div class="widg-content col-xs-9 clearfix">
+										<div class="pad-right-15 m-right-5">
+											<p>Last Month's Sales</p>
+											<p class="value">$<strong>150,000.00</strong></p>
+											<div class="progress m-bottom-3 m-top-3 slim tooltip-enabled" title="25% Sales Increase">
+												<div class="progress-bar progress-bar-success" style="width: 25%"></div>
+											</div>
+											<p>Forecast Oct 2014: $<strong>250,200.00</strong></p>	
+										</div>									
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-f small-widget">
+								<div class="box-area clearfix row">
+									<div class="widg-icon-inside col-xs-3"><i class="fa fa-map-marker text-center fa-3x"></i></div>
+									<div class="widg-content col-xs-9 clearfix">
+										<div class="pad-right-15 m-right-5">
+											<p>Fully Invoiced Projects<span class="badges pull-right m-right-10"></span> </p>
+											<p class="value">45</p>
+											<div class="progress m-bottom-3 m-top-3 slim tooltip-enabled" title="45% Fully Invoiced Projects">
+												<div class="progress-bar" style="width: 45%"></div>
+											</div>
+											<p>All Projects: 100</p>	
+										</div>									
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-0 small-widget">
+								<div class="box-area clearfix row">
+									<div class="widg-icon-inside col-xs-3"><i class="fa fa-tasks text-center fa-3x"></i></div>
+									<div class="widg-content col-xs-9 clearfix">
+										<div class="pad-right-15 m-right-5">
+											<p>Un-Invoiced Projects<span class="badges pull-right m-right-10"></span> </p>
+											<p class="value">15</p>
+											<div class="progress m-bottom-3 m-top-3 slim tooltip-enabled" title="15% Un-Invoiced Projects">
+												<div class="progress-bar progress-bar-warning" style="width: 15%"></div>
+											</div>
+											<p>All Projects: 100</p>										
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+
+				-->
 						<div class="clearfix"></div>
 						<!-- ************************ -->
 
@@ -760,8 +837,8 @@
 
 									<div class="pull-right" style="margin: -5px -10px -8px;">
 										<select class="form-control sf_chart_dateSelection" id="calendar_view" style="height: 31px;    border-radius: 0;    border: none;    font-weight: bold;">
-											<option value="1" >Financial Year</option>
-											<option value="2" selected="selected"  >Calendar Year</option>
+											<option value="1" selected="selected" >Financial Year</option>
+											<option value="2" >Calendar Year</option>
 											<script type="text/javascript">$('select#calendar_view').val(<?php echo $calendar_view; ?>);</script>											
 										</select>
 									</div>
@@ -775,22 +852,10 @@
 										<hr class="block m-bottom-10 m-top-5">
 
 										<div class="m-left-10 m-bottom-10">
-
-										<button class="btn btn-info btn-sm" id="reset_chart" onclick="bttnB(this)" ><i class="fa fa-exchange"></i> Reset Chart</button>
-
-
-										<button class="btn btn-primary btn-sm" id="visible_overall" onclick="bttnA(this)" ><i class="fa fa-exchange"></i> Outstanding</button>
-
-
-										<button class="btn btn-warning btn-sm" id="visible_forecast" onclick="bttnC(this)" ><i class="fa fa-exchange"></i> Focus WA</button>
-										<button class="btn btn-success btn-sm" id="visible_forecast" onclick="bttnD(this)" ><i class="fa fa-exchange"></i> Focus NSW</button>
-
-
-
-
-										<button class="hide btn btn-primary btn-sm m-left-5" onclick="funca()" ><i class="fa fa-exchange"></i> Project Manager Shares</button>
-										<button class="hide btn btn-sm m-left-5" onclick="funcb()" ><i class="fa fa-exchange"></i> Focus Sales</button>
-										<button class="hide btn btn-info btn-sm pull-right m-right-10" onclick='print_job_book();'><i class="fa fa-print"></i> Print</button>
+										<button class="btn btn-warning btn-sm" id="visible_forecast" onclick="funcc(this)" ><i class="fa fa-exchange"></i> Outstanding</button>	
+										<button class="btn btn-primary btn-sm m-left-5" onclick="funca()" ><i class="fa fa-exchange"></i> Project Manager Shares</button>
+										<button class="btn btn-sm m-left-5" onclick="funcb()" ><i class="fa fa-exchange"></i> Focus Sales</button>
+										<button class="btn btn-info btn-sm pull-right m-right-10" onclick='print_job_book();'><i class="fa fa-print"></i> Print</button>
 											
 
 										</div>
@@ -803,13 +868,58 @@
 						<div class="clearfix"></div>
 
 
+						<!-- ************************ -->
 
 
 
 
+
+
+
+						<!-- ************************ -->						
+						
+						<div class="col-md-12 col-sm-12 col-xs-12 box-widget pad-10 hide">
+							<div class="widget wid-type-0 widg-head-styled">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head box-widg-head pad-5 clearfix">
+									<strong>Donut</strong>
+								</div>
+
+								<div class="box-area clearfix row pad-right-10 pad-left-10">									
+									<div class="widg-content col-md-6 col-sm-12 col-xs-12 clearfix">
+										<div class="loading_chart" style="height: 320px;    text-align: center;    padding: 100px 53px;    color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>								
+
+										<div class="clearfix row pad-0-imp no-m-imp">
+											<div class="col-md-12 col-sm-6 col-xs-12" id="donut_a"></div> 
+										</div>  
+							
+										<hr class="block m-bottom-10 m-top-5">
+										<p class="text-center"><strong>WA</strong>: $86,584,365.00</p>
+									</div>
+									<div class="widg-content col-md-6 col-sm-12 col-xs-12 clearfix">
+										<div class="loading_chart" style="height: 320px;    text-align: center;    padding: 100px 53px;    color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>								
+
+										<div class="clearfix row pad-0-imp no-m-imp">
+											<div class="col-md-12 col-sm-6 col-xs-12" id="donut_b"></div>   
+										</div>  
+							
+										<hr class="block m-bottom-10 m-top-5">
+										<p class="text-center"><strong>NSW</strong>: $10,256,544.00</p>										
+									</div>
+								</div>
+
+
+
+							</div>
+						</div>
+
+						
+						<div class="clearfix"></div>
 
 
 						<!-- ************************ -->
+
+
 
 
 
@@ -823,7 +933,7 @@
 						<div class="col-md-6 col-sm-12 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-a widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Current Month's Sales Per Project Manager</strong></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Focus WA Invoices and Sales</strong></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<div class="loading_chart" style="height: 400px;    text-align: center;    padding: 100px 53px;    color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
@@ -839,15 +949,12 @@
 
 
 						<!-- ************************ -->
-						<!-- ************************ -->						
-						
-		 
 
 
 						<div class="col-md-6 col-sm-12 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-b widg-head-styled">
+							<div class="widget wid-type-d widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>This Month's Focus Sales</strong></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Focus NSW Invoices and Sales</strong></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<div class="loading_chart" style="height: 400px;    text-align: center;    padding: 100px 53px;    color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
@@ -868,36 +975,265 @@
 
 
 
-						<!-- ************************ -->
-
-
-
-
-
-						<!-- ************************ -->
-
-
-		
-
-						<!-- ************************ -->
- 
-
- 
-
-
-
-
-
-
-
 
 
 
 						<!-- ************************ -->
 
- 
 
-					
+						<div class="col-md-7 col-sm-12 col-xs-12 box-widget pad-10 hide">
+							<div class="widget wid-type-c widg-head-styled">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Invoices and Sales</strong></div>
+								<div class="box-area clearfix">
+									<div class="widg-content clearfix">
+										<div class="loading_chart" style="height: 400px;    text-align: center;    padding: 100px 53px;    color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
+										<div id="chart_b"></div>	
+										<hr class="block m-bottom-10 m-top-5">
+										<button class="btn btn-warning btn-sm" id="visible_forecast_b" onclick="funcd(this)" ><i class="fa fa-exchange"></i> Show Individual</button>	
+
+										<button class="btn btn-info btn-sm pull-right" onclick='print_job_book();'><i class="fa fa-print"></i> Print</button>										
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="col-md-5 col-sm-12 col-xs-12 box-widget pad-10 hide">
+							<div class="widget wid-type-b widg-head-styled">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Sales Standing</strong> <span class="badges pull-right m-right-10"> <span class="tabs active" id="tab_wa">Focus WA</span>  <span class="tabs" id="tab_nsw">Focus NSW</span> </span></div>
+								<div class="box-area clearfix">
+									<div class="row pad-10">
+
+										<div class="tab_container">
+											<div id="tab_wa_area" class="tab_area active">
+												
+												<div class="wid-type-b col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-up"></i> 15%</strong></p>
+														<p class=""><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">Test
+															<div class="progress-bar progress-bar-success" style="width: 15%"></div> 
+														</div>
+														<p>January</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-b col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-up"></i> 5%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-success" style="width: 5%"></div>
+														</div>
+														<p>February</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-d col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-down"></i> 10%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-danger" style="width: 10%"></div>
+														</div>
+														<p>March</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-d col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-down"></i> 5%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-danger" style="width: 5%"></div>
+														</div>
+														<p>April</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-d col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-down"></i> 12%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-danger" style="width: 12%"></div>
+														</div>
+														<p>May</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-d col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-down"></i> 7%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-danger" style="width: 7%"></div>
+														</div>
+														<p>June</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-b col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-up"></i> 17%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-success" style="width: 17%"></div>
+														</div>
+														<p>July</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-b col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-up"></i> 10%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-success" style="width: 10%"></div>
+														</div>
+														<p>August</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-d col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-down"></i> 10%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-danger" style="width: 10%"></div>
+														</div>
+														<p>September</p>
+													</div>
+												</div>
+
+
+
+												<div class="wid-type-d col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-down"></i> 10%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-danger" style="width: 10%"></div>
+														</div>
+														<p>October</p>
+													</div>
+												</div>
+
+
+
+												<div class="wid-type-b col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-up"></i> 10%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-success" style="width: 10%"></div>
+														</div>
+														<p>November</p>
+													</div>
+												</div>
+
+
+
+												<div class="wid-type-b col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-up"></i> 10%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-success" style="width: 10%"></div>
+														</div>
+														<p>December</p>
+													</div>
+												</div>
+
+											</div>
+
+											<div id="tab_nsw_area" class="tab_area" style="display:none;">
+												
+
+												<div class="wid-type-b col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-up"></i> 15%</strong></p>
+														<p class=""><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">Test
+															<div class="progress-bar progress-bar-success" style="width: 15%"></div> 
+														</div>
+														<p>January</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-b col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-up"></i> 5%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-success" style="width: 5%"></div>
+														</div>
+														<p>February</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-d col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-down"></i> 10%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-danger" style="width: 10%"></div>
+														</div>
+														<p>March</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-d col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-down"></i> 5%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-danger" style="width: 5%"></div>
+														</div>
+														<p>April</p>
+													</div>
+												</div>
+
+
+												<div class="wid-type-d col-md-4 col-sm-4 col-xs-4 text-center">
+													<div class="widg-content pad-left-5  pad-right-5 clearfix pad-15">
+														<p class="inc_val"><strong><i class="fa fa-caret-down"></i> 12%</strong></p>
+														<p><strong>$35,210.43</strong></p>
+														<div class="progress m-bottom-5 m-top-5">
+															<div class="progress-bar progress-bar-danger" style="width: 12%"></div>
+														</div>
+														<p>May</p>
+													</div>
+												</div>
+
+
+											</div>
+											
+
+										</div>
+
+										
+
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+
 						<div class="clearfix"></div>
 
 						<!-- ************************ -->
@@ -914,13 +1250,16 @@
 
 <?php $this->load->view('assets/logout-modal'); ?>
 <?php $this->bulletin_board->list_latest_post(); ?>
-<!-- 
+
 <script type='text/javascript' src='http://d3js.org/d3.v3.min.js'></script>
 <script type='text/javascript' src="http://rawgit.com/masayuki0812/c3/master/c3.js"></script>
 <link rel="stylesheet" type="text/css" href="http://rawgit.com/masayuki0812/c3/master/c3.css">
- -->
-<script type='text/javascript'>
-	var chart = c3.generate({
+
+
+
+ <script>
+
+     var chart = c3.generate({
       size: {
         height: 500
       },data: {
@@ -930,8 +1269,9 @@
 
           <?php 
 
-          for($i=0; $i < 12 ; $i++){
-          	$alternator = $calendar_view; $counter = $i;
+          for($i=0; $i < 12 ; $i++){	
+          	$alternator = $calendar_view;
+          	$counter = $i;
 
           	if($alternator == 1){
           		$counter = $counter + 6;
@@ -953,53 +1293,9 @@
 
 
 
-<?php
-
-echo "['".$swout['company_name']."',";
-
-for($i=0; $i < 12 ; $i++){	
-	$alternator = $calendar_view;
-	$counter = $i;
-
-	if($alternator == 1){
-		$counter = $counter + 6;
-	}
-
-	if($alternator == 1 && $counter > 11){
-		$counter = $counter - 12;
-	}
-
-	$month_index = 'sales_data_'.strtolower($months[$counter]);
-	echo $swout[$month_index].',';
-}
-
-?>],
+['Focus WA',
 
 <?php
-
-echo "['".$fcsOT['company_name']."',";
-
-for($i=0; $i < 12 ; $i++){	
-	$alternator = $calendar_view;
-	$counter = $i;
-
-	if($alternator == 1){
-		$counter = $counter + 6;
-	}
-
-	if($alternator == 1 && $counter > 11){
-		$counter = $counter - 12;
-	}
-
-	$month_index = 'out_'.strtolower($months[$counter]);
-	echo $fcsOT[$month_index].',';
-}
-
-?>],
-
-<?php
-
-echo "['".$fcsO['company_name']."',";
 
 for($i=0; $i < 12 ; $i++){	
 	$alternator = $calendar_view;
@@ -1014,14 +1310,17 @@ for($i=0; $i < 12 ; $i++){
 	}
 
 	$month_index = 'rev_'.strtolower($months[$counter]);
-	echo $fcsO[$month_index].',';
+	echo $fwa[$month_index].',';
 }
 
-?>],
+?>
+
+ ],
+
+
+['Focus NSW',
 
 <?php
-
-echo "['".$fcsC['company_name']."',";
 
 for($i=0; $i < 12 ; $i++){	
 	$alternator = $calendar_view;
@@ -1036,282 +1335,101 @@ for($i=0; $i < 12 ; $i++){
 	}
 
 	$month_index = 'rev_'.strtolower($months[$counter]);
-	echo $fcsC[$month_index].',';
+	echo $fnsw[$month_index].',';
 }
 
-?>],
+?>
 
+ ],
+
+
+['Focus WA - Outstanding',
 
 <?php
 
+for($i=0; $i < 12 ; $i++){	
+	$alternator = $calendar_view;
+	$counter = $i;
 
+	if($alternator == 1){
+		$counter = $counter + 6;
+	}
 
+	if($alternator == 1 && $counter > 11){
+		$counter = $counter - 12;
+	}
 
-		foreach ($inv_fcs_overall_sales as $key => $value) {
-				echo "['$key Overall',";		
+	$month_index = 'rev_'.strtolower($months[$counter]);
+	echo $fwaO[$month_index].',';
+}
 
+?>
 
+ ],
 
-				for($i=0; $i < 12 ; $i++){
-					$counter = $i;
-					$alternator = $calendar_view;	
+['Focus NSW - Outstanding',
 
-					if($alternator == 1){
-						$counter = $counter + 6;
-					}
+<?php
 
-					if($alternator == 1 && $counter > 11){
-						$counter = $counter - 12;
-					}
+for($i=0; $i < 12 ; $i++){	
+	$alternator = $calendar_view;
+	$counter = $i;
 
-					$month_index_a = 'out_'.strtolower($months[$counter]);
-					$month_index_b = 'rev_'.strtolower($months[$counter]);
+	if($alternator == 1){
+		$counter = $counter + 6;
+	}
 
-					$month_overall = $inv_fcs_overall_sales[$key][$month_index_a] + $inv_fcs_overall_sales[$key][$month_index_b];
+	if($alternator == 1 && $counter > 11){
+		$counter = $counter - 12;
+	}
 
-					echo  $month_overall.',';
+	$month_index = 'rev_'.strtolower($months[$counter]);
+	echo $fnswO[$month_index].',';
+}
 
+?>
 
-				}
+ ],
 
-				echo "],";
-				
-		}
 
+        <?php if(isset($saved_forecast_pmData)): ?>
+        	<?php
 
- ?>
+        		foreach($saved_forecast_pmData->result_array() as $forecast):
 
+        		if($forecast['pm_name'] == 'Maintenance Manager'){
+        			echo "['".$forecast['pm_name'].' '.$forecast['focus_comp_id']."',";
+        		}else{
+        			echo "['".$forecast['pm_name']."',";
+        		}
 
+	        		for($i=0; $i < 12 ; $i++){	
+	        			$alternator = $calendar_view;
+	        			$counter = $i;
 
+	        			if($alternator == 1){
+	        				$counter = $counter + 6;
+	        			}
 
+	        			if($alternator == 1 && $counter > 11){
+	        				$counter = $counter - 12;
+	        			}
 
+	        			$month_index = 'rev_'.strtolower($months[$counter]);
+	        			echo $forecast[$month_index].',';
+	        		}
 
-<?php foreach ($focus_indv_comp_sales->result_array() as $indv_comp_sales): ?>
-	<?php //var_dump($indv_comp_sales); ?>
+        			echo "],\n";
+        		endforeach;
+        	?>
 
-	<?php echo "['".$indv_comp_sales['company_name']."',"; ?>
-
-
-<?php 
-
-          for($i=0; $i < 12 ; $i++){	
-          	$alternator = $calendar_view;
-          	$counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-
-          	
-
-          	$month_index = 'rev_'.strtolower($months[$counter]);
-
-          	$item_forecast = $indv_comp_sales[$month_index];
-
-
-
-          	echo $item_forecast.',';
-
-          }
-
-
-
-
-
-          ?>
-
-
-
-
-	<?php echo "],"; ?>
-
-
-	<?php endforeach; ?>
- 
-
-
-
-
-
-
-
-
-
-
-<?php foreach ($focus_indv_comp_outstanding->result_array() as $indv_comp_sales): ?>
-	<?php //var_dump($indv_comp_sales); ?>
-
-	<?php echo "['".$indv_comp_sales['company_name']." Outstanding',"; ?>
-
-
-<?php 
-
-          for($i=0; $i < 12 ; $i++){	
-          	$alternator = $calendar_view;
-          	$counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-
-          	
-
-          	$month_index = 'out_'.strtolower($months[$counter]);
-
-          	$item_forecast = $indv_comp_sales[$month_index];
-
-
-
-          	echo $item_forecast.',';
-
-          }
-
-
-
-
-
-          ?>
-
-
-
-
-	<?php echo "],"; ?>
-
-
-	<?php endforeach; ?>
- 
-
-
-
-
-
-
-
-
-
-
-<?php foreach ($focus_indv_comp_sales_old->result_array() as $indv_comp_sales): ?>
-	<?php //var_dump($indv_comp_sales); ?>
-
-	<?php echo "['".$indv_comp_sales['company_name']." Last Year',"; ?>
-
-
-<?php 
-
-          for($i=0; $i < 12 ; $i++){	
-          	$alternator = $calendar_view;
-          	$counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-
-          	
-
-          	$month_index = 'rev_'.strtolower($months[$counter]);
-
-          	$item_forecast = $indv_comp_sales[$month_index];
-
-
-
-          	echo $item_forecast.',';
-
-          }
-
-
-
-
-
-          ?>
-
-
-
-
-	<?php echo "],"; ?>
-
-
-	<?php endforeach; ?>
- 
-
-
-
-
-
-
-
-
-<?php foreach ($focus_indv_comp_forecast->result_array() as $indv_comp_forec): ?>
-
-
-	<?php echo "['".$indv_comp_forec['company_name']." Forecast',"; ?>
-
-
-<?php 
-
-          for($i=0; $i < 12 ; $i++){	
-          	$alternator = $calendar_view;
-          	$counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-
-
-          	$comp_total_forec = $indv_comp_forec['total'] *($indv_comp_forec['forecast_percent']/100);
-
-
-
-
-          	$month_index = 'forecast_'.strtolower($months[$counter]);
-
-          	$item_forecast = $comp_total_forec * ($fetch_forecast[$month_index]/100);
-
-
-
-          	echo round($item_forecast,2).',';
-
-          }
-
-
-
-
-
-          ?>
-
-
-
-
-	<?php echo "],"; ?>
-
-
-	<?php endforeach; ?>
- 
-
-
-
+		<?php endif; ?>
 
 
 
 		
 
-		['Forecast',
-		<?php 
+		<?php echo "['".$fetch_forecast['forecast_label']."',"; ?><?php 
 
           for($i=0; $i < 12 ; $i++){	
           	$alternator = $calendar_view;
@@ -1345,129 +1463,243 @@ for($i=0; $i < 12 ; $i++){
 
  
 
+
+
+			<?php 
+/*
+			 foreach ($revenue_forecast as $key => $forecast): ?>
+
+
+				<?php if($forecast->data_type == 'Forecast'): ?>
+
+	          		<?php $segment_a = $forecast->total_amount*($forecast->jul_breakdown/100).','.$forecast->total_amount*($forecast->aug_breakdown/100).','.$forecast->total_amount*($forecast->sep_breakdown/100).','.$forecast->total_amount*($forecast->oct_breakdown/100).','.$forecast->total_amount*($forecast->nov_breakdown/100).','.$forecast->total_amount*($forecast->dec_breakdown/100); ?>
+	          		<?php $segment_b = $forecast->total_amount*($forecast->jan_breakdown/100).','.$forecast->total_amount*($forecast->feb_breakdown/100).','.$forecast->total_amount*($forecast->mar_breakdown/100).','.$forecast->total_amount*($forecast->apr_breakdown/100).','.$forecast->total_amount*($forecast->may_breakdown/100).','.$forecast->total_amount*($forecast->jun_breakdown/100); ?>
+
+				<?php else: ?>
+
+	          		<?php $segment_a = $forecast->jul_breakdown.','.$forecast->aug_breakdown.','.$forecast->sep_breakdown.','.$forecast->oct_breakdown.','.$forecast->nov_breakdown.','.$forecast->dec_breakdown; ?>
+	          		<?php $segment_b = $forecast->jan_breakdown.','.$forecast->feb_breakdown.','.$forecast->mar_breakdown.','.$forecast->apr_breakdown.','.$forecast->may_breakdown.','.$forecast->jun_breakdown; ?>
+
+	          	<?php endif; ?>
+
+	          	['<?php echo $forecast->data_name; ?>', <?php echo $segment_a.','.$segment_b; ?>],
+	      	<?php endforeach;
+
+
+*/
+	      	 ?>
+
         ],
         selection: {enabled: true},
         type: 'bar',
-        colors: {
-            'Forecast': '#764B8E'
+        types: {   '<?php echo $fetch_forecast["forecast_label"]; ?>' : 'line',  <?php /* foreach ($revenue_forecast as $key => $forecast): ?><?php if($forecast->data_type == 'Forecast'){ echo "'$forecast->data_name' : 'line',"; } ?><?php endforeach; */ ?>
         },
-        types: {   'Forecast' : 'line',  
+        groups: [ 
 
+        
+        	[
+	        	<?php $group_a = 0;  ?>
+/*
+	        	<?php 
+/*
+	        	foreach ($revenue_forecast as $key => $forecast): ?>
+		        	<?php
+			        	if($group_a == 0 ){
+			        		$group_a = $forecast->focus_company_id;
+			        	}
+			        	if($group_a != $forecast->focus_company_id ){ 
+			        		echo '],[';
+			        		echo "'$forecast->data_name',";
+			        	}else{
+			        		echo "'$forecast->data_name',";
+			        	}
+		        	?>
+	        	<?php endforeach;
+*/
 
+	        	 ?>
+*/
+	        ],
 
-<?php foreach ($focus_indv_comp_forecast->result_array() as $indv_comp_forec): ?>
+        	[
+	        	<?php $group = 0;  ?>
 
+/*
+	        	<?php foreach ($pm_names as $key => $names): ?>
+		        	<?php
+			        	if($group == 0 ){
+			        		$group = $names->user_focus_company_id;
+			        	}
+			        	if($group != $names->user_focus_company_id ){ 
+			        		echo '],[';
+			        		echo "'$names->user_pm',";
+			        	}else{
+			        		echo "'$names->user_pm',";
+			        	}
+		        	?>
+	        	<?php endforeach; ?>
+*/
 
-	<?php echo "'".$indv_comp_forec['company_name']." Forecast': 'line',"; ?>
+	        ],
 
-
-	<?php endforeach; ?>
- 
-
-
-        },
-        groups: [ ['Outstanding','Focus Sales'],['Focus Shopfit Pty Ltd','Focus Shopfit Pty Ltd Outstanding'],['Focus Shopfit NSW Pty Ltd','Focus Shopfit NSW Pty Ltd Outstanding']  ],
-        order: 'desc',
+      	 ['Alan Liddell','Trevor Gamble','Pyi Paing Aye Win','Krzysztof Kiezun','Maintenance Manager 5','Stuart Hubrich','Maintenance Manager 6'],
+         ['Focus WA','Focus NSW'],
+        ],
+        //order: 'asc' 
       },
     tooltip: {
         grouped: true // false // Default true
     },
              bindto: "#chart_a",
-bar:{ width:{ ratio: 0.5 }},
-point:{ select:{ r: 6 }},
-onrendered: function () { $('.loading_chart').remove(); },
-zoom: {enabled: true, rescale: true},
-legend: { show: false },
+bar: {
+  width: { ratio: 0.5 }
+},
+point: {
+  select: {
+    r: 6
+  }
+},
+onrendered: function () { 
+ 
 
+ 
+	$('.loading_chart').remove();
+ 
 
-axis: {x: {type: 'category', tick: {rotate: 0,multiline: false}, height: 0} },
-tooltip: {
-        format: {
-     //     title: function (x) { return 'Data ' + x; },
-            value: function (value, ratio, id) {
-               // var format = id === 'data1' ? d3.format(',') : d3.format('$');
-                var format = d3.format(',');
-                
-             	var mod_value = Math.round(value)
-                return format(mod_value);
-            }
-        } 
-
-    }
+	 },
+      zoom: {
+        enabled: true
+      },
+      axis: {
+        x: {
+          type: 'category',
+          tick: {
+            rotate: 0,
+            multiline: false
+          },
+          height: 50
+        }
+      }
     });
 
 chart.select();
-
-
-chart.hide();
-chart.show(['Overall Sales','Forecast','Last Year Sales']);
-
+chart.hide(['Focus WA', 'Focus NSW']);
 
 
 
 function funca(){
-	chart.hide();
-	chart.groups([
+		chart.hide();
+chart.groups([
       	 ['Alan Liddell','Trevor Gamble','Pyi Paing Aye Win','Krzysztof Kiezun','Maintenance Manager 5','Stuart Hubrich','Maintenance Manager 6'],
-         ['Focus WA','Focus NSW']
-    ]);
-  	setTimeout(function () {
-    	chart.show(['Alan Liddell','Krzysztof Kiezun','Pyi Paing Aye Win','Trevor Gamble','Stuart Hubrich','Maintenance Manager 5','Maintenance Manager 6']);
-	}, 500);
-	setTimeout(function () {   chart.show(['Forecast 2015']); }, 1000);
+         ['Focus WA','Focus NSW']]);
+
+
+  setTimeout(function () {
+    chart.show(['Alan Liddell','Krzysztof Kiezun','Pyi Paing Aye Win','Trevor Gamble','Stuart Hubrich','Maintenance Manager 5','Maintenance Manager 6']);
+  }, 500);
+		 setTimeout(function () {   chart.show(['Forecast 2015']); }, 1000);
 }
 
 
 function funcb(){
-	chart.hide();
-	setTimeout(function () {
-		chart.groups([['Focus NSW','Focus WA']]);
-		chart.show(['Focus WA', 'Focus NSW']);
-	}, 500);
+		chart.hide();
+		 setTimeout(function () {
 
-	setTimeout(function () {   chart.show(['Forecast 2015']); }, 1000);
+
+chart.groups([['Focus NSW','Focus WA']]);
+   chart.show(['Focus WA', 'Focus NSW']);
+ }, 500);
+
+
+
+
+		 setTimeout(function () {   chart.show(['Forecast 2015']); }, 1000);
+
+
+		 
 }
 
 
 
+	chart.hide(['Focus WA - Outstanding','Focus NSW - Outstanding']);	
 
 
-function bttnA(element_obj){
-	var forecast_display = element_obj.getAttribute("id");
-	chart.hide();
-	setTimeout(function () {
-			chart.show(['Outstanding', 'Focus Sales','Forecast','Last Year Sales']);
-			element_obj.setAttribute("id", "hidden_forecast");
-	}, 500);	
-}
+	function funcc(element_obj){
+		var forecast_display = element_obj.getAttribute("id");
+		chart.hide();
+		
+		if(forecast_display == 'visible_forecast'){
+			setTimeout(function () {
+				chart.groups([['Focus NSW', 'Focus NSW - Outstanding']]);
+				chart.show(['Focus NSW', 'Focus NSW - Outstanding']);
+		element_obj.setAttribute("id", "hidden_forecast");
+			}, 500);
+		}else{
+			setTimeout(function () {
+				chart.groups([['Focus WA', 'Focus WA - Outstanding']]);
+				chart.show(['Focus WA', 'Focus WA - Outstanding']);
+		element_obj.setAttribute("id", "visible_forecast");
+			}, 500);
+		}
+	}
 
 
-function bttnB(element_obj){
-	var forecast_display = element_obj.getAttribute("id");
-	chart.hide(); 
-	setTimeout(function () {
-			chart.show(['Overall Sales','Forecast','Last Year Sales']);
-	}, 500);
-}
 
 
- 
-function bttnC(element_obj){
-	var forecast_display = element_obj.getAttribute("id");
-	chart.hide(); 
-	setTimeout(function () {
-			chart.show(['Focus Shopfit Pty Ltd Forecast', 'Focus Shopfit Pty Ltd Last Year', 'Focus Shopfit Pty Ltd','Focus Shopfit Pty Ltd Outstanding','Focus Shopfit Pty Ltd Overall']);
-	}, 500);
-}
+<?php if(isset($_POST['data_name'])): ?>
+setTimeout(function () {
+    chart.load({
+        columns:<?php echo "[ ['".$_POST['data_name']."', ".$_POST['value_items']."] ]";?>,
+        type: 'line',
+        colors: { <?php echo "'".$_POST['data_name']."'"; ?> : <?php echo "'".$_POST['data_color']."'"; ?> }
+    });
+chart.select([<?php echo "'".$_POST['data_name']."'"; ?> ]);
+}, 2000);
+
+<?php endif; ?>
+
+setTimeout(function () {
+//  chart.hide(['data2', 'data3']);
+ // chart.show(['data2', 'data5']);
+//chart.hide(['data2', 'data5']);
+
+}, 3000);
+
+/*
+setTimeout(function () {
+ chart.load({
+  columns: [
+          ['data11', 200, 130, 90, 240, 130, 220, 200, 130, 90, 240, 130, 220],
+          ['data12', 150, 180, 50, 190, 60, 210, 150, 180, 50, 190, 60, 210],
+  ]
+});
+}, 2000);
+
+setTimeout(function () {
+  chart.unload({
+    ids: ['data9', 'data2', 'data8', 'data7', 'data1']
+  });
+},4000);
 
 
-function bttnD(element_obj){
-	var forecast_display = element_obj.getAttribute("id");
-	chart.hide(); 
-	setTimeout(function () {
-			chart.show(['Focus Shopfit NSW Pty Ltd Forecast', 'Focus Shopfit NSW Pty Ltd Last Year', 'Focus Shopfit NSW Pty Ltd','Focus Shopfit NSW Pty Ltd Outstanding','Focus Shopfit NSW Pty Ltd Overall']);
-	}, 500);
-}
+
+columns:[ ['ADASDAS',  ] ],
+columns:[ [data_name, 660, 630,620, 650, 640, 660, 650] ],
+
+
+setTimeout(function () {
+  chart.unload({
+    ids: ['data11', 'data12']
+  });
+},4000);
+
+
+200, 130, 90, 240, 130, 220, 200, 130, 90, 240, 130, 220
+*/
+
+
+
+
 
 
 
@@ -1476,17 +1708,23 @@ var chart_b = c3.generate({
       data: {
         x : 'x',
         columns: [
-          ['x', 'Current Month`s Sales Per Project Manager'],
-          <?php
-	          foreach ($focus_indv_pm_month_sales->result_array() as $topPm) {
-	          	echo "['".$topPm['pm_name']."',".$topPm['sales_month']." ],";
-	          }
-          ?>
+          ['x', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          ['Sales Focus WA', 650, 470, 400, 710, 540, 760, 650, 470, 400, 710, 540, 760],   
+          ['Invoiced WA', 300, 200, 160, 400, 250, 250, 300, 200, 160, 400, 250, 250],
         ],
         selection: {
             enabled: true
         },
         type: 'bar',
+        colors: {
+            "Sales Focus WA": '#65D91A',
+            'Invoiced WA': '#224EA5',
+        }, 
+        types: {
+          'Invoiced WA': 'area',
+        //  data4: 'area',
+        },
+        order: 'asc' 
       },
 	  tooltip: { grouped: true    },
 	  bindto: "#chart_b",
@@ -1494,21 +1732,10 @@ var chart_b = c3.generate({
 	  point: {   select: {    r: 6  }},
 	  onrendered: function () {	$('.loading_chart').remove(); },
 	  zoom: { enabled: true },
-	  axis: {x: {type: 'category',tick: {rotate: 0,multiline: false},height: 0} },
-tooltip: {
-        format: {
-           // title: function (d) { return 'Data ' + d; },
-            value: function (value, ratio, id) {
-               // var format = id === 'data1' ? d3.format(',') : d3.format('$');
-                var format = d3.format(',');
-                
-             	var mod_value = Math.round(value)
-                return format(mod_value);
-            }
-        } 
-
-    }
+	  axis: {x: {type: 'category',tick: {rotate: 0,multiline: false},height: 50} }
 });
+
+chart_b.select(['Invoiced WA']);
 
 
 var chart_c = c3.generate({
@@ -1516,31 +1743,25 @@ var chart_c = c3.generate({
       data: {
         x : 'x',
         columns: [
-          ['x', 'This Month`s Focus Sales'],
-          <?php
-	          foreach ($focus_indv_focu_month_sales->result_array() as $comp) {
-	          	echo "['".$comp['company_name']."',".$comp['total_sales']." ],";
-	          }
-          ?>
-          <?php
-	          foreach ($focus_indv_focu_month_outs->result_array() as $comp) {
-	          	echo "['".$comp['company_name']." Outstanding',".$comp['total_outstanding']." ],";
-	          }
-          ?>
-
+          ['x', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        
+          ['Sales Focus NSW',  130, 120, 150, 140, 160, 150, 130, 120, 150, 140, 160, 150],
+         
+          ['Invoiced NSW', 90, 70, 20, 50, 60, 120, 90, 70, 20, 50, 60, 120],
         ],
         selection: {
             enabled: true
         },
         type: 'bar',
         colors: {
-         //   "Focus Shopfit Pty Ltd": '#2A7F40',
-         //   'Focus Shopfit Pty Ltd Outstanding': '#7FBF90',
-         //   'Focus Shopfit NSW Pty Ltd': '#224EA5',
+            'Sales Focus NSW': '#F7AC1E',
+            'Invoiced NSW': '#DF2050'
+        }, 
+        types: {
+          'Invoiced NSW': 'area',
+        //  data4: 'area',
         },
-
-        groups: [ ['Focus Shopfit Pty Ltd','Focus Shopfit Pty Ltd Outstanding'],['Focus Shopfit NSW Pty Ltd','Focus Shopfit NSW Pty Ltd Outstanding']  ],
-       
+        order: 'asc' 
       },
 	  tooltip: { grouped: true    },
 	  bindto: "#chart_c",
@@ -1548,43 +1769,433 @@ var chart_c = c3.generate({
 	  point: {   select: {    r: 6  }},
 	  onrendered: function () {	$('.loading_chart').remove(); },
 	  zoom: { enabled: true },
-	  axis: {x: {type: 'category',tick: {rotate: 0,multiline: false},height: 0} },
-tooltip: {
-        format: {
-          //  title: function (d) { return 'Data ' + d; },
-            value: function (value, ratio, id) {
-               // var format = id === 'data1' ? d3.format(',') : d3.format('$');
-                var format = d3.format(',');
-             	var mod_value = Math.round(value)
-                return format(mod_value);
-            }
-        }, 
+	  axis: {x: {type: 'category',tick: {rotate: 0,multiline: false},height: 50} }
+});
 
+chart_c.select(['Invoiced NSW']);
+
+/*
+
+
+var chart_b = c3.generate({
+      size: { height: 395 },
+      data: {
+        x : 'x',
+        columns: [
+          ['x', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          ['Sales Focus WA', 650, 470, 400, 710, 540, 760, 650, 470, 400, 710, 540, 760],   
+          ['Sales Focus NSW',  130, 120, 150, 140, 160, 150, 130, 120, 150, 140, 160, 150],
+          ['Invoiced WA', 300, 200, 160, 400, 250, 250, 300, 200, 160, 400, 250, 250],
+          ['Invoiced NSW', 90, 70, 20, 50, 60, 120, 90, 70, 20, 50, 60, 120],
+        ],
+        selection: {
+            enabled: true
+        },
+        type: 'bar',
+        colors: {
+            "Sales Focus WA": '#65D91A',
+            'Sales Focus NSW': '#F7AC1E',
+            'Invoiced WA': '#224EA5',
+            'Invoiced NSW': '#DF2050'
+        }, 
+        types: {
+          'Invoiced WA': 'area',
+          'Invoiced NSW': 'area',
+        //  data4: 'area',
+        },
+        order: 'asc' 
+      },
+	  tooltip: { grouped: true    },
+	  bindto: "#chart_b",
+	  bar: {  width: { ratio: 0.4 } },
+	  point: {   select: {    r: 6  }},
+	  onrendered: function () {	$('.loading_chart').remove(); },
+	  zoom: { enabled: true },
+	  axis: {x: {type: 'category',tick: {rotate: 0,multiline: false},height: 50} }
+});
+
+chart_b.select(['Invoiced WA']);
+chart_b.select(['Invoiced NSW']);
+
+
+ 
+
+
+*/
+ 
+
+
+function funcd(element_obj){
+
+	var forecast_display = element_obj.getAttribute("id");
+
+	if(forecast_display == 'visible_forecast_b'){
+		chart_b.hide(['Sales Focus WA','Invoiced WA']);		
+		chart_b.show(['Sales Focus NSW','Invoiced NSW']);	
+		element_obj.setAttribute("id", "hidden_forecast_b");
+	}else{
+		chart_b.show(['Sales Focus WA','Invoiced WA']);
+		chart_b.hide(['Sales Focus NSW','Invoiced NSW']);	
+		element_obj.setAttribute("id", "visible_forecast_b");
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var donuta = c3.generate({
+     size: {
+        height: 250
+      },data: {
+        columns: [
+            ["Sales", 86584365.00],
+            ['Invoice', 10256544.00],
+        ],
+        type : 'donut',
+        colors: {
+            "Sales": '#1F77B4',
+            'Invoice': '#4DAB4D'
+        }, 
+        onclick: function (d, i) { console.log("onclick", d, i); },
+        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+    },
+             bindto: "#donut_a",
+    donut: {
+        title: "Focus WA"
+    }
+});
+
+
+var donutb = c3.generate({
+     size: {
+        height: 250
+      },data: {
+        columns: [
+            ["Sales", 820],
+            ['Invoice', 490],
+        ],
+        type : 'donut',
+        colors: {
+            "Sales": '#FF7F0E',
+            'Invoice': '#4DAB4D'
+        },
+        color: function (color, d) {
+            // d will be 'id' when called for legends
+            return d.id && d.id === 'data3' ? d3.rgb(color).darker(d.value / 150) : color;
+        },
+        onclick: function (d, i) { console.log("onclick", d, i); },
+        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+    },
+             bindto: "#donut_b",
+    donut: {
+        title: "Focus NSW"
     }
 });
 
 
 
-setTimeout(function () {
-//  chart.hide(['data2', 'data3']);
- // chart.show(['data2', 'data5']);
-//chart.hide(['data2', 'data5']);
-}, 3000);
-
 function printDiv(divName) {
-   var printContents = document.getElementById(divName).innerHTML;     
+      var printContents = document.getElementById(divName).innerHTML;     
    var originalContents = document.body.innerHTML;       
    document.body.innerHTML = printContents;      
    window.print();      
    document.body.innerHTML = originalContents;
-}
+   }
+ 
+
+ 
+ 
 
 
-</script>
+
+
+
+    </script>
 
 
 <style type="text/css">
+	
 	#dataTable_noCustom_length{
 		margin-left: 5px;
 	}
+	
 </style>
+
+<!-- Modal -->
+<!-- 
+<div class="modal fade" id="add_data_chart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add Data</h4>
+      </div>
+      <form method="post" >
+      <div class="modal-body pad-10">
+
+
+      	<div class="pad-5 clearfix">
+      		<input type="text" class="form-control m-bottom-10 data_name" id="data_name" name="data_name" placeholder="Data Name" name="" value="">
+
+			<select name="data_color" class="form-control m-bottom-10" >
+				<option>2015</option>
+				<option>2016</option>
+				<option>2017</option>
+				<option>2018</option>
+				<option>2019</option>
+				<option>2020</option>
+			</select>
+
+      		<input type="text" class="form-control year m-bottom-5 number_format" id="year" name="year" placeholder="Total Forecast" name="" value="">
+      	</div>
+
+      	<div class="no-pad-imp clearfix">
+
+      		<div class="col-md-6 col-sm-6 col-xs-12 clearfix ">
+      			<div class="input-group m-bottom-10">
+      				<span class="input-group-addon" id="">WA Share</span>      		
+      				<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				<span class="input-group-addon" id="" style="padding: 0;    width: 110px;overflow: hidden;">
+      					<select name="data_color" class="form-control m-bottom-15" style="margin: -1px 1px -1px 2px;">
+      						<option value="#FD0000">Red</option>
+      						<option value="#00CA00">Green</option>
+      						<option value="#7008A8">Purple</option>
+      						<option value="#FD7300">Orange</option>
+      					</select>
+      				</span>      			
+      			</div>
+      		</div>
+
+
+      		<div class="col-md-6 col-sm-6 col-xs-12 clearfix ">
+      			<div class="input-group m-bottom-10">
+      				<span class="input-group-addon" id="">NSW Share</span>      		
+      				<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				<span class="input-group-addon" id="" style="padding: 0;    width: 110px;overflow: hidden;">
+      					<select name="data_color" class="form-control m-bottom-15" style="margin: -1px 1px -1px 2px;">
+      						<option value="#FD0000">Blue</option>
+      						<option value="#00CA00">Yellow</option>
+      						<option value="#7008A8">Cyan</option>
+      						<option value="#FD7300">Magenta</option>
+      					</select>
+      				</span>      			
+      			</div>
+      		</div>
+      	</div>
+
+
+
+      	<div class="no-pad-imp clearfix">
+
+      		<p class="m-5 pad-top-10">Monthly Breakdown For WA <a class="pull-right" style="cursor: pointer;" data-toggle="collapse" data-target=".more-list"> Show More </a></p>
+      		<div class="more-list collapse out">
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Jan</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Fab</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Mar</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Apr</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">May</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Jun</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Jul</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Aug</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Sep</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Oct</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Nov</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Dec</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+      		</div>
+      	</div>
+
+      	<div class="no-pad-imp clearfix">
+
+      		<p class="m-5 pad-top-10">Monthly Breakdown For NSW <a class="pull-right" style="cursor: pointer;" data-toggle="collapse" data-target=".more-list_b"> Show More </a></p>
+      		<div class="more-list_b collapse out">
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Jan</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Fab</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Mar</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Apr</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">May</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Jun</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Jul</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Aug</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Sep</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Oct</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Nov</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+
+      			<div class="col-md-4 col-sm-4 col-xs-4 clearfix ">
+      				<div class="input-group m-bottom-10">
+      					<span class="input-group-addon" id="">Dec</span>      		
+      					<input type="text" class="form-control" id="" placeholder="%" name="" value="">
+      				</div>
+      			</div>
+      		</div>
+      	</div>
+
+      </div>
+      <div class="modal-footer pad-10 m-top-5 m-right-5">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-success add_data_chart" value="Save changes">
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+-->

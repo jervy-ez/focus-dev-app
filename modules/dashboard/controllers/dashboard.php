@@ -37,7 +37,6 @@ class Dashboard extends MY_Controller{
 
 			$this->dashboard_m->set_primary_revenue_forecast($id,$year);
 
-
 			$this->session->set_flashdata('record_update','Record is now set to primary forecast.');
 			redirect('/dashboard/sales_forecast/view_'.$id);
 		}
@@ -45,22 +44,33 @@ class Dashboard extends MY_Controller{
 		date_default_timezone_set("Australia/Perth");
 
 		$this->_check_sales(); // automatically updates sales of the current month
+		//$this->_check_next_month_sales();
 	}	
 
 	function index(){
-		$this->users->_check_user_access('dashboard',1);
+		//$this->users->_check_user_access('dashboard',1);
+
+
+		if($this->session->userdata('is_admin') != 1 ):		
+			redirect('', 'refresh');
+		endif;
+
+
+
 		$data['main_content'] = 'dashboard_home';
 		$data['screen'] = 'Dashboard';
 		$this->load->view('page', $data);
 	}
 
 	function _if_sales_changed($year,$proj_mngr_id,$focus_comp_id,$rev_month,$checkAmount){
+		//echo "-----$year,$proj_mngr_id,$focus_comp_id,$rev_month,$checkAmount----<br />";
+
 		$q_sales = $this->dashboard_m->look_for_sales($year,$proj_mngr_id,$focus_comp_id,$rev_month);
-		$rev_month = 'rev_'.strtolower(date('M'));
+		//$rev_month = 'rev_'.strtolower(date('M'));
 
 		$sales = array_shift($q_sales->result_array());
 
-		if($sales[$rev_month] < $checkAmount){
+		if($sales[$rev_month] != $checkAmount){
 			return $sales['revenue_id'];
 		}elseif($sales[$rev_month] == $checkAmount){
 			return 'no_change';
@@ -69,7 +79,218 @@ class Dashboard extends MY_Controller{
 		}
 	}
 
+
+
+
+	public function check_outstanding($year=''){
+
+		if($year != ''){
+			$c_year = $year;
+		}else{
+			$c_year = date("Y");
+		}
+
+ 
+		$n_year = $c_year+1;
+
+		$date_a_tmsp = mktime(0, 0, 0, '01','01', $c_year);
+		$date_b_tmsp = mktime(0, 0, 0, '01','01', $n_year);
+
+
+	//	echo "--xx---$date_a_tmsp----$date_b_tmsp---xx-<br />";
+
+	//	$date_a_tmsp=1454281200;$date_b_tmsp=1456786800;$user_id=24;$comp_id=5;
+
+		$uninvoiced_amnt = 0;
+		$uninvoiced_amnt_total = 0;
+
+		$q_outstanding_pms = $this->dashboard_m->get_outstanding_invoice($date_a_tmsp,$date_b_tmsp);
+		$outstanding_pms = $q_outstanding_pms->result();
+
+		//	echo "---------<br />";
+
+
+
+
+	
+		foreach ($outstanding_pms as $pms){
+
+			$uninvoiced_amnt_total = 0;
+
+
+		$month_outs = array("out_jan"=>"0","out_feb"=>"0","out_mar"=>"0","out_apr"=>"0","out_may"=>"0","out_jun"=>"0","out_jul"=>"0","out_aug"=>"0","out_sep"=>"0","out_oct"=>"0","out_nov"=>"0","out_dec"=>"0");
+		$months = array (1=>'jan',2=>'feb',3=>'mar',4=>'apr',5=>'may',6=>'jun',7=>'jul',8=>'aug',9=>'sep',10=>'oct',11=>'nov',12=>'dec');
+ 
+
+			//var_dump($sales_out);
+
+		//	echo '<hr/><br />'.$pms->user_id.' - '.$pms->focus_company_id.'<br />';
+
+
+			$q_outstanding = $this->dashboard_m->get_outstanding_invoice($date_a_tmsp,$date_b_tmsp,$pms->user_id,$pms->focus_company_id);
+			$outstanding_sales = $q_outstanding->result();
+
+
+			foreach ($outstanding_sales as $outstanding){
+
+				//echo $outstanding->user_id.' - '.$outstanding->focus_company_id.'<br />';
+
+				if($outstanding->label == 'VR'){
+					$uninvoiced_amnt = $outstanding->variation_total;
+				}else{
+					$uninvoiced_amnt = $outstanding->project_total*($outstanding->progress_percent/100);
+				}
+				$uninvoiced_amnt_total = $uninvoiced_amnt_total + $uninvoiced_amnt;
+				
+				$month_index = explode('/', $outstanding->invoice_date_req);
+				$month_num = ltrim($month_index['1'], '0');
+
+				$month_outs['out_'.$months[$month_num]] = $month_outs['out_'.$months[$month_num]] + $uninvoiced_amnt;
+
+			}
+
+
+
+			if($uninvoiced_amnt_total > 0){  
+
+
+				//echo "---<br />";
+
+
+				//rvar_dump($month_outs);
+
+				foreach ($month_outs as $key => $value) {
+				 	//echo "$key => $value <br />";
+
+					$sales = round($value, 2);
+
+
+					 $this->dashboard_m->check_outstanding_set($pms->user_id, $key, $sales, $pms->focus_company_id, $c_year);
+
+
+				//	 echo "$pms->user_id, $key, $sales, $pms->focus_company_id, $c_year <br />";
+				}
+
+
+				//echo "---<br />";
+
+
+				//$this->dashboard_m->update_outstanding($pms->user_id, $out_month, $outstanding_amount, $sales->focus_company_id, $currentYear);
+		 	// echo "$date_a_tmsp---------------$date_b_tmsp ----$uninvoiced_amnt_total ----- $uninvoiced_amnt ------$pms->focus_company_id------$pms->user_id------------<br />";
+
+
+			//	 echo "---<br />";
+
+
+
+			}
+
+
+		//	echo "<p><hr /></p><br />";
+/*
+
+			if($sales_out->label == 'VR'){
+				$uninvoiced_amnt = $sales_out->variation_total;
+			}else{
+				$uninvoiced_amnt = $sales_out->project_total*($sales_out->progress_percent/100);
+			}
+
+			$uninvoiced_amnt_total = $uninvoiced_amnt_total + $uninvoiced_amnt;
+*/
+		//	echo "$date_a_tmsp---------------$date_b_tmsp ----$uninvoiced_amnt_total ----- $uninvoiced_amnt --- $user_id-------------$comp_id-----------<br />";
+
+		}
+
+		//return $uninvoiced_amnt_total;
+	}
+
+
+
+/*
+
+	function _check_next_month_sales(){
+	
+
+
+		$months = array (1=>'jan',2=>'feb',3=>'mar',4=>'apr',5=>'may',6=>'jun',7=>'jul',8=>'aug',9=>'sep',10=>'oct',11=>'nov',12=>'dec');
+
+		$c_month = date("m")+1;
+		$c_year = date("Y");
+
+		if($c_month > 12){
+			$c_year++;
+			$c_month = $c_month % 12;
+		}
+
+		$n_month = $c_month+1;
+		$n_year = $c_year;
+
+		if($n_month > 12){
+			$n_year++;
+			$n_month = $n_month % 12;
+		}
+
+		$date_a_tmsp = mktime(0, 0, 0, $c_month,'01', $c_year);
+		$date_b_tmsp = mktime(0, 0, 0, $n_month,'01', $n_year);
+
+		$rev_month = 'rev_'.strtolower($months[$c_month]);
+	 	$out_month = 'out_'.strtolower($months[$c_month]);
+
+	 	$q_pms = $this->dashboard_m->get_outstanding_advanced($date_a_tmsp,$date_b_tmsp);
+	 	$pms = $q_pms->result();
+
+	 	$uninvoiced_amnt_total = 0;
+
+		//	echo "---------<br />";
+	
+		foreach ($pms as $pm_data){
+
+
+			$q_outstanding_advanced = $this->dashboard_m->get_outstanding_advanced($date_a_tmsp,$date_b_tmsp,$pm_data->user_id,$pm_data->focus_company_id);
+			$outstanding_advanced = $q_outstanding_advanced->result();
+ 
+
+			foreach ($outstanding_advanced as $sales_out){
+
+				if($sales_out->label == 'VR'){
+					$uninvoiced_amnt = $sales_out->variation_total;
+				}else{
+					$uninvoiced_amnt = $sales_out->project_total*($sales_out->progress_percent/100);
+				}
+
+			 	$uninvoiced_amnt_total = $uninvoiced_amnt_total + $uninvoiced_amnt;
+
+		 	// echo "$date_a_tmsp---------------$date_b_tmsp ----$uninvoiced_amnt_total ----- $uninvoiced_amnt --- $pm_data->user_id -------------$pm_data->focus_company_id--------<br />";
+
+			}
+
+
+			$revenue_id = $this->_if_sales_changed($c_year,$pm_data->user_id,$pm_data->focus_company_id,$rev_month,$uninvoiced_amnt_total);
+			if($revenue_id > 0 && $revenue_id != 'no_change'){	
+				$this->dashboard_m->update_outstanding($pm_data->user_id, $out_month, $uninvoiced_amnt_total, $pm_data->focus_company_id, $c_year);
+
+			}elseif($revenue_id == 0 && $revenue_id != 'no_change'){
+				$this->dashboard_m->set_outstanding($pm_data->user_id, $out_month, $uninvoiced_amnt_total, $pm_data->focus_company_id, $c_year);
+
+			}else{
+
+			}  
+			$uninvoiced_amnt_total = 0;
+
+			//$uninvoiced_amnt_total = $uninvoiced_amnt_total + $uninvoiced_amnt;
+
+		//	echo "$date_a_tmsp---------------$date_b_tmsp ----$uninvoiced_amnt_total ----- $uninvoiced_amnt --- $user_id-------------$comp_id-----------<br />";
+
+		}
+
+	}
+*/
+
+
 	function _check_sales(){
+
+		$see_outstanding_mn = 0;
+		$see_outstanding_pm = 0;
 
 		$currentDay = date("m");
 		$currentMonth = date("d");
@@ -90,133 +311,81 @@ class Dashboard extends MY_Controller{
 
 		$date_a_tmsp = mktime(0, 0, 0, $c_month,'01', $c_year);
 		$date_b_tmsp = mktime(0, 0, 0, $n_month,'01', $n_year);
-
-//		$date_a_tmsp = mktime(0, 0, 0, '06','01', '2015');
-//		$date_b_tmsp = mktime(0, 0, 0, '07','01', '2015');
-
 		$rev_month = 'rev_'.strtolower(date('M'));
+	 	$out_month = 'out_'.strtolower(date('M'));
+
+
+//	 	echo $date_a_tmsp.'-------'.$date_b_tmsp.'<br />';
+
+/*
+		$date_a_tmsp = mktime(0, 0, 0, '01','01', '2016'); # manual update of sales set date
+		$date_b_tmsp = mktime(0, 0, 0, '02','01', '2016'); # manual update of sales set date
+		$rev_month = 'rev_jan'; # manual update of sales set date
+		$out_month = 'out_jan'; # manual update of sales set date
+		$currentYear = '2016'; # manual update of sales set date
+*/
 
 		$q_maintenance_sales = $this->dashboard_m->get_maintenance_sales($date_a_tmsp,$date_b_tmsp);
 		$maintenance_sales = $q_maintenance_sales->result();
 
-		foreach ($maintenance_sales as $sales ){	
+		foreach ($maintenance_sales as $sales ){
+		//	$outstanding_amount = $this->check_outstanding($sales->user_id,$sales->focus_company_id);
 			$revenue_id = $this->_if_sales_changed($currentYear,$sales->user_id,$sales->focus_company_id,$rev_month,$sales->invoiced_amount);
-			if($revenue_id > 0 && $revenue_id != 'no_change'){			
+
+
+				// 	echo $revenue_id.'<br />';
+		
+
+			if($revenue_id > 0 && $revenue_id != 'no_change'){	
+
 				$this->dashboard_m->update_sales($revenue_id,$rev_month,$sales->invoiced_amount);
+				$see_outstanding_mn = 1;
+			//	$this->dashboard_m->update_outstanding($sales->user_id, $out_month, $outstanding_amount, $sales->focus_company_id, $currentYear);
 			}elseif($revenue_id == 0 && $revenue_id != 'no_change'){
-				$this->dashboard_m->set_sales($sales->user_id, $rev_month, $sales->invoiced_amount, $sales->focus_company_id, $c_year);
+
+				$sales_id = $this->dashboard_m->set_sales($sales->user_id, $rev_month, $sales->invoiced_amount, $sales->focus_company_id, $currentYear);
+				$see_outstanding_mn = 1;
+			//	$this->dashboard_m->set_outstanding($sales->user_id, $out_month, $outstanding_amount, $sales->focus_company_id, $currentYear);
 			}else{
 
 			}
+	
 		}
+
 
 		$q_pm_sales = $this->dashboard_m->get_pm_sales($date_a_tmsp,$date_b_tmsp);
 		$pm_sales = $q_pm_sales->result();
 
 		foreach ($pm_sales as $sales ){	
+		//	$outstanding_amount = $this->check_outstanding($sales->user_id,$sales->focus_company_id);
 			$revenue_id = $this->_if_sales_changed($currentYear,$sales->user_id,$sales->focus_company_id,$rev_month,$sales->invoiced_amount);
-			if($revenue_id > 0 && $revenue_id != 'no_change'){			
+
+				// 	echo $revenue_id.'<br />';
+
+			if($revenue_id > 0 && $revenue_id != 'no_change'){
+
 				$this->dashboard_m->update_sales($revenue_id,$rev_month,$sales->invoiced_amount);
+				$see_outstanding_pm = 1;
+			//	$this->dashboard_m->update_outstanding($sales->user_id, $out_month, $outstanding_amount, $sales->focus_company_id, $currentYear);
 			}elseif($revenue_id == 0 && $revenue_id != 'no_change'){
-				$this->dashboard_m->set_sales($sales->user_id, $rev_month, $sales->invoiced_amount, $sales->focus_company_id, $c_year);
+				
+				$sales_id = $this->dashboard_m->set_sales($sales->user_id, $rev_month, $sales->invoiced_amount, $sales->focus_company_id, $currentYear);
+				$see_outstanding_pm = 1;
+			//	$this->dashboard_m->set_outstanding($sales->user_id, $out_month, $outstanding_amount, $sales->focus_company_id, $currentYear);
 			}else{
 
 			}
 		}
-	}
-
-	function _fetch_pm_data($minYear,$maxYear){
-
-		$project_manager_q = $this->user_model->fetch_user_by_role(3);
-		$project_manager = $project_manager_q->result();
-
-
-		if( date("m") > 6 ){
-			// Jul-Dec current year to next year Jan-Jun
-/*
-			$minYear = date("Y");
-			$maxYear = date("Y")+1;
-*/
-		}else{
-			// Jul-Dec last year to Jan-Jun current year
-/*
-			$minYear = date("Y")-1;
-			$maxYear = date("Y");
-*/			
-		}
-
-
-		foreach ($project_manager as $row){
-			if($row->user_id != '29'){
-				echo "['".$row->user_first_name." ".$row->user_last_name."',";
-				$pm_id = $row->user_id;
-
-
-				for($i=0; $i < 12; $i++){
-
-					if($i > 6){
-						$year = $maxYear; 
-						$month = $i-6;
-					}else{
-						$year = $minYear; 
-						$month = 6+$i;
-					}
-
-					$date_a = '1-'.($month).'-'.($year);
-					$date_b = '1-'.($month == 12 ? 1 : $month+1).'-'.($month == 12 ? $year+1 : $year);
 
 
 
-					$date_a_tmsp = strtotime(str_replace('/', '-', $date_a));
-					$date_b_tmsp = strtotime(str_replace('/', '-', $date_b));
+	 	//if($see_outstanding_mn == 1 || $see_outstanding_pm == 1){
 
+		//	echo "<br /><br />outstanding show<br /><br /><br />";
 
-					$getSales_perMonth_q = $this->dashboard_m->getSales_perMonth($pm_id,$date_a_tmsp,$date_b_tmsp);
-					//$sales_perMonth = $getSales_perMonth_q->result();
-					$sales_perMonth = array_shift($getSales_perMonth_q->result_array());
+			$this->check_outstanding($c_month);
 
-				//	$arr_prc = implode('', $sales_perMonth);
-
-//var_dump($sales_perMonth);
-
-
-					if($sales_perMonth){
-						$arr_prc = implode('', $sales_perMonth);
-						echo $arr_prc.',';
-					}else{
-						echo '0,';
-					}
-
-
-
-
-		//$data['stored_revenue_forecast'] = $stored_revenue_forecast->result();
-
-
-
-
-										// echo $date_a.' ---- '.$date_b.' <br />';
-
-
-				}
-
-
-									//$minYear
-									//$maxYear
-
-				echo '],
-				';
-
-			}
-
-
-
-
-
-
-
-		}
-
+	// }
 
 	}
 
@@ -228,7 +397,6 @@ class Dashboard extends MY_Controller{
 
 		$sales_focus_comp_q = $this->dashboard_m->get_sales_focus($year,$company_id);
 		$sales_focus_comp = array_shift($sales_focus_comp_q->result_array());
-
 
 		if($sales_focus_comp['total_sales'] > 0){
 			$shares_focus_comp =  100/($sales_focus['total_sales']/$sales_focus_comp['total_sales']);
@@ -275,7 +443,13 @@ class Dashboard extends MY_Controller{
 
 	public function sales_forecast(){
 
+		if($this->session->userdata('is_admin') != 1 ):		
+			redirect('', 'refresh');
+		endif;
+
 		$data['maintenance_id'] = 29;
+
+		$post_months = array("jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec");
 		$data['tab_view'] = 'form';
 
 		$data['main_content'] = 'sales_forecast_page';
@@ -290,9 +464,8 @@ class Dashboard extends MY_Controller{
 		$pm_names = $this->dashboard_m->get_pm_names();
 		$data['pm_names'] = $pm_names->result();
 
+
 		$ryear = $this->uri->segment(3);
-
-
 		if(strlen($ryear)==4 && is_numeric($ryear) && $ryear!='' ){
 			$data['form_toggle'] = 1;
 			$old_year = $ryear-1;
@@ -301,7 +474,11 @@ class Dashboard extends MY_Controller{
 			$old_year = date("Y")-1; //once live year must be minus 1
 			//$data['form_toggle'] = @$this->session->flashdata('form_toggle');
 		}
-
+		
+		if(isset($_GET['calendar_year'])){
+			$old_year = $_GET['calendar_year']-1;
+			$data['ryear'] = $_GET['calendar_year'];
+		}
 
 		if($ryear!='' ){
 			$view = explode('_', $ryear);
@@ -323,7 +500,7 @@ class Dashboard extends MY_Controller{
 			if(isset($view[0]) && isset($view[1]) && is_numeric($view[1]) && strlen($view[0])==4 && $view[0] == 'edit'){
 				$forecast_id = $view[1];
 				$data['tab_view'] = 'edit';
-
+				$data['forecast_id'] = $forecast_id;
 				$saved_forecast_item = $this->dashboard_m->fetch_revenue_forecast($forecast_id);
 				$data['saved_forecast_item'] = array_shift($saved_forecast_item->result_array());
 
@@ -335,8 +512,18 @@ class Dashboard extends MY_Controller{
 
 		}
 
+		$data['saved_forecast_pmData'] = $this->dashboard_m->fetch_revenue_by_year($old_year+1);
+
+		$data['calendar_view'] = 2;
+
+		if(isset($_GET['calendar_view'])){
+			$calendar_view = $_GET['calendar_view'];
+			$data['calendar_view'] = $calendar_view;
+		}
 
 
+		$fetch_forecast = $this->dashboard_m->fetch_forecast($old_year+1,1);
+		$data['fetch_forecast'] = array_shift($fetch_forecast->result_array());
 
 		$data['old_year'] = $old_year;
 		$q_get_sales_focus_month = $this->dashboard_m->get_sales_focus_month($old_year);
@@ -379,7 +566,7 @@ class Dashboard extends MY_Controller{
 
 			$focus_total_sales = round($focus_total_sales,2);
 		}else{
-		//	$focus_total_sales = $sales_focus['total_sales'];
+			$focus_total_sales = $sales_focus['total_sales'];
 		}
 
 		//$focus_total_sales = $sales_focus['total_sales'];
@@ -408,6 +595,8 @@ class Dashboard extends MY_Controller{
 		}
 
 		if (!empty($_POST)) {
+
+			$this->_clear_apost();
 			$form_type = $this->input->post('form_type');
 
 			if($form_type == 1){
@@ -423,13 +612,91 @@ class Dashboard extends MY_Controller{
 				}
 			}
 
-
 			if($form_type == 2){
-
-
+				$this->_update_sales_forecast($_POST);
+				$data['error'] = 'Update Error: Please Complete the fields.';
 			}
 
 		}
+
+		//$old_year = $data['old_year'];
+
+
+
+		$sales_focus_company_q = $this->dashboard_m->get_sales_focus_company($old_year);
+		$sales_focus_company = array_shift($sales_focus_company_q->result_array());
+		$sales_focus_company['company_name'] = 'Last Year Sales';
+		$data['fcsO'] = $sales_focus_company;
+
+
+		$this_year = $old_year+1;
+
+		$sales_focus_company_q = $this->dashboard_m->get_sales_focus_company($this_year);
+		$sales_focus_company = array_shift($sales_focus_company_q->result_array());
+
+		$outstanding_focus_company_q = $this->dashboard_m->get_focus_outstanding($this_year);
+		$outstanding_focus_company = array_shift($outstanding_focus_company_q->result_array());
+
+		$swout = array();
+		$focus_overall_indv = array();
+
+		foreach ($post_months as $key => $value) {
+			//echo "$key => $value<br />";
+			$swout['sales_data_'.$value] = $sales_focus_company['rev_'.$value] + $outstanding_focus_company['out_'.$value];
+		}
+
+		$sales_focus_company['company_name'] = "Focus Sales";
+		$outstanding_focus_company['company_name'] = "Outstanding";
+
+		$swout['company_name'] = "Overall Sales";
+		$data['fcsC'] = $sales_focus_company;
+		$data['fcsOT'] = $outstanding_focus_company;
+		$data['swout'] = $swout;
+
+
+		$data['focus_indv_comp_sales_old'] = $this->dashboard_m->get_sales_focus_company($old_year,1);
+
+		$data['focus_indv_comp_sales'] = $this->dashboard_m->get_sales_focus_company($this_year,1);
+		$data['focus_indv_comp_outstanding'] = $this->dashboard_m->get_focus_outstanding($this_year,1);
+
+		$inv_fcs_overall_sales = array();
+
+		foreach ($data['focus_indv_comp_outstanding']->result_array() as $indv_comp_outs){
+			for($i=0; $i < 12 ; $i++){
+				$counter = $i;
+				$month_index = 'out_'.strtolower($months[$counter]);
+				//echo $indv_comp_outs[$month_index].'<br />';
+
+				$inv_fcs_overall_sales[$indv_comp_outs['company_name']][$month_index] = $indv_comp_outs[$month_index];
+			}
+		}
+
+		foreach ($data['focus_indv_comp_sales']->result_array() as $indv_comp_sales){
+			for($i=0; $i < 12 ; $i++){
+				$counter = $i;
+				$month_index = 'rev_'.strtolower($months[$counter]);
+				//echo $indv_comp_sales[$month_index].'<br />';
+
+				$inv_fcs_overall_sales[$indv_comp_sales['company_name']][$month_index] = $indv_comp_sales[$month_index];
+			}
+		}
+
+
+
+
+		$data['inv_fcs_overall_sales'] = $inv_fcs_overall_sales;
+
+		$data['focus_indv_comp_forecast'] = $this->dashboard_m->fetch_indv_comp_forecast($this_year);
+
+		$rev_month = 'rev_'.strtolower(date('M'));
+		$out_month = 'out_'.strtolower(date('M'));
+
+
+		$this_year = date("Y");
+
+		$data['focus_indv_pm_month_sales'] = $this->dashboard_m->fetch_pms_month_sales($rev_month,$this_year);
+		$data['focus_indv_focu_month_sales'] = $this->dashboard_m->fetch_comp_month_sales($rev_month,$this_year);
+		$data['focus_indv_focu_month_outs'] = $this->dashboard_m->fetch_comp_month_outs($out_month,$this_year);
 
 
 		$this->load->view('page', $data);
@@ -541,69 +808,53 @@ class Dashboard extends MY_Controller{
 
 		 				$this->dashboard_m->insert_revenue_forecast($focus_company_id,'',$other_pm, $value, $year, $yearly_forecast_id);
 		 			}
-
-
-
-
 		 		}
-
 		 	}
 
-
 		 	$this->session->set_flashdata('save_success','Forecast Saved'); 
-
 			redirect('/dashboard/sales_forecast', 'refresh');
 
-
-
-			
-
-		} 
- 
-
+		}
 	}
 
-	public function update_sales_forecast(){
+	public function _update_sales_forecast($post_data){
+		$forecast_id = $this->input->post('forecast_id');
 
-		$this->form_validation->set_rules('data_type', 'Data Type','trim|required|xss_clean');
-		$this->form_validation->set_rules('data_year', 'Year','trim|required|xss_clean');
-		$this->form_validation->set_rules('focus_company', 'Company','trim|required|xss_clean');
-		$this->form_validation->set_rules('data_name', 'Data Name','trim|required|xss_clean');
-		$this->form_validation->set_rules('data_amount', 'Total Amount','trim|required|xss_clean');
-
-		if($this->form_validation->run() === false){
-			$this->_clear_apost();
-			$this->session->set_flashdata('error_add_fs', validation_errors());
-			$this->session->set_flashdata('is_update','1');
-		//	$this->_form_flash_data($_POST);
-		}else{
-			$data_type = $this->input->post('data_type');
-			$data_year = $this->input->post('data_year');
-			$focus_company = $this->input->post('focus_company');
-			$data_name = $this->input->post('data_name');
-			$data_amount = str_replace(',', '',$this->input->post('data_amount'));
-
-			$jul = str_replace(',', '',$this->input->post('jul'));
-			$aug = str_replace(',', '',$this->input->post('aug'));
-			$sep = str_replace(',', '',$this->input->post('sep'));
-			$oct = str_replace(',', '',$this->input->post('oct'));
-			$nov = str_replace(',', '',$this->input->post('nov'));
-			$dec = str_replace(',', '',$this->input->post('dec'));
-			$jan = str_replace(',', '',$this->input->post('jan'));
-			$feb = str_replace(',', '',$this->input->post('feb'));
-			$mar = str_replace(',', '',$this->input->post('mar'));
-			$apr = str_replace(',', '',$this->input->post('apr'));
-			$may = str_replace(',', '',$this->input->post('may'));
-			$jun = str_replace(',', '',$this->input->post('jun'));
-
-			$revenue_forecast_id = $this->input->post('rfc_token');
-
-			$this->session->set_flashdata('record_update','Record is now updated.');
-
-			$this->dashboard_m->update_revenue_forecast($revenue_forecast_id,$data_type,$data_year,$focus_company,$data_name,$data_amount,$jul,$aug,$sep,$oct,$nov,$dec,$jan,$feb,$mar,$apr,$may,$jun);
+		foreach ($post_data as $key => $value){
+			$this->form_validation->set_rules($key, $key,'trim|required|xss_clean');
 		}
 
-		redirect('/dashboard/sales_forecast', 'refresh');
+		if($this->form_validation->run() === false){
+
+		}else{
+
+			$data_label = $this->input->post('data_label_edt');
+			$total = str_replace(',', '',$this->input->post('data_amount_edt'));
+			$forecast_id = $this->input->post('forecast_id');
+			$months = array();
+
+			for ($x=0; $x < 12; $x++){
+				$months[$x] = str_replace(',', '',$this->input->post('month_edt_'.$x));
+			}
+
+		 	list($forecast_jan, $forecast_feb, $forecast_mar, $forecast_apr, $forecast_may, $forecast_jun, $forecast_jul, $forecast_aug, $forecast_sep, $forecast_oct, $forecast_nov, $forecast_dec) = $months;
+		 	$this->dashboard_m->update_revenue_forecast($forecast_id, $data_label, $total, $forecast_jan, $forecast_feb, $forecast_mar, $forecast_apr, $forecast_may, $forecast_jun, $forecast_jul, $forecast_aug, $forecast_sep, $forecast_oct, $forecast_nov, $forecast_dec );
+
+		 	foreach ($post_data as $key => $value){
+		 		$pms_percent = explode('_', $key);
+
+		 		if( isset($pms_percent[3])) {
+		 			$indv_id = $pms_percent[3];
+		 			$this->dashboard_m->update_revenue_forecast_indv($value,$indv_id);
+		 		}
+		 	}
+
+		 	$this->session->set_flashdata('save_success','Forecast Updated'); 
+			redirect('/dashboard/sales_forecast/view_'.$forecast_id, 'refresh');
+
+		}
+
+//		redirect('/dashboard/sales_forecast', 'refresh');
 
 	}
 }

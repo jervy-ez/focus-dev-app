@@ -553,7 +553,7 @@ if($project_total_percent>0){
 
 $content .= '</tbody></table>';
 
-$content .= '<p><br /><hr /><p><br /></p><strong>Project Manager:</strong> '.$project_manager_filter.' &nbsp;  &nbsp;  &nbsp; <strong> Note:</strong> All Prices are EX-GST &nbsp;  &nbsp;  &nbsp; <strong>Project Total Ex-GST:</strong> $'.number_format($total_project_value,2).'  &nbsp;  &nbsp;  &nbsp; <strong>Outstading Ex-GST:</strong> $'.number_format($total_outstading_value,2).'   <br /></p><br />';
+$content .= '<p><br /><hr /><strong>Project Manager:</strong> '.$project_manager_filter.' &nbsp;  &nbsp;  &nbsp; <strong> Note:</strong> All Prices are EX-GST &nbsp;  &nbsp;  &nbsp; <strong>Project Total Ex-GST:</strong> $'.number_format($total_project_value,2).'  &nbsp;  &nbsp;  &nbsp; <strong>Outstading Ex-GST:</strong> $'.number_format($total_outstading_value,2).'   <br /></p><br />';
 
 
 
@@ -619,6 +619,8 @@ public function wip_report(){
 
 	$prj_status = $data_val['16'];	
 
+
+
 	if($date_start_a == ''){
 		$date_a_s = strtotime(str_replace('/', '-', '10/10/1900'));
 		$date_start_filter_a = '';
@@ -671,6 +673,7 @@ public function wip_report(){
 		$date_d = strtotime(str_replace('/', '-', $date_created));
 		$date_filter_d = $date_created;
 	}
+
 
 	$wip_client_q = '';
 	if($wip_client != ''){
@@ -782,43 +785,6 @@ if($prj_status != ''){
 
 
 
-
-
-	if($prj_status == 'notwip'){
-		$doc_type = 'Not WIP Projects';
-
-		$status .= ' AND `project`.`is_paid` = \'0\' ';
-		$status .= ' AND `project`.`job_date` = \'\' ';
-		$show_invoiced = 0;
-		$show_un_invoiced = 1;
-
-	}elseif($prj_status == 'wip'){
-		$doc_type = 'WIP Projects';
-		$show_invoiced = 0;
-
-		$show_un_invoiced = 1;
-
-		$status .= ' AND `project`.`is_paid` = \'0\' ';
-		$status .= ' AND `project`.`job_date` <> \'\' ';
-
-	}elseif($prj_status == 'invoiced'){
-		$doc_type = 'Invoiced Projects';
-		$status .= ' AND `project`.`job_date` <> \'\' ';
-		$show_invoiced = 1;
-
-	}elseif($prj_status == 'paid'){
-		$doc_type = 'Paid Projects';
-
-		$status .= ' AND `project`.`is_paid` = \'1\' ';
-		$status .= ' AND `project`.`job_date` <> \'\' ';
-		$show_invoiced = 1;
-
-	}else{
-		$doc_type = '';
-	}
-
-
-/*
 	if (in_array("wip", $status_list) || in_array("paid", $status_list) || in_array("invoiced", $status_list)){
 		if (!in_array("notwip", $status_list) ){
 			$status .= ' AND `project`.`job_date` <> \'\'  ';
@@ -834,7 +800,7 @@ if($prj_status != ''){
 			$status .= ' AND  ( `project`.`is_paid` = \'0\' OR  `project`.`is_paid` = \'1\'  )';						
 		}
 	}
-*/
+
 
 	/*		if (!in_array("wip", $status_list) && !in_array("paid", $status_list) ){
 				$status = ' AND `project`.`job_date` <> \'\' AND `project`.`is_paid` = \'1\'  ';
@@ -848,33 +814,27 @@ if($prj_status != ''){
 
 
 			if (in_array("wip", $status_list) || in_array("notwip", $status_list) ){
-			// 	$show_un_invoiced = 1;
+				$show_un_invoiced = 1;
 			}
 
 			if (in_array("paid", $status_list) || in_array("invoiced", $status_list) ){
-			//	$show_invoiced = 1;
+				$show_invoiced = 1;
 			}
 			
 
-/*
+
 			if($prj_status_arr_count == 4 || $prj_status_arr_count == 0 ){
 				$status = '';
 				$show_invoiced = 1;
 				$show_un_invoiced = 1;
 				$page_type = '';
 			}
-			*/
-
-
+			
 		}else{
-
-			/*
 			$status = '';
 			$show_invoiced = 1;
 			$show_un_invoiced = 1;
 			$page_type = '';
-
-			*/
 		}
 
 		$content .= '<div class="def_page"><div class="clearfix header"><img src="./img/focus-logo-print.png" align="left" class="block" style="margin-top:-30px; "  /><h1 class="text-right block" style="margin-top:-10px; margin-bottom:10px;" ><br />'.$page_type.' '.$doc_type.' List Report</h1></div><br />';
@@ -892,7 +852,7 @@ if($prj_status != ''){
 
 		$total_invoiced_init = 0;
 
-//		$content .= '<tr><td colspan="9">'.$status.' '.$type.' '.$wip_client_q.'-- '.$wip_pm_q.' '.$selected_cat_q.' '.$order_q.'</td></tr>';
+//		$content .= '<tr><td colspan="5">'.$status.' '.$type.' '.$wip_client_q.' '.$wip_pm_q.' '.$selected_cat_q.' '.$order_q.'</td></tr>';
 
 		foreach ($wip_list_q->result_array() as $row){
 
@@ -922,7 +882,7 @@ if($prj_status != ''){
 			$date_project_date = strtotime(str_replace('/', '-', $row['project_date']));
 
 
-		//	if(in_array($color, $status_list)){
+			if(in_array($color, $status_list)){
 
 				if($doc_type == 'WIP'){
 					$color = 'wip_b';
@@ -1028,7 +988,7 @@ if($prj_status != ''){
 						}
 					}
 				}
-		//	}
+			}
 
 
 		//var_dump($arrs);
@@ -1040,7 +1000,7 @@ if($prj_status != ''){
 
 			$overall_project_total = $total_estimate + $total_quoted;
 
-			$content .= '<p><br /><hr /><p><br /></p><span><strong> All Prices are EXT-GST</strong> &nbsp; &nbsp;</span> &nbsp; &nbsp;   <span><strong>Project Total:</strong> '.number_format($overall_project_total,2).'</span> &nbsp; &nbsp;   <span class="green-estimate"><strong>Total Estimated:</strong> '.number_format($total_estimate,2).'</span> &nbsp; &nbsp;   <span><strong>Total Quoted:</strong> '.number_format($total_quoted,2).'</span></span> &nbsp; &nbsp;   <span><strong>Total Invoiced:</strong> '.number_format($total_invoiced,2).'</span><br /></p><p><br /><span><strong>Project Manager:</strong> '.$wip_pm_filter.'</span> &nbsp;  &nbsp;   &nbsp;  &nbsp; <strong>Color Codes:</strong> &nbsp;  &nbsp;  <strong class="invoiced">Invoiced</strong> &nbsp;  &nbsp;  <strong class="paid">Paid</strong> &nbsp;  &nbsp;  <strong class="wip">WIP</strong></p>';
+			$content .= '<p><br /><hr /><span><strong> All Prices are EXT-GST</strong> &nbsp; &nbsp;</span> &nbsp; &nbsp;   <span><strong>Project Total:</strong> '.number_format($overall_project_total,2).'</span> &nbsp; &nbsp;   <span class="green-estimate"><strong>Total Estimated:</strong> '.number_format($total_estimate,2).'</span> &nbsp; &nbsp;   <span><strong>Total Quoted:</strong> '.number_format($total_quoted,2).'</span></span> &nbsp; &nbsp;   <span><strong>Total Invoiced:</strong> '.number_format($total_invoiced,2).'</span><br /></p><p><br /><span><strong>Project Manager:</strong> '.$wip_pm_filter.'</span> &nbsp;  &nbsp;   &nbsp;  &nbsp; <strong>Color Codes:</strong> &nbsp;  &nbsp;  <strong class="invoiced">Invoiced</strong> &nbsp;  &nbsp;  <strong class="paid">Paid</strong> &nbsp;  &nbsp;  <strong class="wip">WIP</strong></p>';
 # './*$this->wip->sum_total_wip_cost($arrs)*/.'
 			$content .= '<div class="footer"><p>';
 			$content .= '<strong> Client :</strong> '.$wip_client_filter.' | ';

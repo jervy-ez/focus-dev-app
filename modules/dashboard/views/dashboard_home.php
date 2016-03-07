@@ -1,6 +1,9 @@
 <?php date_default_timezone_set("Australia/Perth");  // date is set to perth ?>
 <?php $this->load->module('bulletin_board'); ?>
 <!-- title bar -->
+
+
+
 <div class="container-fluid head-control">
 	<div class="container-fluid">
 		<div class="row">

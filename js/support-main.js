@@ -3284,7 +3284,7 @@ $('.print-wip').on("click", function(event) {
   var totals_wip = $('.totals_wip').html();
   var has_error = 0;
 
-  var wip_client = $('.select-client-tbl').val();
+  var wip_client = $('select.report_company').val();
   var wip_pm = $('.select-pm-tbl').val();
   var wip_find_start_finish_date = $('#finish_date_start').val();
   var wip_find_finish_date = $('#finish_date').val();
@@ -3301,7 +3301,7 @@ $('.print-wip').on("click", function(event) {
   var date_created = $('#date_created').val();
 
   if(doc_type == 'WIP'){
-    var prj_status = 'wip,';
+    var prj_status = 'wip';
   }else{
     var prj_status = $('select#prj_status').val();
   }
