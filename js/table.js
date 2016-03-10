@@ -147,12 +147,13 @@ $(".select-client-tbl").on("change", function(e) {
  	//alert(val[0]);
  	var itemSearch = val[0];
  	//table.column(2).search(itemSearch).draw();
- 	table.fnFilter(itemSearch);
+ 	table.fnFilter(itemSearch,'2');
 });
 
 
  $('.select-personal').on("change", function(e) { 
     var search = $(this).val();
+    var table = $('#projectTable').dataTable();
 
     if(search == 'ORD'){
         table.fnResetAllFilters();
@@ -161,22 +162,6 @@ $(".select-client-tbl").on("change", function(e) {
     }
  });
 
-/*
- $(".select-arr-tbl").on("change", function(e) { 
-
- 	var table = $('#projectTable').dataTable();
- 	//alert($(this).val());
- 	if($(this).val() == 'asc'){
- 		//table.fnSort( [ [4,'asc'] ] ); 		
- 		table.fnFilter('Unset','4');
- 	}else if($(this).val() == 'desc'){
- 		//table.fnSort( [ [4,'desc'] ] );
- 		table.fnFilter('/','4');
- 	}else{
-    	table.fnResetAllFilters();
- 	}
- });
-*/
 
  $(".select-status-tbl").on("change", function(e) { 
 
@@ -189,6 +174,20 @@ $(".select-client-tbl").on("change", function(e) {
         table.fnFilter(search,'7');
     }
  });
+
+/*
+$('#projectTable_filter input').replaceWith('<input type="text" placeholder="Seach" class="form-control input-sm prj_gen_seearch">');
+
+
+
+
+$('#projectTable_filter input.prj_gen_seearch').keyup( function(){
+    var search = $(this).val();
+    $('#reconciled_list_table_filter input').val(search);
+    var table = $('#projectTable').dataTable();
+    table.fnFilter(search);
+});
+*/
 
 
  $('.userLogsBtn').click(function(){
@@ -282,6 +281,18 @@ $(".select-client-tbl").on("change", function(e) {
 
  });
 */
+
+
+
+
+//next('<input type="text" placeholder="Seach" class="form-control input-sm prj_gen_seearch">');
+
+ // .replaceWith('<input type="text" placeholder="Seach" class="form-control input-sm prj_gen_seearch">');
+
+
+$('.po-area #po_table_filter').prepend($('.outstading_pm').html());
+
+
 
 $('.po-area #po_table_filter').prepend($('.outstading_pm').html());
 $('.po-area #reconciled_list_table_filter').prepend($('.outstading_pm').html());
