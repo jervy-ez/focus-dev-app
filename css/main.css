@@ -481,6 +481,10 @@ td.green-estimate {
 	padding:0;
 }
 
+.pad-3{
+	padding:3px;
+}
+
 .pad-5{
 	padding:5px;
 }
@@ -491,6 +495,10 @@ td.green-estimate {
 
 .pad-15{
 	padding:15px;
+}
+
+.pad-top-3{
+	padding-top: 3px;
 }
 
 .pad-top-5{
@@ -586,6 +594,10 @@ td.green-estimate {
 
 .m-15{
 	margin:15px;
+}
+
+.m-bottom-3{
+	margin-bottom:3px;
 }
 
 .m-bottom-5{
@@ -1628,7 +1640,7 @@ tr.active_row_work>td{
 
 
 .adv .box-widget .widg-content{
-	padding: 7px 10px;
+	padding: 4px 4px;
 }
 
 .adv .box-widget .widg-content.fill *{
@@ -1663,9 +1675,9 @@ tr.active_row_work>td{
 
 .adv .widget{
 	background: #fff;
-	-webkit-box-shadow: 0px 1px 3px 0px rgba(178, 178, 178, 0.4);
-	-moz-box-shadow:    0px 1px 3px 0px rgba(178, 178, 178, 0.4);
-	box-shadow:         0px 1px 3px 0px rgba(178, 178, 178, 0.4);
+	-webkit-box-shadow: 1px 3px 5px 0px rgba(178, 178, 178, 0.4);
+	-moz-box-shadow:    1px 3px 5px 0px rgba(178, 178, 178, 0.4);
+	box-shadow:         1px 3px 5px 0px rgba(178, 178, 178, 0.4);
 
 	-moz-border-radius:    3px 3px 3px 3px;
 	-webkit-border-radius: 3px 3px 3px 3px;
@@ -1683,7 +1695,7 @@ tr.active_row_work>td{
     margin-bottom: -5px;
 }
 
-.adv .wid-type-0 .widg-icon-inside,.adv .wid-type-0 .label,.adv .wid-type-0 .badge{
+.adv .wid-type-0 .widg-icon-inside{
 	background: #999999;
 }
 
@@ -1729,7 +1741,7 @@ tr.active_row_work>td{
 
 
 
-.adv .wid-type-a .widg-icon-inside,.adv  .wid-type-a .label,.adv  .wid-type-a .badge{
+.adv .wid-type-a .widg-icon-inside{
 	background: #337AB7;
 }
 
@@ -1780,7 +1792,7 @@ tr.active_row_work>td{
 
 
 
-.adv .wid-type-b .widg-icon-inside,.adv  .wid-type-b .label,.adv  .wid-type-b .badge{
+.adv .wid-type-b .widg-icon-inside{
 	background: #4DAB4D;
 }
 
@@ -1831,7 +1843,7 @@ tr.active_row_work>td{
 
 
 
-.adv .wid-type-c .widg-icon-inside,.adv  .wid-type-c .label,.adv  .wid-type-c .badge{
+.adv .wid-type-c .widg-icon-inside{
 	background: #4DB9D7;
 }
 
@@ -1864,7 +1876,7 @@ tr.active_row_work>td{
 
 
 
-.adv .wid-type-b .widg-icon-inside,.adv .wid-type-b .label,.adv  .wid-type-b .badge{
+.adv .wid-type-b .widg-icon-inside{
 	background: #4DAB4D;
 }
 
@@ -1918,7 +1930,7 @@ tr.active_row_work>td{
 
 
 
-.adv .wid-type-d .widg-icon-inside,.adv  .wid-type-d .label,.adv  .wid-type-d .badge{
+.adv .wid-type-d .widg-icon-inside{
 	background: #D9534F;
 }
 
@@ -1952,7 +1964,7 @@ tr.active_row_work>td{
 
 
 
-.adv .wid-type-e .widg-icon-inside,.adv  .wid-type-e .label,.adv  .wid-type-e .badge{
+.adv .wid-type-e .widg-icon-inside{
 	background: #F7901E;
 }
 
@@ -1978,7 +1990,7 @@ tr.active_row_work>td{
 
 
 
-.adv .wid-type-f .widg-icon-inside,.adv  .wid-type-f .label,.adv  .wid-type-f .badge{
+.adv .wid-type-f .widg-icon-inside{
 	background: #FF00FC;
 }
 
