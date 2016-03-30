@@ -1084,6 +1084,16 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
     return false;
   });
 
+
+ //  $('input.datepicker#job_date').on("keydown", function(e) {
+ //   e.stopPropagation();
+ //   e.preventDefault();  
+ //   e.returnValue = false;
+ //   e.cancelBubble = true;
+ //   return false;
+ // });
+
+
   $('input.datepicker#site_start').on("keydown", function(e) {
     e.stopPropagation();
     e.preventDefault();  
@@ -1931,14 +1941,13 @@ var total_invoiced_outstanding_row = $('input.total-invoiced-outstanding-row').v
 var total_paid_row = $('input.total-paid-row').val();
 
 
-
-
+/*
 $('#invoice_paid_table_wrapper #invoice_paid_table_filter').append('<p class="m-top-5 m-right-15" style="float:right;">Total Paid (ext-gst): <strong class="ex-gst total-paid-head"> $'+total_paid_row+'</strong>  </p>')
-
 
 $('#invoice_table_wrapper #invoice_table_filter').append('<p class="m-top-5" style="float:left;">Total Invoice (ext-gst): <strong class="total-invoiced-head ex-gst"> $'+total_invoiced_row+'</strong>  &nbsp; Outstanding (ex-gst): <strong class="total-outstanding-head ex-gst"> $'+total_invoiced_outstanding_row+'</strong></p>')
 
 $('#invoice_table_wrapper #invoice_table_filter').prepend('<button class="btn btn-sm btn-primary pull-right m-left-10 m-right-5" onclick="open_invoice_filter()">Open Filter Screen</button>');
+*/
 
 $('#progress_payment_amount_value').on("keyup", function(e) {
 

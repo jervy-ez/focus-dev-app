@@ -254,17 +254,35 @@ class Company_m extends CI_Model{
 	}
 	
 	public function display_company_by_type($type){
-		$query = $this->db->query("SELECT `company_details`.*,`company_details`.`company_id`,`company_details`.`company_name` ,  `address_general`.`suburb` ,  `states`.`shortname` , `contact_number`.`area_code`, `contact_number`.`office_number`,`email`.`general_email`
+		$query = $this->db->query("SELECT `company_details`.*,`company_details`.`company_id`,`company_details`.`company_name` ,  `address_general`.`suburb` ,  `states`.`shortname` 
+
+			/*`contact_number`.`area_code`, `contact_number`.`office_number`,`email`.`general_email`*/
+
+
 			FROM  `company_details`			
 			LEFT JOIN  `address_detail` ON  `address_detail`.`address_detail_id` =  `company_details`.`address_id` 
 			LEFT JOIN  `address_general` ON  `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
+		
+		/*
 			LEFT JOIN `contact_person_company` ON `contact_person_company`.`company_id` = `company_details`.`company_id`
 			LEFT JOIN  `contact_person` ON  `contact_person`.`contact_person_id` = `contact_person_company`.`contact_person_id`			
 			LEFT JOIN `contact_number` ON `contact_number`.`contact_number_id` = `contact_person`.`contact_number_id`
-			LEFT JOIN `email` ON `email`.`email_id` = `contact_person`.`email_id`
+*/
+
+			/*LEFT JOIN `email` ON `email`.`email_id` = `contact_person`.`email_id`*/
 			LEFT JOIN  `states` ON  `states`.`id` =  `address_general`.`state_id` 
-			WHERE  `company_details`.`company_type_id` =  '$type'  AND `company_details`.`active` = '1' AND  `contact_person_company`.`is_primary` = '1'
-			ORDER BY  `company_details`.`company_id` ASC ");
+			WHERE  `company_details`.`company_type_id` =  '$type'  AND `company_details`.`active` = '1' 
+			 
+			ORDER BY `company_details`.`company_name` ASC ");
+		return $query;
+	}
+
+	public function function_get_contact_details($company_id){
+		$query = $this->db->query("SELECT * FROM `contact_person_company`
+			LEFT JOIN  `contact_person` ON  `contact_person`.`contact_person_id` =  `contact_person_company`.`contact_person_id`
+			LEFT JOIN  `email` ON `email`.`email_id` =  `contact_person`.`email_id`
+			LEFT JOIN `contact_number` ON  `contact_number`.`contact_number_id` = `contact_person`.`contact_number_id`
+			WHERE `contact_person_company`.`company_id` = '$company_id' AND  `contact_person_company`.`is_active` = '1' ");
 		return $query;
 	}
 	

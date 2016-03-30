@@ -987,6 +987,27 @@ class Company extends MY_Controller{
 		$data['com_c'] = $this->company_m->display_company_by_type($type);
 		$this->load->view('tables_client',$data);
 	}
+
+	public function fetch_contacts($company_id){
+		$q_contact_details = $this->company_m->function_get_contact_details($company_id);
+
+
+		$contact = array_shift($q_contact_details->result_array());
+		echo '<td>';
+		echo ($contact['office_number'] != ''? $contact['area_code'].' '.$contact['office_number'] : '');
+		echo '</td><td><a href="mailto:'.strtolower($contact['general_email']).'?Subject=Inquiry" >'.strtolower($contact['general_email']).'</a></td>';
+
+
+//echo $company_id.'xxxx';
+
+
+
+/*
+function_get_contact_details($company_id)
+
+*/
+
+	}
 	
 	public function donut_cart_companies(){
 		$data['com_q'] = $this->company_m->count_company_by_type();

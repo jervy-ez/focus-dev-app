@@ -46,7 +46,7 @@ $('#userLogsTble').dataTable({
     "iDisplayLength": 13,
     "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]],
     "order": [[ 6, "desc" ]],
-   "aoColumnDefs": [{ "bVisible": false, "aTargets":[6] },{ "bVisible": false, "aTargets":[1] }] 
+   "aoColumnDefs": [{ "bVisible": false, "aTargets":[6] },{ "bVisible": false, "aTargets":[1] },{"targets": 3,"orderable": false} ]
 });
 
 var centerTable_prj = $('#shoppingCenterTable_prj').dataTable();
@@ -69,19 +69,22 @@ $('#po_table').dataTable({
             { sWidth: '10%' },
             { sWidth: '5%' },
             { sWidth: '5%' }
-        ]
+        ],
+         "aoColumnDefs":[{"targets": 6,"orderable": false},{"targets": 2,"orderable": false} ]
 });
 
 
 $('#invoice_table').dataTable({
     "iDisplayLength": 13,
-    "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
+    "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]],
+         "aoColumnDefs":[{"targets": 5,"orderable": false}]
 });
 
 
 $('#invoice_paid_table').dataTable({
     "iDisplayLength": 13,
-    "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
+    "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]],
+         "aoColumnDefs":[{"targets": 4,"orderable": false}]
 });
 
 
@@ -100,7 +103,8 @@ $('#reconciled_list_table').dataTable({
             { sWidth: '10%' },
             { sWidth: '5%' },
             { sWidth: '5%' }
-        ]
+        ],
+         "aoColumnDefs":[{"targets": 6,"orderable": false},{"targets": 2,"orderable": false} ]
 });
 
 
@@ -126,7 +130,7 @@ var table = $('#projectTable').dataTable({
             { sWidth: '10%' },
             { sWidth: '10%' }
         ],
-   "aoColumnDefs": [{ "bVisible": false, "aTargets":[6] },{ "bVisible": false, "aTargets":[7] }] 
+   "aoColumnDefs": [{ "bVisible": false, "aTargets":[6] },{ "bVisible": false, "aTargets":[7] },{"targets": 4,"orderable": false}] 
 });
 
 var wipTable = $('#wipTable').dataTable({ 
@@ -134,7 +138,9 @@ var wipTable = $('#wipTable').dataTable({
 	"scrollCollapse": true,
 	"paging":         false,
 	"scrollY":        "500px",
-    "aoColumnDefs": [{ "bVisible": false, "aTargets":[7] },{ "bVisible": false, "aTargets":[9] }] 
+    "aoColumnDefs": [{ "bVisible": false, "aTargets":[7] },{ "bVisible": false, "aTargets":[9] },{"targets": 4,"orderable": false},{"targets": 5,"orderable": false},{"targets": 6,"orderable": false}]   //add_to revsion update
+
+
 });
 
 
@@ -288,11 +294,6 @@ $('#projectTable_filter input.prj_gen_seearch').keyup( function(){
 //next('<input type="text" placeholder="Seach" class="form-control input-sm prj_gen_seearch">');
 
  // .replaceWith('<input type="text" placeholder="Seach" class="form-control input-sm prj_gen_seearch">');
-
-
-$('.po-area #po_table_filter').prepend($('.outstading_pm').html());
-
-
 
 $('.po-area #po_table_filter').prepend($('.outstading_pm').html());
 $('.po-area #reconciled_list_table_filter').prepend($('.outstading_pm').html());

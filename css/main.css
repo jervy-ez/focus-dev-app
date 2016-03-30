@@ -2091,3 +2091,13 @@ tr.active_row_work>td{
 table.dataTable{
 	font-size: 14px !important;
 }
+
+.adv .small_orange_fixed{
+	width: 110px;
+	background-color: #F7901E !important;
+}
+
+.adv .small_blue_fixed{
+	width: 110px;
+	background-color: #337AB7 !important;
+}
