@@ -12,16 +12,17 @@ var url = $(location).attr('href').split("/").splice(0, 7).join("/");
 var segments = url.split( '/' );
 var segmentlength = segments.length;
 var company = segments[3].replace("#", ""); // Change to 3 when live / 4 for local
+
 if(company == 'company'){
     var companyTable = $('#companyTable').dataTable({
-        "iDisplayLength": 13,
+        "iDisplayLength": 20,
         "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]],
         "aoColumnDefs": [{ "bVisible": false, "aTargets":[4] }]
         
     });
 }else{
     var companyTable = $('#companyTable').dataTable({
-        "iDisplayLength": 13,
+        "iDisplayLength": 20,
         "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
     });
 }
@@ -137,7 +138,7 @@ var wipTable = $('#wipTable').dataTable({
 	"order": [[ 0, "desc" ]],
 	"scrollCollapse": true,
 	"paging":         false,
-	"scrollY":        "500px",
+	"scrollY":        "700px",
     "aoColumnDefs": [{ "bVisible": false, "aTargets":[7] },{ "bVisible": false, "aTargets":[9] },{"targets": 4,"orderable": false},{"targets": 5,"orderable": false},{"targets": 6,"orderable": false}]   //add_to revsion update
 
 
