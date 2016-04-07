@@ -20,15 +20,15 @@
         
 		<link href="<?php echo base_url(); ?>css/font-awesome.min.css" rel="stylesheet">
         <script src="<?php echo base_url(); ?>js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-        		
-		<script src="https://maps.googleapis.com/maps/api/js?v=3"></script>
-    	<script type="text/javascript" src="<?php echo base_url(); ?>js/maps/data.js"></script>
-    	<script type="text/javascript" src="<?php echo base_url(); ?>js/maps/markerclusterer_packed.js"></script>
-    	
-    	
+ 
+ 
+ 
 		<link href="<?php echo base_url(); ?>css/c3.css" rel="stylesheet" type="text/css">
 		<script src="<?php echo base_url(); ?>js/c3/d3.js" charset="utf-8"></script>
 		<script src="<?php echo base_url(); ?>js/c3/c3.js"></script>
+
+
+	 
     </head>
     <body>
 

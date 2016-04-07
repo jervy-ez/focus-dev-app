@@ -3496,16 +3496,7 @@ $(".add_shopping_center_project").on("click", function(event){
 });
 */
 
-  // affix sidebar
-  $('.dash #sidebar').affix({offset : {top : 0}});
-  var $body = $(document.body);
-  var navHeight = $('.top-nav').outerHeight(true) + 10;
-  $body.scrollspy({target : '#leftCol',offset : navHeight });
-  // affix sidebar 
 
 
 
 });
-
-var side_bar = $('.main-content').innerHeight()+100;
-$('#sidebar').css('height',side_bar);
