@@ -3,6 +3,8 @@
 <?php $this->load->module('dashboard'); ?>
 <?php $months = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"); ?>
 <!-- title bar -->
+<style type="text/css">body{background: #ECF0F5 !important;}</style>
+
 <div class="container-fluid head-control">
 	<div class="container-fluid">
 		<div class="row">
@@ -40,8 +42,7 @@
 </div>
 <!-- title bar -->
 
-<!-- <div class="container-fluid"  style="background: #ECF0F5;"> -->
-<div class="container-fluid adv"  style="background: #FFF;">
+<div class="container-fluid adv"  style="background: #ECF0F5;">
 	<!-- Example row of columns -->
 	<div class="row">				
 		<?php $this->load->view('assets/sidebar'); ?>
@@ -95,7 +96,7 @@
 									<div class="box-area clearfix data_forecast collapse <?php if(isset($form_toggle)){ echo 'in'; }else{ echo 'out'; } ?>">
 										<div class="widg-content clearfix">
 											<div class="tab_container">
-												<div id="tab_addnew_area" class="tab_area active clearfix row pad-right-10  pad-left-10 no-pad-t"  <?php if($tab_view != 'form'){ echo 'style="display:none;"';  } ?> >
+												<div id="tab_addnew_area" class="tab_area active clearfix row pad-right-15  pad-left-15 no-pad-t"  <?php if($tab_view != 'form'){ echo 'style="display:none;"';  } ?> >
 													<form method="post" id="forecast_form" class="m-top-0 m-bottom-5 clearfix" action="">
 
 													<div class="col-md-8 col-sm-12 col-xs-12" id="">
@@ -513,7 +514,7 @@
 								
 									<div class="box-area clearfix">
 										<div class="widg-content clearfix">
-											<div class="">
+											<div class="pad-right-15  pad-left-15 no-pad-t">
 												<div id="" class="clearfix row pad-0-imp no-m-imp" >
 													<form method="post" id="update_forecast_form" class="m-top-5 m-bottom-5 clearfix" action="">
 
@@ -777,13 +778,11 @@
 										<div class="m-left-10 m-bottom-10">
 
 										<button class="btn btn-info btn-sm" id="reset_chart" onclick="bttnB(this)" ><i class="fa fa-exchange"></i> Reset Chart</button>
-
-
 										<button class="btn btn-primary btn-sm" id="visible_overall" onclick="bttnA(this)" ><i class="fa fa-exchange"></i> Outstanding</button>
-
 
 										<button class="btn btn-warning btn-sm" id="visible_forecast" onclick="bttnC(this)" ><i class="fa fa-exchange"></i> Focus WA</button>
 										<button class="btn btn-success btn-sm" id="visible_forecast" onclick="bttnD(this)" ><i class="fa fa-exchange"></i> Focus NSW</button>
+										<button class="btn btn-sm" id="visible_forecast" onclick="bttnE(this)" ><i class="fa fa-exchange"></i> PM Actual Sales</button>
 
 
 
@@ -810,8 +809,6 @@
 
 
 						<!-- ************************ -->
-
-
 
 
 
@@ -1198,8 +1195,9 @@ for($i=0; $i < 12 ; $i++){
 
 
 
-
-
+<?php foreach ($pms_sales_c_year->result_array() as $pm_sales_data ) {
+	echo "['".$pm_sales_data['user_pm_name']."',".$pm_sales_data['rev_jan'].",".$pm_sales_data['rev_feb'].",".$pm_sales_data['rev_mar'].",".$pm_sales_data['rev_apr'].",".$pm_sales_data['rev_may'].",".$pm_sales_data['rev_jun'].",".$pm_sales_data['rev_jul'].",".$pm_sales_data['rev_aug'].",".$pm_sales_data['rev_sep'].",".$pm_sales_data['rev_oct'].",".$pm_sales_data['rev_nov'].",".$pm_sales_data['rev_dec']."],";
+} ?>
 
 
 
@@ -1381,7 +1379,7 @@ for($i=0; $i < 12 ; $i++){
 bar:{ width:{ ratio: 0.5 }},
 point:{ select:{ r: 6 }},
 onrendered: function () { $('.loading_chart').remove(); },
-zoom: {enabled: true, rescale: true},
+zoom: {enabled: true, rescale: true,extent: [1, 7]},
 legend: { show: false },
 
 
@@ -1474,6 +1472,15 @@ function bttnD(element_obj){
 	}, 500);
 }
 
+
+
+function bttnE(element_obj){
+	var forecast_display = element_obj.getAttribute("id");
+	chart.hide(); 
+	setTimeout(function () {
+			chart.show(['Alan Liddell', 'Stuart Hubrich', 'Pyi Paing Aye Win','Krzysztof Kiezun','Maintenance Manager','Trevor Gamble']);
+	}, 500);
+}
 
 
 var chart_b = c3.generate({

@@ -1017,7 +1017,7 @@ if($prj_status != ''){
 													}else{
 
 														$total_estimate = $total_estimate + $row['budget_estimate_total'];
-														$content .= '<td class="green-estimate">'.number_format($row['budget_estimate_total'],2).'</td>';
+														$content .= '<td class="green-estimate" style="color:green!important;font-weight:700!important;">'.number_format($row['budget_estimate_total'],2).'</td>';
 													}
 
 													$content .= '<td>'.$row['job_date'].'</td>';
@@ -1025,7 +1025,7 @@ if($prj_status != ''){
 													if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
 														$content .= '<td>'.number_format($row['install_time_hrs'],2).'</td>';
 													}else{
-														$content .= '<td class="green-estimate">'.number_format($row['labour_hrs_estimate'],2).'</td>';
+														$content .= '<td class="green-estimate" style="color:green!important;font-weight:700!important;">'.number_format($row['labour_hrs_estimate'],2).'</td>';
 													}
 
 
@@ -1053,7 +1053,7 @@ if($prj_status != ''){
 														$content .= '<td>'.number_format($prj_total_current,2).'</td>';
 													}else{
 														$total_estimate = $total_estimate + $row['budget_estimate_total'];
-														$content .= '<td class="green-estimate">'.number_format($row['budget_estimate_total'],2).'</td>';
+														$content .= '<td class="green-estimate" style="color:green!important;font-weight:700!important;">'.number_format($row['budget_estimate_total'],2).'</td>';
 													}
 
 													$content .= '<td>'.$row['job_date'].'</td>';
@@ -1061,7 +1061,7 @@ if($prj_status != ''){
 													if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 ){
 														$content .= '<td>'.number_format($row['install_time_hrs'],2).'</td>';
 													}else{
-														$content .= '<td class="green-estimate">'.number_format($row['labour_hrs_estimate'],2).'</td>';
+														$content .= '<td class="green-estimate" style="color:green!important;font-weight:700!important;">'.number_format($row['labour_hrs_estimate'],2).'</td>';
 													}
 
 

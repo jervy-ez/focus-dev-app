@@ -174,6 +174,7 @@
 
 														<select class="form-control postcode-option tooltip-test" id="job_category" name="job_category" tabindex='4' data-original-title="On selecting the Job Category, Project Area is only optional if Job Category is Strip Out, Minor Works, Kiosk or Maintenance.">															
 															<option value="">Choose a Job Category</option>
+															<option value="Design Works">Design Works</option>
 															<option value="Kiosk">Kiosk</option>
 															<option value="Full Fitout">Full Fitout</option>
 															<option value="Refurbishment">Refurbishment</option>

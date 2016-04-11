@@ -6,13 +6,71 @@
 <?php $this->load->module('variation'); ?>
 <?php $this->load->module('invoice'); ?>
 <?php
-	if($work_estimated_total > 0){
-		$curr_tab = 'works';
-	}elseif($this->session->flashdata('curr_tab')){
+
+	if($this->session->flashdata('curr_tab')){
 		$curr_tab = $this->session->flashdata('curr_tab');
+		switch($curr_tab){
+			case 'attachments':
+				echo '<script>window.history.pushState("","",'. $project_id.')</script>';
+				break;
+			case 'variations':
+				$variation_id = $this->uri->segment(4);
+				echo '<script>window.history.pushState("","",'. $variation_id.')</script>';
+				break;
+		}
+	}elseif($work_estimated_total > 0){
+		if(isset($_GET['curr_tab'])){
+			$url_curr_tab = $_GET['curr_tab'];
+			switch($url_curr_tab){
+				case 'attachments':
+					$curr_tab = 'attachments';
+					echo '<script>window.history.pushState("","",'. $project_id.')</script>';
+					break;
+				case 'variations':
+					$curr_tab = 'variations';
+					$variation_id = $this->uri->segment(4);
+					echo '<script>window.history.pushState("","",'. $variation_id.')</script>';
+					break;
+				default:
+					$curr_tab = 'project-details';
+					break;
+			}
+		}else{
+			$curr_tab = 'works';
+		}
 	}else{
-		$curr_tab = 'project-details';
+		if(isset($_GET['curr_tab'])){
+			$url_curr_tab = $_GET['curr_tab'];
+			switch($url_curr_tab){
+				case 'attachments':
+					$curr_tab = 'attachments';
+					echo '<script>window.history.pushState("","",'. $project_id.')</script>';
+					break;
+				case 'variations':
+					$curr_tab = 'variations';
+					$variation_id = $this->uri->segment(4);
+					echo '<script>window.history.pushState("","",'. $variation_id.')</script>';
+					break;
+				default:
+					$curr_tab = 'project-details';
+					break;
+			}
+		}else{
+			$curr_tab = 'project-details';
+		}
 	}
+	
+// 	if($work_estimated_total > 0){
+// 		$curr_tab = 'works';
+// 	}elseif($this->session->flashdata('curr_tab')){
+// 		$curr_tab = $this->session->flashdata('curr_tab');
+// 	}else{
+// 		if(isset($_GET['curr_tab']) == 'attachments'){
+// 			$curr_tab = 'attachments';
+// 		}else{
+// 			$curr_tab = 'project-details';
+// 		}
+// 	}
 
 	if($this->session->flashdata('curr_tab') == 'invoice'){
 		$curr_tab = 'invoice';
@@ -22,13 +80,13 @@
 		$curr_tab = 'project-details';
 	}
 
-	if($this->session->flashdata('curr_tab') == 'variations'){
-		$curr_tab = 'variations';
-	}
+	// if($this->session->flashdata('curr_tab') == 'variations'){
+	// 	$curr_tab = 'variations';
+	// }
 
-	if($this->session->flashdata('curr_tab') == 'attachments'){
-		$curr_tab = 'attachments';
-	}
+// 	if($this->session->flashdata('curr_tab') == 'attachments'){
+// 		$curr_tab = 'attachments';
+// 	}
 
 	if($this->session->flashdata('curr_tab') == 'send_pdf'){
 		$curr_tab = 'send_pdf';
@@ -201,13 +259,13 @@ estimate-->
 											<a href="#works" data-toggle="tab"><i class="fa fa-cubes fa-lg"></i> Works</a>
 										</li>
 										
-										<li class="<?php // echo ($curr_tab == 'variations' ? 'active' : '' ); ?>">
+										<li class="<?php echo ($curr_tab == 'variations' ? 'active' : '' ); ?>">
 											<a href="#variations" onclick = "load_variation()" data-toggle="tab"><i class="fa fa-cube fa-lg"></i> Variations</a>
 										</li>
-										<!-- 
-										<!-- <li class="<?php //echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>">
-											<a href="#attachments" onclick = "dropbox_connect(<?php //echo $project_id ?>)" data-toggle="tab"><i class="fa fa-paperclip fa-lg"></i> Attachments</a>
-										</li> -->
+										
+										<li class="<?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>">
+											<a href="#attachments" onclick = "dropbox_connect(<?php echo $project_id ?>)" data-toggle="tab"><i class="fa fa-paperclip fa-lg"></i> Attachments</a>
+										</li>
 
 										<li class="<?php echo ($curr_tab == 'send_pdf' ? 'active' : '' ); ?>">
 											<a href="#send_pdf" data-toggle="tab" onclick = "view_send_contractor()"><i class="fa fa-file-pdf-o fa-lg"></i> Send PDF</a>
@@ -316,7 +374,7 @@ estimate-->
 																			</div>
 																		<?php   else: ?>
 																			<?php if($job_date == '' ): ?>
-																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control datepicker text-right" name="job_date" value="<?php echo $job_date; ?>">
+																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control datepicker text-right"  id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3 || ( $this->session->userdata('user_role_id') == 7 && $job_category == 'Maintenance' )  ): ?>
 																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php else: ?>
@@ -599,7 +657,7 @@ estimate-->
 										
 										<div class="tab-pane fade in  clearfix <?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>" id="attachments">
 											<div class="m-bottom-15 clearfix m-top-10">
-												<?php // echo $this->attachments->attachments_view(); ?>
+												<?php echo $this->attachments->attachments_view(); ?>
 											</div>
 										</div>
 

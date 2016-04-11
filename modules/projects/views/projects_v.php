@@ -164,7 +164,7 @@
 					<li>
 						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
 					</li>					
-					<li>
+					<li class="">
 						<a href="#" class="btn-small btn-primary" data-toggle="modal" data-target="#wip_filter_modal"><i class="fa fa-print"></i> Report</a>
 					</li>  		
 					<li>
@@ -367,8 +367,13 @@
       	</div>
 
 
-      	<div class="tooltip-enabled box-area clearfix " data-original-title="Notice: Selecting 'Not WIP' refers to projects that is never been accepted by the client as real project. 'WIP' are the projects currenlty on WIP. 'Invoiced' these are the projets are fully invoiced but not yet paid. 'Paid' are fully paid projects. ">
-      		<select class="form-control prj_status m-bottom-10 "  id="prj_status">
+      	<div class="tooltip-enabled box-area clearfix input-group m-bottom-10" data-original-title="Notice: Selecting 'Not WIP' refers to projects that is never been accepted by the client as real project. 'WIP' are the projects currenlty on WIP. 'Invoiced' these are the projets are fully invoiced. 'Paid' are fully paid projects. ">
+      		
+
+      		<span class="input-group-addon" id="">
+      			<i class="fa fa-list-alt"></i>
+      		</span>
+<select class="form-control prj_status m-bottom-10" id="prj_status">
       			<option selected="selected" value="notwip">Not WIP</option>
       			<option value="wip">Currently WIP</option>
       			<option value="invoiced">Invoiced</option>
