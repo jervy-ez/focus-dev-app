@@ -98,9 +98,6 @@
 													<li class="">
 														<a href="#reconciled" data-toggle="tab"><i class="fa fa-check-square-o fa-lg"></i> Reconciled</a>
 													</li>
-                          <li class="">
-                            <a href="" data-toggle="modal" data-target="#po_date_filter_modal"><i class="fa fa-filter fa-lg"></i> Filter by Date</a>
-                          </li>
 												</ul>
 											</div>
 										</div>
@@ -115,17 +112,16 @@
 												<div class="m-bottom-15 clearfix">
 
 
+
 													<div class="box-area po-area">
 														<table id="po_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-															<thead><tr><th>PO Number</th><th>Project Number</th><th>CPO Date</th><th>Job Description</th><th>Contractor</th><th>Project Name</th><th>Job Date</th><th>Client</th><th>Project Manager</th><th>Price</th><th>Balance</th></tr></thead>
+															<thead><tr><th>PO Number</th><th>CPO Date</th><th>Job Description</th><th>Contractor</th><th>Project Number</th><th>Job Date</th><th>Client</th><th>Project Manager</th><th>Price</th><th>Balance</th></tr></thead>
 															<tbody>
 
 																<?php
 																	foreach ($po_list->result_array() as $row){
 
-                                    $prj_defaults = $this->projects->display_project_applied_defaults($row['project_id']);
-
-																		echo '<tr id="'.$prj_defaults['admin_gst_rate'].'"><td><a href="#" data-toggle="modal" data-target="#invoice_po_modal" data-backdrop="static" onclick="select_po_item(\''.$row['works_id'].'-'.$row['project_id'].'\');" id="'.$row['works_id'].'-'.$row['project_id'].'" class="select_po_item">'.$row['works_id'].'</a></td><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row['project_id'].'/'.$row['works_id'].'">';
+																		echo '<tr><td><a href="#" data-toggle="modal" data-target="#invoice_po_modal" data-backdrop="static" class="select_po_item">'.$row['works_id'].'/'.$row['project_id'].'</a></td><td>'.$row['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row['project_id'].'/'.$row['works_id'].'">';
 
 																		if($row['contractor_type']==2){
 
@@ -143,7 +139,7 @@
 																			}
 																		}else{ }
 
-																		echo '</a></td><td>'.$row['contractor_name'].'</td><td>'.$row['project_name'].'</td><td>'.$row['job_date'].'</td><td>'.$row['client_name'].'</td><td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td><td>'.number_format($row['price'],2).'</td>';
+																		echo '</a></td><td>'.$row['contractor_name'].'</td><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['job_date'].'</td><td>'.$row['client_name'].'</td><td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td><td>'.number_format($row['price'],2).'</td>';
                                     echo '<td>'.number_format($this->purchase_order->check_balance_po($row['works_id']),2).'</td>';
                                     echo '</tr>';
 																  }
@@ -151,12 +147,9 @@
 
                                 <?php 
                                   foreach ($work_joinery_list->result_array() as $row_j){
-
-                                    $j_prj_defaults = $this->projects->display_project_applied_defaults($row_j['project_id']);
-
-                                    echo '<tr id="'.$j_prj_defaults['admin_gst_rate'].'"><td><a href="#" data-toggle="modal" data-target="#invoice_po_modal" data-backdrop="static" onclick="select_po_item(\''.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'-'.$row_j['project_id'].'\');" id="'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'-'.$row_j['project_id'].'" class="select_po_item">'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'</a></td><td><a href="'.base_url().'projects/view/'.$row_j['project_id'].'" >'.$row_j['project_id'].'</a></td><td>'.$row_j['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row_j['project_id'].'/'.$row_j['works_id'].'">';
+                                    echo '<tr><td><a href="#" data-toggle="modal" data-target="#invoice_po_modal" data-backdrop="static" class="select_po_item">'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'/'.$row_j['project_id'].'</a></td><td>'.$row_j['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row_j['project_id'].'/'.$row_j['works_id'].'">';
                                     echo $row_j['joinery_name'];
-                                    echo '</a></td><td>'.$row_j['contractor_name'].'</td><td>'.$row_j['project_name'].'</td><td>'.$row_j['job_date'].'</td><td>'.$row_j['client_name'].'</td><td>'.$row_j['user_first_name'].' '.$row_j['user_last_name'].'</td><td>'.number_format($row_j['price'],2).'</td>';
+                                    echo '</a></td><td>'.$row_j['contractor_name'].'</td><td><a href="'.base_url().'projects/view/'.$row_j['project_id'].'" >'.$row_j['project_id'].'</a></td><td>'.$row_j['job_date'].'</td><td>'.$row_j['client_name'].'</td><td>'.$row_j['user_first_name'].' '.$row_j['user_last_name'].'</td><td>'.number_format($row_j['price'],2).'</td>';
                                     echo '<td>'.number_format($this->purchase_order->check_balance_po($row_j['works_id'],$row_j['work_joinery_id']),2).'</td>';
                                     echo '</tr>';
                                   } 
@@ -176,13 +169,13 @@
 
 												<div class="box-area po-area">
 														<table id="reconciled_list_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-															<thead><tr><th>PO Number</th><th>Project Number</th><th>CPO Date</th><th>Job Description</th><th>Contractor</th><th>Project Name</th><th>Reconciled Date</th><th>Client</th><th>Project Manager</th><th>Price</th><th>Balance</th></tr></thead>
+															<thead><tr><th>PO Number</th><th>CPO Date</th><th>Job Description</th><th>Contractor</th><th>Project Number</th><th>Reconciled Date</th><th>Client</th><th>Project Manager</th><th>Price</th><th>Balance</th></tr></thead>
                               <tbody>
 
                               <?php
                                   foreach ($reconciled_list->result_array() as $row){
 
-                                    echo '<tr><td><a href="#" data-toggle="modal" data-target="#reconciliated_po_modal" data-backdrop="static" id="'.$row['works_id'].'-'.$row['project_id'].'" onclick="return_outstanding_po_item(\''.$row['works_id'].'-'.$row['project_id'].'\');" class="return_outstanding_po_item">'.$row['works_id'].'</a></td><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row['project_id'].'/'.$row['works_id'].'">';
+                                    echo '<tr><td><a href="#" data-toggle="modal" data-target="#reconciliated_po_modal" data-backdrop="static" class="return_outstanding_po_item">'.$row['works_id'].'/'.$row['project_id'].'</a></td><td>'.$row['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row['project_id'].'/'.$row['works_id'].'">';
 
                                     if($row['contractor_type']==2){
 
@@ -200,7 +193,7 @@
                                       }
                                     }else{ }
 
-                                    echo '</a></td><td>'.$row['contractor_name'].'</td><td>'.$row['project_name'].'</td><td>'.$row['reconciled_date'].'</td><td>'.$row['client_name'].'</td><td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td><td>'.number_format($row['price'],2).'</td>';
+                                    echo '</a></td><td>'.$row['contractor_name'].'</td><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['reconciled_date'].'</td><td>'.$row['client_name'].'</td><td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td><td>'.number_format($row['price'],2).'</td>';
                                     echo '<td>'.number_format($this->purchase_order->check_balance_po($row['works_id']),2).'</td>';
                                     echo '</tr>';
                                   }
@@ -210,9 +203,9 @@
 
 																<?php 
                                   foreach ($reconciled_list_joinery->result_array() as $row_j){
-                                    echo '<tr><td><a href="#" data-toggle="modal" data-target="#reconciliated_po_modal" data-backdrop="static" id="'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'/'.$row_j['project_id'].'" onclick="return_outstanding_po_item(\''.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'/'.$row_j['project_id'].'\');" class="select_po_item">'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'</a></td><td><a href="'.base_url().'projects/view/'.$row_j['project_id'].'" >'.$row_j['project_id'].'</a></td><td>'.$row_j['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row_j['project_id'].'/'.$row_j['works_id'].'">';
+                                    echo '<tr><td><a href="#" data-toggle="modal" data-target="#reconciliated_po_modal" data-backdrop="static" class="select_po_item">'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'/'.$row_j['project_id'].'</a></td><td>'.$row_j['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row_j['project_id'].'/'.$row_j['works_id'].'">';
                                     echo $row_j['joinery_name'];
-                                    echo '</a></td><td>'.$row_j['contractor_name'].'</td><td>'.$row_j['project_name'].'</td><td>'.$row_j['reconciled_date'].'</td><td>'.$row_j['client_name'].'</td><td>'.$row_j['user_first_name'].' '.$row_j['user_last_name'].'</td><td>'.number_format($row_j['price'],2).'</td>';
+                                    echo '</a></td><td>'.$row_j['contractor_name'].'</td><td><a href="'.base_url().'projects/view/'.$row_j['project_id'].'" >'.$row_j['project_id'].'</a></td><td>'.$row_j['reconciled_date'].'</td><td>'.$row_j['client_name'].'</td><td>'.$row_j['user_first_name'].' '.$row_j['user_last_name'].'</td><td>'.number_format($row_j['price'],2).'</td>';
                                     echo '<td>'.number_format($this->purchase_order->check_balance_po($row_j['works_id'],$row_j['work_joinery_id']),2).'</td>';
                                     echo '</tr>';
                                   } 
@@ -280,7 +273,6 @@
 
             <input type="hidden" name="po_number_item" id="po_number_item" class="po_number_item">
             <input type="hidden" name="po_actual_balance" id="po_actual_balance" class="po_actual_balance">
-            <input type="hidden" name="po_gst" id="po_gst" class="po_gst">
 
       			<div class="col-sm-6">
       				<div class="clearfix m-top-15">
@@ -305,33 +297,20 @@
       			</div>
 
       			<div class="col-sm-6">
-              <div class="clearfix">
-                <label for="po_amount_value_inc_gst" class="col-sm-3 control-label text-left" style="font-weight: normal;"></label>
-                <div class="col-sm-9">
-                  <div class="input-group m-bottom-10">
-                    <span class="input-group-addon" id="">$</span>
-                    <input type="text" placeholder="Amount" class="form-control number_format" id="po_amount_value_inc_gst" name="po_amount_value_inc_gst" value="" tabindex="2">
-                    <span class="input-group-addon" id="">inc-gst</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+      				<div class="clearfix">
+      					<div class="input-group pad-right-5" style="height: 35px;">
+      						<div class="input-group-addon "><i class="fa fa-exclamation-triangle"></i> Set As Reconciled</div>
+      						<input type="text" class="hidden" disabled="disabled">
+      						<div class="input-group-addon"><input type="checkbox" name="is_reconciled" id="po_is_reconciled_value"></div>
+      					</div>
+      				</div>
+      			</div>
 
       			<div class="col-sm-12">
       				<div class="clearfix  m-top-10">
-      					<label for="po_notes_value" class="col-sm-1 control-label text-left m-top-10" style="font-weight: normal;">Notes</label>
-      					<div class="col-sm-11">
-      						
-
-
-                  <div class="input-group m-bottom-10">
-                    <input type="text" placeholder="Notes" class="form-control" id="po_notes_value" name="po_notes_value" value="" tabindex="4">
-                    <input type="text" class="hidden" disabled="disabled">
-                    <span class="input-group-addon" id=""><i class="fa fa-exclamation-triangle"></i> Is Reconciled <input class="m-top-10" type="checkbox" name="is_reconciled" id="po_is_reconciled_value"></span>
-                  </div>
-
-
-
+      					<label for="po_notes_value" class="col-sm-2 control-label text-left m-top-10" style="font-weight: normal;">Notes</label>
+      					<div class="col-sm-10">
+      						<input type="text" placeholder="Notes" class="form-control" id="po_notes_value" name="po_notes_value" value="" tabindex="4">
       					</div>
       				</div>
       			</div>
@@ -427,37 +406,6 @@
 		}
 		?>
 	</select>
-</div>
-
-<!-- Purchase Order Filter modal -->
-<div class="modal fade" id="po_date_filter_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Purchase Order Filter</h4>
-      </div>
-      <div class="modal-body">
-        <div class="input-group m-bottom-10">
-          <span class="input-group-addon" id="">
-            <i class="fa fa-calendar"></i>
-          </span>
-          <input type="text" data-date-format="dd/mm/yyyy" placeholder="From" class="form-control datepicker" id="po_start_date" name="po_start_date" value="" >
-        </div>
-
-        <div class="input-group m-bottom-10">
-          <span class="input-group-addon" id="">
-            <i class="fa fa-calendar"></i>
-          </span>
-          <input type="text" data-date-format="dd/mm/yyyy" placeholder="To" class="form-control datepicker" id="po_end_date" name="po_end_date" value="" >
-        </div>
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="filter_po_bydate" data-dismiss="modal"><i class="fa fa-filter"></i> Filter</button>
-      </div>
-    </div>
-  </div>
 </div>
 
 

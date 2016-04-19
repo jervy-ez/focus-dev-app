@@ -1,7 +1,6 @@
-<?php $insurances = rtrim(implode(',', $insurances), ','); ?>
-<p style = "font-family: Arial,Helvetica Neue,Helvetica,sans-serif;font-size: 12px; ">We just want to let you know that the following Insurance is about to expire:</p>
+<p style = "font-family: Arial,Helvetica Neue,Helvetica,sans-serif;font-size: 12px; "><?php echo $message ?></p>
 <p></p>
-<p style = "font-family: Arial,Helvetica Neue,Helvetica,sans-serif;font-size: 12px; "><?php echo $insurances ?></p>
+<p style = "font-family: Arial,Helvetica Neue,Helvetica,sans-serif;font-size: 12px; "><?php echo "This is for invoice number: ".$po_reference_value."  PO Number: ".$po_number ?></p>
 
 <p style = "font-family: Arial,Helvetica Neue,Helvetica,sans-serif;font-size: 12px; "><?php echo "Please follow the link below to upload your updated Insurance: " ?></p>
 <a href="<?php echo base_url() ?>direct_contractor_upload?comp_id=<?php echo $contractor_id ?>&return_email=<?php echo $email ?>">Click Here!</a>

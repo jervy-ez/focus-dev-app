@@ -200,6 +200,7 @@
 													<div class="col-sm-9  col-xs-12">
 														<select class="form-control postcode-option" id="job_category" name="job_category" tabindex='4'>															
 															<option value="">Choose a Job Category</option>
+															<option value="Design Works">Design Works</option>
 															<option value="Kiosk">Kiosk</option>
 															<option value="Full Fitout">Full Fitout</option>
 															<option value="Refurbishment">Refurbishment</option>

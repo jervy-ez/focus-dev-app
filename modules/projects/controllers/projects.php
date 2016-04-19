@@ -664,7 +664,7 @@ email
 		$this->form_validation->set_rules('labour_hrs_estimate', 'Site Labour Estimate','trim|required|xss_clean');
 		$this->form_validation->set_rules('project_markup', 'Project Markup','trim|required|xss_clean');
 
-		if( $this->input->post('job_category') == 'Maintenance' ||  $this->input->post('job_category') == 'Kiosk' || $this->input->post('job_category') == 'Minor Works' || $this->input->post('job_category') == 'Strip Out'  ){
+		if( $this->input->post('job_category') == 'Maintenance' ||  $this->input->post('job_category') == 'Kiosk' || $this->input->post('job_category') == 'Minor Works' || $this->input->post('job_category') == 'Strip Out'|| $this->input->post('job_category') == 'Design Works'  ){
 			$this->form_validation->set_rules('project_area', 'Project Area','trim|xss_clean');
 		}else{
 			$this->form_validation->set_rules('project_area', 'Project Area','trim|required|xss_clean');

@@ -19,8 +19,8 @@ class Invoice extends MY_Controller{
 			'protocol' => 'smtp',
 			'smtp_host' => 'cp178.ezyreg.com',
 			'smtp_port' => 465,
-			'smtp_user' => 'no-reply@sojourn.focusshopfit.com.au',
-			'smtp_pass' => 'f*0e^cr3',
+			'smtp_user' => 'accounts@sojourn.focusshopfit.com.au',
+			'smtp_pass' => 'CyMOCrP6',
 			'mailtype'  => 'html', 
 			'charset'   => 'iso-8859-1'
 			);
@@ -330,13 +330,16 @@ class Invoice extends MY_Controller{
 	}
 
 	public function set_invoice_vr($project_id,$date){
+
 		$query_list_invoice = $this->invoice_m->list_invoice($project_id);
 		$order_invoice = $query_list_invoice->num_rows() + 1;
 		$label = 'VR';
 		$progress_percent = '100';
 		//$invoice_date_req = date("d/m/Y");
 		$invoice_date_req = $date;
+
 		$this->invoice_m->insert_new_invoice($invoice_date_req, $project_id, $progress_percent,$label,$order_invoice);
+
 	}
 
 	public function set_project_as_paid($project_id=''){
@@ -538,7 +541,7 @@ class Invoice extends MY_Controller{
 
 			foreach ($fetch_payment_history_raw->result() as $row) {
 				//echo '<tr><td>'.$row->payment_date.'</td><td>'.$row->amount_exgst.'</td><td>'.$row->reference_number.'</td></tr>';
-				echo '<tr><td>'.$row->payment_date.'</td><td><strong>$'.number_format($row->amount_exgst,2).'</strong> <strong class="pull-right">ex-gst</strong></td><td>'.$row->reference_number.'</td></tr>';
+echo '<tr><td>'.$row->payment_date.'</td><td><strong>$'.number_format($row->amount_exgst,2).'</strong> <strong class="pull-right">ex-gst</strong></td><td>'.$row->reference_number.'</td></tr>';
 				echo '<tr><td colspan="3"><strong>Notes: </strong>'.$row->comments.'</td></tr>';
 			}
 
@@ -762,7 +765,6 @@ class Invoice extends MY_Controller{
 
 		//echo $pdf_file;
 
-/*
 		$attched_file= $_SERVER["DOCUMENT_ROOT"]."/docs/inv_jbs/".$pdf_file.'.pdf';
 		$this->email->attach($attched_file);
 
@@ -781,8 +783,6 @@ class Invoice extends MY_Controller{
    			//Email Failed To Send
 			echo $this->email->print_debugger();
 		}
-
-		*/
 	}
 
 	public function fetch_vr($project_id){
@@ -1031,19 +1031,18 @@ class Invoice extends MY_Controller{
 					$progress_cost = round($progress_cost,2);
 				}
 
+
 				elseif($row->label != 'VR' && $row->label != '' && $project_id == '35099'){
 					$progress_percent = $row->progress_percent + 0.0034373969295;
 					$progress_cost = ($project_costs['final_total_quoted']*$progress_percent)/100;
 					$progress_cost = round($progress_cost,2);
 				}
 
-				else{
+
+else{
 					$progress_percent = $row->progress_percent;
 					$progress_cost = $row->invoiced_amount;
 				}
-
-
-
 
 
 			}else{
@@ -1062,7 +1061,8 @@ class Invoice extends MY_Controller{
 				}
 
 
-				else{
+
+else{
 					$progress_percent = $row->progress_percent;
 				}
 

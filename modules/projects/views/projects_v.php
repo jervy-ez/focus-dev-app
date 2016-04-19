@@ -26,7 +26,7 @@
   }
 
   $focus_user_id = $this->session->userdata('user_id'); 
-  if($user_id == $focus_user_id){
+  if($user_id == $focus_user_id  || $focus_user_id == 6){
     $send_email = $this->session->userdata('auto_send_email'); 
     
     if($send_email == "" || $send_email == 0){

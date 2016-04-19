@@ -33,7 +33,7 @@
 <div class="canvas_area editor_body">
  <table width="100%">
   <tr>
-    <td width="50%"><img src="<?php echo base_url(); ?>img/focus-logo-print.png" width="206" height="66" /></td>
+    <td width="50%"><img src="http://www.focusshopfit.com.au/wp-content/uploads/2013/08/logo.png" width="192" height="95" /></td>
     <td width="50%"><p class="text-right" style="font-size: 16px !important;"><strong><?php echo $focus_company_name; ?></strong></p></td>
   </tr>
 </table>

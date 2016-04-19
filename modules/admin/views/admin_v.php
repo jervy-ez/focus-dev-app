@@ -384,6 +384,27 @@
 									</div>
 
 									<div class="box-area pad-5 clearfix">
+
+										<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix ">
+											<label for="design_works" class="col-sm-4 control-label">Design Works (%)</label>
+
+											<div class="col-sm-4">
+												<div class="input-group">
+													<span class="input-group-addon" id="design_works">Default</span>
+													<input type="text" class="form-control" placeholder="Design Works" id="design_works" name="design_works" value="<?php echo ($this->input->post('design_works') ?  $this->input->post('design_works') : $design_works ); ?>">
+												</div>
+											</div>
+
+											<div class="col-sm-4">
+												<div class="input-group">
+													<span class="input-group-addon" id="min_design_works">Min</span>
+													<input type="text" class="form-control" placeholder="Min" id="min_design_works" name="min_design_works" value="<?php echo ($this->input->post('min_design_works') ?  $this->input->post('min_design_works') : $min_design_works ); ?>">
+												</div>
+											</div>
+										</div>
+
+
+
 										<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix ">
 											<label for="kiosk" class="col-sm-4 control-label">Kiosk (%)</label>
 
@@ -400,7 +421,6 @@
 													<input type="text" class="form-control" placeholder="Min" id="min_kiosk" name="min_kiosk" value="<?php echo ($this->input->post('min_kiosk') ?  $this->input->post('min_kiosk') : $min_kiosk ); ?>">
 												</div>
 											</div>
-
 										</div>
 
 										<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix ">

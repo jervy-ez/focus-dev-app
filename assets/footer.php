@@ -98,14 +98,7 @@
 
   <script src="<?php echo base_url(); ?>js/jquery.maxlength.min.js"></script>
 
-  
-	<?php //endif; ?>
-	
-	<?php //if($maps): ?>
-    <script type="text/javascript" src="<?php echo base_url(); ?>js/maps/maps.js"></script>
-    <?php //endif; ?>    
-    
-	<script src="<?php echo base_url(); ?>js/select2.js"></script>
+  <script src="<?php echo base_url(); ?>js/select2.js"></script>
     
 	<script src="<?php echo base_url(); ?>js/plugins.js"></script>
 	<script src="<?php echo base_url(); ?>js/main.js"></script>

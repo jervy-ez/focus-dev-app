@@ -332,6 +332,12 @@ class Admin extends MY_Controller{
 		$this->form_validation->set_rules('min_maintenance', 'Minimum Maintenance Markup','trim|xss_clean');
 		$this->form_validation->set_rules('min_minor_works', 'Minimum Minor Works Markup','trim|xss_clean');
 
+
+
+		$this->form_validation->set_rules('design_works', 'Design Works','trim|required|xss_clean');
+
+		$this->form_validation->set_rules('min_design_works', 'Minimum Design Works','trim|xss_clean');
+
 		if($this->form_validation->run() === false){
 			$passArr['default_errors'] = validation_errors();
 			$this->index($passArr);
@@ -351,8 +357,13 @@ class Admin extends MY_Controller{
 			$min_stripout = $this->input->post('min_stripout', true);
 			$min_maintenance = $this->input->post('min_maintenance', true);
 			$min_minor_works = $this->input->post('min_minor_works', true);
+
+
+
+			$design_works = $this->input->post('design_works', true);
+			$min_design_works = $this->input->post('min_design_works', true);
 						
-			$new_mark_up_id = $this->admin_m->updat_project_mark_up($kiosk,$full_fitout,$refurbishment,$stripout,$maintenance,$minor_works,$min_kiosk,$min_full_fitout,$min_refurbishment,$min_stripout,$min_maintenance,$min_minor_works);
+			$new_mark_up_id = $this->admin_m->updat_project_mark_up($kiosk,$full_fitout,$refurbishment,$stripout,$maintenance,$minor_works,$min_kiosk,$min_full_fitout,$min_refurbishment,$min_stripout,$min_maintenance,$min_minor_works,$design_works,$min_design_works);
 
 			$this->admin_m->insert_latest_system_default($site_costs['site_cost_id'],$admin_defaults['admin_default_id'],$new_mark_up_id,$labour_cost['labour_cost_id']);
 

@@ -351,6 +351,7 @@ td.green-estimate {
 		border-top: 1px solid #546A7E;
 		border-right:1px solid #0A2132;
 	}
+
 }
 
 @media (min-width: 1200px) {
@@ -481,6 +482,10 @@ td.green-estimate {
 	text-transform: capitalize;
 }
 
+.pad-0-imp{
+	padding: 0 !important;
+}
+
 .pad-0{
 	padding:0;
 }
@@ -491,6 +496,10 @@ td.green-estimate {
 
 .pad-5{
 	padding:5px;
+}
+
+.pad-7{
+	padding:7px;
 }
 
 .pad-10{
@@ -1092,6 +1101,16 @@ input[type='email']{
 	.adv .box-widget h2 {
 		font-size: 30px;
 	}
+
+}
+
+
+@media all and (max-width: 975px) {/* screen size until 975px */
+	.nav.nav-stacked.affix-top{
+		height: 59px;
+		overflow: hidden;
+	}
+
 }
 
 
@@ -1723,6 +1742,7 @@ tr.active_row_work>td{
 	background: #AAAAAA;
 	color: #fff;
 	border-bottom: 1px solid #999999;
+    text-shadow: 0px 2px 2px #999999;
 }
 
 .wid-type-0 .widg-head.fill .btn{
@@ -1769,6 +1789,7 @@ tr.active_row_work>td{
 	background: #4B8EC6;
 	color: #fff;
 	border-bottom: 1px solid #337AB7;
+    text-shadow: 0px 2px 2px #337AB7;
 }
 
 .adv .wid-type-a .widg-head.fill .btn{
@@ -1801,7 +1822,7 @@ tr.active_row_work>td{
 }
 
 .adv .wid-type-b .widg-content.fill{
-	background: #8AD38A;
+	background: #95DE95;
 }
 
 .adv .wid-type-b .widg-content p,.adv  .wid-type-b .widg-head{
@@ -1818,13 +1839,14 @@ tr.active_row_work>td{
 }
 
 .adv .wid-type-b.widg-head-styled{
-	border-top: 3px solid #5CB85C;
+	border-top: 3px solid #518E51;
 }
 
 .adv .wid-type-b .widg-head.fill {
-	background: #7ECF7E;
+	background: #62A762;
 	color: #fff;
 	border-bottom: 1px solid #4DAB4D;
+    text-shadow: 0px 2px 2px #4DAB4D;
 }
 
 
@@ -1876,6 +1898,7 @@ tr.active_row_work>td{
 	background: #7AD2EB;
 	color: #fff;
 	border-bottom: 1px solid #058EB4;
+    text-shadow: 0px 2px 2px #058EB4;
 }
 
 
@@ -1902,13 +1925,14 @@ tr.active_row_work>td{
 }
 
 .adv .wid-type-b.widg-head-styled{
-	border-top: 3px solid #5CB85C;
+	border-top: 3px solid #518E51;
 }
 
 .adv .wid-type-b .widg-head.fill {
-	background: #7ECF7E;
+	background: #62A762;
 	color: #fff;
 	border-bottom: 1px solid #4DAB4D;
+    text-shadow: 0px 2px 2px #4DAB4D;
 }
 
 
@@ -1963,6 +1987,7 @@ tr.active_row_work>td{
 	background: #EE635F;
 	color: #fff;
 	border-bottom: 1px solid #D9534F;
+    text-shadow: 0px 2px 2px #D9534F;
 }
 
 

@@ -686,13 +686,13 @@ $("#create_contract_send_pdf").click(function(){
       function(result){
         $("#user_list").html(result);
       });
-      setInterval(function() {
-      $.post(baseurl+"users/user_login",
-        {},
-        function(result){
-          $("#user_list").html(result);
-        });
-      }, 10000);
+      // setInterval(function() {
+      // $.post(baseurl+"users/user_login",
+      //   {},
+      //   function(result){
+      //     $("#user_list").html(result);
+      //   });
+      // }, 10000);
     }else{
       show_userlist = 0;
     }
@@ -1024,6 +1024,7 @@ $("#create_contract_send_pdf").click(function(){
         $("#var_credit").removeAttr('disabled');
         $("#var_markup").removeAttr('disabled');
         //$("#variation_notes").removeAttr('disabled');
+        //alert(job_date+"/"+final_invoiced);
         if(job_date !== "" && final_invoiced == '0'){
           $("#var_acceptance_date").removeAttr('disabled');
         }
@@ -1294,23 +1295,21 @@ $("#project_forms").change(function(){
   
 });
 $("#merge_attach").click(function(){
-  $("#lbl_attached").show();
+ $("#lbl_attached").show();
   $("#lbl_no_attached").hide();
   client_attached = 1;
   var checkboxValues = [];
   $('input[name=chk_proj_forms]:checked').map(function() {
     checkboxValues.push($(this).val());
   });
-  //var project_id = get_project_id();
-  //window.open(baseurl+"send_emails/combine_project_form", '_self', true); 
-  $.post(baseurl+"send_emails/combine_project_form",
-  {
-    project_id: proj_id,
-    checkboxValues: checkboxValues
-  },
-  function(result){
-    window.open(baseurl+'send_emails/display_merge_attachment', '_blank', 'fullscreen=yes');
-  });
+  // $.post(baseurl+"send_emails/combine_project_form",
+  // {
+  //   project_id: proj_id,
+  //   checkboxValues: checkboxValues
+  // },
+  // function(result){
+    window.open(baseurl+'send_emails/combine_project_form?project_id='+proj_id+'&checkboxValues='+checkboxValues, '_blank', 'fullscreen=yes');
+  // });
 });
 $("#send_attachment").click(function(){
   if(client_attached == 1){
@@ -2215,11 +2214,11 @@ window.chk_select_attachment = function(a){
     if(wtype == '2_82'){
       $('#other_work_description').css('display', 'block').focus();
       $('#lbl_work_category').css('display', 'block');
-      $('.other_work_category').css('display','block');
+      $('.other_work_category').show();//css('display','block');
     }else{
       $('#other_work_description').css('display', 'none');
-      $('#lbl_work_category').css('display', 'block');
-      $('.other_work_category').css('display', 'none');
+      $('#lbl_work_category').css('display', 'none');
+      $('.other_work_category').hide();//css('display', 'none');
     }
     if(wtype == '2_53'){
       var exist = $("#joinery_exist").val();
@@ -2231,26 +2230,6 @@ window.chk_select_attachment = function(a){
         $("#select2-chosen-1").html("");
       }
     }
-    /*if(wtype == "Supplier"){
-      $("#show1").hide();
-      $("#show2").hide();
-      $("#show3").show();
-      $("#show4").show();
-      $('#works').empty();
-      $.post(baseurl+"works/diplay_sup_cat", 
-      { 
-      }, 
-      function(result){
-        $("#works").html(result);
-      });
-    }else{
-      $("#show1").show();
-      $("#show2").show();
-      $("#show3").show();
-      $("#show4").show();
-      $('#works').empty();
-      $("#works").text("");
-    }*/
   });
 
   
@@ -5479,9 +5458,9 @@ $('.work_contractor_click').click(function () {
       var work_type = $("#worktype").val();
       if(work_type == '2_82'){
         var other_work_description = $("#other_work_description").val();
-         var other_work_category_id = $("#other_work_category").val();
-        var arr = other_work_category_id.split('_');
-        other_work_category_id = arr[1];
+        var other_work_category_id = $("#other_work_category").val();
+        // var arr = other_work_category_id.split('_');
+        // other_work_category_id = arr[1];
         $.post(baseurl+"works/update_other_work_desc", 
         { 
           work_id: work_id,
@@ -6912,27 +6891,37 @@ $('input.input-wd').keyup(function(){
 
         var type_arr = type.split("|");
         type = type_arr[1];
-
         var abn = $("#abn").val().replace(/[^\d]/g, "");
+        if(type > 1){
 
-        $.post(baseurl+"company/check_company_exist",
-        {
-          abn: abn,
-          type: type
-        },
-        function(result){
-          if(result == 1){
-            alert("ABN already exist!");
-            $("#abn").val("");
-          }else{
-            var new_abn_val = abn.substring( -2,2)+' '+abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
-            $("#abn").val(new_abn_val);
 
-            var acn_val = abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
+          $.post(baseurl+"company/check_company_exist",
+          {
+            abn: abn,
+            type: type
+          },
+          function(result){
+            if(result == 1){
+              alert("ABN already exist!");
+              $("#abn").val("");
+            }else{
+              var new_abn_val = abn.substring( -2,2)+' '+abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
+              $("#abn").val(new_abn_val);
 
-            $("#acn").val(acn_val);
-          }
-        });
+              var acn_val = abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
+
+              $("#acn").val(acn_val);
+            }
+          }); 
+        }else{
+          var new_abn_val = abn.substring( -2,2)+' '+abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
+          $("#abn").val(new_abn_val);
+
+          var acn_val = abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
+
+          $("#acn").val(acn_val);
+        }
+        
       }
     }
   };

@@ -146,7 +146,9 @@ class Projects_m extends CI_Model{
 		}elseif($type == 'Maintenance'){
 			$query = $this->db->query("SELECT `maintenance`,`min_maintenance` FROM `markup` WHERE `markup_id`='$markup_id'");
 			return $query;
-
+		}elseif($type == 'Design Works'){
+			$query = $this->db->query("SELECT `design_works`,`min_design_works` FROM `markup` WHERE `markup_id`='$markup_id'");
+			return $query;
 		}else{
 			return false;
 		}

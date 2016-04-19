@@ -91,9 +91,9 @@ class Admin_m extends CI_Model{
 		return $query;
 	}
 
-	public function updat_project_mark_up($kiosk,$full_fitout,$refurbishment,$stripout,$maintenance,$minor_works,$min_kiosk,$min_full_fitout,$min_refurbishment,$min_stripout,$min_maintenance,$min_minor_works){
-		$query = $this->db->query("INSERT INTO `markup` (`kiosk`, `full_fitout`, `refurbishment`, `stripout`, `maintenance`, `minor_works`, `min_kiosk`, `min_full_fitout`, `min_refurbishment`, `min_stripout`, `min_maintenance`, `min_minor_works`) VALUES
-			('$kiosk', '$full_fitout', '$refurbishment', '$stripout', '$maintenance', '$minor_works','$min_kiosk', '$min_full_fitout', '$min_refurbishment', '$min_stripout', '$min_maintenance', '$min_minor_works')");
+	public function updat_project_mark_up($kiosk,$full_fitout,$refurbishment,$stripout,$maintenance,$minor_works,$min_kiosk,$min_full_fitout,$min_refurbishment,$min_stripout,$min_maintenance,$min_minor_works,$design_works,$min_design_works){
+		$query = $this->db->query("INSERT INTO `markup` (`kiosk`, `full_fitout`, `refurbishment`, `stripout`, `maintenance`, `minor_works`, `min_kiosk`, `min_full_fitout`, `min_refurbishment`, `min_stripout`, `min_maintenance`, `min_minor_works` , `design_works`, `min_design_works`) VALUES
+			('$kiosk', '$full_fitout', '$refurbishment', '$stripout', '$maintenance', '$minor_works','$min_kiosk', '$min_full_fitout', '$min_refurbishment', '$min_stripout', '$min_maintenance', '$min_minor_works' , '$design_works', '$min_design_works')");
 		return $this->db->insert_id();
 	}
 
