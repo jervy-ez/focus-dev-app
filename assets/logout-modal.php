@@ -34,7 +34,7 @@
 <div class="users_utility_footer" style="position: fixed; bottom: 0px; background-color: #888">
   <div class="btn-group dropup pull-right" style="width: 100%;">
     <a class="btn dropdown-toggle" data-toggle="dropdown" style="color: white; width: 100%;" id="show_userlist">Users Currently Logged-in<span class="caret"></span></a>
-    <div id="user_list" class="dropdown-menu pad-5" style="width: 250px; text-align: left; height: 300px; overflow: auto"></div>
+    <div id="user_list" class="dropdown-menu pad-5" style="width: 250px; text-align: left"></div>
   </div>
 </div>
 <?php endif; ?>

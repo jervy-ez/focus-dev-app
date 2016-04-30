@@ -661,7 +661,7 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 			foreach ($sales_total_arr as $key => $value) {
 				//echo "$key => $value <br /><br /><br />";
 				$temp_total = $unvoiced_total_arr[$key]+$sales_total_arr[$key];
-				echo '<div id="" class=""><div class="col-sm-6 text-right"><strong class="pad-right-10">'.$key.'</strong></div><div class="col-sm-6"> <i class="fa fa-usd"></i> '.number_format($temp_total,2).'</div></div>';
+				echo '<div id="" class=""><div class="col-sm-5 text-right"><strong class="pad-right-10">'.$key.'</strong></div><div class="col-sm-7"> <i class="fa fa-usd"></i> '.number_format($temp_total,2).'</div></div>';
 			}
 		}else{
 			foreach ($sales_total_arr as $key => $value) {
@@ -1025,8 +1025,8 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 			$forecast_focus_total = $comp_forecast['total'];
 
 			echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$pm->user_profile_photo.'"" /></div>';
-			echo '<div class="" id=""><p><strong>'.$pm->user_first_name.' '.$pm->user_last_name.'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($total_sales).'</span> <br /> <span class="label pull-right m-bottom-3 small_blue_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($total_outstanding).'</span></span></p>';
-			echo '<p><i class="fa fa-usd"></i> '.number_format($overall_total_sales).' <strong class="pull-right m-right-10">'.$status_forecast.'%</strong></p>';
+			echo '<div class="" id=""><p><strong>'.$pm->user_first_name.'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($total_sales).'</span> <br /> <span class="label pull-right m-bottom-3 small_blue_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($total_outstanding).'</span></span></p>';
+			echo '<p><i class="fa fa-usd"></i> '.number_format($overall_total_sales).' <strong class="pull-right m-right-10">'.$pm_forecast['forecast_percent'].'%</strong></p>';
 			
 			echo '<div class="value-bar clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($overall_total_sales).' / $'.number_format($total_forecast).'   " style="float: left;    margin: -7px 0px 0px 60px;    width: 85%;"><div class="value pull-left" style="width:'.$status_forecast.'%"></div></div>			</div></div>';
 			echo "<div class='clearfix'></div>";
@@ -1040,7 +1040,7 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 
 			echo '<div class="clearfix" style="margin-top:-10px;"><hr class="block m-bottom-5 m-top-5"><i class="fa fa-briefcase" style="font-size: 42px;float: left;margin-left: 7px;margin-right: 10px;"></i>';
 			echo '<div class="" id=""><p><strong>Overall Focus</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($grand_total_sales_cmp).'</span> <br /> <span class="label pull-right m-bottom-3 small_blue_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($grand_total_uninv_cmp).'</span></span></p>';
-			echo '<p><i class="fa fa-usd"></i> '.number_format($grand_total_over_cmp).' <strong class="pull-right m-right-10">'.$status_forecast.'%</strong></p> </p>';
+			echo '<p><i class="fa fa-usd"></i> '.number_format($grand_total_over_cmp).' <strong class="pull-right m-right-10"></strong></p> </p>';
 
 			echo '<div class="value-bar clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($grand_total_over_cmp).' / $'.number_format($forecast_focus_total).'   " style="float: left; margin: 4px 0px 0px 0px; width: 100%;"><div class="value pull-left" style="width:'.$status_forecast.'%"></div></div>			</div></div>';
 			echo "<div class='clearfix'></div>";
@@ -1183,9 +1183,8 @@ $total_estimated = $total_estimates['total_estimates'];
 /*
 			$q_total_pm_estimates = $this->dashboard_m->dash_total_pm_estimates($company->company_id,$c_year);
 			$total_estimates = array_shift($q_total_pm_estimates->result_array());
-
-
 			$total_estimated = $total_estimates['total_estimates'];
+			<strong class="text-center col-xs-3 popover-test" data-placement="bottom" data-content="Focus Company" ><i class="fa fa-users fa-lg"></i></strong> 
 */ 
 
 
@@ -1193,18 +1192,18 @@ $total_estimated = $total_estimates['total_estimates'];
 				$key_id = 'WA';
 				echo '<div id="" class="clearfix row">
 					<strong class="text-center col-xs-3"><p>WA</p></strong>
-					<strong class="text-center col-xs-3"><p class="h5x">'.$projects_current.'<sub> / '.$projects_old.'</sub></p></strong>
-					<strong class="text-center col-xs-3"><p class="h5x">'.$invoiced.'<sub> / '.$invoiced_old.'</sub></p></strong>
-					<strong class="text-center col-xs-3"><p class="h5x">'.$wip.'<sub> / '.$wip_old.'</sub></p></strong>
+					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="top" data-original-title="Completed Last Year : '.$projects_old.'"><p class="h5x">'.$projects_current.'</p></strong>
+					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="top" data-original-title="Invoiced Last Year : '.$invoiced_old.'"><p class="h5x">'.$invoiced.'</p></strong>
+					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="left" data-original-title="WIP Last Year : '.$wip_old.'"><p class="h5x">'.$wip.'</p></strong>
 				</div>';
 			}elseif($company->company_id == 6){
 				$key_id = 'NSW';
-				echo '<hr class="block m-bottom-5 m-top-5">';
-				echo '<div id="" class="clearfix row">
+				echo '<hr class="block m-bottom-3 m-top-5">';
+				echo '<div id="" class="clearfix row" style="margin-top:4px;">
 					<strong class="text-center col-xs-3"><p>NSW</p></strong>
-					<strong class="text-center col-xs-3"><p class="h5x">'.$projects_current.'<sub> / '.$projects_old.'</sub></p></strong>
-					<strong class="text-center col-xs-3"><p class="h5x">'.$invoiced.'<sub> / '.$invoiced_old.'</sub></p></strong>
-					<strong class="text-center col-xs-3"><p class="h5x">'.$wip.'<sub> / '.$wip_old.'</sub></p></strong>
+					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="top" data-original-title="Completed Last Year : '.$projects_old.'"><p class="h5x">'.$projects_current.'</p></strong>
+					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="top" data-original-title="Invoiced Last Year : '.$invoiced_old.'"><p class="h5x">'.$invoiced.'</p></strong>
+					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="left" data-original-title="WIP Last Year : '.$wip_old.'"><p class="h5x">'.$wip.'</p></strong>
 				</div>';
 			}else{
 
@@ -1263,10 +1262,10 @@ echo "[";
 
 			if($company->company_id == 5){
 				$key_id = 'WA';
-				echo '<p class="value clearfix block"><span class="col-xs-3">WA</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($total_pos['total_price']).'</strong></span></p>';
+				echo '<p class="value clearfix block"><span class="col-xs-4">WA</span> <span class="col-xs-8"><strong>'.number_format($total_pos['total_price']).'</strong></span></p>';
 			}elseif($company->company_id == 6){
 				$key_id = 'NSW';
-				echo '<p class="value clearfix block"><span class="col-xs-3">NSW</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($total_pos['total_price']).'</strong></span></p>';
+				echo '<p class="value clearfix block"><span class="col-xs-4">NSW</span> <span class="col-xs-8"><strong>'.number_format($total_pos['total_price']).'</strong></span></p>';
 			}else{
 
 			}
@@ -1276,23 +1275,52 @@ echo "[";
 
 	public function focus_top_ten_clients(){
 
+		$current_date = date("d/m/Y");
+		$year = date("Y");
+		$next_year_date = '01/01/'.($year+1);
+		$current_start_year = '01/01/'.$year;
+		$last_start_year = '01/01/'.($year-1);
 
-		$q_clients = $this->dashboard_m->get_top_ten_clients();
+		$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $next_year_date);
 		$client_details  = $q_clients->result();
 		$counter = 0;
 
-
 		foreach ($client_details as $company) {
 			$counter ++;
-
 			$total = $company->total_project  + $company->vr_total;
-
-			echo '<p> <div class="col-sm-8"><i class="fa fa-chevron-circle-right"></i>  '.$company->company_name.' </div>  <div class="col-sm-4"><i class="fa fa-usd"></i> '. number_format($total,2) .'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-
+			$q_clients_overall = $this->dashboard_m->get_top_ten_clients_overall($company->company_id);
+			$overall_cost = array_shift($q_clients_overall->result_array());
+			$grand_total = $overall_cost['total_project']  +  $overall_cost['vr_total'];
+			echo '<p> <div class="col-sm-6s col-md-9"><i class="fa fa-chevron-circle-right"></i>  '.$company->company_name.' </div>  <div class="col-sm-6 col-md-3 tooltip-test" title="" data-original-title="All Time: $ '.number_format($grand_total).'"><i class="fa fa-usd"></i> '. number_format($total) .'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
 		}
-
-
 	}
+
+
+
+	public function focus_top_ten_con_sup($type){
+
+		$current_date = date("d/m/Y");
+		$year = date("Y");
+		$next_year_date = '01/01/'.($year+1);
+		$current_start_year = '01/01/'.$year;
+		$last_start_year = '01/01/'.($year-1);
+
+		$q_companies = $this->dashboard_m->get_company_sales($type,$current_start_year, $next_year_date);
+		$company_details  = $q_companies->result();
+		$counter = 0;
+
+		foreach ($company_details as $company) {
+			$counter ++;
+			$total = $company->total_price;
+ 
+			$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
+			$overall_cost = array_shift($q_clients_overall->result_array());
+			$grand_total = $overall_cost['total_price'];
+
+			echo '<p> <div class="col-sm-6s col-md-9"><i class="fa fa-chevron-circle-right"></i>  '.$company->contractor_name.' </div>  <div class="col-sm-6 col-md-3 tooltip-test" title="" data-original-title="All Time: $ '.number_format($grand_total).'"><i class="fa fa-usd"></i> '. number_format($total) .'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+		}
+	}
+
 
 	public function focus_projects_by_type_widget(){
 
@@ -1314,7 +1342,7 @@ echo "[";
 			$count = 0;
 			$grand_total = 0;
 
-			$q_projects = $this->dashboard_m->get_projects_by_work_type($current_start_year, $current_date, $job_category['work_type']);
+			$q_projects = $this->dashboard_m->get_projects_by_work_type($current_start_year, $current_date, $job_category['job_category']);
  
 			foreach ($q_projects->result_array() as $project) {
 				$cost = $cost + $project['project_total'];
@@ -1325,11 +1353,12 @@ echo "[";
 			$grand_total = $cost+$variation;
 			$loop++;
 
+ //<strong ><p>WA</p></strong>
 
-			echo '<div id="" class="col-lg-6"><p><strong><i class="fa fa-arrow-circle-right"></i></strong> <strong>'.$count.'</strong> '.$job_category['work_type'].' <strong class="m-right-10 pull-right">$'.number_format($grand_total,2).'</strong></p>';
+			echo '<div id="" class="col-lg-4"><p> <strong class="">'.$count.'</strong> <span class="tooltip-test pointer" data-placement="left" data-original-title="'.ucwords($job_category['job_category']).'">'.substr($job_category['job_category'],0,3).'</span> <strong class="m-right-10 pull-right">$'.number_format($grand_total).'</strong></p>';
 
 
-			if($loop < 5){
+			if($loop < 7){
 				echo '<hr class="block m-bottom-5 m-top-5"></div>';
 			}else{
 				echo '</div>';
@@ -1340,6 +1369,47 @@ echo "[";
 
 			 
 		}
+	}
+
+	public function maintanance_average(){
+
+		$days_dif = array();
+
+		$q_maintenance = $this->dashboard_m->get_maitenance_dates();
+		$maintenance_details  = $q_maintenance->result();
+
+
+		foreach ($maintenance_details as $maintenance) {
+			$date_a = str_replace('/','-',$maintenance->job_date);
+			$job_date = date('Y-m-d' , strtotime($date_a));
+
+			$date_b = str_replace('/','-',$maintenance->set_invoice_date);
+			$inv_date = date('Y-m-d' , strtotime($date_b));
+
+			$date1 = date_create($job_date);
+			$date2 = date_create($inv_date);
+			$diff = date_diff($date1,$date2);
+
+		 	#echo  $diff['days'].'<br />';
+		 	array_push($days_dif, $diff->days);
+		}
+ 
+		$size = count($days_dif);
+		$average = array_sum($days_dif) / $size;
+
+		asort($days_dif);
+		$long_day = $days_dif[0];
+		$short_day_day = $days_dif[$size-1];
+
+		echo '<p class="value">'.number_format($average,2).' Days <br></p>';
+		echo '<p class="">Longest:'.$long_day.' &nbsp; Shortest:'.$short_day_day.'</p>';
+
+ 
+
+
+
+
+ 
 	}
 
 	public function sales_forecast(){

@@ -7,7 +7,7 @@ class User_model extends CI_Model{
 	}
 	
 	function validate($user_name, $password, $ip_add = 0){
-		$query = $this->db->query("SELECT * FROM `users` WHERE `login_name` = '$user_name' AND `password` = '$password'");
+		$query = $this->db->query("SELECT `users`.*,`role`.`role_types` FROM `users` LEFT JOIN `role` ON `role`.`role_id` = `users`.`user_role_id`  WHERE `users`.`login_name` = '$user_name' AND `users`.`password` = '$password'");
 		if($query->num_rows === 1){
 			foreach ($query->result() as $row)
 			{

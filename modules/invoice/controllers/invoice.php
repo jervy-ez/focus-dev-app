@@ -19,8 +19,8 @@ class Invoice extends MY_Controller{
 			'protocol' => 'smtp',
 			'smtp_host' => 'cp178.ezyreg.com',
 			'smtp_port' => 465,
-			'smtp_user' => 'accounts@sojourn.focusshopfit.com.au',
-			'smtp_pass' => 'CyMOCrP6',
+			'smtp_user' => 'no-reply@sojourn.focusshopfit.com.au',
+			'smtp_pass' => 'f*0e^cr3',
 			'mailtype'  => 'html', 
 			'charset'   => 'iso-8859-1'
 			);
@@ -1001,7 +1001,7 @@ echo '<tr><td>'.$row->payment_date.'</td><td><strong>$'.number_format($row->amou
 	}
 
 	public function list_project_invoice($project_id){
-
+		
 		$project_costs = $this->projects->fetch_project_totals($project_id);
 
 
@@ -1133,6 +1133,9 @@ endif;
  if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 5 || $this->session->userdata('user_role_id') == 6):
 
 	if($row->is_paid == 1){
+ 
+		echo '<button class="btn btn-primary  m-right-10 progress_invoice_resend paid_view_invoice"><i class="fa fa-files-o"></i> View Invoice</button>';
+
 		echo '<button  class="btn btn-success progress_paid" id="'.$row->project_id.'"  data-toggle="modal" data-target="#payment_history_modal" data-backdrop="static" ><i class="fa fa-usd"></i> Paid</button>';
 	}else{
 		echo '<button  class="btn btn-danger progress_paid" id="'.$row->project_id.'_'.$row->order_invoice.'"  data-toggle="modal" data-target="#payment_modal" data-backdrop="static" ><i class="fa fa-usd"></i> Payment</button>';
@@ -1143,8 +1146,7 @@ endif;
 }else{
 
 }
-
-
+ 
 echo '</td><td><div class="m-top-5"><strong><span class="progress_outstanding">'.($row->is_invoiced == 1 ? '$'.$outstanding : '').'</span></strong></div></td></tr>';
 
 			

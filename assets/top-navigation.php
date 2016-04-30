@@ -71,9 +71,14 @@
 				</li>
 			</ul> -->
 
+			
+
 
 			
 			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a role="menuitem"><i class="fa fa-quote-left" aria-hidden="true"></i> &nbsp;<em><?php echo $this->session->userdata('role_types'); ?></em>&nbsp; <i class="fa fa-quote-right" aria-hidden="true"></i></a>
+				</li>
 				<li id="fat-menu" class="dropdown">
 					<a href="#" id="drop3" role="button" class="dropdown-toggle tour-6" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo ucfirst($this->session->userdata('user_first_name')).' '.ucfirst($this->session->userdata('user_last_name')); ?> <b class="caret"></b></a>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="drop3">

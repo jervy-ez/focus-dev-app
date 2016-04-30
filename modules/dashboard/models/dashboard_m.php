@@ -726,15 +726,15 @@ ORDER BY `project`.`focus_company_id` ASC
 
 	public function get_wip_invoiced_projects($date_a, $date_b, $focus_id){
 		$query = $this->db->query("SELECT * FROM `project` WHERE `project`.`is_active` = '1' 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_commencement`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
 			AND `project`.`focus_company_id` = '$focus_id' AND `project`.`job_date` <> '' ");
 
 		return $query;
 	}
 
 	public function get_work_types(){
-		$query = $this->db->query("SELECT * FROM `work_type` ORDER BY `work_type`.`work_type` ASC");
+		$query = $this->db->query("SELECT * FROM `project` GROUP BY `project`.`job_category` ORDER BY `project`.`job_category` ASC");
 		return $query;
 	}
 
@@ -754,10 +754,8 @@ ORDER BY `project`.`focus_company_id` ASC
 			, SUM(`works`.`price`) AS `total_price`
 			FROM `works`
 			LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id` 
-			WHERE `works`.`is_reconciled` = '0' AND `works`.`is_active` = '1' AND TRIM(`works`.`work_cpo_date`) <> '' AND TRIM(`project`.`job_date`) <> ''  AND `project`.`is_active` = '1' 
+			WHERE `works`.`is_reconciled` = '0' AND `works`.`is_active` = '1' AND TRIM(`works`.`work_cpo_date`) <> '' AND TRIM(`project`.`job_date`) <> ''  AND `project`.`is_active` = '1'  
 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
 
 			AND  `project`.`focus_company_id` = '$focus_id'");
 		return $query;
@@ -768,32 +766,89 @@ ORDER BY `project`.`focus_company_id` ASC
 		$query = $this->db->query("SELECT `project`.`address_id`, `address_general`.`x_coordinates`,`address_general`.`y_coordinates` FROM `project`
 			LEFT JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
 			LEFT JOIN `address_general` ON `address_general`.`general_address_id` = `address_detail`.`general_address_id`
-			WHERE `project`.`is_active` = '1' 
-			ORDER BY `project`.`project_id` DESC
-			/*
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_commencement`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
-*/
-			");
+			WHERE `project`.`job_date` <> '' AND `project`.is_active = '1' AND  `project`.`is_paid` = '0'
+		 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+		#	AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+ 
+			ORDER BY `project`.`project_id` DESC");
 		return $query;
 	}
 
 
 
 
-	public function get_top_ten_clients(){
+	public function get_top_ten_clients($date_a,$date_b){
 		$query = $this->db->query("SELECT *,`company_details`.`company_name`,`project_cost_total`.`variation_total`  
 			,SUM(`project`.`project_total`) AS `total_project`, SUM(`project_cost_total`.`variation_total`) AS `vr_total`
 			FROM `project`
 			LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
 			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
-			WHERE `project`.`is_active` = '1' GROUP BY `project`.`client_id` ORDER BY `total_project` DESC LIMIT 0,20");
+			WHERE `project`.`is_active` = '1' AND  `project`.`job_date` <> '' 
+
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+
+			GROUP BY `project`.`client_id` ORDER BY `total_project` DESC LIMIT 0,20");
 		return $query;
 	}
 
-	
+
+	public function get_top_ten_clients_overall($id){
+		$query = $this->db->query("SELECT `company_details`.`company_name`,SUM(`project`.`project_total`) AS `total_project`, SUM(`project_cost_total`.`variation_total`) AS `vr_total` FROM `project`
+			LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			WHERE `project`.`client_id` = '$id' AND `project`.`is_active` = '1' AND  `project`.`job_date` <> '' ");
+		return $query;
+	}
+
+
+	public function get_company_sales($type,$date_a,$date_b){ #$type 3 supplier or 2 contractor
+
+		if($type == 1){
+			$query = $this->db->query("SELECT `company_details`.`company_id`, `works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`company_details`.`company_type_id`, `company_details`.`company_name` as `contractor_name`,   `works`.`price`,  `works`.`contractor_type`, `works`.`work_cpo_date`
+            ,SUM(`works`.`price`) AS `total_price` FROM `works`
+			LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id`
+			LEFT JOIN `company_details`  ON `company_details`.`company_id` = `works`.`company_client_id`
+			WHERE  `works`.`is_active` = '1' AND TRIM(`works`.`work_cpo_date`) <> '' AND TRIM(`project`.`job_date`) <> ''  AND `project`.`is_active` = '1'
+			AND `company_details`.`active` = '1' AND `company_details`.`company_type_id` = '2' #3 supplier or 2 contractor
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+			GROUP BY  `contractor_name` ORDER BY `total_price` DESC LIMIT 0,20 ");
+		}else{
+
+			$query = $this->db->query("SELECT `company_details`.`company_id`, `works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`company_details`.`company_type_id`, `company_details`.`company_name` as `contractor_name`,   `works`.`price`,  `works`.`contractor_type`, `works`.`work_cpo_date`
+            ,SUM(`works`.`price`) AS `total_price` FROM `works`
+			LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id`
+			LEFT JOIN `company_details`  ON `company_details`.`company_id` = `works`.`company_client_id`
+			WHERE  `works`.`is_active` = '1' AND TRIM(`works`.`work_cpo_date`) <> '' AND TRIM(`project`.`job_date`) <> ''  AND `project`.`is_active` = '1'
+			AND `company_details`.`active` = '1' AND `company_details`.`company_type_id` = '3' #3 supplier or 2 contractor
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+			GROUP BY  `contractor_name` ORDER BY `total_price` DESC LIMIT 0,20");
+
+		}
+		return $query;
+	}
 
 
 
-	
+	public function get_company_sales_overall($id){
+		$query = $this->db->query("	SELECT `company_details`.`company_id`, `works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`company_details`.`company_type_id`, `company_details`.`company_name` as `contractor_name`,   `works`.`price`,  `works`.`contractor_type`, `works`.`work_cpo_date`
+            ,SUM(`works`.`price`) AS `total_price` FROM `works`
+			LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id`
+			LEFT JOIN `company_details`  ON `company_details`.`company_id` = `works`.`company_client_id`
+			WHERE  `works`.`is_active` = '1' AND TRIM(`works`.`work_cpo_date`) <> '' AND TRIM(`project`.`job_date`) <> ''  AND `project`.`is_active` = '1'
+			AND `company_details`.`active` = '1' AND `company_details`.`company_id`= '$id' ");
+		return $query;
+	}
+
+
+	public function get_maitenance_dates(){
+		$query = $this->db->query("SELECT `project`.`project_id`, `project`.`job_date`, `project`.`date_site_finish`, `invoice`.`set_invoice_date` 
+			FROM `project` LEFT JOIN `invoice` ON `invoice`.`project_id` = `project`.`project_id` WHERE `project`.`job_category` = 'Maintenance' AND `project`.`is_active` = '1' AND `project`.`job_date` <> '' 
+			AND  `invoice`.`set_invoice_date` <> ''       ");
+		return $query;
+	}
+
 }

@@ -3497,6 +3497,4 @@ $(".add_shopping_center_project").on("click", function(event){
 */
 
 
-
-
 });

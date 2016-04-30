@@ -530,6 +530,9 @@ td.green-estimate {
 	padding-bottom:0px;
 }
 
+.pad-bottom-3{
+	padding-bottom:3px;
+}
 .pad-bottom-5{
 	padding-bottom:5px;
 }
@@ -1636,7 +1639,13 @@ tr.active_row_work>td{
 }
 
 
-
+.adv .box-widget .popover .popover-content{
+	
+    padding: 4px;
+    color: #555 !important;
+    text-shadow: none !important;
+    font-size: 11px;
+}
 
 .adv .box-widget table.table-condensed{
 	font-size: 15px;
@@ -1706,6 +1715,43 @@ tr.active_row_work>td{
 	-webkit-border-radius: 3px 3px 3px 3px;
 	border-radius:         3px 3px 3px 3px;
 	overflow: hidden;
+}
+
+.adv .widget .tabs_widget ul.nav-tabs{
+    
+    background: #FFA949;
+    border-bottom: 1px solid #E37D0B;
+}
+
+
+.adv .widget .tabs_widget ul.nav-tabs li.active a{
+    padding: 5px 20px;
+    border-radius: 0;
+    font-size: 15px;
+    border: none;
+    background: #E37D0B;
+    color: #fff;
+}
+
+
+.adv .widget .tabs_widget ul.nav-tabs li a{
+	 margin: 0;
+    color: #fff;
+    font-size: 15px;
+    padding: 5px 20px;
+    border-radius: 0;
+    border: none;
+}
+
+
+.adv .widget .tabs_widget ul.nav-tabs li a:hover{
+	background-color: #CE720C !important;
+	 margin: 0;
+    color: #fff;
+    font-size: 15px;
+    padding: 5px 20px;
+    border-radius: 0;
+    border: none;
 }
 
 .adv .box-widget .widg-head .tabs{

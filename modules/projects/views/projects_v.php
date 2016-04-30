@@ -26,7 +26,7 @@
   }
 
   $focus_user_id = $this->session->userdata('user_id'); 
-  if($user_id == $focus_user_id  || $focus_user_id == 6){
+  if($user_id == $focus_user_id){
     $send_email = $this->session->userdata('auto_send_email'); 
     
     if($send_email == "" || $send_email == 0){
@@ -389,7 +389,8 @@
       			<option selected="selected" value="Refurbishment">Refurbishment</option>
       			<option selected="selected" value="Strip Out">Strip Out</option>
       			<option selected="selected" value="Minor Works">Minor Works (Under $20,000.00)</option>
-      			<option selected="selected" value="Maintenance">Maintenance</option>
+            <option selected="selected" value="Maintenance">Maintenance</option>
+            <option selected="selected" value="Design Works">Design Works</option>
       		</select>
       	</div>
 

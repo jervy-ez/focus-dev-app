@@ -19,6 +19,7 @@ $config = Array(
 			);
 		$this->load->library('email', $config);
 
+
  //echo $this->input->cookie('user_id', false);
 
 
@@ -585,6 +586,8 @@ $config = Array(
 			}else{
 				redirect('projects'); //dashboard
 			}
+
+
 		}
 		
 		$config = array(
@@ -708,6 +711,7 @@ $config = Array(
 					$data['is_admin'] = $userdata->if_admin;
 					$data['user_name'] = $user_name;
 					$data['password'] = $password;
+					$data['role_types'] = $userdata->role_types;
 
 
 
