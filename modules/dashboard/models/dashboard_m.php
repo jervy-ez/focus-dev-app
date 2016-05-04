@@ -633,19 +633,30 @@ array(4) {
 		return $query;
 	}
 
-	public function dash_total_pm_sales($proj_mngr_id,$year,$is_out=''){
+	public function dash_total_pm_sales($proj_mngr_id,$year,$is_out='',$date_a='',$date_b=''){
 		if($is_out!=''){
-			$query = $this->db->query("SELECT `out_jan` + `out_feb` + `out_mar` + `out_apr` + `out_may` + `out_jun` + `out_jul` + `out_aug` + `out_sep` + `out_oct` + `out_nov` + `out_dec` as `total_outstanding`
-				FROM `outstanding_focus`
-				WHERE  `outstanding_focus`.`proj_mngr_id`= '$proj_mngr_id' AND `outstanding_focus`.`year` =  '$year' ");
+
+			$query = $this->db->query("SELECT *,`payment`.`payment_id`,`payment`.`project_id` as `payment_project_id`,`invoice`.`project_id` as `invoice_project_id`,  `invoice`.`invoice_id` AS `invoice_top_id`  FROM `invoice`
+			LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+			LEFT JOIN `payment` ON `payment`.`invoice_id` = `invoice`.`invoice_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			WHERE `invoice`.`is_invoiced` = '0'
+			AND `invoice`.`is_paid` = '0'
+			AND `project`.`project_manager_id` = '$proj_mngr_id'
+			AND `project`.is_active = '1'
+			AND `project`.`job_date` <> '' 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+			GROUP BY `invoice`.`invoice_id` ");
+
 		}else{
 			$query = $this->db->query("SELECT `rev_jan`+`rev_feb`+`rev_mar`+`rev_apr`+ `rev_may`+ `rev_jun`+`rev_jul`+ `rev_aug`+ `rev_sep`+ `rev_oct`+ `rev_nov`+`rev_dec` as `total_sales`
 				FROM `revenue_focus`
 				WHERE `revenue_focus`.`proj_mngr_id` = '$proj_mngr_id' AND `revenue_focus`.`year` = '$year' ");
 		}		
 		return $query;
-	}
-
+	} 
 
 
 	public function dash_total_pm_estimates($comp_id,$year){

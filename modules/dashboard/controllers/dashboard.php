@@ -761,28 +761,20 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 
 	public function uninvoiced_widget(){
 
-		if (isset($_POST['set_month_dshbrd'])){
+		
+		$c_year = date("Y");
+		$c_month = '01';
 
-			$c_month = $this->input->post('set_month_dshbrd');
-			$c_year = date("Y");
 
-			$n_month = $c_month+1;
-			$n_year = $c_year;
 
-			if($n_month > 12){
-				$n_month = $n_month - 12;
-				$n_year = $c_year+1;
-			}
-
-		}else{
-			$c_year = date("Y");
-			$c_month = '01';
-
-			$n_year = $c_year+1;
-			$n_month = '01';
-		}
 		$date_a = "01/$c_month/$c_year";
-		$date_b = "01/$n_month/$n_year";
+
+		$n_year = date("Y");
+		$n_month = date("m");
+		$n_day = date("d")+1;
+
+
+		$date_b = "$n_day/$n_month/$n_year";
 
 		$unvoiced_total_arr = array();
 		$key_id = '';
@@ -837,29 +829,21 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 
 	public function outstanding_payments_widget(){
 
-		if (isset($_POST['set_month_dshbrd'])){
-
-			$c_month = $this->input->post('set_month_dshbrd');
-			$c_year = date("Y");
-
-			$n_month = $c_month+1;
-			$n_year = $c_year;
-
-			if($n_month > 12){
-				$n_month = $n_month - 12;
-				$n_year = $c_year+1;
-			}
-
-		}else{
-			$c_year = date("Y");
-			$c_month = '01';
-
-			$n_year = $c_year+1;
-			$n_month = '01';
-		}
 		
+		$c_year = date("Y");
+		$c_month = '01';
+
+
+
 		$date_a = "01/$c_month/$c_year";
-		$date_b = "01/$n_month/$n_year";
+
+		$n_year = date("Y");
+		$n_month = date("m");
+		$n_day = date("d")+1;
+
+
+		$date_b = "$n_day/$n_month/$n_year";
+		 
 
 
 		$all_focus_company = $this->admin_m->fetch_all_company_focus();
@@ -939,8 +923,16 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 			$n_month = '01';
 		}
 		
-		$date_a = "01/$c_month/$c_year";
-		$date_b = "01/$n_month/$n_year";
+		$date_a = "01/01/$c_year";
+
+
+		$c_year = date("Y");
+		$c_month = date("m");
+		$c_day = date("d")+1;
+
+
+		$date_b = "$c_day/$c_month/$c_year";
+
 
 		$overall_total_sales = 0;
 
@@ -986,7 +978,8 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 
 
 
-			$q_pm_outstanding = $this->dashboard_m->dash_total_pm_sales($pm->user_id,$c_year,1);
+			$q_pm_outstanding = $this->dashboard_m->dash_total_pm_sales($pm->user_id,$c_year,1,$date_a,$date_b);
+
 
 			if($q_pm_outstanding->num_rows >= 1){
 
@@ -994,9 +987,20 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 
 				foreach ($pm_outstanding as $sales => $value){
 
-					if($value){ 
-						$total_outstanding = $total_outstanding + $value['total_outstanding'];
+					if($value['label'] == 'VR'){
+						$project_total_percent = $value['variation_total'];
+					}else{
+						$project_total_percent = $value['project_total'] * ($value['progress_percent']/100);
 					}
+
+
+
+					$outstanding = $this->invoice->get_current_balance($value['project_id'],$value['invoice_top_id'],$project_total_percent);
+
+					$total_outstanding = $total_outstanding + $outstanding;
+
+
+
 				}
 
 
@@ -1004,6 +1008,20 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 				$total_outstanding = $total_outstanding + 0;
 			}
 
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+			
 
 			$overall_total_sales = $total_sales + $total_outstanding;
 
@@ -1026,9 +1044,9 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 
 			echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$pm->user_profile_photo.'"" /></div>';
 			echo '<div class="" id=""><p><strong>'.$pm->user_first_name.'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($total_sales).'</span> <br /> <span class="label pull-right m-bottom-3 small_blue_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($total_outstanding).'</span></span></p>';
-			echo '<p><i class="fa fa-usd"></i> '.number_format($overall_total_sales).' <strong class="pull-right m-right-10">'.$pm_forecast['forecast_percent'].'%</strong></p>';
+			echo '<p><i class="fa fa-usd"></i> '.number_format($overall_total_sales).'</p>';
 			
-			echo '<div class="value-bar clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($overall_total_sales).' / $'.number_format($total_forecast).'   " style="float: left;    margin: -7px 0px 0px 60px;    width: 85%;"><div class="value pull-left" style="width:'.$status_forecast.'%"></div></div>			</div></div>';
+			echo '<div class="value-bar clearfix tooltip-enabled" title="" data-original-title="'.$pm_forecast['forecast_percent'].'% - $'.number_format($overall_total_sales).' / $'.number_format($total_forecast).'   " style="float: left;    margin: -7px 0px 0px 60px;    width: 85%;"><div class="value pull-left" style="width:'.$status_forecast.'%"></div></div>			</div></div>';
 			echo "<div class='clearfix'></div>";
 
 			$grand_total_sales_cmp = $grand_total_sales_cmp + $total_sales;
@@ -1042,7 +1060,7 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 			echo '<div class="" id=""><p><strong>Overall Focus</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($grand_total_sales_cmp).'</span> <br /> <span class="label pull-right m-bottom-3 small_blue_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($grand_total_uninv_cmp).'</span></span></p>';
 			echo '<p><i class="fa fa-usd"></i> '.number_format($grand_total_over_cmp).' <strong class="pull-right m-right-10"></strong></p> </p>';
 
-			echo '<div class="value-bar clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($grand_total_over_cmp).' / $'.number_format($forecast_focus_total).'   " style="float: left; margin: 4px 0px 0px 0px; width: 100%;"><div class="value pull-left" style="width:'.$status_forecast.'%"></div></div>			</div></div>';
+			echo '<div class="value-bar clearfix tooltip-enabled" title="" data-original-title="$'.number_format($grand_total_over_cmp).' / $'.number_format($forecast_focus_total).'   " style="float: left; margin: 4px 0px 0px 0px; width: 100%;"><div class="value pull-left" style="width:'.$status_forecast.'%"></div></div>			</div></div>';
 			echo "<div class='clearfix'></div>";
 
 	}
@@ -1191,19 +1209,17 @@ $total_estimated = $total_estimates['total_estimates'];
 			if($company->company_id == 5){
 				$key_id = 'WA';
 				echo '<div id="" class="clearfix row">
-					<strong class="text-center col-xs-3"><p>WA</p></strong>
-					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="top" data-original-title="Completed Last Year : '.$projects_old.'"><p class="h5x">'.$projects_current.'</p></strong>
-					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="top" data-original-title="Invoiced Last Year : '.$invoiced_old.'"><p class="h5x">'.$invoiced.'</p></strong>
-					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="left" data-original-title="WIP Last Year : '.$wip_old.'"><p class="h5x">'.$wip.'</p></strong>
+					<strong class="text-center col-xs-4"><p>WA</p></strong>					
+					<strong class="text-center col-xs-4 tooltip-test pointer" data-placement="top" data-original-title="Invoiced Last Year : '.$invoiced_old.'"><p class="h5x">'.$invoiced.'</p></strong>
+					<strong class="text-center col-xs-4 tooltip-test pointer" data-placement="left" data-original-title="WIP Last Year : '.$wip_old.'"><p class="h5x">'.$wip.'</p></strong>
 				</div>';
 			}elseif($company->company_id == 6){
 				$key_id = 'NSW';
 				echo '<hr class="block m-bottom-3 m-top-5">';
 				echo '<div id="" class="clearfix row" style="margin-top:4px;">
-					<strong class="text-center col-xs-3"><p>NSW</p></strong>
-					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="top" data-original-title="Completed Last Year : '.$projects_old.'"><p class="h5x">'.$projects_current.'</p></strong>
-					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="top" data-original-title="Invoiced Last Year : '.$invoiced_old.'"><p class="h5x">'.$invoiced.'</p></strong>
-					<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="left" data-original-title="WIP Last Year : '.$wip_old.'"><p class="h5x">'.$wip.'</p></strong>
+					<strong class="text-center col-xs-4"><p>NSW</p></strong>
+					<strong class="text-center col-xs-4 tooltip-test pointer" data-placement="top" data-original-title="Invoiced Last Year : '.$invoiced_old.'"><p class="h5x">'.$invoiced.'</p></strong>
+					<strong class="text-center col-xs-4 tooltip-test pointer" data-placement="left" data-original-title="WIP Last Year : '.$wip_old.'"><p class="h5x">'.$wip.'</p></strong>
 				</div>';
 			}else{
 
@@ -1262,10 +1278,10 @@ echo "[";
 
 			if($company->company_id == 5){
 				$key_id = 'WA';
-				echo '<p class="value clearfix block"><span class="col-xs-4">WA</span> <span class="col-xs-8"><strong>'.number_format($total_pos['total_price']).'</strong></span></p>';
+				echo '<p class="value clearfix block"><span class="col-xs-4">WA</span> <span class="col-xs-8"><strong>$ '.number_format($total_pos['total_price']).'</strong></span></p>';
 			}elseif($company->company_id == 6){
 				$key_id = 'NSW';
-				echo '<p class="value clearfix block"><span class="col-xs-4">NSW</span> <span class="col-xs-8"><strong>'.number_format($total_pos['total_price']).'</strong></span></p>';
+				echo '<p class="value clearfix block"><span class="col-xs-4">NSW</span> <span class="col-xs-8"><strong>$ '.number_format($total_pos['total_price']).'</strong></span></p>';
 			}else{
 
 			}
@@ -1355,15 +1371,12 @@ echo "[";
 
  //<strong ><p>WA</p></strong>
 
-			echo '<div id="" class="col-lg-4"><p> <strong class="">'.$count.'</strong> <span class="tooltip-test pointer" data-placement="left" data-original-title="'.ucwords($job_category['job_category']).'">'.substr($job_category['job_category'],0,3).'</span> <strong class="m-right-10 pull-right">$'.number_format($grand_total).'</strong></p>';
+			echo '<div id="" class="clearfix"><p> <strong class="col-md-2">'.$count.'</strong><span class="col-md-6">'.$job_category['job_category'].'</span> <strong class="col-md-4">$'.number_format($grand_total).'</strong></p>';
 
-
-			if($loop < 7){
-				echo '<hr class="block m-bottom-5 m-top-5"></div>';
-			}else{
-				echo '</div>';
-			}
-
+				echo '</div>'; 
+ 
+				echo '<div class="col-md-12"><hr class="block m-bottom-5 m-top-5"></div>';
+		 
 
 
 
@@ -1402,7 +1415,7 @@ echo "[";
 		$short_day_day = $days_dif[$size-1];
 
 		echo '<p class="value">'.number_format($average,2).' Days <br></p>';
-		echo '<p class="">Longest:'.$long_day.' &nbsp; Shortest:'.$short_day_day.'</p>';
+		echo '<p class="">Shortest:'.$short_day_day.' &nbsp; Longest:'.$long_day.'</p>';
 
  
 

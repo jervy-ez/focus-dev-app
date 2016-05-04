@@ -133,14 +133,18 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 
 
 							<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
-								<div class="widget wid-type-0 small-widget">
+								<div class="widget wid-type-b small-widget">
 									<div class="box-area clearfix row">
-										<div class="widg-icon-inside col-xs-3"><i class="fa fa-user-times text-center fa-3x"></i></div>
+										<div class="widg-icon-inside col-xs-3"><i class="fa fa-tasks  text-center fa-3x"></i></div>
 										<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-right-15">
-												<div class="pad-left-5 pad-top-3" id=""><p>Quotes Un-Acepted <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+												<div class="pad-left-5 pad-top-3" id=""><p>WIP  <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 												<hr class="" style="margin: 5px 0px 1px;">
-												<div class="pad-top-3" id=""><?php $this->dashboard->pm_estimates_widget(); ?></div>
+												<div class="pad-top-3 hide" id=""><?php // $this->dashboard->pm_estimates_widget(); ?></div>
+												<div class="pad-top-3" id="">
+													<p class="value"><span class="col-xs-3">WA</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>0000</strong></span></p>
+													<p class="value"><span class="col-xs-3">NSW</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>0000</strong></span></p>
+												</div>
 											</div>						
 										</div>
 									</div>
@@ -152,7 +156,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 						<div class="col-md-9 col-sm-12 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head box-widg-head pad-5"><strong>Sales Forecast</strong></div>
+								<div class="widg-head box-widg-head pad-5"><strong>Sales Forecast <span class="pull-right"><?php echo date('Y'); ?></span></strong></div>
 
 								<div class="box-area clearfix row pad-right-10 pad-left-10">									
 									<div class="widg-content col-md-9 col-xs-12 clearfix">
@@ -245,7 +249,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 					 
 							<div class="widget wid-type-0 widg-head-styled" style="height: 500px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Project Manager Sales</strong> <span class="badges pull-right hide"> <span class="badge">4</span> <span class="label label-default">Default</span></span></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Project Manager Sales</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<div class="pad-5" id="">
@@ -289,17 +293,16 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 
 						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-b">
-								<div class="widg-icon-inside col-xs-3"  style="height: 100px;"><div id="" class="pad-top-5"><i class="fa fa-cube  text-center fa-3x"></i></div></div>
+								<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-cube  text-center fa-3x"></i></div></div>
 								<div class="widg-content fill col-xs-9 clearfix pad-0-imp">
 									<div class="widg-head box-widg-head pad-5 fill pad-0-imp" style="background-color: #73B573;">
-										<div id="" class="clearfix row pad-10">
-											<strong class="text-center col-xs-3 tooltip-test pointer " data-placement="left" data-original-title="Company" ><i class="fa fa-users fa-lg"></i></strong> 
-											<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="left" data-original-title="Completed" ><i class="fa fa-calendar fa-lg"></i></strong> 
-											<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="left" data-original-title="Fully Invoiced" ><i class="fa fa-list-alt fa-lg"></i></strong> 
-											<strong class="text-center col-xs-3 tooltip-test pointer" data-placement="left" data-original-title="WIP" ><i class="fa fa-tasks fa-lg"></i></strong>
+										<div id="" class="clearfix row pad-3">
+											<strong class="text-center col-xs-4"><?php echo date('Y'); ?></strong> 
+											<strong class="text-center col-xs-4">Invoiced</strong> 
+											<strong class="text-center col-xs-4">WIP</strong>
 										</div>
 									</div>
-									<div class="box-area clearfix pad-3">
+									<div class="box-area clearfix pad-top-3">
 										<div class="widg-content clearfix fill">
 											<?php echo $this->dashboard->focus_projects_count_widget(); ?>
 										</div>
@@ -309,27 +312,31 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 						</div> 
 						
 
-						<div class="col-md-5 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-a ">
-								<div class="box-area clearfix "> 
-									<div class="widg-icon-inside col-xs-2"  style="height: 100px;"><div id="" class="pad-top-5"><i class="fa fa-tags  text-center fa-3x"></i></div></div>
-									<div class="widg-content fill col-xs-10 clearfix">
-										<div id="" class="pad-5 clearfix">
-											<?php echo $this->dashboard->focus_projects_by_type_widget(); ?>
-										</div>								
+						
+							<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+								<div class="widget wid-type-0 small-widget">
+									<div class="box-area clearfix row">
+										<div class="widg-icon-inside col-xs-3"><i class="fa fa-user-times text-center fa-3x"></i></div>
+										<div class="widg-content fill col-xs-9 clearfix">
+											<div class="pad-right-15">
+												<div class="pad-left-5 pad-top-3" id=""><p>Quotes Un-Acepted <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+												<hr class="" style="margin: 5px 0px 1px;">
+												<div class="pad-top-3" id=""><?php $this->dashboard->pm_estimates_widget(); ?></div>
+											</div>						
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
 
-						<div class="col-md-2 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-c small-widget" style="height: 100px;">
+
+						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-c small-widget" >
 								<div class="box-area clearfix row">
-									<div class="widg-icon-inside col-xs-4"  style="height: 100px;"><div id="" class="pad-top-5"><i class="fa fa-clock-o  text-center fa-3x"></i></div></div>
-									<div class="widg-content fill col-xs-8 clearfix">
+									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-calendar  text-center fa-3x"></i></div></div>
+									<div class="widg-content fill col-xs-9 clearfix">
 										<div id="" class="pad-5">
-											<p>Average Days</p>
-											<hr class=" m-bottom-10 m-top-7">
+											<p>Maintenance Average Days <span class="pull-right m-right-10"><?php echo date('Y'); ?></span></p>
+											<hr class=" m-bottom-5 m-top-3">
 											<?php echo $this->dashboard->maintanance_average(); ?>
 										</div>								
 									</div>
@@ -338,15 +345,16 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 						</div>
 
 						
-						<div class="col-md-2 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-d small-widget" style="height: 100px;">
+						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-d small-widget">
 								<div class="box-area clearfix row">
-									<div class="widg-icon-inside col-xs-4"  style="height: 100px;"><div id="" class="pad-top-5"><i class="fa fa-credit-card  text-center fa-3x"></i></div></div>
-									<div class="widg-content fill col-xs-8 clearfix">
+									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-credit-card  text-center fa-3x"></i></div></div>
+									<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-right-15">
 												<div class="pad-left-5 pad-top-3" id=""><p>Purchase Orders <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-												<hr class=" m-bottom-5 m-top-10">
-												<div class="pad-top-3" id="">
+												
+											<hr class=" m-bottom-5 m-top-3">
+												<div class="" id="">
 													<?php echo $this->dashboard->focus_get_po_widget(); ?>
 												</div>
 											</div>						
@@ -365,11 +373,11 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 						<!-- ************************ -->
 
 
-						<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-a widg-head-styled  mid-widget">
+						<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-a widg-head-styled ">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-map-marker fa-lg"></i> <strong>On-Going Projects in Australia</strong></div>
-								<div class="box-area clearfix  pad-0-imp">
+								<div class="box-area clearfix  pad-0-imp" style="height:290px;">
 									<div class="widg-content clearfix pad-0-imp">
 										<div id="map"></div>									
 									</div>
@@ -377,37 +385,43 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 							</div>
 						</div>
 
-						<div class="col-lg-4 col-md-6 col-sm-3 col-xs-12 box-widget pad-10">
+						<div class="col-lg-3 col-md-6 col-sm-3 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Top 20 Clients For <?php echo date('Y'); ?> <span  data-placement="left" class="popover-test pointer pull-right" title="" data-content="Top 20 Clients having the highest project cost includes variation if has one for the year <?php echo date('Y') ?>." ><i class="fa fa-info-circle "></i></span></strong></div>
+								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong><span class="pull-right"> <?php echo date('Y'); ?></span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
-										<div id="" class="pad-5" style="height: 340px; overflow: auto;">
-											<?php echo $this->dashboard->focus_top_ten_clients(); ?>									
+										<div id="" class="pad-5" style="height: 282px; overflow: auto;">
+											<div id="" class="clearfix"><p> <strong class="col-md-2">#</strong><span class="col-md-6">Category</span> <strong class="col-md-4"><i class="fa fa-usd" aria-hidden="true"></i> Cost Total</strong></p></div>
+											<div class="col-md-12"><hr class="block m-bottom-5 m-top-5"></div>
+											<?php echo $this->dashboard->focus_projects_by_type_widget(); ?>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 
-						<div class="col-lg-4 col-md-6 col-sm-6 col-xs-12 box-widget pad-10">
+						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-e widg-head-styled">
 
-								<div class="  fill box-widg-head pad-right-10 pull-right pad-top-5 m-3">
+								<div class="  fill box-widg-head pad-right-10 pull-right pad-top-3 m-3">
 									<strong>
-										<span  data-placement="left" class="popover-test pointer " title="" data-content="Top 20 Contractors/Suppliers having the highest job cost for the year <?php echo date('Y'); ?>." ><i class="fa fa-info-circle "></i></span>
+										<?php echo date('Y'); ?> Top 20 <span  data-placement="left" class="popover-test pointer " title="" data-content="Top 20 Clients/Contractors/Suppliers having the highest job cost for the year <?php echo date('Y'); ?>." ><i class="fa fa-info-circle "></i></span>
 									</strong>
 								</div>
 
 								<div class="tabs_widget" >
 									<ul  class="nav nav-tabs" role="tablist" style="height: 32px;">
-										<li role="presentation" class="active"><a href="#contractors" role="tab" id="contractors-tab" data-toggle="tab" >Contractors</a></li>
+										<li role="presentation" class="active"><a href="#clients" role="tab" id="clients-tab" data-toggle="tab" >Clients</a></li>
+										<li role="presentation" class=""><a href="#contractors" role="tab" id="contractors-tab" data-toggle="tab" >Contractors</a></li>
 										<li role="presentation" class=""><a href="#suppliers" role="tab" id="suppliers-tab" data-toggle="tab" >Suppliers</a></li>
 
 									</ul>
-									<div id="myTabContent" class="tab-content pad-10" style="height: 348px; overflow: auto;"> 
-										<div role="tabpanel" class="tab-pane fade active in" id="contractors">
+									<div id="myTabContent" class="tab-content pad-10" style="height: 290px; overflow: auto;"> 
+										<div role="tabpanel" class="tab-pane fade active in" id="clients">
+											<?php echo $this->dashboard->focus_top_ten_clients(); ?>
+										</div>
+										<div role="tabpanel" class="tab-pane fade in" id="contractors">
 											<?php echo $this->dashboard->focus_top_ten_con_sup('1'); ?>
 										</div>
 										<div role="tabpanel" class="tab-pane fade" id="suppliers" aria-labelledby="profile-tab"> 
@@ -1119,7 +1133,7 @@ var donuta = c3.generate({
                 var format = d3.format(',');
                 
              	var mod_value = Math.round(value)
-                return format(mod_value);
+                return '$ '+format(mod_value);
             }
         } 
 
