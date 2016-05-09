@@ -86,7 +86,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 
 
 
-							<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 								<div class="widget wid-type-e small-widget">
 									<div class="box-area clearfix row">
 										<div class="widg-icon-inside col-xs-3"><i class="fa fa-list-alt text-center fa-3x"></i></div>
@@ -101,7 +101,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 								</div>
 							</div>
 
-							<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 								<div class="widget wid-type-a small-widget">
 									<div class="box-area clearfix row">
 										<div class="widg-icon-inside col-xs-3"><i class="fa fa-list  text-center fa-3x"></i></div>
@@ -116,7 +116,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 								</div>
 							</div>  
 
-							<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 								<div class="widget wid-type-f small-widget">
 									<div class="box-area clearfix row">
 										<div class="widg-icon-inside col-xs-3"><i class="fa fa-server text-center fa-3x"></i></div>
@@ -132,7 +132,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 							</div>
 
 
-							<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 								<div class="widget wid-type-b small-widget">
 									<div class="box-area clearfix row">
 										<div class="widg-icon-inside col-xs-3"><i class="fa fa-tasks  text-center fa-3x"></i></div>
@@ -142,8 +142,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 												<hr class="" style="margin: 5px 0px 1px;">
 												<div class="pad-top-3 hide" id=""><?php // $this->dashboard->pm_estimates_widget(); ?></div>
 												<div class="pad-top-3" id="">
-													<p class="value"><span class="col-xs-3">WA</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>0000</strong></span></p>
-													<p class="value"><span class="col-xs-3">NSW</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>0000</strong></span></p>
+													<?php echo $this->dashboard->wip_widget(); ?>
 												</div>
 											</div>						
 										</div>
@@ -153,7 +152,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 
 
 
-						<div class="col-md-9 col-sm-12 col-xs-12 box-widget pad-10">
+						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-9 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head pad-5"><strong>Sales Forecast <span class="pull-right"><?php echo date('Y'); ?></span></strong></div>
@@ -222,7 +221,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 
 											<div class="progress m-bottom-5 m-top-5 slim tooltip-enabled" title="15.95% Sales Drop">
 												<div class="progress-bar progress-bar-danger" style="width: 15.95%"></div>
-											</div>
+											</div>f
 
 											<p>November 2014: $<strong>250,200.00</strong></p>	
 										</div>								
@@ -243,11 +242,11 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 
 						
 
-						<div class="col-md-3 col-sm-12 col-xs-12 box-widget pad-10">
+						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 
 
 					 
-							<div class="widget wid-type-0 widg-head-styled" style="height: 500px;">
+							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5"><strong>Project Manager Sales</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
@@ -284,14 +283,12 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 						</div>
 
 
-
-						<div class="clearfix"></div>
-					
+ 
 
 						<!-- ************************ -->
 
 
-						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-b">
 								<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-cube  text-center fa-3x"></i></div></div>
 								<div class="widg-content fill col-xs-9 clearfix pad-0-imp">
@@ -313,7 +310,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 						
 
 						
-							<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 								<div class="widget wid-type-0 small-widget">
 									<div class="box-area clearfix row">
 										<div class="widg-icon-inside col-xs-3"><i class="fa fa-user-times text-center fa-3x"></i></div>
@@ -329,7 +326,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 							</div>
 
 
-						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-c small-widget" >
 								<div class="box-area clearfix row">
 									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-calendar  text-center fa-3x"></i></div></div>
@@ -345,7 +342,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 						</div>
 
 						
-						<div class="col-md-3 col-sm-6 col-xs-12 box-widget pad-10">
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-d small-widget">
 								<div class="box-area clearfix row">
 									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-credit-card  text-center fa-3x"></i></div></div>
@@ -385,14 +382,14 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 							</div>
 						</div>
 
-						<div class="col-lg-3 col-md-6 col-sm-3 col-xs-12 box-widget pad-10">
+						<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong><span class="pull-right"> <?php echo date('Y'); ?></span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<div id="" class="pad-5" style="height: 282px; overflow: auto;">
-											<div id="" class="clearfix"><p> <strong class="col-md-2">#</strong><span class="col-md-6">Category</span> <strong class="col-md-4"><i class="fa fa-usd" aria-hidden="true"></i> Cost Total</strong></p></div>
+											<div id="" class="clearfix"><p> <strong class="col-md-2">#</strong><span class="col-md-6 col-sm-4">Category</span> <strong class="col-md-4 col-sm-4"><i class="fa fa-usd" aria-hidden="true"></i> Cost Total</strong></p></div>
 											<div class="col-md-12"><hr class="block m-bottom-5 m-top-5"></div>
 											<?php echo $this->dashboard->focus_projects_by_type_widget(); ?>
 										</div>
@@ -401,7 +398,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 							</div>
 						</div>
 
-						<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 box-widget pad-10">
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-e widg-head-styled">
 
 								<div class="  fill box-widg-head pad-right-10 pull-right pad-top-3 m-3">

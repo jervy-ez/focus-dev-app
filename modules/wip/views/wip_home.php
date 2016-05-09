@@ -83,7 +83,20 @@
 								<div class="pull-right" style="margin-top: -15px;">
 									<div class="clearfix m-top-20">
 										<div class="box-content box-list collapse in prj_cmmnt_area pull-right" style="display:none; visibility: hidden;"><ul><li><p>No posted comments yet!</p></li></ul></div>
-										<div class="box-area  pull-right"  style=""><p class="totals_wip"><?php echo $this->wip->sum_total_wip_cost($arr); ?></p></div>										
+										<div class="box-area  pull-right"  style="">
+
+                      <!-- <p class="totals_wip"><?php //echo $this->wip->sum_total_wip_cost($arr); ?></p> -->
+
+
+                      <p class="totals_wip">
+                        <span class="wip_project_total" style="font-size: 16px;"><strong>Project Total: </strong> $<span id="wip_total_value"></span></span> &nbsp;&nbsp;&nbsp;&nbsp; 
+                        <span class="wip_project_estimate green-estimate"><strong>Total Estimated:</strong> $<span id="wip_total_estimated"></span></span> &nbsp;&nbsp;&nbsp;&nbsp; 
+                        <span class="wip_project_quoted"><strong>Total Quoted: </strong> $<span id="wip_total_quoted"></span></span>
+                      </p>
+
+
+
+                    </div>										
 									</div>
 								</div>
 								<label><?php echo $screen; ?> List</label>							
@@ -96,6 +109,8 @@
 										<tbody>
 
 											<?php
+                      $estimated = 0;
+                      $quoted = 0;
 											foreach ($proj_t->result_array() as $row){
 
 
@@ -110,9 +125,11 @@
 
 													if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
 														echo '<td>'.number_format($row['project_total']+$row['variation_total']).'</td>';
+                            $quoted = $quoted + $row['project_total']+$row['variation_total'];
 
 													}else{
 														echo '<td class="green-estimate">'.number_format($row['budget_estimate_total']).'</td>';
+                            $estimated = $estimated + $row['budget_estimate_total'];
 													}
 
 													echo '<td>'.$date_finish_mod.'</td></tr>';
@@ -122,7 +139,14 @@
 											?>
 
 										</tbody>
-									</table>									
+									</table>
+
+
+                  <script type="text/javascript">
+                    $('#wip_total_value').text('<?php echo number_format($estimated+$quoted,2); ?>');
+                    $('#wip_total_estimated').text('<?php echo number_format($estimated,2); ?>');
+                    $('#wip_total_quoted').text('<?php echo number_format($quoted,2); ?>');
+                  </script>					
 								</div>
 							</div>
 						</div>

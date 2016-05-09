@@ -4,7 +4,7 @@ class Purchase_order_m extends CI_Model{
 
 	public function get_po_list(){
 
-		$query = $this->db->query("SELECT `job_sub_category`.`job_sub_cat`,`supplier_cat`.`supplier_cat_name`,`works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`cd`.`company_name` as `client_name`,`cn`.`company_name` as `contractor_name`,`users`.`user_first_name`,`users`.`user_last_name`,`works`.`price`,`works`.`other_work_desc`,`works`.`contractor_type`,`works`.`work_cpo_date`
+		$query = $this->db->query("SELECT `job_sub_category`.`job_sub_cat`,`supplier_cat`.`supplier_cat_name`,`works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`cd`.`company_name` as `client_name`,`cn`.`company_name` as `contractor_name`,`users`.`user_first_name`,`users`.`user_last_name`,`works`.`price`,`works`.`other_work_desc`,`works`.`contractor_type`,`works`.`work_cpo_date`, `project`.`focus_company_id`
 			FROM `works`
 			LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id`
 			LEFT JOIN `job_sub_category` ON `job_sub_category`.`job_sub_cat_id` = `works`.`work_con_sup_id`
@@ -22,7 +22,7 @@ class Purchase_order_m extends CI_Model{
 		
 		$end_date_arr = explode("/", $end_date);
 		$end_date = $end_date_arr[2]."-".$end_date_arr[1]."-".$end_date_arr[0];
-		$query = $this->db->query("SELECT `job_sub_category`.`job_sub_cat`,`supplier_cat`.`supplier_cat_name`,`works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`cd`.`company_name` as `client_name`,`cn`.`company_name` as `contractor_name`,`users`.`user_first_name`,`users`.`user_last_name`,`works`.`price`,`works`.`other_work_desc`,`works`.`contractor_type`,`works`.`work_cpo_date`,`works`.`work_reply_date`,`company_details`.`company_name`
+		$query = $this->db->query("SELECT `job_sub_category`.`job_sub_cat`,`supplier_cat`.`supplier_cat_name`,`works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`cd`.`company_name` as `client_name`,`cn`.`company_name` as `contractor_name`,`users`.`user_first_name`,`users`.`user_last_name`,`works`.`price`,`works`.`other_work_desc`,`works`.`contractor_type`,`works`.`work_cpo_date`,`works`.`work_reply_date`,`company_details`.`company_name`, `project`.`focus_company_id`
 			FROM `works`
 			LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id`
 			LEFT JOIN `company_details` on `company_details`.`company_id` = `project`.`client_id`
