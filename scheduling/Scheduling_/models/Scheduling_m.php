@@ -11,6 +11,8 @@ class Scheduling_m extends CI_Model{
 		$query = $this->db->query("SELECT
 
 
+
+DISTINCT on (course.id) course.id,
 			course.id AS class_subject_id, program.id AS program_id, campus.id AS campus_id, college.id AS college_id, department.id AS department_id   , program_major.program_major_shortname AS prg_mjr_code,
 
 
@@ -55,7 +57,8 @@ ref_academic_term.semester
 			AND course.is_active = 'T'
 			AND ref_year_term.is_active = 'T'
 */
-");
+
+			ORDER BY course.id ASC");
 		return $query;
 	}
 
@@ -250,7 +253,7 @@ ref_academic_term.semester
 			LEFT JOIN ref_academic_term ON ref_academic_term.id = curriculum.academic_term_id
 
 			LEFT JOIN program_major ON  program_major.program_id = program.id
-			WHERE department_program.college_department_id = '$id'   AND department_program.active = 'T' ");
+			WHERE department_program.college_department_id = '$id' /*  AND ( program.active = 'T' OR program.active = NULL   )*/");
 		return $query;
 	}
  
@@ -295,19 +298,7 @@ ref_academic_term.semester
 	function _get_class_block($department_program_id){
 		$query = $this->db->query("SELECT * FROM block 
 			WHERE department_program_id = '$department_program_id' 
-			 AND active = 'T' ORDER BY block_code ASC");
-		return $query;
-	}
-
-
-	function _get_class_block_general($id){
-		$query = $this->db->query("SELECT * FROM block
-LEFT JOIN college_department ON college_department.id = block.college_department_id
-WHERE college_department.department_id = '$id'  AND block.active = 'T' ORDER BY block.block_code ASC
-
- 
-
-			 ");
+			 AND active = 'T'");
 		return $query;
 	}
 

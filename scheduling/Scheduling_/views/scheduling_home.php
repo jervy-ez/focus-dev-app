@@ -60,12 +60,6 @@
                   </select>
                 </div>
 
-                <div id="" class="col-md-2">
-                  <div class="btn btn-primary btn-md pull-left search_table_program">Search</div>
-                  <div class="btn btn-warning btn-md pull-left unlock_courses mrg-left-10"><i class="fa fa-unlock-alt" aria-hidden="true"></i></div>
-
-                </div>
-
                 <div id="" class="col-md-2 hide select_sem_list">
                   <select class="form-control mrg-left-10 input-sm" id="select_semester" onchange="select_sem(this.value);">
                     <option disabled="" selected="">Semester</option>
@@ -77,6 +71,10 @@
                   </select>
                   <div class="btn btn-sm btn-info mrg-left-10 hide" data-toggle="modal" data-target="#special_courses_selection">Special Course</div>
 
+                </div>
+
+                <div id="" class="col-md-1">
+                  <div class="btn btn-primary btn-md pull-left search_table_program">Search</div>
                 </div>
             </div>
           </div>
@@ -460,15 +458,7 @@ $("select#select_building").change(function(){
   });
 });
 
-$('.unlock_courses').click(function(){
-  $('.course_table').show();
 
-
-  var course_table = $('#course_table').dataTable();
-  course_table.fnFilter('');
-
-
-});
 
 $("select#select_room").change(function(){
   $('#room_iframe').hide();

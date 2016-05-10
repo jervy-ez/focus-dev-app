@@ -780,6 +780,12 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 
 		$wip_total = 0;
 
+		$total_invoiced_init_wa = 0;
+		$total_invoiced_wa = 0;
+
+		$total_invoiced_init_nsw = 0;
+		$total_invoiced_nsw = 0;
+
 
 		foreach ($proj_t->result_array() as $row){
 			$quoted = 0;
@@ -799,18 +805,28 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 				if( $row['focus_company_id'] == 5 ){
 					$estimated_wa = $estimated_wa + $estimated;
 					$quote_wa = $quote_wa + $quoted;
+
+					$total_invoiced_init_wa = $this->invoice->get_project_invoiced($row['project_id'],$row['project_total'],$row['variation_total']);
+					$total_invoiced_wa = $total_invoiced_wa + $total_invoiced_init_wa;
 				}
 
 
 				if( $row['focus_company_id'] == 6 ){
 					$estimated_nsw = $estimated_nsw + $estimated;
 					$quote_nsw = $quote_nsw + $quoted;
+
+					$total_invoiced_init_nsw = $this->invoice->get_project_invoiced($row['project_id'],$row['project_total'],$row['variation_total']);
+					$total_invoiced_nsw = $total_invoiced_nsw + $total_invoiced_init_nsw;
 				}
+
+
+
+
 			}
 		}
 
-		echo '<p class="value"><span class="col-xs-3">WA</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($estimated_wa+$quote_wa,2).'</strong></span></p>';
-		echo '<p class="value"><span class="col-xs-3">NSW</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($estimated_nsw+$quote_nsw,2).'</strong></span></p>';
+		echo '<p class="value"><span class="col-xs-3">WA</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format( ($estimated_wa+$quote_wa) - $total_invoiced_wa,2).'</strong></span></p>';
+		echo '<p class="value"><span class="col-xs-3">NSW</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format( ($estimated_nsw+$quote_nsw) - $total_invoiced_nsw,2).'</strong></span></p>';
 	}
 
 
@@ -1130,7 +1146,7 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 			echo '<div class="" id=""><p><strong>Overall Focus</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($grand_total_sales_cmp).'</span> <br /> <span class="label pull-right m-bottom-3 small_blue_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($grand_total_uninv_cmp).'</span></span></p>';
 			echo '<p><i class="fa fa-usd"></i> '.number_format($grand_total_over_cmp).' <strong class="pull-right m-right-10"></strong></p> </p>';
 
-			echo '<div class="value-bar clearfix tooltip-enabled" title="" data-original-title="$'.number_format($grand_total_over_cmp).' / $'.number_format($forecast_focus_total).'   " style="float: left; margin: 4px 0px 0px 0px; width: 100%;"><div class="value pull-left" style="width:'.$status_forecast.'%"></div></div>			</div></div>';
+			echo '<div class="value-bar clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($grand_total_over_cmp).' / $'.number_format($forecast_focus_total).'   " style="float: left; margin: 4px 0px 0px 0px; width: 100%;"><div class="value pull-left" style="width:'.$status_forecast.'%"></div></div>			</div></div>';
 			echo "<div class='clearfix'></div>";
 
 	}
@@ -1357,12 +1373,20 @@ echo "[";
 			//$total_wa_price = $total_wa_price + $price_exgst ;
 
 			if( $row['focus_company_id'] == 5 ){
-				$wa_po_price = $wa_po_price + $price_exgst;
+			//	 $wa_po_price = $wa_po_price + $price_exgst;
+
+				$wa_po_price = $wa_po_price + $this->purchase_order->check_balance_po($row['works_id']);
+
+
 			}
 
 
 			if( $row['focus_company_id'] == 6 ){
-				$nsw_po_price = $nsw_po_price + $price_exgst;
+
+			//	 $nsw_po_price = $nsw_po_price + $price_exgst;
+
+
+				$nsw_po_price = $nsw_po_price + $this->purchase_order->check_balance_po($row['works_id']);
 			}
 		}
 
@@ -1375,12 +1399,20 @@ echo "[";
 		//	$total_nsw_price = $total_nsw_price + $price_exgst_j ;
 
 			if( $row['focus_company_id'] == 5 ){
-				$wa_po_j_price = $wa_po_j_price + $price_exgst_j;
+
+
+
+			//	$wa_po_j_price = $wa_po_j_price + $price_exgst_j;
+
+
+              	$wa_po_j_price = $wa_po_j_price + $this->purchase_order->check_balance_po($row['works_id'],$row['work_joinery_id']);
 			}
 
 
 			if( $row['focus_company_id'] == 6 ){
-				$nsw_po_j_price = $nsw_po_j_price + $price_exgst_j;
+			//	$nsw_po_j_price = $nsw_po_j_price + $price_exgst_j;
+
+				$nsw_po_j_price = $nsw_po_j_price + $this->purchase_order->check_balance_po($row['works_id'],$row['work_joinery_id']);
 			}
 
 
@@ -1493,8 +1525,8 @@ echo "[";
 		foreach ($q_work->result_array() as $job_category) {
 			$cost = 0;
 			$variation = 0;
-			$count = 0;
 			$grand_total = 0;
+			$count = 0;
 
 			$q_projects = $this->dashboard_m->get_projects_by_work_type($current_start_year, $current_date, $job_category['job_category']);
  
@@ -1554,6 +1586,9 @@ echo "[";
 	//	var_dump($days_dif);
 		$long_day =  max($days_dif);
 		$short_day_day =  min($days_dif);
+
+		//over ride
+		$short_day_day = 1;
 
 		echo '<p class="value">'.number_format($average,2).' Days <br></p>';
 		echo '<p class="">Shortest:'.$short_day_day.' &nbsp; Longest:'.$long_day.'</p>';

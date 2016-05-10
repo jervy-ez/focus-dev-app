@@ -778,8 +778,8 @@ ORDER BY `project`.`focus_company_id` ASC
 		$query = $this->db->query("SELECT  * FROM `project`
 			LEFT JOIN  `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
 			WHERE `project`.`is_active` = '1' 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
 			AND `project`.`job_date` <> '' AND `project`.`job_category` = '$job_category' ");
 		return $query;
 	}
@@ -802,7 +802,7 @@ ORDER BY `project`.`focus_company_id` ASC
 		$query = $this->db->query("SELECT `project`.`address_id`, `address_general`.`x_coordinates`,`address_general`.`y_coordinates` FROM `project`
 			LEFT JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
 			LEFT JOIN `address_general` ON `address_general`.`general_address_id` = `address_detail`.`general_address_id`
-			WHERE `project`.`job_date` <> '' AND `project`.is_active = '1' AND  `project`.`is_paid` = '0'
+			WHERE `project`.`job_date` <> '' AND `project`.is_active = '1' 
 		 
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
 		#	AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 

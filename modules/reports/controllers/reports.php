@@ -503,7 +503,7 @@ if($project_num_q != '' || $progress_claim_q != '' || $client_q != '' || $invoic
 
 $table_q = $this->reports_m->select_list_invoice($has_where,$project_num_q,$client_q,$invoice_status_q,$progress_claim_q,$project_manager_q,$order_q);
 
-//$content .="----$has_where,$project_num_q,$client_q,$invoice_status_q,$progress_claim_q,$project_manager_q,$order_q--$inv_date_type--";
+//$content .="----$has_where,$project_num_q,$client_q,$invoice_status_q,$progress_claim_q,$project_manager_q,$order_q--$inv_date_type------";
 
 
 $records_num = 0;

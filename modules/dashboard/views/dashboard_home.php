@@ -348,7 +348,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-credit-card  text-center fa-3x"></i></div></div>
 									<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-right-15">
-												<div class="pad-left-5 pad-top-3" id=""><p>Purchase Orders <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+												<div class="pad-left-5 pad-top-3" id=""><p>Purchase Orders - <small>Total Balances</small> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 												
 											<hr class=" m-bottom-5 m-top-3">
 												<div class="" id="">

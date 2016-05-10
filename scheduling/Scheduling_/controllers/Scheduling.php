@@ -43,16 +43,6 @@ class Scheduling extends MX_Controller{
 		return $block_details_q->result();
 	}
 
-	function _fetch_class_block_general($id){
-		$block_details_q = $this->scheduling_m->_get_class_block_general($id);
-		return $block_details_q->result();
-	}
-
-
-	
-
-
-
 	function _fetch_block_details($id){
 		if($id >= 1 && $id != 'NULL' ){
 			$q_block = $this->scheduling_m->_get_block_details($id);
@@ -749,14 +739,7 @@ if($block_id >= 1){
 			$data['course_details'] = $this->_fetch_course_details($course_id, $campus_id, $college_id, $department_id, $department_program_id);
 			$department_program = $data['course_details']->department_p_id;
 			$year_level = $data['course_details']->year_level;
- 
-			$department_id = $data['course_details']->department_id;
-			if($department_id >= 1){
-				$data['class_block'] = $this->_fetch_class_block_general($department_id);
-			}else{
-				$data['class_block'] = $this->_fetch_class_block($department_program);
-			}
-
+			$data['class_block'] = $this->_fetch_class_block($department_program);
 		}else{
 
 			$selected_course_q = $this->scheduling_m->_get_one_course($course_id);

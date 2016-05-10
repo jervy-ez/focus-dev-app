@@ -85,13 +85,14 @@
 										<div class="box-content box-list collapse in prj_cmmnt_area pull-right" style="display:none; visibility: hidden;"><ul><li><p>No posted comments yet!</p></li></ul></div>
 										<div class="box-area  pull-right"  style="">
 
-                      <!-- <p class="totals_wip"><?php //echo $this->wip->sum_total_wip_cost($arr); ?></p> -->
+                     <!--  <p class="totals_wip"><?php // echo $this->wip->sum_total_wip_cost($arr); ?></p> -->
 
 
                       <p class="totals_wip">
                         <span class="wip_project_total" style="font-size: 16px;"><strong>Project Total: </strong> $<span id="wip_total_value"></span></span> &nbsp;&nbsp;&nbsp;&nbsp; 
                         <span class="wip_project_estimate green-estimate"><strong>Total Estimated:</strong> $<span id="wip_total_estimated"></span></span> &nbsp;&nbsp;&nbsp;&nbsp; 
-                        <span class="wip_project_quoted"><strong>Total Quoted: </strong> $<span id="wip_total_quoted"></span></span>
+                        <span class="wip_project_quoted"><strong>Total Quoted: </strong> $<span id="wip_total_quoted"></span></span> &nbsp;&nbsp;&nbsp;&nbsp; 
+                        <span class="wip_total_invoiced"><strong>Total Invoiced: </strong> $<span id="wip_total_invoiced"></span></span>
                       </p>
 
 
@@ -111,8 +112,9 @@
 											<?php
                       $estimated = 0;
                       $quoted = 0;
+                      $total_invoiced_init = 0;
+                      $total_invoiced = 0;
 											foreach ($proj_t->result_array() as $row){
-
 
 												if($this->invoice->if_invoiced_all($row['project_id'])  && $this->invoice->if_has_invoice($row['project_id']) > 0 ){
 													
@@ -132,6 +134,9 @@
                             $estimated = $estimated + $row['budget_estimate_total'];
 													}
 
+                          $total_invoiced_init = $this->invoice->get_project_invoiced($row['project_id'],$row['project_total'],$row['variation_total']);
+                          $total_invoiced = $total_invoiced + $total_invoiced_init;
+
 													echo '<td>'.$date_finish_mod.'</td></tr>';
 												}
 
@@ -146,6 +151,7 @@
                     $('#wip_total_value').text('<?php echo number_format($estimated+$quoted,2); ?>');
                     $('#wip_total_estimated').text('<?php echo number_format($estimated,2); ?>');
                     $('#wip_total_quoted').text('<?php echo number_format($quoted,2); ?>');
+                    $('#wip_total_invoiced').text('<?php echo number_format($total_invoiced,2); ?>');
                   </script>					
 								</div>
 							</div>
@@ -245,6 +251,8 @@
       			<option selected="selected" value="Strip Out">Strip Out</option>
       			<option selected="selected" value="Minor Works">Minor Works (Under $20,000.00)</option>
       			<option selected="selected" value="Maintenance">Maintenance</option>
+            <option selected="selected" value="Design Works">Design Works</option>
+
       		</select>
       	</div>
 

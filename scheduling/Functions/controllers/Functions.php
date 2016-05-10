@@ -7,7 +7,6 @@ class Functions extends MX_Controller{
 		parent::__construct();
 		//$this->load->library('pbkdf2');
 		$this->load->model('functions_m');		
-		//$this->_check_user_signin();   // checks user is logged in
 
 	//	$this->_is_logged_in(); // to be tested
  
