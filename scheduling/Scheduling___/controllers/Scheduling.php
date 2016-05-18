@@ -7,7 +7,6 @@ class Scheduling extends MX_Controller{
 		parent::__construct();
 		$this->load->module('Functions');
 		$this->load->model('scheduling_m');
-		$this->load->module('Pdf');
 
 		if(!$this->session->userdata('id')){
 			//echo '<script> window.location = "https://my.bicol-u.edu.ph/alpha/default/user/logout"; </script>';
@@ -18,14 +17,9 @@ class Scheduling extends MX_Controller{
 		$year = date("Y");
 		$data['main_content'] = 'scheduling_home';
 
+
 		$data['courses_data'] = $this->_fetch_courses($year);
 		$data['campus_data'] = $this->_fetch_campus();
-		$data['college_data'] = $this->scheduling_m->_get_college();
-
-
-
-		$data['academic_year'] = $this->_fetch_academic_year($year);
-
 
 
 		$data['room_data'] = $this->_fetch_room();
@@ -48,6 +42,16 @@ class Scheduling extends MX_Controller{
 		$block_details_q = $this->scheduling_m->_get_class_block($program_id);
 		return $block_details_q->result();
 	}
+
+	function _fetch_class_block_general($id){
+		$block_details_q = $this->scheduling_m->_get_class_block_general($id);
+		return $block_details_q->result();
+	}
+
+
+	
+
+
 
 	function _fetch_block_details($id){
 		if($id >= 1 && $id != 'NULL' ){
@@ -155,165 +159,6 @@ class Scheduling extends MX_Controller{
 		echo '<script> window.location = "'.$link.'"; </script>';
 	}
 
-	function print_block_schedule(){
-		$get_data = $this->uri->segment(3);
-		$data = explode('-',$get_data);
-		list($block_id,$term_id) = $data;
-		$days_arr_data = ["","Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-		$schedule_data = $this->scheduling_m->_get_block_schedule_print($block_id,$term_id);
-		$content = '';
-
-		$content .= '<center><h1>Republic of the Philippines</h1>
-		<p><h2>Bicol University</h2></p>
-
-	<p></p><p><strong>Tentative Schedule for Class Block</strong></p></center>';
-
-
-
-		$content .= '<table id="schedule_table" class="table table-bordered table-striped"><thead><tr><th>Course Code</th><th>Course Title</th><th>Faculty Name</th>
-		<th>Room</th><th>Class</th><th>Schedule</th><th>Units</th><th>Event</th><th>Campus</th></tr>  </thead><tbody>';
-
-		foreach ($schedule_data->result() as $course):
-			$content .= '<tr>
-		<td>'.$course->course_code.'</td>
-		<td>'.$course->course_title.'</td>
-		<td>'.$course->employee_lname.' '.$course->employee_fname.'</td>
-		<td>'.$course->room_code.'</td>
-		<td>'.$course->block_code.' - '.$course->year_level.''.$course->block.'</td>
-		<td>'.$days_arr_data[$course->day].' '.$course->time.'</td>
-		<td>'.$course->no_of_units.'</td>
-		<td>'.$course->class_event.'</td>
-		<td>'.$course->college_code.'</td></tr>';
-		endforeach;
-
-		$content .= '</tbody></table>';
-		$my_pdf = $this->pdf->html_form($content,'portrait','A4','faculty_schedule','schedules_printouts',FALSE);
-		echo '<script> window.location = "'.base_url().'docs/schedules_printouts/'.$my_pdf.'.pdf"; </script>';
-
-	}
-
-
-	function print_faculty_schedule(){
-		$get_data = $this->uri->segment(3);
-		$data = explode('-',$get_data);
-		list($faculty_id,$term_id) = $data;
-		$days_arr_data = ["","Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-		$schedule_data = $this->scheduling_m->_get_faculty_schedule($faculty_id,$term_id);
-		$content = '';
-
-
-
-		$content .= '<center><h1>Republic of the Philippines</h1>
-		<p><h2>Bicol University</h2></p>
-
-	<p></p><p><strong>Tentative Schedule for Faculty Classes</strong></p></center>';
-
-
-
-		$content .= '<table id="schedule_table" class="table table-bordered table-striped"><thead><tr><th>Course Code</th><th>Course Title</th><th>Faculty Name</th>
-		<th>Room</th><th>Class</th><th>Schedule</th><th>Units</th><th>Event</th><th>Campus</th></tr>  </thead><tbody>';
-
-		foreach ($schedule_data->result() as $course):
-			$content .= '<tr>
-		<td>'.$course->course_code.'</td>
-		<td>'.$course->course_title.'</td>
-		<td>'.$course->employee_lname.' '.$course->employee_fname.'</td>
-		<td>'.$course->room_code.'</td>
-		<td>'.$course->block_code.' - '.$course->year_level.''.$course->block.'</td>
-		<td>'.$days_arr_data[$course->day].' '.$course->time.'</td>
-		<td>'.$course->no_of_units.'</td>
-		<td>'.$course->class_event.'</td>
-		<td>'.$course->college_code.'</td></tr>';
-		endforeach;
-
-		$content .= '</tbody></table>';
-		$my_pdf = $this->pdf->html_form($content,'portrait','A4','faculty_schedule','schedules_printouts',FALSE);
-		echo '<script> window.location = "'.base_url().'docs/schedules_printouts/'.$my_pdf.'.pdf"; </script>';
-	}
-
-
-
-
-
-
-
-
-	function print_room_schedule(){
-		$get_data = $this->uri->segment(3);
-		$data = explode('-',$get_data);
-		list($room_id,$term_id) = $data;
-		$days_arr_data = ["","Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-		$schedule_data = $this->scheduling_m->_get_room_schedule_print($room_id,$term_id);
-
-		$content = '';
-
-
-
-		$content .= '<center><h1>Republic of the Philippines</h1>
-		<p><h2>Bicol University</h2></p>
-
-	<p></p><p><strong>Tentative Schedule for Room Classes</strong></p></center>';
-
-
-		$content .= '<table id="schedule_table" class="table table-bordered table-striped"><thead><tr><th>Course Code</th><th>Course Title</th><th>Faculty Name</th>
-		<th>Room</th><th>Class</th><th>Schedule</th><th>Event</th><th>Campus</th></tr>  </thead><tbody>';
-
-		foreach ($schedule_data->result() as $course):
-			$content .= '<tr>
-		<td>'.$course->course_code.'</td>
-		<td>'.$course->course_title.'</td>
-		<td>'.$course->employee_lname.' '.$course->employee_fname.'</td>
-		<td>'.$course->room_code.'</td>
-		<td>'.$course->block_code.' - '.$course->year_level.''.$course->block.'</td>
-		<td>'.$days_arr_data[$course->day].' '.$course->time.'</td>
-		<td>'.$course->class_event.'</td>
-		<td>'.$course->college_code.'</td></tr>';
-		endforeach;
-
-		$content .= '</tbody></table>';
-		$my_pdf = $this->pdf->html_form($content,'portrait','A4','room_schedule','schedules_printouts',FALSE);
-
- 		echo '<script> window.location = "'.base_url().'docs/schedules_printouts/'.$my_pdf.'.pdf"; </script>';
-	}
-
-
-
-
-
-
-	function print_department_schedule(){
-		$get_data = $this->uri->segment(3);
-		$data = explode('-',$get_data);
-		list($dept_id,$term_id) = $data;
-		$days_arr_data = ["","Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-		$schedule_data = $this->scheduling_m->_get_department_schedule($dept_id,$term_id);
-
-		$content = '';
-		$content .= '<table id="schedule_table" class="table table-bordered table-striped"><thead><tr><th>Course Code</th><th>Course Title</th><th>Faculty Name</th>
-		<th>Room</th><th>Class</th><th>Schedule</th><th>Units</th><th>Event</th><th>Campus</th></tr>  </thead><tbody>';
-
-		foreach ($schedule_data->result() as $course):
-			$content .= '<tr>
-		<td>'.$course->course_code.'</td>
-		<td>'.$course->course_title.'</td>
-		<td>'.$course->employee_lname.' '.$course->employee_fname.'</td>
-		<td>'.$course->room_code.'</td>
-		<td>'.$course->block_code.' - '.$course->year_level.''.$course->block.'</td>
-		<td>'.$days_arr_data[$course->day].' '.$course->time.'</td>
-		<td>'.$course->no_of_units.'</td>
-		<td>'.$course->class_event.'</td>
-		<td>'.$course->college_code.'</td></tr>';
-		endforeach;
-
-		$content .= '</tbody></table>';
-		$my_pdf = $this->pdf->html_form($content,'portrait','A4','faculty_schedule','schedules_printouts',FALSE);
-
- 		echo '<script> window.location = "'.base_url().'docs/schedules_printouts/'.$my_pdf.'.pdf"; </script>';
-	}
 
 	function faculty_calendar(){
 		$get_data = $this->uri->segment(3);
@@ -384,40 +229,6 @@ class Scheduling extends MX_Controller{
 	}
 
 
-	function get_departments_college(){
-		$college_id = $_POST['ajax_post'];
-		$department_q = $this->scheduling_m->_fetch_department_college($college_id);
-		echo '<option selected="">Department</option>';
-		foreach ($department_q->result() as $result) {
-			echo '<option value="'.$result->department_id.'">'.$result->department_code.'</option>';
-		}
-	}
-
-
-	function get_buildings_college(){
-		$college_id = $_POST['ajax_post'];
-		$building_q = $this->scheduling_m->_fetch_building_college($college_id);
-		echo '<option selected="">Building</option>';
-		foreach ($building_q->result() as $result) {
-			echo '<option value="'.$result->id.'">'.$result->building_code.'</option>';
-		}
-	}
-
-	function get_blocks_college(){
-		$college_id = $_POST['ajax_post'];
-		$block_q = $this->scheduling_m->_fetch_block_college($college_id);
-		foreach ($block_q->result() as $result) {
-			echo '<option value="'.$result->id.'">'.$result->block_code.' '.$result->year_level.' '.$result->block.' </option>';
-		}
-	}
-
-	function get_programs_college(){
-		$college_id = $_POST['ajax_post'];
-		$program_q = $this->scheduling_m->_fetch_program_college($college_id);
-		foreach ($program_q->result() as $result) {
-			echo '<option value="'.$result->program_id.'">'.$result->program_code.' </option>';
-		}
-	}
 
 	function count_schedule(){
 
@@ -938,7 +749,14 @@ if($block_id >= 1){
 			$data['course_details'] = $this->_fetch_course_details($course_id, $campus_id, $college_id, $department_id, $department_program_id);
 			$department_program = $data['course_details']->department_p_id;
 			$year_level = $data['course_details']->year_level;
-			$data['class_block'] = $this->_fetch_class_block($department_program);
+ 
+			$department_id = $data['course_details']->department_id;
+			if($department_id >= 1){
+				$data['class_block'] = $this->_fetch_class_block_general($department_id);
+			}else{
+				$data['class_block'] = $this->_fetch_class_block($department_program);
+			}
+
 		}else{
 
 			$selected_course_q = $this->scheduling_m->_get_one_course($course_id);
@@ -967,91 +785,5 @@ if($block_id >= 1){
 
 
 		$this->load->view('page', $data);
-	}
-
-
-	function test_sched(){
-
-		$query = $this->db->query(" SELECT * FROM course_schedule 
-			LEFT JOIN block ON block.id = course_schedule.block_id
-			WHERE   course_schedule.active = 'T' AND course_schedule.faculty_in_charge_id = '377' ");
-
-
-		$event_type = 0;
-		$is_set = 0;
-
-		$data_sched = array();
-		$day_set = array();
-
-		$days = array('','Sun','Mon','Tue','Wed','Thu','Fri','Sat');
-
-
-		foreach ($query->result() as $result) {
-			$day = '';
-			$time = '';
-
-			$course_id = $result->id;
-			$block_code = $result->block_code;
-
-
-			$query_b = $this->db->query("SELECT * FROM class_schedule
-				LEFT JOIN class_event ON class_event.id = class_schedule.class_event_id
-				LEFT JOIN room ON room.id = class_schedule.room_id
-				WHERE class_schedule.course_schedule_id = '$course_id'  AND class_schedule.active = 'T' ORDER BY class_schedule.day ASC, class_schedule.start_time ASC");
-
-
-			foreach ($query_b->result() as $class) {
-
-				if($is_set == 0){
-					$event_type = $class->class_event_id;
-
-					$is_set = 1; 
-				}
-
-
-				if($event_type == $class->class_event_id && $is_set == 1){
-					$day = $days[$class->day];
-					array_push($day_set, $day);
-					$time = $class->time;
-				}else{
-					$is_set = 0;
-				}
-
-				$class_event = $class->class_event;
-				$room = $class->room_code;
-
-
-
-			}
-
-
-			echo '<br /><hr /><br />course_id '.$course_id;
-
-
-			$s_day = implode('-', array_unique( $day_set));
-
-
-			echo $s_day.'-'.$time.'-'.$class_event.' room:'.$room.'  block:'.$block_code;
-
-
-			echo '<br /><hr /><br />';
-
-			$day = '';
-			$time = '';
-			$is_set = 0;
-			$day_set = array();
-
-
-
-
-
-
-
-		}
-
-
-
-
-
 	}
 }

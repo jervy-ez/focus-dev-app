@@ -60,6 +60,12 @@
                   </select>
                 </div>
 
+                <div id="" class="col-md-2">
+                  <div class="btn btn-primary btn-md pull-left search_table_program">Search</div>
+                  <div class="btn btn-warning btn-md pull-left unlock_courses mrg-left-10"><i class="fa fa-unlock-alt" aria-hidden="true"></i></div>
+
+                </div>
+
                 <div id="" class="col-md-2 hide select_sem_list">
                   <select class="form-control mrg-left-10 input-sm" id="select_semester" onchange="select_sem(this.value);">
                     <option disabled="" selected="">Semester</option>
@@ -71,10 +77,6 @@
                   </select>
                   <div class="btn btn-sm btn-info mrg-left-10 hide" data-toggle="modal" data-target="#special_courses_selection">Special Course</div>
 
-                </div>
-
-                <div id="" class="col-md-1">
-                  <div class="btn btn-primary btn-md pull-left search_table_program">Search</div>
                 </div>
             </div>
           </div>
@@ -147,7 +149,7 @@
 
 
 
-    <div class="col-md-12">
+    <div class="col-md-12 hide">
 
 
       <div class="box box-primary collapsed-box">
@@ -164,108 +166,34 @@
         <div class="box-body" style="display: none;">
             <div class="">
               <div class="row" id="">
- 
-                <div id="" class="col-md-3">
-                  <select class="form-control" id="term">
-                    <option selected value="">Academic Term*</option>
-                    <?php foreach ($academic_year as $ay_data): ?>
-                      <option value="<?php echo $ay_data->id; ?>"><?php echo $ay_data->school_year.'-'.$ay_data->semester ; ?></option>
-                    <?php endforeach; ?>
-                  </select>
-                </div>
 
                 <div id="" class="col-md-3">
-                  <select class="form-control" id="college_type_print">
-                    <option disabled selected >College*</option>
-
-                    <?php foreach ($college_data->result() as $college): ?>
-                     <option value="<?php echo $college->id; ?>"><?php echo $college->college_code;  ?></option>
-                   <?php endforeach; ?>
-
+                  <select class="form-control" id="select_print_type">
+                    <option disabled="" selected="">Select Print</option>
+                    <option value="room">Room</option>
+                    <option value="faculty">Faculty</option>
                   </select>
                 </div>
-
-                <div id="" class="clearfix pad-15"></div>
-
-              <h4 class="pad-left-10 mrg-left-5">Print Faculty</h4>
-
-
-                <div class="col-lg-4 hide">
-                  <div class="input-group">
-                  <select class="form-control" id="select_department_print" >
-                    <option  selected="" value="">Select Department to Print*</option>
-                  </select>
-                  <span class="input-group-btn">
-                    <button class="btn btn-info print_department_sched" type="button"><i class="fa fa-print" aria-hidden="true"></i></button>
-                  </span>
-                </div>
-              </div>
-
-                <div class="col-lg-4">
-                  <div class="input-group">
-                  <select class="form-control" id="select_faculty_print" >
-                    <option  selected="" value="">Select Faculty to Print*</option>
-                  </select>
-                  <span class="input-group-btn">
-                    <button class="btn btn-info print_faculty_sched" type="button"><i class="fa fa-print" aria-hidden="true"></i></button>
-                  </span>
-                </div>
-              </div>
-
-
-
-                <div id="" class="clearfix pad-15"></div>
-
-              <h4 class="pad-left-10 mrg-left-5">Print Clas Block</h4>
-
-
-                <div class="col-lg-4">
-                  <div class="input-group">
-                  <select class="form-control" id="select_department_print" >
-                    <option  selected="" value="">Select Department to Print*</option>
-                  </select>
-                  <span class="input-group-btn">
-                    <button class="btn btn-info print_department_sched" type="button"><i class="fa fa-print" aria-hidden="true"></i></button>
-                  </span>
-                </div>
-              </div>
-
-                <div class="col-lg-4">
-                  <div class="input-group">
-                  <select class="form-control" id="select_class_block_print" >
-                    <option  selected="" value="">Select Block to Print*</option>
-                  </select>
-                  <span class="input-group-btn">
-                    <button class="btn btn-info print_class_block_sched" type="button"><i class="fa fa-print" aria-hidden="true"></i></button>
-                  </span>
-                </div>
-              </div>
-
-
-                <div id="" class="clearfix pad-15"></div>
-              <h4 class="pad-left-10 mrg-left-5">Print Room</h4>
-
 
                 <div id="" class="col-md-3">
                   <select class="form-control" id="select_building">
                     <option disabled selected >Building*</option>
+                    <?php foreach ($building_data as $building): ?>
+                      <option value="<?php echo $building->id; ?>"><?php echo $building->building_code.' - '.ucwords(strtolower($building->building_desc)); ?></option>
+                    <?php endforeach; ?>
                   </select>
                 </div> 
 
 
-
-                <div class="col-lg-4">
-                  <div class="input-group">
+                <div id="" class="col-md-3">
                    <select class="form-control" id="select_room">
                     <option disabled selected value="">Room*</option>
                   </select>
-                  <span class="input-group-btn">
-                    <button class="btn btn-info print_room_sched" type="button"><i class="fa fa-print" aria-hidden="true"></i></button>
-                  </span>
                 </div>
-              </div>
 
-
+                <div id="" class="col-md-3">
+                  <div class="btn btn-primary btn-md pull-left print_schedule_type">Print</div>
+                </div>
             </div>
           </div>
 
@@ -405,136 +333,6 @@
 
 
 
-$("select#college_type_print").change(function(){
-  var campus_id = $(this).val();
-  $("select#select_faculty_print").empty().append('<option selected="" value="">Loading..</option>');
-  
-
-  $.ajax({
-    'url' : base_url+'Scheduling/catch_faculty_campus',
-    'type' : 'POST',
-    'data' : {'ajax_post' : campus_id },
-    'success' : function(data){
-      if(data){
-      //alert(data);
-        $("select#select_faculty_print").empty().append('<option selected="" value="">Select Faculty to Print*</option>').append(data);
-      } 
-    }
-  });
-
-  
-  $("select#select_building").empty().append('<option selected="" value="">Loading..</option>');
-
-  $.ajax({
-    'url' : base_url+'Scheduling/get_buildings_college',
-    'type' : 'POST',
-    'data' : {'ajax_post' : campus_id },
-    'success' : function(data){
-      if(data){
-      //alert(data);
-        $("select#select_building").empty().append('<option selected="" value="">Building</option>').append(data);
-      } 
-    }
-  });
-
-
-
-
-
-  
-  $("select#select_class_block_print").empty().append('<option selected="" value="">Loading..</option>');
-
-  $.ajax({
-    'url' : base_url+'Scheduling/get_blocks_college',
-    'type' : 'POST',
-    'data' : {'ajax_post' : campus_id },
-    'success' : function(data){
-      if(data){
-      //alert(data);
-        $("select#select_class_block_print").empty().append('<option selected="" value="">Block</option>').append(data);
-      } 
-    }
-  });
-
-
-
-  
-  $("select#select_department_print").empty().append('<option selected="" value="">Loading..</option>');
-
-  $.ajax({
-    'url' : base_url+'Scheduling/get_programs_college',
-    'type' : 'POST',
-    'data' : {'ajax_post' : campus_id },
-    'success' : function(data){
-      if(data){
-      //alert(data);
-        $("select#select_department_print").empty().append('<option selected="" value="">Select Department to Print*</option>').append(data);
-      } 
-    }
-  });
-
-
-});
-
-
-$('.print_faculty_sched').click(function(){
-  var faculty_id = $("select#select_faculty_print").val();
-  var term = $("select#term").val();
-
-  if(term == '' || faculty_id == ''){
-    alert('Please select Academic Term and Faculty');
-  }else{
-    var path = base_url+'Scheduling/print_faculty_schedule/'+faculty_id+'-'+term; 
-
-    window.open(path, "_blank");  
-  }
-});
-
-
-$('.print_class_block_sched').click(function(){
-  var block_id = $("select#select_class_block_print").val();
-  var term = $("select#term").val();
-
-  if(term == '' || block_id == ''){
-    alert('Please select Academic Term and Block');
-  }else{
-    var path = base_url+'Scheduling/print_block_schedule/'+block_id+'-'+term; 
-
-    window.open(path, "_blank");  
-  }
-});
-
-
-
-
-
-$('.print_room_sched').click(function(){
-  var room_id = $("select#select_room").val();
-  var term = $("select#term").val();
-
-  if(term == '' || room_id == ''){
-    alert('Please select Academic Term and Room');
-  }else{
-    var path = base_url+'Scheduling/print_room_schedule/'+room_id+'-'+term; 
-
-    window.open(path, "_blank");  
-  }
-});
-
-
-$('.print_department_sched').click(function(){
-  var department_id = $("select#select_department_print").val();
-  var term = $("select#term").val();
-
-  if(term == '' || department_id == ''){
-    alert('Please select Academic Term and Department');
-  }else{
-    var path = base_url+'Scheduling/print_department_schedule/'+department_id+'-'+term; 
-
-    window.open(path, "_blank");  
-  }
-});
-
 
 $('.special_set').click(function(){
   var class_subject_id = $(this).attr('id');
@@ -662,8 +460,16 @@ $("select#select_building").change(function(){
   });
 });
 
+$('.unlock_courses').click(function(){
+  $('.course_table').show();
 
-/*
+
+  var course_table = $('#course_table').dataTable();
+  course_table.fnFilter('');
+
+
+});
+
 $("select#select_room").change(function(){
   $('#room_iframe').hide();
   $('p.please_select_room').hide();
@@ -683,7 +489,7 @@ alert(room_name+'  '+bldg_name);
   |1-Room Name
 |2-Faculty Name
 */
-/*
+
   var room_url = '<?php echo base_url(); ?>Scheduling/room_calendar/'+room_id+'-1_'+bldg_name+'.'+room_name;
 
 
@@ -699,7 +505,7 @@ alert(room_name+'  '+bldg_name);
   },2000);
 
 });
-*/
+
 
 $('.print_schedule_type').click(function(){
   document.getElementById('room_iframe').contentWindow.print();

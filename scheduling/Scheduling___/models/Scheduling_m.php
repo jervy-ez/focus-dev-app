@@ -42,7 +42,7 @@ ref_academic_term.semester
 
 			LEFT JOIN program_major ON  program_major.program_id = program.id
 
-		/*	WHERE ref_academic_term.school_year = '$year_term'*/
+			/*WHERE ref_academic_term.school_year = '$year_term'*/
 			/*
 			WHERE curriculum_course.is_active = 'T'
 			AND ref_academic_term.is_active = 'T' 
@@ -178,7 +178,7 @@ ref_academic_term.semester
 			WHERE faculty_in_charge_id = '$faculty_id'	AND active = 'T' AND is_active = 'T' ");
 		return $query;
 	}
-/*
+
 	function _get_faculty_schedule($faculty_id,$term_id){
 		$query = $this->db->query("SELECT * , class_schedule.id AS class_sched_id FROM course_schedule
 			LEFT JOIN class_schedule ON class_schedule.course_schedule_id = course_schedule.id 
@@ -187,7 +187,7 @@ ref_academic_term.semester
 			AND class_schedule.active = 'T' AND class_schedule.is_active = 'T'  ORDER BY class_schedule.start_time ASC ");
 		return $query;
 	}
-*/
+
 	function _get_room_schedule($id,$term_id){
 		$query = $this->db->query("SELECT * , class_schedule.id AS class_sched_id FROM class_schedule 
 			LEFT JOIN course_schedule ON course_schedule.id = class_schedule.course_schedule_id
@@ -231,13 +231,8 @@ ref_academic_term.semester
 		return $query;
 	}
 
-	function _get_college($id=''){
-
-		if($id != ''){
-			$query = $this->db->query("SELECT * FROM college WHERE college.campus_id = '$id' AND college.active = 'T' ORDER BY college.college_code ASC");
-		}else{
-			$query = $this->db->query("SELECT * FROM college WHERE college.active = 'T' ORDER BY college.college_code ASC");
-		}
+	function _get_college($id){
+		$query = $this->db->query("SELECT * FROM college WHERE college.campus_id = '$id' /*AND college.is_active = 'T' */ ORDER BY college.college_code ASC");
 		return $query;
 	}
 
@@ -300,7 +295,19 @@ ref_academic_term.semester
 	function _get_class_block($department_program_id){
 		$query = $this->db->query("SELECT * FROM block 
 			WHERE department_program_id = '$department_program_id' 
-			 AND active = 'T'");
+			 AND active = 'T' ORDER BY block_code ASC");
+		return $query;
+	}
+
+
+	function _get_class_block_general($id){
+		$query = $this->db->query("SELECT * FROM block
+LEFT JOIN college_department ON college_department.id = block.college_department_id
+WHERE college_department.department_id = '$id'  AND block.active = 'T' ORDER BY block.block_code ASC
+
+ 
+
+			 ");
 		return $query;
 	}
 
@@ -325,122 +332,6 @@ LEFT JOIN college_department ON college_department.id = department_program.colle
 LEFT JOIN college ON college.id = college_department.college_id
 
 			WHERE class_schedule.active = 'T' AND  class_schedule.is_active= 'T' ORDER BY class_sched_id DESC");
-		return $query;
-	}
-
-
-	function _get_block_schedule_print($block_id,$term_id){
-		$query = $this->db->query("SELECT *,  
-
-			class_schedule.id AS class_sched_id, class_schedule.faculty_in_charge_id AS fctyl_inchd_id, course_schedule.faculty_in_charge_id AS cctyl_inchd_id  ,
-
-			concat(class_faculty.employee_fname,  class_faculty.employee_fname) AS class_faculty_name,
-			concat(coordinator.employee_fname,  coordinator.employee_fname) AS coordinator_name
-
-			FROM class_schedule
-			LEFT JOIN employee class_faculty ON class_faculty.id = class_schedule.faculty_in_charge_id
-			LEFT JOIN room ON room.id = class_schedule.room_id
-			LEFT JOIN class_event ON class_event.id = class_schedule.class_event_id
-			LEFT JOIN course_schedule ON course_schedule.id = class_schedule.course_schedule_id
-			LEFT JOIN block ON block.id = course_schedule.block_id
-			LEFT JOIN course ON course.id = course_schedule.course_id
-			LEFT JOIN employee coordinator ON coordinator.id = course_schedule.faculty_in_charge_id
-			LEFT JOIN department_program ON department_program.id = block.department_program_id 
-			LEFT JOIN college_department ON college_department.id = department_program.college_department_id
-			LEFT JOIN college ON college.id = college_department.college_id
-
-			WHERE class_schedule.active = 'T' AND  class_schedule.is_active= 'T' AND  course_schedule.block_id = '$block_id'  ORDER BY class_schedule.day ASC, class_schedule.start_time");
-		return $query;
-
-	}
-
-
-	function _get_faculty_schedule($faculty_id,$term_id){
-
-
-		$query = $this->db->query("SELECT *,  
-
-			class_schedule.id AS class_sched_id, class_schedule.faculty_in_charge_id AS fctyl_inchd_id, course_schedule.faculty_in_charge_id AS cctyl_inchd_id  ,
-
-			concat(class_faculty.employee_fname,  class_faculty.employee_fname) AS class_faculty_name,
-			concat(coordinator.employee_fname,  coordinator.employee_fname) AS coordinator_name
-
-			FROM class_schedule
-			LEFT JOIN employee class_faculty ON class_faculty.id = class_schedule.faculty_in_charge_id
-			LEFT JOIN room ON room.id = class_schedule.room_id
-			LEFT JOIN class_event ON class_event.id = class_schedule.class_event_id
-			LEFT JOIN course_schedule ON course_schedule.id = class_schedule.course_schedule_id
-			LEFT JOIN block ON block.id = course_schedule.block_id
-			LEFT JOIN course ON course.id = course_schedule.course_id
-			LEFT JOIN employee coordinator ON coordinator.id = course_schedule.faculty_in_charge_id
-			LEFT JOIN department_program ON department_program.id = block.department_program_id 
-			LEFT JOIN college_department ON college_department.id = department_program.college_department_id
-			LEFT JOIN college ON college.id = college_department.college_id
-
-			WHERE class_schedule.active = 'T' AND  class_schedule.is_active= 'T' AND  class_schedule.faculty_in_charge_id = '$faculty_id'  ORDER BY class_schedule.day ASC, class_schedule.start_time");
-		return $query;
-	}
-
-
-
-	function _get_room_schedule_print($room_id,$term_id){
-
-
-		$query = $this->db->query("SELECT *,  
-
-			class_schedule.id AS class_sched_id, class_schedule.faculty_in_charge_id AS fctyl_inchd_id, course_schedule.faculty_in_charge_id AS cctyl_inchd_id  ,
-
-			concat(class_faculty.employee_fname,  class_faculty.employee_fname) AS class_faculty_name,
-			concat(coordinator.employee_fname,  coordinator.employee_fname) AS coordinator_name
-
-			FROM class_schedule
-			LEFT JOIN employee class_faculty ON class_faculty.id = class_schedule.faculty_in_charge_id
-			LEFT JOIN room ON room.id = class_schedule.room_id
-			LEFT JOIN class_event ON class_event.id = class_schedule.class_event_id
-			LEFT JOIN course_schedule ON course_schedule.id = class_schedule.course_schedule_id
-			LEFT JOIN block ON block.id = course_schedule.block_id
-			LEFT JOIN course ON course.id = course_schedule.course_id
-			LEFT JOIN employee coordinator ON coordinator.id = course_schedule.faculty_in_charge_id
-			LEFT JOIN department_program ON department_program.id = block.department_program_id 
-			LEFT JOIN college_department ON college_department.id = department_program.college_department_id
-			LEFT JOIN college ON college.id = college_department.college_id
-
-			WHERE class_schedule.active = 'T' AND  class_schedule.is_active= 'T' AND  class_schedule.room_id = '$room_id'  ORDER BY class_schedule.day ASC, class_schedule.start_time");
-		return $query;
-	}
-
-
-
-
-
-
-//	_get_department_schedule
-
-
-
-
-	function _fetch_department_college($college_id){
-		$query = $this->db->query("SELECT * FROM college_department LEFT JOIN department ON department.id = college_department.department_id
-			WHERE college_id = '$college_id' ORDER BY department.department_code ");
-		return $query;
-	}
-
-	function _fetch_building_college($college_id){
-		$query = $this->db->query("SELECT * FROM building WHERE college_id = '$college_id' ORDER BY building_code ASC");
-		return $query;
-	}
-
-
-	function _fetch_block_college($college_id){
-		$query = $this->db->query("SELECT * FROM college_department LEFT JOIN block ON block.college_department_id = college_department.id WHERE college_department.college_id = '$college_id' AND college_department.active = 'T' AND block.active = 'T' ORDER BY block.block_code");
-		return $query;
-	}
-
-	function _fetch_program_college($college_id){
-		$query = $this->db->query("SELECT * FROM department_program LEFT JOIN college_department ON college_department.id = department_program.college_department_id
-			LEFT JOIN program ON program.id = department_program.program_id
-			WHERE college_department.college_id = '$college_id' 
-			AND department_program.active = 'T' ORDER BY program.program_code ASC");
 		return $query;
 	}
 
