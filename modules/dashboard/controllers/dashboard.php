@@ -1017,7 +1017,7 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 //echo $pm->user_id.
 
 
-
+$forecast_focus_total = 0; 
 		foreach ($project_manager_list as $pm ) {
 			$total_sales = 0;
 			$total_outstanding = 0;
@@ -1126,7 +1126,7 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 				$status_forecast = 0;
 			}
 
-			$forecast_focus_total = $comp_forecast['total'];
+			$forecast_focus_total = $forecast_focus_total + $total_forecast; // $comp_forecast['total'];
 
 			echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$pm->user_profile_photo.'"" /></div>';
 			echo '<div class="" id=""><p><strong>'.$pm->user_first_name.'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($total_sales).'</span> <br /> <span class="label pull-right m-bottom-3 small_blue_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($total_outstanding).'</span></span></p>';
@@ -1160,59 +1160,77 @@ $month_est['est_'.$months[$month_num]] = $month_est['est_'.$months[$month_num]] 
 
 	public function pm_estimates_widget(){
 
-		if (isset($_POST['set_month_dshbrd'])){
-
-			$c_month = $this->input->post('set_month_dshbrd');
-			$c_year = date("Y");
-
-			$n_month = $c_month+1;
-			$n_year = $c_year;
-
-			if($n_month > 12){
-				$n_month = $n_month - 12;
-				$n_year = $c_year+1;
-			}
-
-		}else{
-			$c_year = date("Y");
-			$c_month = '01';
-
-			$n_year = $c_year+1;
-			$n_month = '01';
-		}
 		
-		$date_a = "01/$c_month/$c_year";
-		$date_b = "01/$n_month/$n_year";
+		$year = date("Y");
+		$current_date = date("d/m/Y");
+		$current_start_year = '01/01/'.$year;
 
 		$overall_total_sales = 0;
+		$total_quoted = 0;
+		$prj_total_current = 0;
 
 		$all_focus_company = $this->admin_m->fetch_all_company_focus();
 		$focus_company = $all_focus_company->result();
 
-		foreach ($focus_company as $company) {
-			$q_total_pm_estimates = $this->dashboard_m->dash_total_pm_estimates($company->company_id,$c_year);
-			$total_estimates = array_shift($q_total_pm_estimates->result_array());
+		$gt_cpo_wa  = 0;
+		$gt_cpo_nsw = 0;
 
+	//	foreach ($focus_company as $company) {
+			$q_total_pm_estimates = $this->dashboard_m->dash_total_pm_estimates($current_start_year,$current_date);
+			$pm_sales = $q_total_pm_estimates->result();
+			//$total_estimates = array_shift($q_total_pm_estimates->result_array());
+			foreach ($pm_sales as $un_accepted) {
 
-$total_estimated = $total_estimates['total_estimates'];
+			//	$total_estimated = $total_estimates['total_estimates'];
 			//var_dump($total_estimates);
-		 
+
 			# code...
+				$prj_total_current = 0;
+ 
+				$prj_total_current = $un_accepted->project_total + $un_accepted->variation_total;
+
  
 
-			if($company->company_id == 5){
-				$key_id = 'WA';
-				echo '<p class="value"><span class="col-xs-3">'.$key_id.'</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($total_estimated,2).'</strong></span></p>';
-			}elseif($company->company_id == 6){
-				$key_id = 'NSW';
-				echo '<p class="value"><span class="col-xs-3">'.$key_id.'</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($total_estimated,2).'</strong></span></p>';
-			}else{
+				if($un_accepted->install_time_hrs > 0 || $un_accepted->work_estimated_total > 0 || $un_accepted->variation_total > 0 ){
+					$total_quoted =  $prj_total_current;
+				}else{
+					$total_quoted =  0;
+				}
+
+
+
+			//	$total_quoted = $total_quoted + $prj_total_current;
+
+			//	$project_total = $un_accepted->project_total;
+
+        //    $gt_outstanding = $gt_outstanding + $out_standing;
+
+
+				if( $un_accepted->focus_company_id == 5 ){
+					$gt_cpo_wa = $gt_cpo_wa + $total_quoted;	
+				}
+
+
+				if( $un_accepted->focus_company_id == 6 ){
+					$gt_cpo_nsw = $gt_cpo_nsw + $total_quoted;
+				}
+
+
 
 			}
 
+
+			echo '<p class="value"><span class="col-xs-3">WA</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($gt_cpo_wa,2).'</strong></span></p>';
+
+
+			echo '<p class="value"><span class="col-xs-3">NSW</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($gt_cpo_nsw,2).'</strong></span></p>';
+
+
+
+
  
 
-		}
+	//	}
 
 
 
@@ -1365,8 +1383,47 @@ echo "[";
 		$nsw_po_price = 0;
 		$nsw_po_j_price = 0;
 
+		$gt_cpo_wa = 0;
+		$gt_cpo_nsw = 0;
 
 
+
+		$year = date("Y");
+		$current_date = date("d/m/Y");
+		$current_start_year = '01/01/2014';
+
+
+		$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($current_start_year,$current_date);
+
+		foreach ($po_list_ordered->result_array() as $row){
+            $work_id = $row['works_id'];
+
+
+            $po_tot_inv_q = $this->purchase_order_m->get_po_total_paid($work_id);
+            $invoiced = 0;
+            foreach ($po_tot_inv_q->result_array() as $po_tot_row){
+            	$invoiced = $po_tot_row['total_paid'];
+            }
+
+
+            $out_standing = $row['price'] - $invoiced;
+
+        //    $gt_outstanding = $gt_outstanding + $out_standing;
+
+
+			if( $row['focus_company_id'] == 5 ){
+				$gt_cpo_wa = $gt_cpo_wa + $out_standing;
+			}
+
+
+			if( $row['focus_company_id'] == 6 ){
+				$gt_cpo_nsw = $gt_cpo_nsw + $out_standing;
+			}
+		}
+
+		//var_dump($gt_cpo);
+
+/*
 		foreach ($po_list->result_array() as $row){
 
 			$price_exgst = $row['price'];
@@ -1390,8 +1447,10 @@ echo "[";
 			}
 		}
 
+*/
 
 
+/*
 
 		foreach ($work_joinery_list->result_array() as $row_j){
 
@@ -1418,10 +1477,10 @@ echo "[";
 
 
 		} 
+*/
 
-
-		echo '<p class="value"><span class="col-xs-3">WA</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($wa_po_price+$wa_po_j_price,2).'</strong></span></p>';
-		echo '<p class="value"><span class="col-xs-3">NSW</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($nsw_po_price+$nsw_po_j_price,2).'</strong></span></p>';
+		echo '<p class="value"><span class="col-xs-3">WA</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($gt_cpo_wa,2).'</strong></span></p>';
+		echo '<p class="value"><span class="col-xs-3">NSW</span> <span class="col-xs-9"><i class="fa fa-usd"></i> <strong>'.number_format($gt_cpo_nsw,2).'</strong></span></p>';
 
 
 
@@ -1467,7 +1526,7 @@ echo "[";
 		$current_start_year = '01/01/'.$year;
 		$last_start_year = '01/01/'.($year-1);
 
-		$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $next_year_date);
+		$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date);
 		$client_details  = $q_clients->result();
 		$counter = 0;
 
@@ -1558,7 +1617,11 @@ echo "[";
 
 		$days_dif = array();
 
-		$q_maintenance = $this->dashboard_m->get_maitenance_dates();
+		$year = date("Y");
+		$current_date = date("d/m/Y");
+		$current_start_year = '01/01/'.$year;
+
+		$q_maintenance = $this->dashboard_m->get_maitenance_dates($current_start_year,$current_date);
 		$maintenance_details  = $q_maintenance->result();
 
 
@@ -1573,7 +1636,7 @@ echo "[";
 			$date2 = date_create($inv_date);
 			$diff = date_diff($date1,$date2);
 
-		 	#echo  $diff['days'].'<br />';
+		// 	echo   $diff->days.'<br />';
 		 	array_push($days_dif, $diff->days);
 		}
  
@@ -2008,6 +2071,12 @@ echo "[";
 				if( isset($pms_percent[3])) {
 					$indv_id = $pms_percent[3];
 					$this->dashboard_m->update_revenue_forecast_indv($value,$indv_id);
+				}
+
+				if( $pms_percent[1] == 'focus' ) {
+					$comp_id = $pms_percent[0];
+					//$val = $pms_percent[3];
+					$this->dashboard_m->update_revenue_forecast_indv($value,$comp_id);
 				}
 			}
 

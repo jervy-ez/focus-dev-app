@@ -9,7 +9,7 @@
 
  <!-- maps api js -->
 
-<script src="https://maps.googleapis.com/maps/api/js?v=3"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDs1g6kHxbVrkQe7e_CmR6MsfV_3LmLSlc"></script>
 
 <script type="text/javascript">
 var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations(); ?>};	
@@ -249,7 +249,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5"><strong>Project Manager Sales</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
-								<div class="box-area clearfix">
+								<div class="box-area clearfix" style="overflow-y: scroll;    height: 460px;">
 									<div class="widg-content clearfix">
 										<div class="pad-5" id="">
 											<?php $this->dashboard->pm_sales_widget(); ?>
@@ -340,7 +340,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 								</div>
 							</div>
 						</div>
-
+<!-- Total value of unreconciled purchase orders per Focus Company -->
 						
 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-d small-widget">
@@ -348,9 +348,12 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-credit-card  text-center fa-3x"></i></div></div>
 									<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-right-15">
-												<div class="pad-left-5 pad-top-3" id=""><p>Purchase Orders - <small>Total Balances</small> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-												
-											<hr class=" m-bottom-5 m-top-3">
+												<div class="pad-left-5 pad-top-3" id=""><p>Purchase Orders <span class="pull-right">
+													<?php echo date('Y'); ?>
+													<span data-placement="left" class="popover-test pointer " title="" data-content="Total value of unreconciled purchase orders per Focus Company" data-original-title=""><i class="fa fa-info-circle "></i></span>
+													</span></p>
+												</div>												
+												<hr class=" m-bottom-5 m-top-3">
 												<div class="" id="">
 													<?php echo $this->dashboard->focus_get_po_widget(); ?>
 												</div>

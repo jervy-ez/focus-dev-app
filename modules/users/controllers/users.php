@@ -8,17 +8,19 @@ class Users extends MY_Controller{
 		$this->load->library('form_validation');
 		$this->load->library('upload');
 		$this->load->helper('cookie');
-$config = Array(
-			'protocol' => 'smtp',
-			'smtp_host' => 'mail.sojourn.focusshopfit.com.au',
-			'smtp_port' => 587,
-			'smtp_user' => 'userconf@sojourn.focusshopfit.com.au',
-			'smtp_pass' => 'wzVrX6sxcpXR%{jh',
-			'mailtype'  => 'html', 
-			'charset'   => 'iso-8859-1'
-			);
-		$this->load->library('email', $config);
 
+		/*
+		$config = Array(
+					'protocol' => 'smtp',
+					'smtp_host' => 'cp178.ezyreg.com',
+					'smtp_port' => 587,
+					'smtp_user' => 'accounts@sojourn.focusshopfit.com.au',
+					'smtp_pass' => 'CyMOCrP6',
+					'mailtype'  => 'html', 
+					'charset'   => 'iso-8859-1'
+					);
+				$this->load->library('email', $config);
+		*/
 
  //echo $this->input->cookie('user_id', false);
 
@@ -120,6 +122,8 @@ $config = Array(
 	}
 
 	public function account(){
+		require('PHPMailer/class.phpmailer.php');
+		require('PHPMailer/PHPMailerAutoload.php');
 		$this->_check_user_access('users',1);
 
 		$this->clear_apost();
@@ -212,16 +216,62 @@ $config = Array(
 
 					$send_to = $data['user'][0]->general_email;
 
-					$this->email->from('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
-					$this->email->to($send_to); 
+					//	$this->email->from('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+					//	$this->email->to($send_to); 
 						//$this->email->cc('another@another-example.com'); 
 						//$this->email->bcc('them@their-example.com'); 
+ 
 
-					$this->email->subject('Password Change');
-					$curr_year = date('Y');
-					$this->email->message("Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group ".$curr_year);	
-					$this->email->send();
-					redirect('users/account/'.$user_id, 'refresh');
+
+
+
+
+		// PHPMailer class
+		$mail = new PHPMailer;
+		//$mail->SMTPDebug = 3;                               		// Enable verbose debug output
+		$mail->isSMTP();                                      		// Set mailer to use SMTP
+		$mail->Host = 'sojourn.focusshopfit.com.au';  		  		// Specify main and backup SMTP servers
+		$mail->SMTPAuth = true;                               		// Enable SMTP authentication
+		$mail->Username = 'userconf@sojourn.focusshopfit.com.au';   	// SMTP username
+		$mail->Password = 'wzVrX6sxcpXR%{jh';                       // SMTP password
+		$mail->SMTPSecure = 'ssl';                            		// Enable TLS encryption, `ssl` also accepted
+		$mail->Port = 465;    
+		// PHPMailer class 
+
+		$mail->setFrom('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+		$mail->addAddress($send_to);    // Add a recipient
+		//$mail->addAddress($user_email);               // Name is optional
+
+		$mail->addReplyTo('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+		
+		//$mail->addCC($pm_user_email);
+		//$mail->addBCC('bcc@example.com');
+		
+		//$mail->addAttachment($path_file);         		// Add attachments
+		//$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    		// Optional name
+		
+
+		$mail->isHTML(true);                                  // Set email format to HTML
+
+		$year = date('Y');
+
+		$mail->Subject = 'Password Change';
+		$mail->Body    = "Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group ".$year;
+
+		if(!$mail->send()) {
+			echo 'Message could not be sent.';
+			echo 'Mailer Error: ' . $mail->ErrorInfo;
+		} else {
+			//echo 'Message has been sent';
+			redirect('users/account/'.$user_id, 'refresh');
+		}
+
+
+
+
+
+
+
 
 				}else{
 					$data['error'] = 'New Password and Confirm Password did not match';
@@ -1345,9 +1395,9 @@ $config = Array(
 		// {
 			if($row['user_login_status'] == 1){
 				if($admin == 1){
-					echo '<li><img src = "'.base_url().'uploads/users/'.$row['user_profile_photo'].'" style = "width: 40px">'." ".$row['user_first_name'].'<button type = "button" title = "Log-out User" class = "btn btn-danger btn-xs pull-right" onclick = "btn_logout_user('.$row['user_id'].')"><i class = "fa fa-sign-out fa-sm"></i></button></li>';
+					echo '<li><img src = "'.base_url().'uploads/users/'.$row['user_profile_photo'].'" style = "width: 30px">'." ".$row['user_first_name'].'<button type = "button" title = "Log-out User" class = "btn btn-danger btn-xs pull-right" onclick = "btn_logout_user('.$row['user_id'].')"><i class = "fa fa-sign-out fa-sm"></i></button></li>';
 				}else{
-					echo '<li><img src = "'.base_url().'uploads/users/'.$row['user_profile_photo'].'" style = "width: 40px">'." ".$row['user_first_name'].'</li>';
+					echo '<li><img src = "'.base_url().'uploads/users/'.$row['user_profile_photo'].'" style = "width: 30px">'." ".$row['user_first_name'].'</li>';
 				}
 			}
 		}
