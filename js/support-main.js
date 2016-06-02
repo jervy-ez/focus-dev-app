@@ -39,8 +39,10 @@ function remove_elam_email(obj){
 function remove_last(po_trans_id,work_id,joinery_id){
   var data = po_trans_id+'*'+work_id+'*'+joinery_id;
   ajax_data(data,'purchase_order/remove_last_trans','');
-  setTimeout(function(){ $('#reconciliated_po_modal').modal('hide'); }, 1000);
-  window.location.assign(baseurl+"purchase_order?reload=1");
+
+  setTimeout(function(){ $('#invoice_po_modal').modal('hide'); }, 2000);
+  setTimeout(function(){ $('#reconciliated_po_modal').modal('hide'); }, 2000);
+  setTimeout(function(){ window.location.assign(baseurl+"purchase_order?reload=1"); }, 1000);
 }
 
 function is_alphabet(strValue) {
@@ -399,16 +401,15 @@ function removeCommas(str) {
 };
 
 
-function user_role_set(db,cmp,prj,wip,po,inv,urs,bb){
-
-  var user_role_values = [db,cmp,prj,wip,po,inv,urs,bb];
-  var user_role_areas = ['dashboard_access','company_access','projects_access','wip_access','purchase_orders_access','invoice_access','users_access','bulletin_board'];
+function user_role_set(db,cmp,prj,wip,po,inv,urs,bb,ps){
+  var user_role_values = [db,cmp,prj,wip,po,inv,urs,bb,ps];
+  var user_role_areas = ['dashboard_access','company_access','projects_access','wip_access','purchase_orders_access','invoice_access','users_access','bulletin_board','project_schedule'];
 
   var arrayLength = user_role_areas.length;
   for (var i = 0; i < arrayLength; i++) {
-
-    $('input#'+user_role_areas[i]).val(db);
-
+    var role_value = user_role_values[i];
+    $('input#'+user_role_areas[i]).val(role_value);
+    //$('input#'+user_role_areas[i]).val(db);
 
     if(user_role_values[i] == 2){
       $('.'+user_role_areas[i]).find('.check-a').bootstrapSwitch('state', true);
@@ -422,6 +423,29 @@ function user_role_set(db,cmp,prj,wip,po,inv,urs,bb){
     }
 
   }  
+
+//EDITED =========
+  // var user_role_values = [db,cmp,prj,wip,po,inv,urs,bb];
+  // var user_role_areas = ['dashboard_access','company_access','projects_access','wip_access','purchase_orders_access','invoice_access','users_access','bulletin_board'];
+
+  // var arrayLength = user_role_areas.length;
+  // for (var i = 0; i < arrayLength; i++) {
+
+  //   $('input#'+user_role_areas[i]).val(db);
+
+
+  //   if(user_role_values[i] == 2){
+  //     $('.'+user_role_areas[i]).find('.check-a').bootstrapSwitch('state', true);
+  //     $('.'+user_role_areas[i]).find('.check-b').bootstrapSwitch('state', true);
+  //   }else if(user_role_values[i] == 1){
+  //     $('.'+user_role_areas[i]).find('.check-a').bootstrapSwitch('state', true);
+  //     $('.'+user_role_areas[i]).find('.check-b').bootstrapSwitch('state', false);
+  //   }else{
+  //     $('.'+user_role_areas[i]).find('.check-a').bootstrapSwitch('state', false);
+  //     $('.'+user_role_areas[i]).find('.check-b').bootstrapSwitch('state', false);
+  //   }
+
+  // }  
 
 }
 
@@ -903,7 +927,34 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
   $(document).ready(function(){
 
     $('.sb-open-right').click(function(){
-      $('#main').find('#main-sidebar.right-sb-oc').show();
+      $('#main').find('#main-sidebar.prg_cmts_sde').show();
+    });
+
+
+
+  
+   
+
+
+
+    $('a.currently_logged_user').click(function(){
+     
+
+       $.post(baseurl+"users/user_login",
+      {},
+      function(result){
+        $("#user_list").html(result);
+        $('.user_logged').show();
+      });
+
+
+    // setInterval(function() {
+    //   $.post(baseurl+"users/user_login",
+    //     {},
+    //     function(result){
+    //       $("#user_list").html(result);
+    //     });
+    // }, 10000);
     });
 
 
@@ -925,6 +976,32 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
         display: true
       }
     });
+
+
+
+
+    $('#loggedin-sidebar').simpleSidebar({
+      opener: '.currently_logged_user',
+      wrapper: '#main',
+      animation: {
+        easing: "easeOutQuint"
+      },
+      sidebar: {
+        align: 'right',
+        closingLinks: '.close-sb',
+        width: 360,
+      },
+      sbWrapper: {
+        display: true
+      },
+      mask: {
+        display: true
+      }
+    });
+
+
+
+
 
 
  //   $.slidebars({ scrollLock: true });
@@ -1056,7 +1133,7 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
      var user_access_arr = result.split(",");
 
      setTimeout(function(){
-       user_role_set(user_access_arr['3'],user_access_arr['4'],user_access_arr['5'],user_access_arr['6'],user_access_arr['7'],user_access_arr['8'],user_access_arr['9'],user_access_arr['11']);
+       user_role_set(user_access_arr['3'],user_access_arr['4'],user_access_arr['5'],user_access_arr['6'],user_access_arr['7'],user_access_arr['8'],user_access_arr['9'],user_access_arr['11'],user_access_arr['12']);
      },500);
 
 
@@ -2237,6 +2314,11 @@ $('.set_invoice_modal_submit').click(function(){
 
   if(progressArr[0]=='F'){
     progressArr[1] = '';
+  }
+  
+
+  if(progressArr[0]=='VR'){
+    var proj_ex_gst_total = $('input.variation').val();
   }
 
   invoice_notes = '<div class="notes_line"><p class="clearfix"><strong><span class="pull-left block text-left">'+project_id+progressArr[0]+progressArr[1]+'&nbsp; - '+invoice_percent_value+'% of $'+numberWithCommas(proj_ex_gst_total)+'</span> <span class="pull-right block text-right"><strong>$'+numberWithCommas(invoice_item_amount)+' EX-GST</strong></span></strong></p><p class="clearfix"><br />'+invoice_notes+'</p></div>'+job_book_notes;

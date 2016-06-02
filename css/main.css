@@ -1185,7 +1185,7 @@ tr.active_row_work td span{
 tr.active_row_work>td{
 	background-color: rgb(208, 208, 208) !important;
 }
-
+/*
 .users_utility_footer{
 	position: fixed;
     bottom: 0px;
@@ -1213,6 +1213,39 @@ tr.active_row_work>td{
 
 .users_utility_footer #user_list ul li{
 	margin: 3px;
+}
+*/
+
+
+.user_logged #user_list ul li{
+	padding: 0px;
+	margin:0px 0px 10px 0px;
+	width: 100%;
+ 
+	height: 40px;
+	overflow: hidden;
+}
+
+.user_logged #user_list ul{
+	padding: 0;
+	width: 100%;
+}
+
+
+
+.user_logged #user_list ul li button{
+	margin-top: 10px;
+}
+
+
+
+.user_logged #user_list{
+	background: none;
+	font-size: 20px;
+
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
 }
 
 .note_side_area{
@@ -1638,6 +1671,14 @@ tr.active_row_work>td{
     width: 260px !important;
 }
 
+.adv .box-widget .tooltip{
+	width: 260px !important; 
+}
+
+.adv .box-widget .tooltip-inner{
+    max-width: 260px !important; 
+    text-align: left !important;
+}
 
 .adv .box-widget .popover .popover-content{
 	
@@ -1654,8 +1695,7 @@ tr.active_row_work>td{
 .adv .box-widget .widg-icon-inside{
     display: block;
     float: left;
-    height: 90px;
-    padding: 25px 22px 25px 30px;
+    padding: 4% 0;
 
 	-moz-border-radius:    3px 0px 0px 3px;
 	-webkit-border-radius: 3px 0px 0px 3px;
@@ -1673,6 +1713,9 @@ tr.active_row_work>td{
 
 .adv .box-widget .widg-content{
 	padding: 4px 4px;
+	-moz-border-radius:    0px 3px 3px 0px;
+	-webkit-border-radius: 0px 3px 3px 0px;
+	border-radius:         0px 3px 3px 0px;
 }
 
 .adv .box-widget .widg-content.fill *{
@@ -2106,9 +2149,13 @@ tr.active_row_work>td{
 
 
 .adv  .small-widget{
-	height: 90px;
+	height: 74px;
 	display: block;
-	overflow: hidden;
+	overflow: visible;
+}
+
+.adv .small-widget .widg-icon-inside{
+	height: 74px;
 }
 
 .adv  .mid-widget{
@@ -2176,3 +2223,158 @@ table.dataTable{
 	width: 110px;
 	background-color: #337AB7 !important;
 }
+
+
+@media (min-width: 768px) and (max-width: 991px) {
+        .navbar-collapse.collapse {
+            display: none !important;
+        }
+        .navbar-collapse.collapse.in {
+            display: block !important;
+        }
+        .navbar-header .collapse, .navbar-toggle {
+            display:block !important;
+        }
+        .navbar-header {
+            float:none;
+        }
+        .navbar-nav {
+            float: none !important;
+            margin: 0px;
+        }
+        .navbar-nav {
+            margin: 7.5px -15px;
+        }
+        .nav > li {
+            position: relative;
+            display: block;
+        }
+        .navbar-nav > li {
+            float: none !important;
+        }
+        .nav > li > a {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+        }
+        .navbar-collapse {
+            padding-right: 15px;
+            padding-left: 15px;
+            overflow-x: visible;
+            border-top: 1px solid transparent;
+            box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.1) inset;
+        }
+        .nav {
+            padding-left: 0px;
+            margin-bottom: 0px;
+            list-style: outside none none;
+        }
+
+
+       .navbar-nav li.dropdown.open ul.dropdown-menu{
+       	width: 100%;
+       	background: #333333 !important;
+
+       }
+
+
+
+       .navbar-nav li.dropdown.open ul.dropdown-menu a{
+           color: rgb(153, 153, 153);
+       }
+
+
+
+       .navbar-nav li.dropdown.open ul.dropdown-menu a:hover{
+       		background: #333333 !important;
+           color: #ccc !important;
+
+       }
+
+
+
+       .navbar-nav li.dropdown.open ul.dropdown-menu .divider{
+       	display: none !important;
+       }
+    }
+
+/* Fancy Table */
+.fancyTable td, .fancyTable th {
+	/* appearance */
+	border: 1px solid #778899;
+	
+	/* size */
+	padding: 5px;
+	}
+
+.fancyTable {
+	/* text */
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	}
+
+.fancyTable tbody tr td {
+	/* appearance */
+	background-color: #eef2f9;
+	background-image: -moz-linear-gradient(
+		top,
+		rgba(255,255,255,0.4) 0%,
+		rgba(255,255,255,0.2) 50%,
+		rgba(255,255,255,0.1) 51%,
+		rgba(255,255,255,0.0) 100%);
+	
+	background-image: -webkit-gradient(
+		linear, left top, left bottom,
+		color-stop(0%,rgba(255,255,255,0.4)),
+		color-stop(50%,rgba(255,255,255,0.2)),
+		color-stop(51%,rgba(255,255,255,0.1)),
+		color-stop(100%,rgba(255,255,255,0.0)));
+		
+	/* text */
+	color: #262c31;
+	font-size: 11px;
+	}
+
+.fancyTable tbody tr.odd td {
+	/* appearance */
+	background-color: #d6e0ef;
+	background-image: -moz-linear-gradient(
+		top,
+		rgba(255,255,255,0.4) 0%,
+		rgba(255,255,255,0.2) 50%,
+		rgba(255,255,255,0.1) 51%,
+		rgba(255,255,255,0.0) 100%);
+	
+	background-image: -webkit-gradient(
+		linear, left top, left bottom,
+		color-stop(0%,rgba(255,255,255,0.4)),
+		color-stop(50%,rgba(255,255,255,0.2)),
+		color-stop(51%,rgba(255,255,255,0.1)),
+		color-stop(100%,rgba(255,255,255,0.0)));
+	}
+
+.fancyTable thead tr th,
+.fancyTable thead tr td,
+.fancyTable tfoot tr th, 
+.fancyTable tfoot tr td {
+	/* appearance */
+	background-color: #8ca9cf;
+	background-image: -moz-linear-gradient(
+		top,
+		rgba(255,255,255,0.4) 0%,
+		rgba(255,255,255,0.2) 50%,
+		rgba(255,255,255,0.1) 51%,
+		rgba(255,255,255,0.0) 100%);
+	
+	background-image: -webkit-gradient(
+		linear, left top, left bottom,
+		color-stop(0%,rgba(255,255,255,0.4)),
+		color-stop(50%,rgba(255,255,255,0.2)),
+		color-stop(51%,rgba(255,255,255,0.1)),
+		color-stop(100%,rgba(255,255,255,0.0)));
+		
+	/* text */
+	color: #121517;
+	font-size: 11px;
+	font-weight: bold;
+	text-shadow: 0 1px 1px #e8ebee;
+	}
