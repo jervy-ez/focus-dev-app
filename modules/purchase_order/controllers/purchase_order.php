@@ -21,16 +21,16 @@ class Purchase_order extends MY_Controller{
 			redirect('', 'refresh');
 		endif;
 
-		$config = Array(
-		   'protocol' => 'smtp',
-		   'smtp_host' => 'cp178.ezyreg.com',
-		   'smtp_port' => 465,
-		   'smtp_user' => 'accounts@sojourn.focusshopfit.com.au',
-		   'smtp_pass' => 'CyMOCrP6',
-		   'mailtype'  => 'html', 
-		   'charset'   => 'iso-8859-1'
-		);
-		$this->load->library('email', $config);
+		// $config = Array(
+		//    'protocol' => 'smtp',
+		//    'smtp_host' => 'cp178.ezyreg.com',
+		//    'smtp_port' => 465,
+		//    'smtp_user' => 'accounts@sojourn.focusshopfit.com.au',
+		//    'smtp_pass' => 'CyMOCrP6',
+		//    'mailtype'  => 'html', 
+		//    'charset'   => 'iso-8859-1'
+		// );
+		// $this->load->library('email', $config);
 	}
 
 
@@ -466,20 +466,71 @@ $joinery = '';
 				$message = $this->load->view('message_view',$data,TRUE);
 
 		    	//$this->load->library('email');
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+				// $this->email->from($sender_email, $sender_name);
+				// $this->email->to($e_mail); 
+				// //$this->email->cc($cc); 
+				// $this->email->bcc($bcc_email); 
 
-				$this->email->from($sender_email, $sender_name);
-				$this->email->to($e_mail); 
-				//$this->email->cc($cc); 
-				$this->email->bcc($bcc_email); 
+				// $this->email->subject($subject);
+				// $this->email->message($message);
 
-				$this->email->subject($subject);
-				$this->email->message($message);
+				// if ( ! $this->email->send())
+				// {
+				//     echo "E-mail Not Sent";
+				// }else{
+				// 	echo "E-mail Successfully Sent";
+				// }
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+				// PHPMailer class
+				require('PHPMailer/class.phpmailer.php');
+				require('PHPMailer/PHPMailerAutoload.php');
+				$mail = new PHPMailer;
+				//$mail->SMTPDebug = 3;                               		// Enable verbose debug output
+				$mail->isSMTP();                                      		// Set mailer to use SMTP
+				$mail->Host = 'sojourn.focusshopfit.com.au';  		  		// Specify main and backup SMTP servers
+				$mail->SMTPAuth = true;                               		// Enable SMTP authentication
+				$mail->Username = 'invoice@sojourn.focusshopfit.com.au';   	// SMTP username
+				$mail->Password = '~A8vVJRLz(^]J)L>';                       // SMTP password
+				$mail->SMTPSecure = 'ssl';                            		// Enable TLS encryption, `ssl` also accepted
+				$mail->Port = 465;    
+				// PHPMailer class 
 
-				if ( ! $this->email->send())
-				{
-				    echo "E-mail Not Sent";
-				}else{
-					echo "E-mail Successfully Sent";
+				$mail->setFrom($sender_email, $sender_name);
+				$mail->addAddress($e_mail);    // Add a recipient
+				//$mail->addAddress('jervy.zaballa@gmail.com');               // Name is optional
+				$mail->addReplyTo($sender_email);
+				
+				$email_bcc_arr =  explode(',', $bcc_email);
+				$no_arr = count($email_bcc_arr);
+				$x = 0;
+				while($x < $no_arr){
+					$email_bcc = $email_bcc_arr[$x];
+					$mail->addBCC($email_bcc);
+					$x++;
+				}
+				//$mail->addCC('cc@example.com');
+				//$mail->addBCC('bcc@example.com');
+				
+				//$mail->addAttachment('/var/tmp/file.tar.gz');         		// Add attachments
+				//$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    		// Optional name
+				
+
+				$mail->isHTML(true);                                  // Set email format to HTML
+
+				// $project_id = '123';
+				// $inv_curr_set = '_P1';
+
+				// $year = date('Y');
+
+				$mail->Subject = $subject;
+				$mail->Body    = $message;
+
+				if(!$mail->send()) {
+					echo 'Message could not be sent.';
+					echo 'Mailer Error: ' . $mail->ErrorInfo;
+				} else {
+					echo 'Message has been sent';
 				}
 			}else{
 				echo 0;

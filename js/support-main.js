@@ -424,6 +424,7 @@ function user_role_set(db,cmp,prj,wip,po,inv,urs,bb,ps){
 
   }  
 
+
 //EDITED =========
   // var user_role_values = [db,cmp,prj,wip,po,inv,urs,bb];
   // var user_role_areas = ['dashboard_access','company_access','projects_access','wip_access','purchase_orders_access','invoice_access','users_access','bulletin_board'];
@@ -930,12 +931,7 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
       $('#main').find('#main-sidebar.prg_cmts_sde').show();
     });
 
-
-
-  
-   
-
-
+    
 
     $('a.currently_logged_user').click(function(){
      
