@@ -1671,6 +1671,19 @@ tr.active_row_work>td{
     width: 260px !important;
 }
 
+.progress-bar{
+    text-align: center;
+    padding: 4px 0px;
+}
+
+.progress-termometer{
+	height:30px;
+	background:url("../img/ter_bg.jpg") !important;
+    border-radius: 30px;
+    border-right: 1px solid #919191;
+    border-left: 30px solid #000;
+}
+
 .progress-bar-striped, .progress-striped .progress-bar {
     background-image: -webkit-linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent) !important; 
     background-image: -o-linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent) !important; 
@@ -1679,17 +1692,25 @@ tr.active_row_work>td{
     background-size: 40px 40px !important; 
 }
 
-.adv .box-widget .tooltip{
+
+.progress.active .progress-bar, .progress-bar.active {
+  -webkit-animation: reverse progress-bar-stripes 2s linear infinite   !important; 
+     -moz-animation: reverse progress-bar-stripes 2s linear infinite   !important; 
+      -ms-animation: reverse progress-bar-stripes 2s linear infinite   !important; 
+       -o-animation: reverse progress-bar-stripes 2s linear infinite   !important; 
+          animation: reverse progress-bar-stripes 2s linear infinite   !important; 
+}
+
+.adv .small-widget .tooltip{
 	width: 230px !important; 
 }
 
-.adv .box-widget .tooltip-inner{
+.adv .small-widget .tooltip-inner{
     max-width: 230px !important; 
     text-align: left !important;
 }
 
-.adv .box-widget .popover .popover-content{
-	
+.adv .small-widget .popover .popover-content{
     padding: 4px;
     color: #555 !important;
     text-shadow: none !important;
@@ -2232,6 +2253,11 @@ table.dataTable{
 	background-color: #337AB7 !important;
 }
 
+.adv .small_green_fixed{
+	width: 110px;
+	background-color: #4dab4d !important;
+}
+
 
 @media (min-width: 768px) and (max-width: 991px) {
         .navbar-collapse.collapse {
@@ -2306,13 +2332,13 @@ table.dataTable{
        }
     }
 
-    
+
 
     /* Fancy Table */
     .fancyTable td, .fancyTable th {
     	/* appearance */
     	border: 1px solid #778899;
-    	
+
     	/* size */
     	padding: 5px;
     }
@@ -2331,14 +2357,14 @@ table.dataTable{
     		rgba(255,255,255,0.2) 50%,
     		rgba(255,255,255,0.1) 51%,
     		rgba(255,255,255,0.0) 100%);
-    	
+
     	background-image: -webkit-gradient(
     		linear, left top, left bottom,
     		color-stop(0%,rgba(255,255,255,0.4)),
     		color-stop(50%,rgba(255,255,255,0.2)),
     		color-stop(51%,rgba(255,255,255,0.1)),
     		color-stop(100%,rgba(255,255,255,0.0)));
-    	
+
     	/* text */
     	color: #262c31;
     	font-size: 11px;
@@ -2353,7 +2379,7 @@ table.dataTable{
     		rgba(255,255,255,0.2) 50%,
     		rgba(255,255,255,0.1) 51%,
     		rgba(255,255,255,0.0) 100%);
-    	
+
     	background-image: -webkit-gradient(
     		linear, left top, left bottom,
     		color-stop(0%,rgba(255,255,255,0.4)),
@@ -2374,14 +2400,14 @@ table.dataTable{
     		rgba(255,255,255,0.2) 50%,
     		rgba(255,255,255,0.1) 51%,
     		rgba(255,255,255,0.0) 100%);
-    	
+
     	background-image: -webkit-gradient(
     		linear, left top, left bottom,
     		color-stop(0%,rgba(255,255,255,0.4)),
     		color-stop(50%,rgba(255,255,255,0.2)),
     		color-stop(51%,rgba(255,255,255,0.1)),
     		color-stop(100%,rgba(255,255,255,0.0)));
-    	
+
     	/* text */
     	color: #121517;
     	font-size: 11px;

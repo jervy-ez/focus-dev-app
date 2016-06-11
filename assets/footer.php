@@ -1,4 +1,16 @@
-	<div class="container-fluid">
+	<style>
+    .idle_alert {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      color: red;
+      background-color: #F6766D;
+    }
+  </style>
+  <div class="col-sm-12">
+    <div class="idle_alert"></div> 
+  </div>
+  <div class="container-fluid">
 		<div class="row">	
 			<footer>
 				<hr />

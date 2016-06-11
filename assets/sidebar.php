@@ -33,6 +33,9 @@
 					<a href="<?php echo base_url(); ?>bulletin_board"> <i class="fa fa-newspaper-o fa-3x" id="bulletin_board_lbl_sb"></i> <label class="control-label">Bulletin Board</label></a>
 				</li>
 				<?php endif; ?>
+				<li>
+					<a href="#" class="currently_logged_user"> <i class="fa fa-sign-in fa-3x" ></i> <label class="control-label">Currenlty Logged-in</label></a>
+				</li>
 			</ul>
 		</div>
 	</div>
