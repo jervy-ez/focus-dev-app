@@ -338,9 +338,12 @@ td.green-estimate {
 	#sidebar.affix{
 		position: fixed;
 		top: 40px;
-		width:8.3%;
-	}	
+		width:8.3%; 
+	}
 	
+	#sidebar{
+    	height: 100%;	
+	}
 	.side-tools ul li{
 		float:none;
 	}
@@ -1075,6 +1078,9 @@ input[type='email']{
 	cursor: pointer;
 }
 
+#mobile_nav{
+	display: none;
+}
 
 
 @media all and (max-width: 1200px) {/* screen size until 1200px */
@@ -1087,6 +1093,7 @@ input[type='email']{
 	}
 
 }
+
 @media all and (max-width: 1000px) {/* screen size until 1000px */
 	.basic .box-widget h2 {
 		font-size: 33px;
@@ -1094,8 +1101,30 @@ input[type='email']{
 
 	.adv .box-widget h2 {
 		font-size: 33px;
+	} 
+}
+
+@media all and (max-width: 975px) {/* screen size until 975px */
+	.nav.nav-stacked.affix-top{
+		height: 59px;
+		overflow: hidden;
 	}
 }
+ 
+
+
+
+@media all and (max-width: 990px) {/* screen size until 990px */
+	#sidebar{
+		display: none;	
+	}
+
+	#mobile_nav{
+		display: block !important;
+	}
+}
+
+
 @media all and (max-width: 500px) {/* screen size until 500px */
 	.basic .box-widget h2 {
 		font-size: 30px;
@@ -1106,16 +1135,6 @@ input[type='email']{
 	}
 
 }
-
-
-@media all and (max-width: 975px) {/* screen size until 975px */
-	.nav.nav-stacked.affix-top{
-		height: 59px;
-		overflow: hidden;
-	}
-
-}
-
 
 .input_text{
 	border:none;
@@ -2258,6 +2277,12 @@ table.dataTable{
 	background-color: #4dab4d !important;
 }
 
+.divider-menu {
+	display: block;
+	height: 2px;
+	background: #101010;
+	border-bottom: 1px solid #4D4D4D;
+}
 
 @media (min-width: 768px) and (max-width: 991px) {
         .navbar-collapse.collapse {
@@ -2265,7 +2290,11 @@ table.dataTable{
         }
         .navbar-collapse.collapse.in {
             display: block !important;
+            height: 500px !important;
+            overflow-y: scroll !important;
+            overflow-x: hidden !important;
         }
+
         .navbar-header .collapse, .navbar-toggle {
             display:block !important;
         }

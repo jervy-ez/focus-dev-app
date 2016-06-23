@@ -1,5 +1,5 @@
 <div class="col-sm-12 col-md-1 col-lg-1 tour-2" id="leftCol" >
-	<div class="nav nav-stacked affix-top" id="sidebar">
+	<div class="nav nav-stacked affix-top" id="sidebar" >
 		<div class="side-tools clearfix"  id="my-other-element">
 			<ul>
 				<!-- <li>

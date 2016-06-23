@@ -3,7 +3,7 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<!-- main site ip -->
+<!-- main site1 -->
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -17,11 +17,6 @@
         <link href="<?php echo base_url(); ?>css/select2.css" rel="stylesheet"/>
         <link href="<?php echo base_url(); ?>css/main.css" rel="stylesheet" type="text/css">
         <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/vendor/jquery-1.11.0.min.js"></script>
-
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/jquery-1.12.0.min.js"></script>
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/dataTables.fixedColumns.min.js"></script>
-
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
         
 		<link href="<?php echo base_url(); ?>css/font-awesome.min.css" rel="stylesheet">

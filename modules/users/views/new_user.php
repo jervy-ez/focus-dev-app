@@ -494,7 +494,19 @@
 									<input type="hidden" class="" id="bulletin_board" name="bulletin_board" value="<?php echo $bulletin_board_set; ?>">
 								</div>
 							</div>
+	
+							<?php $project_schedule_set = (isset($_POST['project_schedule']) ? $_POST['project_schedule'] : 0);  ?>
 
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Project Schedule</label>											 
+								<div class="col-sm-9">										
+									<div class="project_schedule">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($project_schedule_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($project_schedule_set == 2 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="project_schedule" name="project_schedule" value="<?php echo $project_schedule_set; ?>">
+								</div>
+							</div>
 
 							<div class="clearfix"></div><br />
 						</div>

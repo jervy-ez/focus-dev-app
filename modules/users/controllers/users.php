@@ -1,26 +1,26 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 date_default_timezone_set("Australia/Perth");
+require('PHPMailer/class.phpmailer.php');
+require('PHPMailer/PHPMailerAutoload.php');
 class Users extends MY_Controller{
-	
 	function __construct(){
 		parent::__construct();
 		$this->load->model('user_model');		
 		$this->load->library('form_validation');
 		$this->load->library('upload');
 		$this->load->helper('cookie');
-
 		/*
-		$config = Array(
-					'protocol' => 'smtp',
-					'smtp_host' => 'cp178.ezyreg.com',
-					'smtp_port' => 587,
-					'smtp_user' => 'accounts@sojourn.focusshopfit.com.au',
-					'smtp_pass' => 'CyMOCrP6',
-					'mailtype'  => 'html', 
-					'charset'   => 'iso-8859-1'
-					);
-				$this->load->library('email', $config);
-		*/
+$config = Array(
+			'protocol' => 'smtp',
+			'smtp_host' => 'mail.sojourn.focusshopfit.com.au',
+			'smtp_port' => 587,
+			'smtp_user' => 'userconf@sojourn.focusshopfit.com.au',
+			'smtp_pass' => 'wzVrX6sxcpXR%{jh',
+			'mailtype'  => 'html', 
+			'charset'   => 'iso-8859-1'
+			);
+		$this->load->library('email', $config);
+*/
 
  //echo $this->input->cookie('user_id', false);
 
@@ -106,6 +106,7 @@ class Users extends MY_Controller{
 		$invoice = $_POST['invoice_access'];
 		$users = $_POST['users_access'];
 		$bulletin_board = $_POST['bulletin_board'];
+		$project_schedule = $_POST['project_schedule'];
 
 
 		$role_raw = $_POST['role'];
@@ -114,7 +115,7 @@ class Users extends MY_Controller{
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board);
+		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
 
@@ -122,8 +123,6 @@ class Users extends MY_Controller{
 	}
 
 	public function account(){
-		require('PHPMailer/class.phpmailer.php');
-		require('PHPMailer/PHPMailerAutoload.php');
 		$this->_check_user_access('users',1);
 
 		$this->clear_apost();
@@ -216,56 +215,66 @@ class Users extends MY_Controller{
 
 					$send_to = $data['user'][0]->general_email;
 
-					//	$this->email->from('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
-					//	$this->email->to($send_to); 
+				//	$this->email->from('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+				//	$this->email->to($send_to); 
 						//$this->email->cc('another@another-example.com'); 
 						//$this->email->bcc('them@their-example.com'); 
- 
+
+				//	$this->email->subject('Password Change');
+				//	$curr_year = date('Y');
+				//	$this->email->message("Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group ".$curr_year);	
+				//	$this->email->send();
+				//	redirect('users/account/'.$user_id, 'refresh');
 
 
 
 
+					if ( !class_exists("PHPMailer") ){
+						require('PHPMailer/class.phpmailer.php'); 
+						//
+					}
+
+					
 
 		// PHPMailer class
-		$mail = new PHPMailer;
-		//$mail->SMTPDebug = 3;                               		// Enable verbose debug output
-		$mail->isSMTP();                                      		// Set mailer to use SMTP
-		$mail->Host = 'sojourn.focusshopfit.com.au';  		  		// Specify main and backup SMTP servers
-		$mail->SMTPAuth = true;                               		// Enable SMTP authentication
-		$mail->Username = 'userconf@sojourn.focusshopfit.com.au';   	// SMTP username
-		$mail->Password = 'wzVrX6sxcpXR%{jh';                       // SMTP password
-		$mail->SMTPSecure = 'ssl';                            		// Enable TLS encryption, `ssl` also accepted
-		$mail->Port = 465;    
+		$user_mail = new PHPMailer;
+		//$user_mail->SMTPDebug = 3;                               		// Enable verbose debug output
+		$user_mail->isSMTP();                                      		// Set mailer to use SMTP
+		$user_mail->Host = 'sojourn.focusshopfit.com.au';  		  		// Specify main and backup SMTP servers
+		$user_mail->SMTPAuth = true;                               		// Enable SMTP authentication
+		$user_mail->Username = 'userconf@sojourn.focusshopfit.com.au';   	// SMTP username
+		$user_mail->Password = 'wzVrX6sxcpXR%{jh';                       // SMTP password
+		$user_mail->SMTPSecure = 'ssl';                            		// Enable TLS encryption, `ssl` also accepted
+		$user_mail->Port = 465;    
 		// PHPMailer class 
 
-		$mail->setFrom('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
-		$mail->addAddress($send_to);    // Add a recipient
-		//$mail->addAddress($user_email);               // Name is optional
+		$user_mail->setFrom('donot-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+		$user_mail->addAddress($send_to);    // Add a recipient
+		//$user_mail->addAddress($user_email);               // Name is optional
 
-		$mail->addReplyTo('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+		$user_mail->addReplyTo('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
 		
-		//$mail->addCC($pm_user_email);
-		//$mail->addBCC('bcc@example.com');
+		//$user_mail->addCC($pm_user_email);
+		//$user_mail->addBCC('bcc@example.com');
 		
-		//$mail->addAttachment($path_file);         		// Add attachments
-		//$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    		// Optional name
+		//$user_mail->addAttachment($path_file);         		// Add attachments
+		//$user_mail->addAttachment('/tmp/image.jpg', 'new.jpg');    		// Optional name
 		
 
-		$mail->isHTML(true);                                  // Set email format to HTML
+		$user_mail->isHTML(true);                                  // Set email format to HTML
 
 		$year = date('Y');
 
-		$mail->Subject = 'Password Change';
-		$mail->Body    = "Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group ".$year;
+		$user_mail->Subject = 'Password Change';
+		$user_mail->Body    = "Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group ".$year;
 
-		if(!$mail->send()) {
+		if(!$user_mail->send()) {
 			echo 'Message could not be sent.';
-			echo 'Mailer Error: ' . $mail->ErrorInfo;
+			echo 'Mailer Error: ' . $user_mail->ErrorInfo;
 		} else {
 			//echo 'Message has been sent';
 			redirect('users/account/'.$user_id, 'refresh');
 		}
-
 
 
 
@@ -589,6 +598,7 @@ class Users extends MY_Controller{
 			$invoice_access = $this->input->post('invoice_access', true);
 			$users_access = $this->input->post('users_access', true);
 			$bulletin_board = $this->input->post('bulletin_board', true);
+			$project_schedule = $this->input->post('project_schedule', true);
 
 			date_default_timezone_set("Australia/Perth");
 			$user_timestamp_registered = time();
@@ -602,7 +612,7 @@ class Users extends MY_Controller{
 
 			$add_new_user_id = $this->user_model->add_new_user($login_name,$password,$first_name,$last_name,$gender,$department_id,$profile_photo,$user_timestamp_registered,$role_id,$email_id,$skype_id,$skype_password,$contact_number_id,$focus_id,$dob,$user_notes_id,$admin);
 
-			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access,$bulletin_board);
+			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access,$bulletin_board,$project_schedule);
 
 			$this->user_model->insert_user_password($confirm_password,$add_new_user_id);
 
@@ -611,16 +621,75 @@ class Users extends MY_Controller{
 
 			$send_to = $email;
 
+
+/*
 			$this->email->from('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
 			$this->email->to($send_to); 
-						//$this->email->cc('another@another-example.com'); 
-						//$this->email->bcc('them@their-example.com'); 
 
 			$this->email->subject('Account Details');
 			$this->email->message('Do not reply in this email.<br /><br />Welcome '.$first_name.' to Sojourn, an FSf Group Project Management Application.<br /><br />You have been added as a new user and provided with a temporary password.  Please sign-in right away where you will be required to change your password, then you will need to sign in again using your username & changed password.  Use the link below.<br /><br /><a href="'.base_url().'" target="_blank">'.base_url().'</a><br /><br />Your User Name is : '.$login_name.' and Password is : '.$confirm_password.'<br /><br />If you go to the USER section of the site you can personalise your settings and complete your set up.<br /><br />&copy; FSF Group 2015');	
 			$this->email->send();
 
-			redirect('/users');
+
+
+*/
+
+
+
+
+
+
+// PHPMailer class
+		$user_mail = new PHPMailer;
+		//$user_mail->SMTPDebug = 3;                               		// Enable verbose debug output
+		$user_mail->isSMTP();                                      		// Set mailer to use SMTP
+		$user_mail->Host = 'sojourn.focusshopfit.com.au';  		  		// Specify main and backup SMTP servers
+		$user_mail->SMTPAuth = true;                               		// Enable SMTP authentication
+		$user_mail->Username = 'userconf@sojourn.focusshopfit.com.au';   	// SMTP username
+		$user_mail->Password = 'wzVrX6sxcpXR%{jh';                       // SMTP password
+		$user_mail->SMTPSecure = 'ssl';                            		// Enable TLS encryption, `ssl` also accepted
+		$user_mail->Port = 465;    
+		// PHPMailer class 
+
+		$user_mail->setFrom('donot-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+		$user_mail->addAddress($send_to);    // Add a recipient
+
+		$user_mail->addReplyTo('donot-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+		
+
+		
+
+		$user_mail->isHTML(true);                                  // Set email format to HTML
+
+		$year = date('Y');
+
+		$user_mail->Subject = 'Account Details';
+		$user_mail->Body    = 'Do not reply in this email.<br /><br />Welcome '.$first_name.' to Sojourn, an FSf Group Project Management Application.<br /><br />You have been added as a new user and provided with a temporary password.  Please sign-in right away where you will be required to change your password, then you will need to sign in again using your username & changed password.  Use the link below.<br /><br /><a href="'.base_url().'" target="_blank">'.base_url().'</a><br /><br />Your User Name is : '.$login_name.' and Password is : '.$confirm_password.'<br /><br />If you go to the USER section of the site you can personalise your settings and complete your set up.<br /><br />&copy; FSF Group '.$year;
+
+		if(!$user_mail->send()) {
+			echo 'Message could not be sent.';
+			echo 'Mailer Error: ' . $user_mail->ErrorInfo;
+		} else {
+			//echo 'Message has been sent';
+redirect('/users', 'refresh');
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			
 		}
 
 	}
@@ -630,13 +699,13 @@ class Users extends MY_Controller{
 		$this->clear_apost();
 		//Redirect
 		if($this->_is_logged_in()){
+			$user_role_id = $this->session->userdata('user_role_id');
 
-			if($this->session->userdata('user_role_id') == 1 ){
-				redirect('dashboard'); 
+			if($user_role_id == 1 || $user_role_id == 16){
+				redirect('dashboard');  // loads dashboard as primary page after signin
 			}else{
 				redirect('projects'); //dashboard
 			}
-
 
 		}
 		
@@ -999,7 +1068,7 @@ class Users extends MY_Controller{
 
 						$send_to = $user_details['general_email'];
 
-
+/*
 						$this->email->from('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
 						$this->email->to($send_to); 
 						//$this->email->cc('another@another-example.com'); 
@@ -1010,6 +1079,62 @@ class Users extends MY_Controller{
 						$this->email->message("Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group".$curr_year);	
 						$this->email->send();
 						redirect('');
+
+*/
+
+
+/*
+
+						if ( !class_exists("PHPMailer") ){
+							require_once('PHPMailer/class.phpmailer.php'); 
+							require_once('PHPMailer/PHPMailerAutoload.php');
+						}
+
+
+
+		// PHPMailer class
+		$mail = new PHPMailer;
+		//$mail->SMTPDebug = 3;                               		// Enable verbose debug output
+		$mail->isSMTP();                                      		// Set mailer to use SMTP
+		$mail->Host = 'sojourn.focusshopfit.com.au';  		  		// Specify main and backup SMTP servers
+		$mail->SMTPAuth = true;                               		// Enable SMTP authentication
+		$mail->Username = 'userconf@sojourn.focusshopfit.com.au';   	// SMTP username
+		$mail->Password = 'wzVrX6sxcpXR%{jh';                       // SMTP password
+		$mail->SMTPSecure = 'ssl';                            		// Enable TLS encryption, `ssl` also accepted
+		$mail->Port = 465;    
+		// PHPMailer class 
+
+		$mail->setFrom('donot-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+		$mail->addAddress($send_to);    // Add a recipient
+		//$mail->addAddress($user_email);               // Name is optional
+
+		$mail->addReplyTo('no-reply@sojourn.focusshopfit.com.au', 'Sojourn - Accounts');
+		
+		//$mail->addCC($pm_user_email);
+		//$mail->addBCC('bcc@example.com');
+		
+		//$mail->addAttachment($path_file);         		// Add attachments
+		//$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    		// Optional name
+		
+
+		$mail->isHTML(true);                                  // Set email format to HTML
+
+		$year = date('Y');
+
+		$mail->Subject = 'Password Change';
+		$mail->Body    =  "Do not reply in this email.<br /><br />Congratulations!<br /><br />Your New Password is : ****".substr($new_password,4)."<br /><br />&copy; FSF Group".$year;
+
+		if(!$mail->send()) {
+			echo 'Message could not be sent.';
+			echo 'Mailer Error: ' . $mail->ErrorInfo;
+		} else {
+			//echo 'Message has been sent';
+			redirect('');
+		}
+
+*/
+
+
 
 					}else{
 						$data['error'] = 'Please complete the form and confirm the new password.';
@@ -1395,9 +1520,9 @@ class Users extends MY_Controller{
 		// {
 			if($row['user_login_status'] == 1){
 				if($admin == 1){
-					echo '<li><img src = "'.base_url().'uploads/users/'.$row['user_profile_photo'].'" style = "width: 30px">'." ".$row['user_first_name'].'<button type = "button" title = "Log-out User" class = "btn btn-danger btn-xs pull-right" onclick = "btn_logout_user('.$row['user_id'].')"><i class = "fa fa-sign-out fa-sm"></i></button></li>';
+					echo '<li><img src = "'.base_url().'uploads/users/'.$row['user_profile_photo'].'" style = "width: 40px">'." ".$row['user_first_name'].'<button type = "button" title = "Log-out User" class = "btn btn-danger btn-xs pull-right" onclick = "btn_logout_user('.$row['user_id'].')"><i class = "fa fa-sign-out fa-sm"></i></button></li>';
 				}else{
-					echo '<li><img src = "'.base_url().'uploads/users/'.$row['user_profile_photo'].'" style = "width: 30px">'." ".$row['user_first_name'].'</li>';
+					echo '<li><img src = "'.base_url().'uploads/users/'.$row['user_profile_photo'].'" style = "width: 40px">'." ".$row['user_first_name'].'</li>';
 				}
 			}
 		}
