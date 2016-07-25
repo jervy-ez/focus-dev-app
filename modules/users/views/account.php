@@ -266,8 +266,13 @@
 															<?php endforeach; ?>
 														</select>
 
-														<?php $focus = ($this->input->post('focus') != '' ? $this->input->post('focus') : ''); ?>
-														<script type="text/javascript">$('.focus').val('<?php echo $user->company_id.'|'.$user->company_name; ?>');</script>
+														<?php //$focus = ($this->input->post('focus') != '' ? $this->input->post('focus') : ''); ?>
+
+														<?php if($user->company_id != ''): ?>
+															<script type="text/javascript">$('.focus').val('<?php echo $user->company_id.'|'.$user->company_name; ?>');</script>
+														<?php else: ?>
+															<script type="text/javascript">$('.focus').val('');</script>
+														<?php endif; ?>
 													</div>
 												</div>
 
@@ -804,101 +809,64 @@
 							<input type="submit" class="btn btn-primary m-right-10 pull-right m-bottom-10" name="update_user_access" value="Update User Access">
 						</div>
 						<div class="clearfix"></div>
-						<p><br /><br /></p>
+					 
 
-						</div>
 
+					
 						</form>
+
+
+
+						<?php if($user->department_id == 1): ?>
+						<div class="box">
+							<div class="box-head pad-5">
+								<label><i class="fa fa-users fa-lg"></i> Company Director</label>
+							</div>
+							<div class="box-area   pad-10">
+
+								<div class="box-content box-list ">
+ 
+									<form method="post" action="../update_company_director" class="clearfix">
+
+										<?php $comp = explode(',', $direct_company); ?>
+
+ 										<input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
+
+										<select name="fcompd[]" multiple="" style="width: 100%; margin-bottom: 10px;">
+											 
+
+ 
+											<?php foreach ($focus as $key => $value): ?>
+
+												<?php if($value->company_id != 4): ?>
+
+													<option <?php echo (in_array($value->company_id, $comp) ? 'selected' : ''); ?> value="<?php echo $value->company_id; ?>"> <?php echo $value->company_name; ?></option>
+
+												<?php endif; ?>
+											<?php endforeach; ?>
+
+										</select>
+
+										<input type="reset" class="btn btn-warning pull-left"  value="Reset">
+
+										<input type="submit" class="btn btn-primary pull-right" name="set_company_director" value="Set Company">
+								 
+									</form>
+
+								</div>
+							</div>
+						</div>
+						<?php endif; ?>
+
+
+</div>
+
 						<?php endif; ?>
 						
-						<div class="box hide hidden">
-							<div class="box-head pad-5">
-								<label><i class="fa fa-history fa-lg"></i> History</label>
-							</div>
-							<div class="box-area pattern-sandstone pad-10">
-
-								<div class="box-content box-list collapse in">
-									<ul>
-										<li>
-											<div><a href="#" class="news-item-title">You added a new company</a><p class="news-item-preview">May 25, 2014</p></div>
-										</li>
-										<li>
-											<div><a href="#" class="news-item-title">Updated the company details and contact information for James Tiling Co.</a><p class="news-item-preview">May 20, 2014</p></div>
-										</li>
-									</ul>
-									<div class="box-collapse">
-										<a style="cursor: pointer;" data-toggle="collapse" data-target=".more-list"> Show More </a>
-									</div>
-									<ul class="more-list collapse out">
-										<li>
-											<div><a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a><p class="news-item-preview">Lorem ipsum dolor si labore et dolore.</p></div>
-										</li>
-										<li>
-											<div><a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a><p class="news-item-preview">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p></div>
-										</li>
-										<li>
-											<div><a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a><p class="news-item-preview">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.</p></div>
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div>
+						
 					</div>
 					
-					<div class="col-md-3 hide">						
-						<div class="box">
-							<div class="box-head pad-10">
-								<label><i class="fa fa-history fa-lg"></i> History</label>
-							</div>
-							<div class="box-area pattern-sandstone pad-5">
-								<div class="box-content box-list collapse in">
-									<ul>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">You added a new company</a>
-												<p class="news-item-preview">May 25, 2014</p>
-											</div>
-										</li>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Updated the company details and contact information for James Tiling Co.</a>
-												<p class="news-item-preview">May 20, 2014</p>
-											</div>
-										</li>
-									</ul>
-									<div class="box-collapse">
-										<a style="cursor: pointer;" data-toggle="collapse" data-target=".more-list"> Show More </a>
-									</div>
-									<ul class="more-list collapse out">
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
-												<p class="news-item-preview">
-													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
-												</p>
-											</div>
-										</li>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
-												<p class="news-item-preview">
-													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
-												</p>
-											</div>
-										</li>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
-												<p class="news-item-preview">
-													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
-												</p>
-											</div>
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
+					
 					
 				</div>				
 			</div>

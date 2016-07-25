@@ -36,6 +36,11 @@ class User_model extends CI_Model{
 		return $query->row();
 	}
 
+	public function update_company_director($user_id,$company){
+		$query = $this->db->query("UPDATE  `users` SET `users`.`direct_company` = $company WHERE `users`.`user_id` = '$user_id' ");
+		return $query;
+	}
+
 	public function fetch_all_departments(){
 		$query = $this->db->query("SELECT * FROM `department` ORDER BY `department`.`department_name` ASC");
 		return $query;
@@ -143,7 +148,7 @@ class User_model extends CI_Model{
 
 	public function fetch_user($user_id=''){
 		if($user_id != ''){			
-			$query = $this->db->query("SELECT `users`.*,`department`.`department_id`,`department`.`department_name`,`role`.`role_id`,`role`.`role_types`,`email`.`email_id`,`email`.`general_email`,`contact_number`.*,`company_details`.`company_id`,`company_details`.`company_name`,`notes`.`comments`,`users`.`if_admin`
+			$query = $this->db->query("SELECT `users`.*,`department`.`department_id`,`department`.`department_name`,`role`.`role_id`,`role`.`role_types`,`email`.`email_id`,`email`.`general_email`,`contact_number`.*,`company_details`.`company_id`,`company_details`.`company_name`,`notes`.`comments`,`users`.`if_admin`, `users`.`direct_company`
 				FROM `users` 
 				LEFT JOIN `department` ON `department`.`department_id` =`users`.`user_department_id`
 				LEFT JOIN `role` ON `role`.`role_id` = `users`.`user_role_id`
@@ -153,7 +158,7 @@ class User_model extends CI_Model{
 				LEFT JOIN `notes` ON `notes`.`notes_id` = `users`.`user_comments_id`
 				WHERE  `users`.`user_id` = '$user_id' ");
 		}else{
-			$query = $this->db->query("SELECT `users`.*,`department`.`department_id`,`department`.`department_name`,`role`.`role_types`,`email`.`general_email`,`contact_number`.*,`company_details`.`company_name`,`notes`.`comments`,`users`.`if_admin`
+			$query = $this->db->query("SELECT `users`.*,`department`.`department_id`,`department`.`department_name`,`role`.`role_types`,`email`.`general_email`,`contact_number`.*,`company_details`.`company_name`,`notes`.`comments`,`users`.`if_admin`, `users`.`direct_company`
 				FROM `users` 
 				LEFT JOIN `department` ON `department`.`department_id` =`users`.`user_department_id`
 				LEFT JOIN `role` ON `role`.`role_id` = `users`.`user_role_id`

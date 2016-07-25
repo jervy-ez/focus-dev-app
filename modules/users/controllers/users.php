@@ -122,6 +122,28 @@ $config = Array(
 	redirect('/users/account/'.$user_id);
 	}
 
+
+	public function update_company_director(){
+		$this->clear_apost();
+		$user_id = $_POST['user_id'];
+
+		
+
+		if( isset($_POST['fcompd']) ) {
+			$fcompd = $_POST['fcompd'];
+			$companies = "'".implode(',', $fcompd)."'";
+		}else{
+			$companies = 'NULL';
+		}
+
+
+		$this->user_model->update_company_director($user_id,$companies);
+
+		//var_dump($companies);
+		$this->session->set_flashdata('user_access', 'Director Company is now updated');
+		redirect('/users/account/'.$user_id);
+	}
+
 	public function account(){
 		$this->_check_user_access('users',1);
 
@@ -142,6 +164,8 @@ $config = Array(
 		$focus = $this->admin_m->fetch_all_company_focus();
 		$data['focus'] = $focus->result();
 		$error_password = 0;
+
+
 /*
 		$access = $this->user_model->fetch_all_access();
 		$data['all_access'] = $access->result();
@@ -151,6 +175,8 @@ $config = Array(
 		$fetch_user= $this->user_model->fetch_user($user_id);
 		$data['user'] = $fetch_user->result();
 
+		$data['direct_company'] = $data['user'][0]->direct_company;
+		
 		if($data['user'][0]->user_date_of_birth != ''){
 
 			$dob_arr = explode('/',$data['user'][0]->user_date_of_birth);
@@ -292,9 +318,6 @@ $config = Array(
 
 
 
-		$this->load->view('page', $data);
-
-
 		if(isset($_POST['is_form_submit'])){
 
 			$user_info = array_shift($fetch_user->result_array());
@@ -386,6 +409,10 @@ $config = Array(
 				}
 			}
 
+			if($department_id != 1){
+				$this->user_model->update_company_director($user_id,'NULL');
+			}
+
 			$this->session->set_flashdata('account_update_msg', 'User account is now updated.');
 
 			$this->user_model->update_user_details($user_id,$login_name,$first_name,$last_name,$skype_id,$skype_password,$gender,$dob,$department_id,$focus_id,$user_comments_id,$profile);
@@ -397,6 +424,8 @@ $config = Array(
 			
 
 		}
+
+		$this->load->view('page', $data);
 
 	}
 
