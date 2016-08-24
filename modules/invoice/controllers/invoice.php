@@ -1,6 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Invoice extends MY_Controller{
-
 	function __construct(){
 		parent::__construct();
 		$this->load->library('form_validation');
@@ -13,19 +12,6 @@ class Invoice extends MY_Controller{
 		$this->load->model('projects_m');
 		$this->load->module('reports');
 		$this->load->module('purchase_order');
-
-
-		$config = Array(
-			'protocol' => 'smtp',
-			'smtp_host' => 'cp178.ezyreg.com',
-			'smtp_port' => 465,
-			'smtp_user' => 'accounts@sojourn.focusshopfit.com.au',
-			'smtp_pass' => 'CyMOCrP6',
-			'mailtype'  => 'html', 
-			'charset'   => 'iso-8859-1'
-			);
-		$this->load->library('email', $config);
-
 
 		if(!$this->users->_is_logged_in() ): 		
 			redirect('', 'refresh');
@@ -45,6 +31,56 @@ class Invoice extends MY_Controller{
 
 
 	}
+
+
+
+	public function test_mail(){
+
+
+		// PHPMailer class
+		$mail = new PHPMailer;
+		//$mail->SMTPDebug = 3;                               		// Enable verbose debug output
+		$mail->isSMTP();                                      		// Set mailer to use SMTP
+		$mail->Host = 'sojourn.focusshopfit.com.au';   //sojourn.focusshopfit.com.au  		  		// Specify main and backup SMTP servers
+		$mail->SMTPAuth = true;                               		// Enable SMTP authentication
+		$mail->Username = 'invoice@sojourn.focusshopfit.com.au';   	// SMTP username
+		$mail->Password = '~A8vVJRLz(^]J)L>';                       // SMTP password
+		$mail->SMTPSecure = 'ssl';                            		// Enable TLS encryption, `ssl` also accepted
+		$mail->Port = 465;    
+		// PHPMailer class 
+
+		$mail->setFrom('from@example.com', 'Sojourn - Job Book');
+		$mail->addAddress('jervy@focusshopfit.com.au', 'Jervy');    // Add a recipient
+		//$mail->addAddress('jervy.zaballa@gmail.com');               // Name is optional
+		$mail->addReplyTo('info@example.com');
+		
+		//$mail->addCC('cc@example.com');
+		//$mail->addBCC('bcc@example.com');
+		
+		//$mail->addAttachment('/var/tmp/file.tar.gz');         		// Add attachments
+		//$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    		// Optional name
+		
+
+		$mail->isHTML(true);                                  // Set email format to HTML
+
+		$project_id = '123';
+		$inv_curr_set = '_P1';
+
+		$year = date('Y');
+
+		$mail->Subject = 'Job Book Processing Request - '.$project_id.''.$inv_curr_set;
+		$mail->Body    = 'Sent via Sojourn auto-email service, You have an invoice needing to process. Please see the attached Job Book in PDF format.<br /><br />&copy; FSF Group '.$year;
+
+		if(!$mail->send()) {
+			echo 'Message could not be sent.';
+			echo 'Mailer Error: ' . $mail->ErrorInfo;
+		} else {
+			echo 'Message has been sent';
+		}
+
+
+	}
+
 
 	public function index(){
 		$this->users->_check_user_access('invoice',1);
@@ -712,6 +748,10 @@ echo '<tr><td>'.$row->payment_date.'</td><td><strong>$'.number_format($row->amou
 		$pm_user_email = $pm_user_details['general_email'];
 
 
+		$pa_user_details_q = $this->user_model->fetch_user($project_details['project_admin_id']);
+		$pa_user_details = array_shift($pa_user_details_q->result_array());
+		$pa_user_email = $pa_user_details['general_email'];
+
 		array_push($emails_arr, $pm_user_email);
 
 		$updated_emails = array_unique($emails_arr);
@@ -762,20 +802,111 @@ echo '<tr><td>'.$row->payment_date.'</td><td><strong>$'.number_format($row->amou
 		//echo "ok invocied";
 
 		$pdf_file = $this->reports->pdf($pdf_content,$project_id.''.$inv_curr_set);
+		//$attched_file = "/docs/inv_jbs/".$pdf_file.'.pdf';
+		$path_file =  base_url()."docs/inv_jbs/".$pdf_file.'.pdf';
+
+//forced redirect
+
+
+/*
+		$path =  base_url()."docs/inv_jbs/".$pdf_file.'.pdf';
+
+		echo '<script>window.open("'.$path.'", "_blank");</script>';
+		redirect('projects/view/'.$project_id.'?submit_invoice='.$project_id, 'refresh');
+*/
 
 		//echo $pdf_file;
+ 
+		//
+		//$this->email->attach($attched_file);
 
-		$attched_file= $_SERVER["DOCUMENT_ROOT"]."/docs/inv_jbs/".$pdf_file.'.pdf';
-		$this->email->attach($attched_file);
-
-		$this->email->from($user_email, 'Sojourn - Job Book');
-		$this->email->to($send_to);
-		$this->email->cc($final_cc_emails); 
+		//$this->email->from($user_email, 'Sojourn - Job Book');
+		//$this->email->to($send_to);
+		//$this->email->cc($final_cc_emails); 
 		//$this->email->bcc('them@their-example.com');
-		$this->email->subject('Job Book Processing Request - '.$project_id.''.$inv_curr_set);
-		$this->email->message("Sent via Sojourn auto-email service, You have an invoice needing to process. Please see the attached Job Book in PDF format.<br /><br />&copy; FSF Group 2015");
+		//$this->email->subject('Job Book Processing Request - '.$project_id.''.$inv_curr_set);
+		//$this->email->message("Sent via Sojourn auto-email service, You have an invoice needing to process. Please see the attached Job Book in PDF format.<br /><br />&copy; FSF Group 2015");
 		//$this->email->send();
 
+
+
+
+
+
+		// PHPMailer class
+		$mail = new PHPMailer;
+		//$mail->SMTPDebug = 3;                               		// Enable verbose debug output
+		$mail->isSMTP();                                      		// Set mailer to use SMTP
+		$mail->Host = 'sojourn.focusshopfit.com.au';  		  	//sojourn.focusshopfit.com.au	// Specify main and backup SMTP servers
+		$mail->SMTPAuth = true;                               		// Enable SMTP authentication
+		$mail->Username = 'job_book@sojourn.focusshopfit.com.au';   	// SMTP username
+		$mail->Password = ']M=a_au{Xd57xRZg';                       // SMTP password
+		$mail->SMTPSecure = 'ssl';                            		// Enable TLS encryption, `ssl` also accepted
+		$mail->Port = 465;    
+		// PHPMailer class 
+
+		$mail->setFrom('donot-reply@sojourn.focusshopfit.com.au', 'Sojourn - Job Book');
+		$mail->addAddress($send_to);    // Add a recipient
+		$mail->addAddress($user_email);               // Name is optional
+
+		$mail->addReplyTo($user_email);
+		
+		$mail->addCC($pm_user_email);
+
+		if($user_email != $pa_user_email){
+			$mail->addCC($pa_user_email);
+		}
+
+$cc_em_lst = explode(',',$email_list);
+foreach ($cc_em_lst as $key => $value) {
+	$mail->addCC($value);
+}
+
+if($cc_emails != '')
+{
+$cc_em_lst_cc = explode(',',$cc_emails);
+foreach ($cc_em_lst_cc as $key => $value) {
+	$mail->addCC($value);
+}
+}
+
+		//$mail->addBCC('bcc@example.com');
+		
+		//$mail->addAttachment($path_file);         		// Add attachments
+		//$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    		// Optional name
+		
+
+		$mail->isHTML(true);                                  // Set email format to HTML
+
+		$year = date('Y');
+
+		$mail->Subject = 'Job Book Processing Request - '.$project_id.''.$inv_curr_set;
+		$mail->Body    = 'Sent via Sojourn auto-email service, You have an invoice needing to process. Please visit the link provided below to view the job book.<br /><br /><strong>'.$path_file.'</strong><br />.<br /><br />&copy; FSF Group '.$year;
+
+		if(!$mail->send()) {
+			echo 'Message could not be sent.';
+			echo 'Mailer Error: ' . $mail->ErrorInfo;
+		} else {
+			//echo 'Message has been sent';
+			redirect('projects/view/'.$project_id.'?submit_invoice='.$project_id, 'refresh');
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 		if($this->email->send()){
    			//Success email Sent
 			redirect('projects/view/'.$project_id.'?submit_invoice='.$project_id, 'refresh');
@@ -783,6 +914,7 @@ echo '<tr><td>'.$row->payment_date.'</td><td><strong>$'.number_format($row->amou
    			//Email Failed To Send
 			echo $this->email->print_debugger();
 		}
+*/
 	}
 
 	public function fetch_vr($project_id){
@@ -1001,7 +1133,7 @@ echo '<tr><td>'.$row->payment_date.'</td><td><strong>$'.number_format($row->amou
 	}
 
 	public function list_project_invoice($project_id){
-		
+
 		$project_costs = $this->projects->fetch_project_totals($project_id);
 
 
@@ -1133,7 +1265,6 @@ endif;
  if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 5 || $this->session->userdata('user_role_id') == 6):
 
 	if($row->is_paid == 1){
- 
 		echo '<button class="btn btn-primary  m-right-10 progress_invoice_resend paid_view_invoice"><i class="fa fa-files-o"></i> View Invoice</button>';
 
 		echo '<button  class="btn btn-success progress_paid" id="'.$row->project_id.'"  data-toggle="modal" data-target="#payment_history_modal" data-backdrop="static" ><i class="fa fa-usd"></i> Paid</button>';
@@ -1146,7 +1277,8 @@ endif;
 }else{
 
 }
- 
+
+
 echo '</td><td><div class="m-top-5"><strong><span class="progress_outstanding">'.($row->is_invoiced == 1 ? '$'.$outstanding : '').'</span></strong></div></td></tr>';
 
 			

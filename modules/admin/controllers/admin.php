@@ -241,6 +241,39 @@ class Admin extends MY_Controller{
 //		redirect('/admin');
 	}
 
+	public function primay_pa_pm(){
+	//	var_dump($_POST);
+
+		$project_admin = $this->user_model->fetch_user_by_role(2);
+		$project_admin_list = $project_admin->result();
+
+		foreach ($project_admin_list as $pa ) {
+			if( isset($_POST['pm_set_'.$pa->user_id] ) ){
+				$pm_list = implode(',',$_POST['pm_set_'.$pa->user_id]);
+			}else{
+				$pm_list = 0;
+			}
+
+			if( isset($_POST['pm_primary'.$pa->user_id])  ){
+				$primary_pm = $_POST['pm_primary'.$pa->user_id];
+			}else{
+				$primary_pm = 0;
+			}
+
+			$this->admin_m->pm_pa_assignment($pa->user_id, $pm_list,$primary_pm);
+		}
+
+		$update_success = 'The record is now updated.';
+		$this->session->set_flashdata('update_assignment', $update_success);
+		redirect('/admin');
+	}
+
+	public function list_pa_assignment($pa_id){
+		$assignment_q = $this->admin_m->fetch_pa_assignment($pa_id);
+		$assignment = array_shift($assignment_q->result_array());
+		return  $assignment;
+	}
+
 	public function defaults(){
 		$passArr = array();
 
@@ -1179,6 +1212,19 @@ class Admin extends MY_Controller{
 		$unaccepted_num_days = $_POST['unaccepted_num_days'];
 
 		$this->admin_m->update_admin_default_unaccepted_proj($unaccepted_num_days,$checked_category);
+
+		redirect('/admin');
+	}
+
+	public function default_labour_schedule(){
+		$checked_category = "";
+		if(!empty($_POST['labour_sched_categories'])) {
+		    foreach($_POST['labour_sched_categories'] as $check) {
+		         $checked_category = $checked_category.",".$check;
+		    }
+		}
+
+		$this->admin_m->update_admin_default_labour_sched($checked_category);
 
 		redirect('/admin');
 	}

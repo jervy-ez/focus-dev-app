@@ -107,7 +107,7 @@ $config = Array(
 		$users = $_POST['users_access'];
 		$bulletin_board = $_POST['bulletin_board'];
 		$project_schedule = $_POST['project_schedule'];
-
+		$labour_schedule = $_POST['labour_schedule'];
 
 		$role_raw = $_POST['role'];
 		$role_arr = explode('|',$role_raw);
@@ -115,7 +115,7 @@ $config = Array(
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule);
+		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
 
@@ -172,8 +172,12 @@ $config = Array(
 */
 		$user_id = $this->uri->segment(3);
 
-		$fetch_user= $this->user_model->fetch_user($user_id);
+		$fetch_user = $this->user_model->fetch_user($user_id);
 		$data['user'] = $fetch_user->result();
+
+		if( $data['user'][0]->is_active == 0){
+			redirect('users', 'refresh');
+		}
 
 		$data['direct_company'] = $data['user'][0]->direct_company;
 		
@@ -569,7 +573,7 @@ $config = Array(
 				$profile_photo = $file_upload_arr[1];
 			}else{
 				$profile_photo = '';
-				$data['upload_error'] = $file_upload_arr[1];
+				//$data['upload_error'] = $file_upload_arr[1];
 			}
 
 			$first_name = $this->company->cap_first_word($this->company->if_set($this->input->post('first_name', true)));
@@ -628,6 +632,7 @@ $config = Array(
 			$users_access = $this->input->post('users_access', true);
 			$bulletin_board = $this->input->post('bulletin_board', true);
 			$project_schedule = $this->input->post('project_schedule', true);
+			$labour_schedule = $this->input->post('labour_schedule', true);
 
 			date_default_timezone_set("Australia/Perth");
 			$user_timestamp_registered = time();
@@ -641,7 +646,7 @@ $config = Array(
 
 			$add_new_user_id = $this->user_model->add_new_user($login_name,$password,$first_name,$last_name,$gender,$department_id,$profile_photo,$user_timestamp_registered,$role_id,$email_id,$skype_id,$skype_password,$contact_number_id,$focus_id,$dob,$user_notes_id,$admin);
 
-			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access,$bulletin_board,$project_schedule);
+			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access,$bulletin_board,$project_schedule,$labour_schedule);
 
 			$this->user_model->insert_user_password($confirm_password,$add_new_user_id);
 
@@ -700,7 +705,7 @@ $config = Array(
 			echo 'Mailer Error: ' . $user_mail->ErrorInfo;
 		} else {
 			//echo 'Message has been sent';
-redirect('/users', 'refresh');
+ redirect('/users', 'refresh');
 		}
 
 
@@ -729,12 +734,21 @@ redirect('/users', 'refresh');
 		//Redirect
 		if($this->_is_logged_in()){
 			$user_role_id = $this->session->userdata('user_role_id');
-
+/*
 			if($user_role_id == 1 || $user_role_id == 16){
 				redirect('dashboard');  // loads dashboard as primary page after signin
 			}else{
 				redirect('projects'); //dashboard
 			}
+*/
+
+
+				if($this->session->userdata('dashboard') >= 1 ){	
+					redirect('dashboard');
+				}else{
+					redirect('projects'); //dashboard
+				}
+
 
 		}
 		

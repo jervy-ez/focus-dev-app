@@ -18,6 +18,11 @@
 
 	$start_current_year = "01/01/$current_year";
 	$current_date = date("d/m/Y");
+
+	$assignment = $this->dashboard->pa_assignment();
+	$prime_pm = $assignment['project_manager_primary_id'];
+	$group_pm = explode(',', $assignment['project_manager_ids']);
+
 ?>
 
  <!-- maps api js -->
@@ -25,7 +30,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDs1g6kHxbVrkQe7e_CmR6MsfV_3LmLSlc"></script>
 
 <script type="text/javascript">
-var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations(); ?>};	
+var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_pa(); ?>};	
 
 
 </script>
@@ -87,9 +92,6 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 		<div class="section col-sm-12 col-md-11 col-lg-11 pad-0-imp no-m-imp">
 			<div class="">
 
-
-
-
 				<div class="clearfix pad-10">
 					<div class="widget_area row pad-0-imp no-m-imp">
 					
@@ -102,7 +104,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 											<div class="pad-5">
 												<div class=" " id=""><p>Invoiced <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
-												<div class="pad-top-5" id="" ><?php $this->dashboard->sales_widget(); ?></div>
+												<div class="pad-top-5" id="" ><?php $this->dashboard->invoiced_pa(); ?></div>
 											</div>							
 										</div>
 									</div>
@@ -118,7 +120,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 											<div class="pad-5">
 												<div class=" " id=""><p>Uninvoiced <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
-												<div class="pad-top-5" id="" ><?php $this->dashboard->uninvoiced_widget(); ?></div>
+												<div class="pad-top-5" id="" ><?php $this->dashboard->uninvoiced_widget_pa(); ?></div>
 											</div>							
 										</div>
 									</div>
@@ -134,7 +136,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 											<div class="pad-5">
 												<div class=" " id=""><p>Outstanding <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
-												<div class="pad-top-5" id="" ><?php $this->dashboard->outstanding_payments_widget(); ?></div>
+												<div class="pad-top-5" id="" ><?php $this->dashboard->outstanding_payments_widget_pa(); ?></div>
 											</div>							
 										</div>
 									</div>
@@ -152,7 +154,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 											<div class="pad-5">
 												<div class=" " id=""><p>WIP</p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
-												<div class="pad-top-5" id="" ><?php $this->dashboard->wip_widget(); ?></div>
+												<div class="pad-top-5" id="" ><?php $this->dashboard->wip_widget_pa(); ?></div>
 											</div>							
 										</div>
 									</div>
@@ -171,15 +173,19 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 								<div class="widg-head box-widg-head pad-5">
 									<strong>Sales Forecast - <?php echo date('Y'); ?></strong>
 									<select class="pull-right input-control input-sm chart_data_selection" style="padding: 0;margin: -7px 0 0 0;width: 175px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #f4f4f4;">
-										<option value="Overall">Overall Sales Forecast</option>
-										<!-- <option value="Outstanding">Focus Outstanding</option> -->
-										<!-- <option value="Pm_Outstanding">PM Outstanding</option> -->
-										<option value="FWA">Focus WA</option>
-										<option value="FNSW">Focus NSW</option>
 										<?php foreach ($project_manager as $pm) {
-											echo '<option value="'.$pm->user_first_name.' '.$pm->user_last_name.'">'.$pm->user_first_name.' '.$pm->user_last_name.'</option>';
-										} ?>
+											if( in_array($pm->user_id, $group_pm) ){
+												echo '<option value="'.$pm->user_first_name.' '.$pm->user_last_name.'">'.$pm->user_first_name.' '.$pm->user_last_name.'</option>';
+
+													if($prime_pm == $pm->user_id){
+														$pm_name = $pm->user_first_name.' '.$pm->user_last_name;
+													}
+												}
+											}
+										?>
 									</select>
+
+									<script type="text/javascript"> $('select.chart_data_selection').val('<?php echo $pm_name; ?>');</script>
 								</div>
 
 								<div class="box-area clearfix row pad-right-10 pad-left-10">									
@@ -212,7 +218,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 											<p class="text-center m-bottom-10"><strong style="font-size: 16px;">Average Final Invoice Days</strong></p>
 											<p><br /></p>
 
-											<?php echo $this->dashboard->average_date_invoice(); ?>
+											<?php echo $this->dashboard->average_date_invoice_pa(); ?>
 											<!--
 												<div id="" class="tooltip-enabled" title="" data-placement="bottom" data-original-title="77% - $1,381,545 / $1,800,000 ">
 													<input class="knob" data-width="100%" value="35" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="40">
@@ -246,7 +252,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<div class="" id="">
-											<?php $status_forecast = $this->dashboard->pm_sales_widget(); ?>
+											<?php $status_forecast = $this->dashboard->pm_sales_widget_pa(); ?>
 											<script type="text/javascript">
 												var overall_progress = parseInt(<?php echo $status_forecast; ?>);
 												$('.full_p').css('width',overall_progress+'%');
@@ -268,7 +274,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 										<div class="pad-3">
 											<div class="pad-left-5 pad-top-3" id=""><p>Invoiced - WIP Count <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 2px;">
-											<div class="pad-top-5" id="" ><?php $this->dashboard->focus_projects_count_widget(); ?></div>
+											<div class="pad-top-5" id="" ><?php $this->dashboard->focus_projects_count_widget_pa(); ?></div>
 										</div>							
 									</div>
 								</div>
@@ -284,7 +290,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 											<div class=" " id=""><p>Quotes Unaccepted <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<div class="pad-top-5" id="" >
-												<?php $this->dashboard->pm_estimates_widget(); ?>
+												<?php $this->dashboard->pm_estimates_widget_pa(); ?>
 											</div>
 										</div>							
 									</div>
@@ -317,7 +323,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 										<div class="pad-5">
 											<div class=" " id=""><p>Purchase Orders <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<div class="pad-top-5" id="" ><?php $this->dashboard->focus_get_po_widget(); ?></div>
+											<div class="pad-top-5" id="" ><?php $this->dashboard->focus_get_po_widget_pa(); ?></div>
 										</div>							
 									</div>
 								</div>
@@ -325,83 +331,83 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 						</div>
 
 						<!-- ************************ -->
+						<?php /*
+												<div class="clearfix"></div>
 						
-						<div class="clearfix"></div>
-
-						<!-- ************************ -->
-
+												<!-- ************************ -->
 						
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-0 small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-code text-center fa-3x"></i></div></div>
-									<div class="widg-content col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>Widget <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<div class="pad-top-5" id="">
-												<p class="value"> <strong> &nbsp; </strong></p>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
+												
+												<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
+													<div class="widget wid-type-0 small-widget">
+														<div class="box-area clearfix">
+															<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-code text-center fa-3x"></i></div></div>
+															<div class="widg-content col-xs-9 clearfix">
+																<div class="pad-5">
+																	<div class=" " id=""><p>Widget <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+																	<hr class="" style="margin: 5px 0px 0px;">
+																	<div class="pad-top-5" id="">
+																		<p class="value"> <strong> &nbsp; </strong></p>
+																	</div>
+																</div>							
+															</div>
+														</div>
+													</div>
+												</div>
 						
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-0 small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-code text-center fa-3x"></i></div></div>
-									<div class="widg-content col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>Widget <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<div class="pad-top-5" id="">
-												<p class="value"> <strong> &nbsp; </strong></p>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
+												
+												<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
+													<div class="widget wid-type-0 small-widget">
+														<div class="box-area clearfix">
+															<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-code text-center fa-3x"></i></div></div>
+															<div class="widg-content col-xs-9 clearfix">
+																<div class="pad-5">
+																	<div class=" " id=""><p>Widget <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+																	<hr class="" style="margin: 5px 0px 0px;">
+																	<div class="pad-top-5" id="">
+																		<p class="value"> <strong> &nbsp; </strong></p>
+																	</div>
+																</div>							
+															</div>
+														</div>
+													</div>
+												</div>
 						
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-0 small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-code text-center fa-3x"></i></div></div>
-									<div class="widg-content col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>Widget <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<div class="pad-top-5" id="">
-												<p class="value"> <strong> &nbsp; </strong></p>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-0 small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-code text-center fa-3x"></i></div></div>
-									<div class="widg-content col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>Widget <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<div class="pad-top-5" id="">
-												<p class="value"> <strong> &nbsp; </strong></p>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-
+												
+												<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
+													<div class="widget wid-type-0 small-widget">
+														<div class="box-area clearfix">
+															<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-code text-center fa-3x"></i></div></div>
+															<div class="widg-content col-xs-9 clearfix">
+																<div class="pad-5">
+																	<div class=" " id=""><p>Widget <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+																	<hr class="" style="margin: 5px 0px 0px;">
+																	<div class="pad-top-5" id="">
+																		<p class="value"> <strong> &nbsp; </strong></p>
+																	</div>
+																</div>							
+															</div>
+														</div>
+													</div>
+												</div>
+						
+												<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
+													<div class="widget wid-type-0 small-widget">
+														<div class="box-area clearfix">
+															<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-code text-center fa-3x"></i></div></div>
+															<div class="widg-content col-xs-9 clearfix">
+																<div class="pad-5">
+																	<div class=" " id=""><p>Widget <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+																	<hr class="" style="margin: 5px 0px 0px;">
+																	<div class="pad-top-5" id="">
+																		<p class="value"> <strong> &nbsp; </strong></p>
+																	</div>
+																</div>							
+															</div>
+														</div>
+													</div>
+												</div>
+						
+					*/	 ?>
 						<!-- ************************ -->
 						
 						<div class="clearfix"></div>
@@ -428,7 +434,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<div id="" class="pad-5" style="height: 290px; overflow: auto;">
-											<?php echo $this->dashboard->focus_projects_by_type_widget(); ?>
+											<?php echo $this->dashboard->focus_projects_by_type_widget_pa(); ?>
 										</div>
 									</div>
 								</div>
@@ -451,13 +457,13 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations()
 									</ul>
 									<div id="myTabContent" class="tab-content pad-10" style="height: 300px; overflow: auto;"> 
 										<div role="tabpanel" class="tab-pane fade active in" id="clients">
-											<?php echo $this->dashboard->focus_top_ten_clients(); ?>
+											<?php echo $this->dashboard->focus_top_ten_clients_pa(); ?>
 										</div>
 										<div role="tabpanel" class="tab-pane fade in" id="contractors">
-											<?php echo $this->dashboard->focus_top_ten_con_sup('2'); ?>
+											<?php echo $this->dashboard->focus_top_ten_con_sup_pa('2'); ?>
 										</div>
 										<div role="tabpanel" class="tab-pane fade" id="suppliers" aria-labelledby="profile-tab"> 
-											<?php echo $this->dashboard->focus_top_ten_con_sup('3'); ?>
+											<?php echo $this->dashboard->focus_top_ten_con_sup_pa('3'); ?>
 										</div>
 									</div>
 								</div>
@@ -542,7 +548,7 @@ echo "],";
 		if($pm_sales_data['user_pm_name'] == 'Maintenance Manager' && $pm_sales_data['focus_comp_id'] == '6'  ){
 
 		}else{
-			echo "['".$pm_sales_data['user_pm_name']." Last Year',".$pm_sales_data['rev_jn'].",".$pm_sales_data['rev_fb'].",".$pm_sales_data['rev_mr'].",".$pm_sales_data['rev_ar'].",".$pm_sales_data['rev_my'].",".$pm_sales_data['rev_jn'].",".$pm_sales_data['rev_jl'].",".$pm_sales_data['rev_ag'].",".$pm_sales_data['rev_sp'].",".$pm_sales_data['rev_ot'].",".$pm_sales_data['rev_nv'].",".$pm_sales_data['rev_dc']."],";
+			echo "['".$pm_sales_data['user_pm_name']." Last Year',".$pm_sales_data['rev_jan'].",".$pm_sales_data['rev_feb'].",".$pm_sales_data['rev_mar'].",".$pm_sales_data['rev_apr'].",".$pm_sales_data['rev_may'].",".$pm_sales_data['rev_jun'].",".$pm_sales_data['rev_jul'].",".$pm_sales_data['rev_aug'].",".$pm_sales_data['rev_sep'].",".$pm_sales_data['rev_oct'].",".$pm_sales_data['rev_nov'].",".$pm_sales_data['rev_dec']."],";
 		}
 	} ?>
 // PM Project Manager Sales Last Year
@@ -617,106 +623,10 @@ echo "],";
 // Focus Overall WIP
 
 // Overall Sales
+ 
 
-// 	Outstanding Overall
-<?php
-/*
-echo "['".$fcsOT['company_name']."',";
-
-for($i=0; $i < 12 ; $i++){	
-	$alternator = $calendar_view;
-	$counter = $i;
-
-	if($alternator == 1){
-		$counter = $counter + 6;
-	}
-
-	if($alternator == 1 && $counter > 11){
-		$counter = $counter - 12;
-	}
-
-	$month_index = 'out_'.strtolower($months[$counter]);
-	echo $fcsOT[$month_index].',';
-}
-
-echo "],";
-*/
-?>
-
-// 	Outstanding Overall
-
-
-
-
-
-
-<?php
-/*
-echo "['".$fcsC['company_name']."',";
-
-for($i=0; $i < 12 ; $i++){	
-	$alternator = $calendar_view;
-	$counter = $i;
-
-	if($alternator == 1){
-		$counter = $counter + 6;
-	}
-
-	if($alternator == 1 && $counter > 11){
-		$counter = $counter - 12;
-	}
-
-	$month_index = 'rev_'.strtolower($months[$counter]);
-	echo $fcsC[$month_index].',';
-}
-
-echo "],";*/
-?>
-
-
-<?php
-
-
-/*
-
-		foreach ($inv_fcs_overall_sales as $key => $value) {
-				echo "['$key Overall',";	
-				
-
-
-
-				for($i=0; $i < 12 ; $i++){
-					$counter = $i;
-				$alternator = $calendar_view;	
-
-	if($alternator == 1){
-		$counter = $counter + 6;
-	}
-
-	if($alternator == 1 && $counter > 11){
-		$counter = $counter - 12;
-	}
-
-
-
-					$month_index_a = 'out_'.strtolower($months[$counter]);
-					$month_index_b = 'rev_'.strtolower($months[$counter]);
-
-					$month_overall = $inv_fcs_overall_sales[$key][$month_index_a] + $inv_fcs_overall_sales[$key][$month_index_b];
-
-					echo  $month_overall.',';
-
-
-				}
-
-				echo "],";
-				
-		}
-*/
-
- ?>
-
-
+ 
+ 
 
 
 
@@ -748,36 +658,7 @@ echo "],";*/
 // Focus Company Sales
 
 
-
-
-// Focus Company Outstanding
-<?php /*
-<?php foreach ($focus_indv_comp_outstanding->result_array() as $indv_comp_sales): ?>
-	<?php //var_dump($indv_comp_sales); ?>
-	<?php echo "['".$indv_comp_sales['company_name']." Outstanding',"; ?>
-		<?php 
-          for($i=0; $i < 12 ; $i++){	
-          	$alternator = $calendar_view;
-          	$counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-          	$month_index = 'out_'.strtolower($months[$counter]);
-          	$item_forecast = $indv_comp_sales[$month_index];
-          	echo $item_forecast.',';
-          }
-        ?>
-	<?php echo "],"; ?>
-<?php endforeach; ?>
-*/
-?>
-// Focus Company Outstanding
-
+ 
  
 
 // PM Project Manager Sales
@@ -790,27 +671,7 @@ echo "],";*/
 	} ?>
 // PM Project Manager Sales
 
-
-
-
-
-// PM Project Manager Outstanding
-/*
-	<?php foreach ($pms_outstanding_c_year->result_array() as $pm_sales_data ) {
-		if($pm_sales_data['user_pm_name'] == 'Maintenance Manager' && $pm_sales_data['focus_comp_id'] == '6'  ){
-
-		}else{
-			echo "['".$pm_sales_data['user_pm_name']." Outstanding',".$pm_sales_data['out_jan'].",".$pm_sales_data['out_feb'].",".$pm_sales_data['out_mar'].",".$pm_sales_data['out_apr'].",".$pm_sales_data['out_may'].",".$pm_sales_data['out_jun'].",".$pm_sales_data['out_jul'].",".$pm_sales_data['out_aug'].",".$pm_sales_data['out_sep'].",".$pm_sales_data['out_oct'].",".$pm_sales_data['out_nov'].",".$pm_sales_data['out_dec']."],";
-		}
-	} ?>
-*/
-// PM Project Manager Outstanding
-
-
-
-// pms_outstanding_c_year
-
-
+ 
 
 
 
@@ -1009,8 +870,6 @@ foreach ($focus_pm_wip as $key => $value) {
 ['Maintenance Manager','Maintenance Manager WIP'],
 ['Joshua Gamble','Joshua Gamble WIP']],
 
-
-
         order: null,
       },
     tooltip: {
@@ -1044,7 +903,11 @@ chart.select();
 chart.hide();
 
 setTimeout(function () {
-	chart.show(['Overall Sales','Forecast','Last Year Sales','Focus Overall WIP']);
+
+	chart.show(['<?php echo $pm_name; ?>','<?php echo $pm_name; ?> WIP','<?php echo $pm_name; ?> Forecast','<?php echo $pm_name; ?> Last Year']);
+
+
+//	chart.show(['Overall Sales','Forecast','Last Year Sales','Focus Overall WIP']);
 }, 1000);	
 
 

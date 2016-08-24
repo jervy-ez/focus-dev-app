@@ -29,9 +29,11 @@
 					<li class="hide">
 						<a href="" class="btn-small"><i class="fa fa-magic"></i> Tour</a>
 					</li>
+          <?php if($this->session->userdata('invoice') >= 2): ?>
           <li>
             <a href=""  class="report_btn" data-toggle="tab"><i class="fa fa-print"></i> Report</a>
-          </li>     
+          </li> 
+          <?php endif; ?>    
           <li>
             <a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
           </li>
@@ -447,7 +449,7 @@
         <div class="">
           <div class="input-group m-bottom-10">
             <span class="input-group-addon">
-              Clinet
+              Client
             </span>
             <select class="form-control client_invoice chosen" name="client_invoice" id="client_invoice">
               <option value="">Select Client</option>
@@ -465,7 +467,7 @@
           </div>
         </div>
 
-        <div class="">
+        <div class="hide">
           <div class="input-group m-bottom-10">
             <span class="input-group-addon">
               Progress Claim
@@ -571,8 +573,8 @@
           <select class="invoice_sort form-control" id="invoice_sort" name="invoice_sort" title="invoice_sort*">
             <option value="clnt_asc">Client Name A-Z</option>  
             <option value="clnt_desc">Client Name Z-A</option>
-            <option value="inv_d_asc">Invoiced Date Oldest First</option> 
-            <option value="inv_d_desc">Invoiced Date Newest First</option>    
+            <option value="inv_d_desc">Invoiced Date Asc</option> 
+            <option value="inv_d_asc">Invoiced Date Desc</option>    
             <option value="prj_num_asc">Project Number Asc</option>  
             <option value="prj_num_desc">Project Number Desc</option>                                     
           </select>       
@@ -592,22 +594,6 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="loading_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-sm">
-    <div class="modal-content">
-       
-      <div class="modal-body clearfix pad-10">
-
-        <center><h3>Loading Please Wait</h3></center>
-        <center><h2><i class="fa fa-circle-o-notch fa-spin fa-5x"></i></h2></center>
-        <p>&nbsp;</p>
-  
-  
-
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="report_result hide hidden"></div>
 

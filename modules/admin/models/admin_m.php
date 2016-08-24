@@ -145,6 +145,18 @@ class Admin_m extends CI_Model{
 		$query = $this->db->query("UPDATE `site_costs` SET `total_amalgamated_rate` = '$amalgamated_rate' ORDER BY `site_cost_id` DESC LIMIT 1");
 		return $query;
 	}
+
+	public function pm_pa_assignment($project_administrator_id, $project_manager_ids,$primary_pm){
+		$query = $this->db->query("INSERT INTO `project_administrator_manager` (`project_administrator_id`, `project_manager_ids` ,`project_manager_primary_id`) 
+			VALUES ( '$project_administrator_id', '$project_manager_ids' ,'$primary_pm') 
+			ON DUPLICATE KEY UPDATE `project_manager_ids` = '$project_manager_ids' , `project_manager_primary_id` = '$primary_pm' ");
+		return $query;
+	}
+
+	public function fetch_pa_assignment($pa_id){
+		$query = $this->db->query("SELECT * FROM `project_administrator_manager` WHERE `project_administrator_manager`.`project_administrator_id` = '$pa_id' ");
+		return $query;
+	}
 	
 	public function update_site_costs($val){
 		$total_days = $val['total_days'];
@@ -608,5 +620,9 @@ class Admin_m extends CI_Model{
 
 	public function update_admin_default_unaccepted_proj($unaccepted_no_days,$unaccepted_date_categories){
 		$this->db->query("UPDATE `admin_defaults` SET `unaccepted_no_days` = '$unaccepted_no_days', `unaccepted_date_categories` = '$unaccepted_date_categories'");
+	}
+
+	public function update_admin_default_labour_sched($labour_sched_categories){
+		$this->db->query("UPDATE `admin_defaults` SET `labour_sched_categories` = '$labour_sched_categories'");
 	}
 }

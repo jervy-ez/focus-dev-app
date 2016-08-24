@@ -976,7 +976,7 @@
 								    
 							    </form>	
 
-
+								 <p><hr /></p>
 							    <!-- Unaccepted Projects Defaults -->
 
 								<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_unaccepted_projects">
@@ -1073,6 +1073,98 @@
 								    </div>	
 								    
 							    </form>	
+									
+								 <p><hr /></p>
+							      <!-- Projects Labour Sched Defaults -->
+
+								<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_labour_schedule">
+
+									<div class="box">
+										<div class="box-head pad-5 m-bottom-5">
+											<label><i class="fa fa-pencil-square-o fa-lg"></i> Projects Labour Schedule Defaults</label>
+										</div>
+
+										<div class="box-area pad-5 clearfix">
+
+											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
+												<label for="time-half" class="col-sm-4 control-label">Select Excluded Job Categories:</label>
+												<div class="col-sm-8">
+													<?php 
+														$ls_job_category_arr = explode(",",$labour_sched_categories);
+														$ls_design_works = 0;
+														$ls_kiosk = 0;
+														$ls_full_fitout = 0;
+														$ls_refurbishment = 0;
+														$ls_strip_out = 0;
+														$ls_minor_works = 0;
+														$ls_maintenance = 0;
+
+														foreach ($ls_job_category_arr as &$value) {
+															if($value == "Design Works"){
+																$ls_design_works = 1;
+															}
+
+															if($value == "Kiosk"){
+																$ls_kiosk = 1;
+															}
+
+															if($value == "Full Fitout"){
+																$ls_full_fitout = 1;
+															}
+
+															if($value == "Refurbishment"){
+																$ls_refurbishment = 1;
+															}
+															if($value == "Strip Out"){
+																$ls_strip_out = 1;
+															}
+															if($value == "Minor Works"){
+																$ls_minor_works = 1;
+															}
+
+															if($value == "Maintenance"){
+																$ls_maintenance = 1;
+															}
+														}
+													?>
+													<table width = 100%>
+														<tr>
+															<td><input type="checkbox" name = "labour_sched_categories[]" value = "Design Works" <?php if($ls_design_works == 1){ echo 'checked'; } ?>></td>
+															<td>Design Works</td>
+															<td><input type="checkbox" name = "labour_sched_categories[]" value = "Kiosk" <?php if($ls_kiosk == 1){ echo 'checked'; } ?>></td>
+															<td>Kiosk</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" name = "labour_sched_categories[]" value = "Full Fitout" <?php if($ls_full_fitout == 1){ echo 'checked'; } ?>></td>
+															<td>Full Fitout</td>
+															<td><input type="checkbox" name = "labour_sched_categories[]" value = "Refurbishment" <?php if($ls_refurbishment == 1){ echo 'checked'; } ?>></td>
+															<td>Refurbishment</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" name = "labour_sched_categories[]" value = "Strip Out" <?php if($ls_strip_out == 1){ echo 'checked'; } ?>></td>
+															<td>Strip Out</td>
+															<td><input type="checkbox" name = "labour_sched_categories[]" value = "Minor Works" <?php if($ls_minor_works == 1){ echo 'checked'; } ?>></td>
+															<td>Minor Works</td>
+														</tr>
+														<tr>
+															<td><input type="checkbox" name = "labour_sched_categories[]" value = "Maintenance" <?php if($ls_maintenance == 1){ echo 'checked'; } ?>></td>
+															<td>Maintenance</td>
+														</tr>
+													</table>
+												</div>
+											</div>
+
+											
+										</div>
+									</div>
+
+									<div class="m-top-15 clearfix">
+								    	<div>
+								        	<button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Projects Labour Sched Defaults</button>
+								        </div>
+								    </div>	
+								    
+							    </form>	
 
 
 </div>
@@ -1084,73 +1176,130 @@
 
 
 
-								<div class="tab-pane fade in" id="users" aria-labelledby="users">
-
-
-
-
-					<?php if(@$this->session->flashdata('update_user_settings')): ?>
-						<div class="col-md-3 m-top-5">							
-							<div class="no-pad-t">
-								<div class="border-less-box alert alert-success fade in">
-									<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-									<h4>Cheers!</h4>
-									<?php echo $this->session->flashdata('update_user_settings');?>
-								</div>
-							</div>
+<div class="tab-pane fade in" id="users" aria-labelledby="users">
+	<?php if(@$this->session->flashdata('update_user_settings')): ?>
+		<div class="col-md-3 m-top-5">							
+			<div class="no-pad-t">
+				<div class="border-less-box alert alert-success fade in">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					<h4>Cheers!</h4>
+					<?php echo $this->session->flashdata('update_user_settings');?>
+				</div>
+			</div>
+		</div>
+	<?php endif; ?>
+	<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/user_settings">
+		<div class="box m-top-0">
+			<div class="box-head pad-5">
+				<label><i class="fa fa-user-times fa-lg"></i> User Accounts Setting</label>
+			</div>
+			<div class="box-area clearfix pad-5">
+				<div class="col-md-4 col-sm-6 col-xs-12 clearfix m-top-10 m-bottom-10">
+					<label for="total-hour" class="col-sm-6  control-label m-top-5 text-right" style="font-weight: normal;">Days Password Expiration </label>
+					<div class="col-sm-6">
+						<div class="input-group">
+							<span class="input-group-addon" id=""><i class="fa fa-calendar"></i></span>
+							<input type="text" class="form-control" value="<?php echo $static_defaults[0]->days_psswrd_exp; ?>" name="days_exp">
+							<span class="input-group-addon" id="">Days</span>
 						</div>
-					<?php endif; ?>
+					</div>						
+				</div>
+				<div class="col-md-4 col-sm-6 col-xs-12 clearfix m-top-10 m-bottom-10">
+					<label for="total-hour" class="col-sm-6  control-label m-top-5 text-right" style="font-weight: normal;">Temporary User Password </label>
+					<div class="col-sm-6">
+						<div class="input-group">
+							<span class="input-group-addon" id=""><i class="fa fa-lock"></i></span>
+							<input type="text" class="form-control" name="temp_password" value="<?php echo $static_defaults[0]->temp_user_psswrd; ?>">
+						</div>
+					</div>						
+				</div>
+				<div class="col-md-4 col-sm-6 col-xs-12 clearfix m-top-10 m-bottom-10">
+					<button type="submit" class="btn btn-success pull-right m-bottom-10 m-right-5"><i class="fa fa-floppy-o"></i> Save User Settings</button>				
+				</div>
+			</div>
+		</div>
+	</form>
 
 
-					<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/user_settings">
-						
-							<div class="box m-top-0">
-								<div class="box-head pad-5">
-									<label><i class="fa fa-user-times fa-lg"></i> User Accounts Setting</label>
+	<p><hr /></p>
 
+	<?php if(@$this->session->flashdata('update_assignment')): ?>
+		<div class="m-bottom-15">							
+			<div class="no-pad-t">
+				<div class="border-less-box alert alert-success fade in">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					<h4>Cheers!</h4>
+					<?php echo $this->session->flashdata('update_assignment');?>
+				</div>
+			</div>
+		</div>
+	<?php endif; ?>
+	<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/primay_pa_pm">
+		<div class="box m-top-0">
+			<div class="box-head pad-5">
+				<label><i class="fa fa-university fa-lg" aria-hidden="true"></i> Primary Project Manager Assignments</label>
+			</div>
+			<div class="box-area clearfix pad-5">
 
-								</div>
-
-								<div class="box-area clearfix pad-5">
+ 
  
 
 
-									<div class="col-md-4 col-sm-6 col-xs-12 clearfix m-top-10 m-bottom-10">
-										<label for="total-hour" class="col-sm-6  control-label m-top-5 text-right" style="font-weight: normal;">Days Password Expiration </label>
-										<div class="col-sm-6">
-											<div class="input-group">
-												<span class="input-group-addon" id=""><i class="fa fa-calendar"></i></span>
-												<input type="text" class="form-control" value="<?php echo $static_defaults[0]->days_psswrd_exp; ?>" name="days_exp">
-												<span class="input-group-addon" id="">Days</span>
-											</div>
-										</div>						
-									</div>
 
-									<div class="col-md-4 col-sm-6 col-xs-12 clearfix m-top-10 m-bottom-10">
-										<label for="total-hour" class="col-sm-6  control-label m-top-5 text-right" style="font-weight: normal;">Temporary User Password </label>
-										<div class="col-sm-6">
-											<div class="input-group">
-												<span class="input-group-addon" id=""><i class="fa fa-lock"></i></span>
-												<input type="text" class="form-control" name="temp_password" value="<?php echo $static_defaults[0]->temp_user_psswrd; ?>">
-											</div>
-										</div>						
-									</div>
+				<?php 
+					$project_admin = $this->user_model->fetch_user_by_role(2);
+					$project_admin_list = $project_admin->result();
 
-									<div class="col-md-4 col-sm-6 col-xs-12 clearfix m-top-10 m-bottom-10">
-										<button type="submit" class="btn btn-success pull-right m-bottom-10 m-right-5"><i class="fa fa-floppy-o"></i> Save User Settings</button>				
-									</div>
+					$project_manager = $this->user_model->fetch_user_by_role(3);
+					$project_manager_list = $project_manager->result();
+
+					foreach ($project_admin_list as $pa ) {
+
+						$assignment =   $this->admin->list_pa_assignment($pa->user_id);
+
+						$pa_assignment = explode(',',$assignment['project_manager_ids']   );
+						$pa_primary =  $assignment['project_manager_primary_id'];
+
+						echo '<div class="col-md-3 col-sm-3 col-xs-12 clearfix m-top-10 m-bottom-10">
+						<p><strong>'.$pa->user_first_name.'  '.$pa->user_last_name.'</strong></p>';
+						foreach ($project_manager_list as $pm ) { 
 
 
-								</div>
-							</div>
-							
-					</form>		
-					
-					
-									
+							$fetch_user = $this->user_model->fetch_user($pm->user_id);
+							$pm_data = array_shift( $fetch_user->result() ); 
 
-								</div>
+							echo '<p class="m-bottom-15">';
 
+								if($pa_primary == $pm->user_id){
+									echo '<input type="radio" name="pm_primary'.$pa->user_id.'" value="'.$pm->user_id.'" id="prime'.$pa->user_id.''.$pm->user_id.'" checked="checked">';
+								}else{
+									echo '<input type="radio" name="pm_primary'.$pa->user_id.'" value="'.$pm->user_id.'" id="prime'.$pa->user_id.''.$pm->user_id.'">';
+								}
+
+								echo '<label class="m-right-15 m-left-5"  for="prime'.$pa->user_id.''.$pm->user_id.'">Prime</label>';
+								 
+								if( in_array($pm->user_id, $pa_assignment) ){
+									echo '<input  type="checkbox" id="'.$pa->user_id.''.$pm->user_id.'" name="pm_set_'.$pa->user_id.'[]" value="'.$pm->user_id.'" checked="checked">';
+								}else{
+									echo '<input  type="checkbox" id="'.$pa->user_id.''.$pm->user_id.'" name="pm_set_'.$pa->user_id.'[]" value="'.$pm->user_id.'">';
+								}
+
+								echo '<label  class="m-left-5" for="'.$pa->user_id.''.$pm->user_id.'">'.$pm->user_first_name.'  '.$pm->user_last_name.' <strong><em><sub>'.$pm_data->company_name.'</sub></em></strong> </label>';
+
+							echo '</p>';
+						}	
+						echo '</div>';
+					}
+				?>
+				<div class="col-md-3 col-sm-3 col-xs-12 clearfix m-top-10 m-bottom-10 pad-10">
+					<button type="submit" class="btn btn-success pull-right m-bottom-10 m-right-5"><i class="fa fa-floppy-o"></i> Save Assignment</button>				
+				</div>
+			</div>
+		</div>
+	</form>
+
+
+</div>
 
 
 

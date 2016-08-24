@@ -508,6 +508,19 @@
 								</div>
 							</div>
 
+							<?php $labour_schedule_set = (isset($_POST['labour_schedule']) ? $_POST['labour_schedule'] : 0);  ?>
+
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Labour Schedule</label>											 
+								<div class="col-sm-9">										
+									<div class="labour_schedule">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($labour_schedule_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($labour_schedule_set == 2 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="labour_schedule" name="labour_schedule" value="<?php echo $labour_schedule_set; ?>">
+								</div>
+							</div>
+
 							<div class="clearfix"></div><br />
 						</div>
 						<p><br /><br /></p>

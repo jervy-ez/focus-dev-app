@@ -74,6 +74,54 @@ class Dashboard_m extends CI_Model{
 		return $query;
 	}
 
+	public function get_focus_comp_forecast($year){
+		$query = $this->db->query("SELECT `revenue_forecast`.`total`,`revenue_forecast_individual`.* 
+			FROM `revenue_forecast`
+			LEFT JOIN `revenue_forecast_individual` ON `revenue_forecast_individual`.`revenue_forecast_id` = `revenue_forecast`.`revenue_forecast_id`
+			WHERE `revenue_forecast`.`is_active` = '1'
+			AND `revenue_forecast`.`is_primary` = '1' AND  `revenue_forecast_individual`.`pm_id` = '0'
+			AND `revenue_forecast`.`year` = '$year' AND  `revenue_forecast_individual`.`year` = '$year'
+			AND `revenue_forecast_individual`.`forecast_percent` > '0' ");
+		return $query;
+	}
+
+	public function get_pm_forecast($year){
+		$query = $this->db->query("SELECT `revenue_forecast`.*,`revenue_forecast_individual`.* , CONCAT_WS(' ', `users`.`user_first_name`, `users`.`user_last_name`) AS `user_pm_name`
+			FROM `revenue_forecast`
+			LEFT JOIN `revenue_forecast_individual` ON `revenue_forecast_individual`.`revenue_forecast_id` = `revenue_forecast`.`revenue_forecast_id`
+			LEFT JOIN `users` ON `users`.`user_id` = `revenue_forecast_individual`.`pm_id`
+			WHERE `revenue_forecast`.`is_active` = '1'
+			AND `revenue_forecast`.`is_primary` = '1' AND  `revenue_forecast_individual`.`pm_id` > '0'
+			AND `revenue_forecast`.`year` = '$year' AND  `revenue_forecast_individual`.`year` = '$year'
+			AND `revenue_forecast_individual`.`forecast_percent` > '0' ");
+		return $query;
+	}
+
+	public function fetch_pm_sales_old_year($year){
+		$query = $this->db->query(" SELECT `revenue_focus`.* , CONCAT_WS(' ', `users`.`user_first_name`, `users`.`user_last_name`) AS `user_pm_name`,
+SUM(`revenue_focus`.`rev_jan`) AS `rev_jn`,SUM(`revenue_focus`.`rev_feb`) AS `rev_fb`,
+SUM(`revenue_focus`.`rev_mar`) AS `rev_mr`,SUM(`revenue_focus`.`rev_apr`) AS `rev_ar`,
+SUM(`revenue_focus`.`rev_may`) AS `rev_my`,SUM(`revenue_focus`.`rev_jun`) AS `rev_jn`,
+SUM(`revenue_focus`.`rev_jul`) AS `rev_jl`,SUM(`revenue_focus`.`rev_aug`) AS `rev_ag`,
+SUM(`revenue_focus`.`rev_sep`) AS `rev_sp`,SUM(`revenue_focus`.`rev_oct`) AS `rev_ot`,
+SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `rev_dc`
+
+			FROM `revenue_focus` 
+			LEFT JOIN `users` ON `users`.`user_id` = `revenue_focus`.`proj_mngr_id`
+			WHERE `revenue_focus`.`year` = '$year'
+            GROUP BY  `revenue_focus`.`proj_mngr_id`
+            ORDER BY `revenue_focus`.`proj_mngr_id` ASC  ");
+		return $query;
+	}
+
+	public function fetch_pm_oustanding_year($year){
+		$query = $this->db->query(" SELECT `outstanding_focus`.* , CONCAT_WS(' ', `users`.`user_first_name`, `users`.`user_last_name`) AS `user_pm_name`
+			FROM `outstanding_focus` 
+			LEFT JOIN `users` ON `users`.`user_id` = `outstanding_focus`.`proj_mngr_id`
+			WHERE `outstanding_focus`.`year` = '$year' ORDER BY `outstanding_focus`.`proj_mngr_id` ASC   ");
+		return $query;
+	}
+
 	public function fetch_forecast($year,$is_primary = '',$forecast_id = ''){
 
 		if($is_primary != ''){
@@ -549,6 +597,18 @@ array(4) {
 		return $query;
 	}
 
+	public function fetch_project_pm_nomore(){
+		$query = $this->db->query("SELECT `users`.`user_id`, `users`.`user_focus_company_id`,  `project`.`focus_company_id`  FROM `users` 
+			LEFT JOIN `project` ON `project`.`project_manager_id`  =  `users`.`user_id` 
+			WHERE `users`.`user_role_id` != '3' AND `users`.`is_active` = '1' AND `project`.`is_active` = '1'
+			GROUP BY `project`.`project_manager_id` ");
+		return $query;
+	}
+
+	public function fetch_pa_assignment($pa_id){
+		$query = $this->db->query("SELECT * FROM `project_administrator_manager` WHERE `project_administrator_manager`.`project_administrator_id` = '$pa_id' ");
+		return $query;
+	}
 
 	public function dash_sales($date_a,$date_b,$focus_company_id,$is_invoiced=''){
 
@@ -557,13 +617,13 @@ array(4) {
 		if($is_invoiced != ''){
 
 		
-			$query = $this->db->query("SELECT `invoice`.`project_id`, `invoice`.`progress_percent`,`project`.`project_total`,`project_cost_total`.`variation_total`, `invoice`.`label`,`project`.`focus_company_id`,`project`.`project_manager_id`
+			$query = $this->db->query("SELECT `invoice`.`project_id`, `invoice`.`progress_percent`,`project`.`project_total`,`project_cost_total`.`variation_total`, `invoice`.`label`,`project`.`focus_company_id`,`project`.`project_manager_id`,`project`.`project_admin_id`, `project`.`job_category`
 				FROM `invoice`
 				LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
 				LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
 				WHERE `invoice`.`set_invoice_date` <> ''
 				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
-				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
 				AND `invoice`.`is_invoiced` = '$is_invoiced'
 				#display invoiced only
 				AND `project`.`is_active` = '1' 
@@ -571,14 +631,14 @@ array(4) {
 				AND `project`.`focus_company_id` = '$focus_company_id' ");
 		}else{
 
-			$query = $this->db->query("SELECT `invoice`.`project_id`, `invoice`.`progress_percent`,`project`.`project_total`,`project_cost_total`.`variation_total`, `invoice`.`label`,`project`.`focus_company_id`,`project`.`project_manager_id`
+			$query = $this->db->query("SELECT `invoice`.`project_id`, `invoice`.`progress_percent`,`project`.`project_total`,`project_cost_total`.`variation_total`, `invoice`.`label`,`project`.`focus_company_id`,`project`.`project_manager_id`,`project`.`project_admin_id`, `project`.`job_category`
 				FROM `invoice`
 				LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
 				LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
 				WHERE `invoice`.`is_invoiced` = '0'
 
 				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
 				
 				AND `project`.`is_active` = '1' 
 				AND `project`.`job_date` <> ''
@@ -589,7 +649,7 @@ array(4) {
 	}
 
 	public function dash_unvoiced_per_date($date_a,$date_b,$comp_id){
-		$query = $this->db->query("SELECT `invoice`.`project_id`, `invoice`.`invoice_date_req`, `invoice`.`set_invoice_date`, `project`.`project_total`,`project_cost_total`.`variation_total`, `invoice`.`progress_percent`, `invoice`.`label` ,`project`.`focus_company_id`,`invoice`.`invoice_date_req`
+		$query = $this->db->query("SELECT `invoice`.`project_id`, `invoice`.`invoice_date_req`, `invoice`.`set_invoice_date`, `project`.`project_total`,`project_cost_total`.`variation_total`, `invoice`.`progress_percent`, `invoice`.`label` ,`project`.`focus_company_id`,`invoice`.`invoice_date_req`,`project`.`project_manager_id`, `project`.`job_category`
 			FROM `invoice`
 			LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
 			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
@@ -597,7 +657,7 @@ array(4) {
  
 
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
 
 			AND `project`.`is_active` = '1' AND  `invoice`.`is_invoiced` = '0' AND `project`.`is_paid` = '0' 
 			AND `project`.`focus_company_id` = '$comp_id' ");
@@ -605,10 +665,7 @@ array(4) {
 	}
 
 	public function dash_oustanding_payments($date_a,$date_b,$comp_id){
-		$query = $this->db->query("SELECT `payment`.`payment_id`, `project`.`focus_company_id`,`payment`.`amount_exgst`,`payment`.`payment_date`
-,`invoice`.`invoice_date_req`,`invoice`.`project_id`,`project_cost_total`.`variation_total` , `project`.`project_total`,`invoice`.`progress_percent` ,`invoice`.`label`
-
-
+		$query = $this->db->query("SELECT `payment`.`payment_id`, `project`.`focus_company_id`,`payment`.`amount_exgst`,`payment`.`payment_date`,`invoice`.`invoice_date_req`,`invoice`.`project_id`,`project_cost_total`.`variation_total` , `project`.`project_total`,`invoice`.`progress_percent` ,`invoice`.`label`,`project`.`project_manager_id`
 
 			FROM `invoice`
             
@@ -616,12 +673,10 @@ array(4) {
 			LEFT JOIN `payment` ON `payment`.`invoice_id` = `invoice`.`invoice_id`
             LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
             
-            
 			WHERE `project`.`job_date` <> ''
 
-
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
 
 			AND `project`.`is_active` = '1' AND  `invoice`.`is_paid` = '0' AND  `invoice`.`is_invoiced` = '1' AND `project`.`is_paid` = '0' 
             
@@ -634,7 +689,54 @@ array(4) {
 		return $query;
 	}
 
-	public function dash_total_pm_sales($proj_mngr_id,$year,$is_out='',$date_a='',$date_b=''){
+
+
+	public function pm_per_comp_prj($date_a,$date_b,$comp_id){
+
+		$query = $this->db->query("SELECT `project`.`project_manager_id` , `project`.`focus_company_id` FROM `project`
+			LEFT JOIN `users` ON  `users`.`user_id` =  `project`.`project_manager_id` 
+			WHERE `project`.`is_active` = '1'
+			AND `project`.`focus_company_id` = '$comp_id' AND  `users`.`user_role_id` = '3' AND  `project`.`job_date` <> ''
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <  UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+			GROUP BY `project`.`project_manager_id`  ");
+		return $query; 
+		
+	}
+
+	public function dash_total_pm_sales($proj_mngr_id,$year,$is_out='',$date_a='',$date_b='', $comp_id = ''){
+
+
+		if($comp_id != ''){
+
+			$query = $this->db->query("
+
+
+SELECT `invoice`.`project_id`, `invoice`.`progress_percent`,`project`.`project_total`,`project_cost_total`.`variation_total`, `invoice`.`label`,`project`.`focus_company_id`,`project`.`project_manager_id` 
+,`invoice`.`invoiced_amount` AS `invoiced_amount`
+FROM `invoice` LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id` LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id` 
+WHERE `invoice`.`set_invoice_date` <> '' 
+AND `invoice`.`is_invoiced` = '1' AND `project`.`is_active` = '1' 
+AND `project`.`job_date` <> '' AND `project`.`project_manager_id` = '$proj_mngr_id' AND `project`.`focus_company_id` = '$comp_id'
+
+
+
+
+AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+
+
+
+
+
+
+
+			");
+
+		}else{
+
+
+
 		if($is_out!=''){
 
 
@@ -679,7 +781,8 @@ AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= U
 
 
 			");
-		}		
+		}	
+		}	
 		return $query;
 	} 
 
@@ -698,6 +801,15 @@ AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= U
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
 
 			ORDER BY `project`.`project_id` ASC ");
+		return $query;
+	}
+
+	public function quotes_unacepted($date_a,$date_b){
+		$query = $this->db->query("SELECT * FROM `project`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` =  `project`.`project_id`
+			WHERE UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >=  UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+			AND `project`.`job_date` = '' AND `project`.`is_active` = '1'");
 		return $query;
 	}
 
@@ -762,6 +874,15 @@ ORDER BY `project`.`focus_company_id` ASC
 */
 
 
+	public function get_focus_companies_mntnc(){
+		$query = $this->db->query(" SELECT `project`.`focus_company_id`, `company_details`.`company_name`,`project`.`project_manager_id`   FROM `project`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`focus_company_id`
+			WHERE `project`.`job_category` = 'Maintenance'
+			AND `project`.`is_active` = '1'
+			GROUP BY `project`.`focus_company_id` ");
+		return $query;
+	}
+
 	public function get_finished_projects($date_a, $date_b, $focus_id){
 		$query = $this->db->query("SELECT * FROM `project`
 			WHERE `project`.`is_active` = '1'
@@ -772,11 +893,11 @@ ORDER BY `project`.`focus_company_id` ASC
 	}
 
 	public function get_wip_invoiced_projects($date_a, $date_b, $focus_id){
-		$query = $this->db->query("SELECT * FROM `project` WHERE `project`.`is_active` = '1' 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+		$query = $this->db->query("SELECT * FROM `project` 
+			WHERE `project`.`is_active` = '1' 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
 			AND `project`.`focus_company_id` = '$focus_id' AND `project`.`job_date` <> '' ");
-
 		return $query;
 	}
 
@@ -785,13 +906,13 @@ ORDER BY `project`.`focus_company_id` ASC
 		return $query;
 	}
 
-	public function get_projects_by_work_type($date_a, $date_b, $job_category){
+	public function get_projects_by_work_type($date_a, $date_b){
 		$query = $this->db->query("SELECT  * FROM `project`
 			LEFT JOIN  `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
 			WHERE `project`.`is_active` = '1' 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
-			AND `project`.`job_date` <> '' AND `project`.`job_category` = '$job_category' ");
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+			AND `project`.`job_date` <> '' ");
 		return $query;
 	}
 
@@ -809,37 +930,265 @@ ORDER BY `project`.`focus_company_id` ASC
 	}
 
 
-	public function get_map_projects($date_a, $date_b){
-		$query = $this->db->query("SELECT `project`.`address_id`, `address_general`.`x_coordinates`,`address_general`.`y_coordinates` FROM `project`
-			LEFT JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
-			LEFT JOIN `address_general` ON `address_general`.`general_address_id` = `address_detail`.`general_address_id`
-			WHERE `project`.`job_date` <> '' AND `project`.is_active = '1' 
-		 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+	public function get_map_projects($date_a, $date_b,$pm_id=''){
+
+		if($pm_id != ''){
+			$query = $this->db->query("SELECT `project`.`address_id`, `address_general`.`x_coordinates`,`address_general`.`y_coordinates`, `project`.`focus_company_id` ,`project`.`project_manager_id` ,`project`.`project_id` FROM `project`
+				LEFT JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
+				LEFT JOIN `address_general` ON `address_general`.`general_address_id` = `address_detail`.`general_address_id`
+				WHERE `project`.`job_date` <> '' AND `project`.is_active = '1' AND `project`.project_manager_id = '$pm_id' 
+				
+				AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
 		#	AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
- 
-			ORDER BY `project`.`project_id` DESC");
+				
+				ORDER BY `project`.`project_id` DESC");
+		}else{
+
+
+			$query = $this->db->query("SELECT `project`.`address_id`, `address_general`.`x_coordinates`,`address_general`.`y_coordinates`, `project`.`focus_company_id` ,`project`.`project_manager_id` ,`project`.`project_id` FROM `project`
+				LEFT JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
+				LEFT JOIN `address_general` ON `address_general`.`general_address_id` = `address_detail`.`general_address_id`
+				WHERE `project`.`job_date` <> '' AND `project`.is_active = '1' 
+
+				AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+		#	AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+
+				ORDER BY `project`.`project_id` DESC");
+		}
+
+
+		return $query;
+	}
+
+	public function get_unaccepted_projects($date_a, $date_b){
+		$query = $this->db->query("
+			SELECT * FROM `project`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` =  `project`.`project_id`
+			WHERE UNIX_TIMESTAMP( STR_TO_DATE(`project`.`unaccepted_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`unaccepted_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+			AND `project`.`is_active` = '1' AND `project`.`job_date` = '' AND  `project`.`is_paid` = '0' ");
 		return $query;
 	}
 
 
+	public function get_personal_wip($date_a,$date_b,$id,$comp){
+		$query = $this->db->query(" SELECT * FROM `invoice`
+			LEFT JOIN `project` ON `project`.`project_id` =  `invoice`.`project_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
 
+			WHERE `invoice`.`is_invoiced` = '0'
+			AND `invoice`.`is_paid` = '0' AND `project`.`is_active` = '1'
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+			AND `project`.`job_date` <> '' AND  `project`.`project_manager_id` = '$id' AND  `project`.`focus_company_id` = '$comp'  GROUP BY `invoice`.`invoice_id` ");
 
-	public function get_top_ten_clients($date_a,$date_b){
-		$query = $this->db->query("SELECT *,`company_details`.`company_name`,`project_cost_total`.`variation_total`  
-			,SUM(`project`.`project_total`) AS `total_project`, SUM(`project_cost_total`.`variation_total`) AS `vr_total`
+		return $query;
+	}
+
+	public function get_maintenance_wip($date_a,$date_b){
+		$query = $this->db->query("SELECT `project`.`focus_company_id` , `project`.`project_manager_id`,`project`.`project_id` 
 			FROM `project`
-			LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
-			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
-			WHERE `project`.`is_active` = '1' AND  `project`.`job_date` <> '' 
-
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
-
-			GROUP BY `project`.`client_id` ORDER BY `total_project` DESC LIMIT 0,20");
+			WHERE `project`.`is_paid` = '0' 
+			AND `project`.`job_date` <> ''
+			AND `project`.`project_manager_id` = '29' 
+			AND `project`.`job_category` = 'Maintenance'  AND `project`.`is_active` = '1'
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) ");
 		return $query;
 	}
 
+
+	public function get_wip_permonth($date_a,$date_b,$id='',$type='' ){
+
+		if($id != ''){
+
+			if($type != ''){
+
+				$query = $this->db->query(" SELECT * FROM `invoice`
+					LEFT JOIN `project` ON `project`.`project_id` =  `invoice`.`project_id`
+					LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+
+					WHERE `invoice`.`is_invoiced` = '0'
+					AND `invoice`.`is_paid` = '0' AND `project`.`is_active` = '1'
+					AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+					AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+					AND `project`.`job_date` <> '' AND  `project`.`project_manager_id` = '$id'  GROUP BY `invoice`.`invoice_id` ");
+
+			}else{
+
+				$query = $this->db->query(" SELECT * FROM `invoice`
+					LEFT JOIN `project` ON `project`.`project_id` =  `invoice`.`project_id`
+					LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+
+					WHERE `invoice`.`is_invoiced` = '0'
+					AND `invoice`.`is_paid` = '0' AND `project`.`is_active` = '1'
+					AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+					AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+					AND `project`.`job_date` <> '' AND  `project`.`focus_company_id` = '$id'   GROUP BY `invoice`.`invoice_id` ");
+			}
+
+		}else{
+
+			$query = $this->db->query(" SELECT * FROM `invoice`
+				LEFT JOIN `project` ON `project`.`project_id` =  `invoice`.`project_id`
+				LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+
+				WHERE `invoice`.`is_invoiced` = '0'
+				AND `invoice`.`is_paid` = '0' AND `project`.`is_active` = '1'
+				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+				AND `project`.`job_date` <> ''   GROUP BY `invoice`.`invoice_id` ");
+
+		}
+
+		return $query;
+
+
+	}
+
+
+
+
+	public function client_vr_value($date_a,$date_b,$comp_id,$extra_q=''){
+
+		if($extra_q != ''){
+
+	$query = $this->db->query("SELECT  `project`.`client_id`,`company_details`.`company_name` , SUM(   `project`.`project_total` *(`invoice`.`progress_percent`/100) ) AS `total_invoiced`,SUM(`project_cost_total`.`variation_total`) AS `total_variation` 
+			FROM `invoice`
+			LEFT JOIN `project` ON `project`.`project_id`=  `invoice`.`project_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+			LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+
+			WHERE `invoice`.`is_invoiced` = '1' AND `invoice`.`set_invoice_date` <> ''
+
+			AND `project`.`client_id` = '$comp_id'
+			AND `invoice`.`label`  = 'VR' AND `project`.`job_date` <> '' AND `project`.`is_active` = '1' 
+			$extra_q
+
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )");
+
+
+		}else{
+
+		$query = $this->db->query("SELECT  `project`.`client_id`,`company_details`.`company_name` , SUM(   `project`.`project_total` *(`invoice`.`progress_percent`/100) ) AS `total_invoiced`,SUM(`project_cost_total`.`variation_total`) AS `total_variation` 
+			FROM `invoice`
+			LEFT JOIN `project` ON `project`.`project_id`=  `invoice`.`project_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+			LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+
+			WHERE `invoice`.`is_invoiced` = '1' AND `invoice`.`set_invoice_date` <> ''
+
+			AND `project`.`client_id` = '$comp_id'
+			AND `invoice`.`label`  = 'VR' AND `project`.`job_date` <> '' AND `project`.`is_active` = '1' 
+
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )");
+		}
+
+
+
+		return $query;
+	}
+
+
+
+
+
+	public function get_top_ten_clients($date_a,$date_b,$comp_id='',$f_comp_id='',$extra_q=''){
+
+if($f_comp_id != ''){
+
+
+$query = $this->db->query("SELECT  `project`.`client_id`,`company_details`.`company_name` , SUM(   `project`.`project_total` *(`invoice`.`progress_percent`/100) ) AS `grand_total`, SUM(`project_cost_total`.`variation_total`) AS `total_variation` 
+			FROM `invoice`
+			LEFT JOIN `project` ON `project`.`project_id`=  `invoice`.`project_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+			LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+
+			WHERE `invoice`.`is_invoiced` = '1' AND `invoice`.`set_invoice_date` <> ''
+
+			AND `project`.`client_id` = '$comp_id'
+			AND `invoice`.`label`  != 'VR' AND `project`.`job_date` <> '' AND `project`.`is_active` = '1'  AND `project`.`focus_company_id` = '$f_comp_id' 
+ 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )");
+
+
+}else{
+
+
+if($comp_id != ''){
+	$query = $this->db->query("SELECT  `project`.`client_id`,`company_details`.`company_name` , SUM(   `project`.`project_total` *(`invoice`.`progress_percent`/100) ) AS `grand_total`, SUM(`project_cost_total`.`variation_total`) AS `total_variation` 
+			FROM `invoice`
+			LEFT JOIN `project` ON `project`.`project_id`=  `invoice`.`project_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+			LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+
+			WHERE `invoice`.`is_invoiced` = '1' AND `invoice`.`set_invoice_date` <> ''
+
+			AND `project`.`client_id` = '$comp_id'
+			AND `invoice`.`label`  != 'VR' AND `project`.`job_date` <> '' AND `project`.`is_active` = '1' 
+
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )");
+}else{
+
+		$query = $this->db->query("
+
+
+
+			SELECT  `project`.`client_id`,`company_details`.`company_name`, `company_details`.`company_id` , SUM(   `project`.`project_total` *(`invoice`.`progress_percent`/100) ) AS `grand_total`,SUM(`project_cost_total`.`variation_total`) AS `total_variation`  
+FROM `invoice`
+LEFT JOIN `project` ON `project`.`project_id`=  `invoice`.`project_id`
+LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+
+WHERE `invoice`.`is_invoiced` = '1' AND `invoice`.`set_invoice_date` <> ''
+ 
+AND `invoice`.`label` != 'VR' AND `project`.`job_date` <> '' AND `project`.`is_active` = '1' 
+
+AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+ $extra_q
+             
+
+GROUP BY `project`.`client_id`
+ORDER BY `grand_total` DESC
+LIMIT 0,20
+ 
+
+
+/*
+
+SELECT `company_details`.`company_id`,`company_details`.`company_name` 
+
+			,SUM(`invoice`.`invoiced_amount`) AS `total_invoiced`, SUM(`project_cost_total`.`variation_total`) AS `vr_total` ,
+			SUM(`invoice`.`invoiced_amount`) +   SUM(`project_cost_total`.`variation_total`) AS `grand_total`
+
+			FROM `project`
+			LEFT JOIN  `invoice` ON `invoice`.`project_id` = `project`.`project_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+
+			WHERE `project`.`is_active` = '1'
+			AND `project`.`job_date` <> ''
+			AND  `invoice`.`set_invoice_date` <> ''
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+
+			GROUP BY `project`.`client_id`
+			ORDER BY `grand_total` DESC
+			LIMIT 0,20
+*/
+
+			");
+}
+
+}
+
+		return $query;
+	}
 
 	public function get_top_ten_clients_overall($id){
 		$query = $this->db->query("SELECT `company_details`.`company_name`,SUM(`project`.`project_total`) AS `total_project`, SUM(`project_cost_total`.`variation_total`) AS `vr_total` FROM `project`
@@ -850,31 +1199,51 @@ ORDER BY `project`.`focus_company_id` ASC
 	}
 
 
-	public function get_company_sales($type,$date_a,$date_b){ #$type 3 supplier or 2 contractor
+	public function get_company_sales($type,$date_a,$date_b,$cmp_id='',$comp_q=''){ #$type 3 supplier or 2 contractor
 
-		if($type == 1){
-			$query = $this->db->query("SELECT `company_details`.`company_id`, `works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`company_details`.`company_type_id`, `company_details`.`company_name` as `contractor_name`,   `works`.`price`,  `works`.`contractor_type`, `works`.`work_cpo_date`
-            ,SUM(`works`.`price`) AS `total_price` FROM `works`
-			LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id`
-			LEFT JOIN `company_details`  ON `company_details`.`company_id` = `works`.`company_client_id`
-			WHERE  `works`.`is_active` = '1' AND TRIM(`works`.`work_cpo_date`) <> '' AND TRIM(`project`.`job_date`) <> ''  AND `project`.`is_active` = '1'
-			AND `company_details`.`active` = '1' AND `company_details`.`company_type_id` = '2' #3 supplier or 2 contractor
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
-			GROUP BY  `contractor_name` ORDER BY `total_price` DESC LIMIT 0,20 ");
+		if($cmp_id!=''){
+
+
+
+$query = $this->db->query("SELECT `company_details`.`company_id`, `company_details`.`company_name` , SUM(`works`.`price`) AS `total_price` ,  `project`.`project_manager_id` 
+FROM `works`
+LEFT JOIN `company_details`  ON `company_details`.`company_id` = `works`.`company_client_id`
+LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id` 
+WHERE `works`.`reconciled_date` IS NOT NULL 
+AND  `works`.`is_active` = '1'
+AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`reconciled_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`reconciled_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+
+AND `works`.`company_client_id` = '$cmp_id'
+$comp_q
+GROUP BY `works`.`company_client_id`
+ORDER BY `total_price` DESC
+LIMIT 0,20  ");
+		 
+
 		}else{
 
-			$query = $this->db->query("SELECT `company_details`.`company_id`, `works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`company_details`.`company_type_id`, `company_details`.`company_name` as `contractor_name`,   `works`.`price`,  `works`.`contractor_type`, `works`.`work_cpo_date`
-            ,SUM(`works`.`price`) AS `total_price` FROM `works`
-			LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id`
-			LEFT JOIN `company_details`  ON `company_details`.`company_id` = `works`.`company_client_id`
-			WHERE  `works`.`is_active` = '1' AND TRIM(`works`.`work_cpo_date`) <> '' AND TRIM(`project`.`job_date`) <> ''  AND `project`.`is_active` = '1'
-			AND `company_details`.`active` = '1' AND `company_details`.`company_type_id` = '3' #3 supplier or 2 contractor
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
-			GROUP BY  `contractor_name` ORDER BY `total_price` DESC LIMIT 0,20");
+
+$query = $this->db->query("SELECT `company_details`.`company_id`, `company_details`.`company_name` , SUM(`works`.`price`) AS `total_price`
+FROM `works`
+LEFT JOIN `company_details`  ON `company_details`.`company_id` = `works`.`company_client_id`
+LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id` 
+WHERE `works`.`reconciled_date` IS NOT NULL 
+AND  `works`.`is_active` = '1'
+AND `company_details`.`company_type_id` = '$type' #3 supplier or 2 contractor
+AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`reconciled_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+AND UNIX_TIMESTAMP( STR_TO_DATE(`works`.`reconciled_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+$comp_q
+GROUP BY `works`.`company_client_id`
+ORDER BY `total_price` DESC
+LIMIT 0,20  ");
+		 
+
 
 		}
+
+
+ 
 		return $query;
 	}
 
@@ -891,84 +1260,185 @@ ORDER BY `project`.`focus_company_id` ASC
 	}
 
 
+	public function get_maitenance_dates_pm($date_a,$date_b,$id='',$type=''){
+
+		if($id != ''){
+
+			if($type != ''){
+
+
+				$query = $this->db->query("SELECT `set_inv_data`.`set_invoice_date`,`project`.`date_site_finish`,`project`.`project_id`,`project`.`project_manager_id`,`users`.`user_first_name` ,`project`.`focus_company_id`
+					,DATEDIFF(DATE_FORMAT(STR_TO_DATE(`set_inv_data`.`set_invoice_date`, '%d/%m/%Y'), '%Y-%m-%d'), DATE_FORMAT(STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y'), '%Y-%m-%d')) AS `days_diff`
+					FROM (
+						SELECT *,UNIX_TIMESTAMP( STR_TO_DATE(`set_invoice_date`, '%d/%m/%Y') ) AS `set_inv_date`  FROM `invoice` WHERE `set_invoice_date` <> '' AND `label` <> '' ORDER BY `set_inv_date` DESC
+					) `set_inv_data`
+
+					LEFT JOIN `project` ON `project`.`project_id` =  `set_inv_data`.`project_id`
+					LEFT JOIN  `users` ON `users`.`user_id` =  `project`.`project_manager_id` 
+					WHERE UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+					AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+					AND `project`.`project_manager_id` = '$id'
+					AND `project`.`focus_company_id` = '$type' 
+					AND `project`.`job_date` <> ''
+					AND `project`.`is_active` = '1' 
+					GROUP BY `set_inv_data`.`project_id`
+				");
+
+
+
+/*
+				$query = $this->db->query("SELECT `project_data`.`project_id`,`project_data`.`project_date`,`project_data`.`date_site_finish`,`project_data`.`project_name`,`project_data`.`date_site_commencement`,`project_data`.`date_site_finish`,`project_data`.`focus_company_id`,`project_data`.`job_category`,`project_data`.`job_date`,`invoice_table`.`set_invoice_date`,`company_details`.`company_name`, `project_data`.`project_manager_id`
+					DATEDIFF(DATE_FORMAT(STR_TO_DATE(`invoice_table`.`set_invoice_date`, '%d/%m/%Y'), '%Y-%m-%d'), DATE_FORMAT(STR_TO_DATE(`project_data`.`date_site_finish`, '%d/%m/%Y'), '%Y-%m-%d')) AS `total_days`
+					FROM `project` AS `project_data`
+					LEFT JOIN (select `project_id`, `set_invoice_date` FROM `invoice` WHERE `label` <> '' AND `label` <> 'VR' ) AS `invoice_table` ON `invoice_table`.`project_id` = `project_data`.`project_id`
+					LEFT JOIN `company_details` ON `company_details`.`company_id` =  `project_data`.`client_id`
+					WHERE UNIX_TIMESTAMP( STR_TO_DATE(`project_data`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+					AND UNIX_TIMESTAMP( STR_TO_DATE(`project_data`.`date_site_finish`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+					AND `project_data`.`is_active` = 1 
+					AND `project_data`.`job_date` <> ''
+					AND `project_data`.`project_manager_id` = '$id' 
+					AND `project_data`.`focus_company_id` = '$type' 
+					AND `invoice_table`.`set_invoice_date` <> ''
+					ORDER BY `project_data`.`project_id` ");
+*/
+
+
+			}else{
+
+				$query = $this->db->query("SELECT `set_inv_data`.`set_invoice_date`,`project`.`date_site_finish`,`project`.`project_id`,`project`.`project_manager_id`,`users`.`user_first_name` ,`project`.`focus_company_id`
+					,DATEDIFF(DATE_FORMAT(STR_TO_DATE(`set_inv_data`.`set_invoice_date`, '%d/%m/%Y'), '%Y-%m-%d'), DATE_FORMAT(STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y'), '%Y-%m-%d')) AS `days_diff`
+					FROM (
+						SELECT *,UNIX_TIMESTAMP( STR_TO_DATE(`set_invoice_date`, '%d/%m/%Y') ) AS `set_inv_date`  FROM `invoice` WHERE `set_invoice_date` <> '' AND `label` <> '' ORDER BY `set_inv_date` DESC
+					) `set_inv_data`
+
+					LEFT JOIN `project` ON `project`.`project_id` =  `set_inv_data`.`project_id`
+					LEFT JOIN  `users` ON `users`.`user_id` =  `project`.`project_manager_id` 
+					WHERE UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+					AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+					AND `project`.`focus_company_id` = '$id'
+					AND `project`.`job_date` <> ''
+					AND `project`.`is_active` = '1' 
+					GROUP BY `set_inv_data`.`project_id`
+				");
+			}
+
+		}else{
+
+
+				$query = $this->db->query("SELECT `set_inv_data`.`set_invoice_date`,`project`.`date_site_finish`,`project`.`project_id`,`project`.`project_manager_id`,`users`.`user_first_name` ,`project`.`focus_company_id`
+					,DATEDIFF(DATE_FORMAT(STR_TO_DATE(`set_inv_data`.`set_invoice_date`, '%d/%m/%Y'), '%Y-%m-%d'), DATE_FORMAT(STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y'), '%Y-%m-%d')) AS `days_diff`
+					FROM (
+						SELECT *,UNIX_TIMESTAMP( STR_TO_DATE(`set_invoice_date`, '%d/%m/%Y') ) AS `set_inv_date`  FROM `invoice` WHERE `set_invoice_date` <> '' AND `label` <> '' ORDER BY `set_inv_date` DESC
+					) `set_inv_data`
+
+					LEFT JOIN `project` ON `project`.`project_id` =  `set_inv_data`.`project_id`
+					LEFT JOIN  `users` ON `users`.`user_id` =  `project`.`project_manager_id` 
+					WHERE UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+					AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+					AND `project`.`job_date` <> ''
+					AND `project`.`is_active` = '1' 
+					GROUP BY `set_inv_data`.`project_id`
+				");
+
+		}
+
+
+		return $query;
+
+
+	}
+
+
 	public function get_maitenance_dates($date_a,$date_b){
-
-
 		$query = $this->db->query("
 
 
+select 
+ a.project_id,
+ a.project_date,
+ a.date_site_finish,
+ a.project_name,        a.date_site_commencement, a.date_site_finish, a.focus_company_id, `company_details`.`company_name`,
+ a.job_category,
+ a.job_date,
+ invoice_table.set_invoice_date,
+ datediff(date_format(str_to_date(invoice_table.set_invoice_date, '%d/%m/%Y'), '%Y-%m-%d'),date_format(str_to_date(a.job_date, '%d/%m/%Y'), '%Y-%m-%d')) as total_days 
+ from project as a
+  left join (select project_id, set_invoice_date from invoice where label <> '' and label <> 'VR' ) as invoice_table on invoice_table.project_id = a.project_id 
+
+			LEFT JOIN `company_details` ON `company_details`.`company_id` =  a.client_id  
+
+ where UNIX_TIMESTAMP( STR_TO_DATE(a.date_site_finish, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+and UNIX_TIMESTAMP( STR_TO_DATE(a.date_site_finish, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+
+   and a.is_active = 1 and a.job_date <> '' and a.job_category ='Maintenance' and invoice_table.set_invoice_date <> ''
+  order by a.project_id
+
+ ");
+		return $query;
+
+		/*
+			SELECT `project`.`date_site_commencement`, `project`.`date_site_finish`, `project`.`project_id`,
+			`company_details`.`company_name`, `project`.`project_name`,`project`.`job_date`,`invoice`.`set_invoice_date`,`project`.`focus_company_id`,
+			UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') ) AS `date_accepted`,
+			UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) AS `inv_set_date`,
+			(UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) - UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') )) AS `diff`,
+			DATE_FORMAT(STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y'), '%m/%d/%Y') AS `inv_date`,
+			DATE_FORMAT(STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y'), '%m/%d/%Y') AS `jb_date`
+
+			FROM `project`
+			LEFT JOIN `invoice` ON `invoice`.`project_id` = `project`.`project_id`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+			
+			WHERE  `project`.`job_category`  = 'Maintenance' 
+			AND `project`.`is_active` = '1'  AND `project`.`job_date` <> '' AND  `invoice`.`is_invoiced` = '1' 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
+
+			ORDER BY  `diff` DESC*/
+	}
 
 
+	public function fetch_project_estimators(){
+		$query = $this->db->query("SELECT `project`.`project_estiamator_id`  ,`users`.`user_first_name`
+			FROM `project`
+			LEFT JOIN `users` ON `users`.`user_id` = `project`.`project_estiamator_id`  
+			GROUP BY `project`.`project_estiamator_id`");
+		return $query;
+	}
 
-
- 
-
-SELECT
-
-`project`.`date_site_commencement`, `project`.`date_site_finish`, `project`.`project_id`, `company_details`.`company_name`, `project`.`project_name`,`project`.`job_date`,`invoice`.`set_invoice_date`
-
-,
-UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') ) AS `date_accepted`,
-UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) AS `inv_set_date`,
-(UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) - UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') )) AS `diff`,
- 
-
-DATE_FORMAT(STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y'), '%m/%d/%Y') AS `inv_date`,
-DATE_FORMAT(STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y'), '%m/%d/%Y') AS `jb_date`
-
-
-
-FROM `project`
-LEFT JOIN `invoice` ON `invoice`.`project_id` = `project`.`project_id`
-LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
-
-WHERE  `project`.`job_category`  = 'Maintenance' 
-AND `project`.`is_active` = '1'  AND `project`.`job_date` <> '' AND  `invoice`.`is_invoiced` = '1' 
-
-AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
-ORDER BY  `diff` DESC 
-
-
-
-
-
-
-
-
-/*
-			SELECT * ,
-
-UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') ) AS `date_accepted`,
-UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) AS `inv_set_date`,
-
-(UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) - UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') )) AS `diff`
-
-
-
-FROM `project`
-LEFT JOIN `invoice` ON `invoice`.`project_id` = `project`.`project_id`
-
-
-WHERE  `project`.`job_category`  = 'Maintenance' 
-AND `project`.`is_active` = '1'  AND `project`.`job_date` <> '' AND  `invoice`.`is_invoiced` = '1' 
-
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
-ORDER BY  `diff` DESC
-
-*/
-
-
-/*
-			SELECT `project`.`project_id`, `project`.`job_date`, `project`.`date_site_finish`, `invoice`.`set_invoice_date` 
-			FROM `project` LEFT JOIN `invoice` ON `invoice`.`project_id` = `project`.`project_id` WHERE `project`.`job_category` = 'Maintenance' AND `project`.`is_active` = '1' AND `project`.`job_date` <> '' 
-			AND  `invoice`.`set_invoice_date` <> ''      
-*/
-
-
-			 ");
+	public function get_wip_list_base_jobdate($date_a,$date_b){ // I will use this query to get the past WIP ONLY!
+		$query = $this->db->query("SELECT * FROM `project`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id` 
+			LEFT JOIN `users` ON `users`.`user_id` = `project`.`project_manager_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			WHERE `project`.`job_date` <> '' AND `project`.`is_active` = '1'
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )");
 		return $query;
 	}
 
 }
+
+
+/*
+
+select 
+ a.project_id,
+ a.project_date,
+ a.date_site_finish,
+ a.project_name,        a.date_site_commencement, a.date_site_finish, a.focus_company_id, `company_details`.`company_name`,
+ a.job_category,
+ a.job_date,
+ invoice_table.set_invoice_date,
+ datediff(date_format(str_to_date(invoice_table.set_invoice_date, '%d/%m/%Y'), '%Y-%m-%d'),date_format(str_to_date(a.job_date, '%d/%m/%Y'), '%Y-%m-%d')) as total_days 
+ from project as a
+  left join (select project_id, set_invoice_date from invoice where label != '' and label != 'VR' ) as invoice_table on invoice_table.project_id = a.project_id 
+LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = a.project_id 
+
+ where UNIX_TIMESTAMP( STR_TO_DATE(a.date_site_finish, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('01/01/2016', '%d/%m/%Y') ) 
+and UNIX_TIMESTAMP( STR_TO_DATE(a.date_site_finish, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('01/01/2017', '%d/%m/%Y') ) 
+
+   and a.is_active = 1 and a.job_date != "" and a.job_category = "Maintenance" and invoice_table.set_invoice_date != ""
+  order by a.project_id
+
+  */

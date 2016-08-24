@@ -2707,6 +2707,36 @@ $('#filter_wip_table').click(function(){
 
 
 
+// project search key press
+$('input#search_project_num').keypress(function (e) {
+  var key = e.which;
+  var search_project = $(this).val();
+  if(key == 13) {  // the enter key code
+    if(search_project != ''){
+      // alert( $(this).val() );
+      $('#loading_modal').modal('show');
+       $.ajax({
+        'url' : base_url+'search/search_project',
+        'type' : 'POST',
+        'data' : {'project_id' : search_project },
+        'success' : function(data){
+          if(data && data > 0){
+            setTimeout(function(){ window.location.assign(baseurl+"projects/view/"+data); }, 1000);
+          }else{
+            setTimeout(function(){
+              $('#loading_modal').modal('hide');
+              $('.search_result_projects').html(data);
+              $('#projects_search_result').modal('show');
+            }, 1000);
+          }
+        }
+      });
+    }
+  }
+});
+// project search key press
+
+
 $('.chosen_type').on("change", function(e) {
   $('select#activity').val(null).trigger("change");
 });

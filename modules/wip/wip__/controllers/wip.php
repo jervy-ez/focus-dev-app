@@ -18,7 +18,7 @@ class Wip extends MY_Controller{
 	
 
 	public function index(){
-		$this->users->_check_user_access('wip',1);
+
 		$data['proj_t'] = $this->wip_m->display_all_wip_projects();
 
 		$data['users'] = $this->user_model->fetch_user();

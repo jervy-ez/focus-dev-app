@@ -60,8 +60,6 @@
   <style type="text/css">.progress_invoice{display: none; visibility: hidden;}</style>
 <?php endif; ?>
 
-
-
 <?php
   if($variation_total != 0 && $has_invoice > 0 && $job_date != '' && $this->invoice->if_has_vr($project_id) == 0){
     $this->invoice->set_invoice_vr($project_id,$date_site_finish);
@@ -79,7 +77,6 @@
 
 
 ?>
- 
 <div class="row pad-10">
   <div class="col-xs-12">
 
@@ -480,40 +477,6 @@
   </div>
 </div>
 
-
-
-<!-- Modal -->
-<div class="modal fade" id="loading_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-sm">
-    <div class="modal-content">
-       
-      <div class="modal-body clearfix pad-10">
-
-        <center><h3>Loading Please Wait</h3></center>
-        <center><h2><i class="fa fa-circle-o-notch fa-spin fa-5x"></i></h2></center>
-        <p>&nbsp;</p>
-  
-  
-
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="loading_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-sm">
-    <div class="modal-content">
-      <div class="modal-body clearfix pad-10">
-      	<center><h3>Loading Please Wait</h3></center>
-      	<center><h2><i class="fa fa-circle-o-notch fa-spin fa-5x"></i></h2></center>
-      	<p>&nbsp;</p>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <!-- MODAL -->

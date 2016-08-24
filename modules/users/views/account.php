@@ -804,6 +804,19 @@
 									<input type="hidden" class="" id="project_schedule" name="project_schedule" value="<?php echo $project_schedule_set; ?>">
 								</div>
 							</div>
+
+							<?php $labour_schedule_set = $user_access_arr['14'];  ?>
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Labour Schedule</label>											 
+								<div class="col-sm-9">										
+									<div class="labour_schedule">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($labour_schedule_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($labour_schedule_set == 2 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="labour_schedule" name="labour_schedule" value="<?php echo $labour_schedule_set; ?>">
+								</div>
+							</div>
 							
 							<div class="clearfix"></div>
 							<input type="submit" class="btn btn-primary m-right-10 pull-right m-bottom-10" name="update_user_access" value="Update User Access">
@@ -838,11 +851,11 @@
  
 											<?php foreach ($focus as $key => $value): ?>
 
-												<?php if($value->company_id != 4): ?>
+												 
 
 													<option <?php echo (in_array($value->company_id, $comp) ? 'selected' : ''); ?> value="<?php echo $value->company_id; ?>"> <?php echo $value->company_name; ?></option>
 
-												<?php endif; ?>
+												 
 											<?php endforeach; ?>
 
 										</select>
