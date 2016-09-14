@@ -519,7 +519,7 @@
 											<div class="clearfix">												
 												<div class="pad-10">
 												<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id  || $this->session->userdata('is_admin') ==  1  ): ?>
-													<textarea class="form-control" id="comments" rows="8"  tabindex="16" name="comments"><?php echo $user->comments; ?></textarea>
+													<textarea class="form-control" id="comments" rows="12"  tabindex="16" name="comments"><?php echo $user->comments; ?></textarea>
 												<?php else: ?>
 													<?php if( trim($user->comments) != '' ): ?>
 														<i class="fa fa-quote-left"></i> <?php echo $user->comments; ?> <i class="fa fa-quote-right"></i>
@@ -805,6 +805,23 @@
 								</div>
 							</div>
 
+
+							<?php $shopping_center_set = $user_access_arr['13'];  ?>
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Shopping Centre</label>											 
+								<div class="col-sm-9">										
+									<div class="shopping_center">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($shopping_center_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($shopping_center_set == 2 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="shopping_center" name="shopping_center" value="<?php echo $shopping_center_set; ?>">
+								</div>
+							</div>
+
+
+
+
 							<?php $labour_schedule_set = $user_access_arr['14'];  ?>
 							
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
@@ -817,6 +834,36 @@
 									<input type="hidden" class="" id="labour_schedule" name="labour_schedule" value="<?php echo $labour_schedule_set; ?>">
 								</div>
 							</div>
+
+
+
+
+<!-- For Company Project -->
+
+
+
+
+							<?php $company_project_set = $user_access_arr['15'];  ?>
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Company Project</label>											 
+								<div class="col-sm-9">										
+									<div class="company_project">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Enabled" <?php echo ($company_project_set >= 1 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="company_project" name="company_project" value="<?php echo $company_project_set; ?>">
+								</div>
+							</div>
+
+
+
+
+<!-- For Company Project -->
+
+
+
+
+
 							
 							<div class="clearfix"></div>
 							<input type="submit" class="btn btn-primary m-right-10 pull-right m-bottom-10" name="update_user_access" value="Update User Access">

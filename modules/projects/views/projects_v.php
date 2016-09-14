@@ -174,12 +174,13 @@
 				<ul class="nav nav-tabs navbar-right">
 					<li>
 						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
-					</li>		
-          <?php if($this->session->userdata('projects') >= 2): ?>			
+					</li>    
+          <?php if($this->session->userdata('projects') >= 2): ?>
 					<li class="">
 						<a href="#" class="btn-small btn-primary" data-toggle="modal" data-target="#wip_filter_modal"><i class="fa fa-print"></i> Report</a>
-					</li>  		
+					</li>  		  
           <?php endif; ?>
+          
 					<li>
 						<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
 					</li>
@@ -220,8 +221,40 @@
 							<div class="box-head pad-10 clearfix">
 								<div class="pull-right" style="margin-top: -15px;">
 								<?php if($this->session->userdata('projects') >= 2): ?>
+
+                  <?php if($this->session->userdata('is_admin') == 1): ?>
+
+                   <div id="" class="pull-right">
+
+                     <div class="btn-group">
+                     <a href="<?php echo current_url(); ?>/add" class="btn btn-primary pull-right" ><i class="fa fa-briefcase"></i>&nbsp; Add New</a>
+
+
+
+                     <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                         <span class="caret"></span>
+                         <span class="sr-only">Toggle Dropdown</span>
+                       </button>
+                       <ul class="dropdown-menu" role="menu" style="display: none;">
+                         <li><a href="<?php echo current_url(); ?>/add_company_project" class="">Company Project</a></li>
+                       </ul>
+                     </div>
+
+                   </div>
+
+                 <?php elseif($this->session->userdata('company_project') == 1): ?>
+                  <a href="<?php echo current_url(); ?>/add_company_project" class="btn btn-primary pull-right"><i class="fa fa-briefcase"></i>&nbsp; Add New</a>
+
+                 <?php else: ?>
+
+
 									<a href="<?php echo current_url(); ?>/add" class="btn btn-primary pull-right"><i class="fa fa-briefcase"></i>&nbsp; Add New</a>
-								<?php endif; ?>
+
+
+                <?php endif; ?>
+								
+
+                <?php endif; ?>
 									<div class="clearfix"></div>
 									<select class="form-control m-top-10 select-client-tbl right" style="float: right; width: 180px;">
 										<option value="">Select Client</option>
@@ -237,7 +270,7 @@
 										<option value="paid">Paid</option>
 									</select>
 
-									<?php if($this->session->userdata('user_role_id') == 3 ||$this->session->userdata('user_role_id') == 16|| $this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 8 || $this->session->userdata('user_role_id') == 7 ): ?>
+									<?php if($this->session->userdata('user_role_id') == 3 ||$this->session->userdata('user_role_id') == 16|| $this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 8 || $this->session->userdata('user_role_id') == 7 || $this->session->userdata('company_project') == 1 ): ?>
 
 									
 										<select class="form-control m-top-10 select-personal right"  style="float: right; width: 120px; margin-right: 5px;">
@@ -248,14 +281,13 @@
 													echo '<option value="PM">Personal</option>';
 												}elseif($this->session->userdata('user_role_id') == 16 ){
 													echo '<option value="PM">Personal</option>';
-												}
-
-else if($this->session->userdata('user_role_id') == 2 ){
+												}elseif($this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 7 ){
 													echo '<option value="PA">Personal</option>';
 												}elseif($this->session->userdata('user_role_id') == 8){
 													echo '<option value="EST">Personal</option>';
-											
-												}
+												}elseif($this->session->userdata('company_project') == 1 ){
+                          echo '<option value="PM">Personal</option>';
+                        }else{ }
 											?>
 
 										</select>
@@ -264,9 +296,9 @@ else if($this->session->userdata('user_role_id') == 2 ){
 
 
 								</div>
-								<label><?php echo $screen; ?> List</label><span> (<a href="#" data-placement="right" class="popover-test" title="" data-content="Hello there mate! Welcome to the clients screen." data-original-title="Welcome">?</a>)</span>
-								<p>This is where the companies are listed.</p>
-								<p><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p>								
+								<label><?php echo $screen; ?> List</label><span> (<a href="#" data-placement="right" class="popover-test" title="" data-content="Hello there mate! Welcome to the projects screen." data-original-title="Welcome">?</a>)</span>
+								<p>This is where the projects are listed.</p>
+								<!-- <p><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p>						 -->		
 							</div>
 							<div class="box-area pad-10">
 								<table id="projectTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -395,6 +427,7 @@ else if($this->session->userdata('user_role_id') == 2 ){
       			<option selected="selected" value="Minor Works">Minor Works (Under $20,000.00)</option>
       			<option selected="selected" value="Maintenance">Maintenance</option>
             <option selected="selected" value="Design Works">Design Works</option>
+            <option  value="Company">Company</option>
       		</select>
       	</div>
 

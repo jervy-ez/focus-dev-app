@@ -82,8 +82,8 @@ class User_model extends CI_Model{
 		return $query;			
 	}
 
-	public function update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule){
-		$query = $this->db->query("UPDATE `user_access` SET `dashboard` = '$dashboard', `company` = '$company', `projects` = '$projects', `wip` = '$wip', `purchase_orders` = '$purchase_orders', `invoice` = '$invoice', `users` = '$users', `bulletin_board` = '$bulletin_board', `project_schedule` = '$project_schedule', `labour_schedule` = '$labour_schedule' WHERE `user_access`.`user_id` = '$user_id' ");
+	public function update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center){
+		$query = $this->db->query("UPDATE `user_access` SET `dashboard` = '$dashboard', `company` = '$company', `projects` = '$projects', `wip` = '$wip', `purchase_orders` = '$purchase_orders', `invoice` = '$invoice', `users` = '$users', `bulletin_board` = '$bulletin_board', `project_schedule` = '$project_schedule', `labour_schedule` = '$labour_schedule', `company_project` = '$company_project', `shopping_centre` = '$shopping_center' WHERE `user_access`.`user_id` = '$user_id' ");
 		$this->db->flush_cache();
 		$query = $this->db->query("UPDATE `users` SET `if_admin` = '$is_admin', `user_role_id` = '$role_id' WHERE `users`.`user_id` ='$user_id' ");
 		return $query;

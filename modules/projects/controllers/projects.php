@@ -529,9 +529,16 @@ email
 			$data['pe_user_first_name'] = $project_estiamator['user_first_name'];
 			$data['pe_user_last_name'] = $project_estiamator['user_last_name'];
 
-			$pg_markup_raw = $this->projects->fetch_mark_up_by($data['job_category'] , $markup_defaults['markup_id']);
-			$pg_markup = explode('|',$pg_markup_raw);
-			$data['min_markup'] = $pg_markup[1];
+			if($data['job_category'] == 'Company'){
+				$pg_markup = array(0,0,0,0);
+				$data['min_markup'] = $pg_markup[1];
+			}else{
+				$pg_markup_raw = $this->projects->fetch_mark_up_by($data['job_category'] , $markup_defaults['markup_id']);
+				$pg_markup = explode('|',$pg_markup_raw);
+				$data['min_markup'] = $pg_markup[1];
+			}
+
+
 
 			$shopping_center_q = $this->projects_m->select_shopping_center($data['address_id']);
 			$shopping_center = array_shift($shopping_center_q->result_array());
@@ -741,7 +748,7 @@ email
 	}
 
 	public function fetch_mark_up_by($job_cat='',$markup_id=''){
-
+	 
 		if($job_cat == ''){
 			$job_cat = $_POST['job_cat'];
 
@@ -749,17 +756,26 @@ email
 			$defaults = $defaults_raw->result();
 			$markup_id = $defaults[0]->markup_id;
 
-			$mark_up_q = $this->projects_m->fetch_mark_up_by_type($job_cat,$markup_id);
-			$mark_up = array_shift($mark_up_q->result_array());
-			echo implode("|",$mark_up);
-		}else{
-			$type = $job_cat;
-			$mark_up_q = $this->projects_m->fetch_mark_up_by_type($type,$markup_id);
-			$mark_up = array_shift($mark_up_q->result_array());
-			return implode("|",$mark_up);
-		}
+			if($job_cat == 'Company'){
+				echo '0|0|0';
+			}else{
+				$mark_up_q = $this->projects_m->fetch_mark_up_by_type($job_cat,$markup_id);
+				$mark_up = array_shift($mark_up_q->result_array());
+				echo implode("|",$mark_up);
+			}
 
-		
+		}else{
+			if($job_cat == 'Company'){
+				return '0|0|0';
+			}else{ 
+				$mark_up_q = $this->projects_m->fetch_mark_up_by_type($job_cat,$markup_id);
+				$mark_up = array_shift($mark_up_q->result_array());
+				return implode("|",$mark_up);
+			}
+		}
+ 
+
+
 	}
 
 	public function clear_apost(){
@@ -773,11 +789,17 @@ email
 
 		$this->users->_check_user_access('projects',2);
 
+		if($this->session->userdata('company_project') == 1){
+			redirect('/projects/add_company_project/');
+		}
+
 		$defaults_raw = $this->admin_m->latest_system_default();
 		$defaults = $defaults_raw->result();
 		$defaults_id = $defaults[0]->defaults_id;
 
-		$all_company_list = $this->company_m->fetch_all_company(NULL);
+		//$comp_list = $this->company_m->fetch_all_company_type_id('1');
+
+		$all_company_list = $this->company_m->fetch_all_company_type_id('1');
 		if($all_company_list->num_rows > 0){
 			$data['all_company_list'] = $all_company_list->result();
 		}
@@ -823,6 +845,7 @@ email
 		$this->form_validation->set_rules('project_name', 'Project Name','trim|required|xss_clean|max_length[35]');
 		$this->form_validation->set_rules('site_start', 'Site Start','trim|required|xss_clean');
 		$this->form_validation->set_rules('site_finish', 'Site Finish','trim|required|xss_clean');
+		$this->form_validation->set_rules('job_type', 'Job Type','trim|required|xss_clean');
 		$this->form_validation->set_rules('job_category', 'Job Category','trim|required|xss_clean');
 		$this->form_validation->set_rules('project_date', 'Project Date','trim|required|xss_clean');
 
@@ -1034,6 +1057,212 @@ email
 		}
 		 
 	}
+
+
+
+	
+	public function add_company_project(){
+		//var_dump($_POST); 
+
+		if(  $this->session->userdata('is_admin') == 1 || $this->session->userdata('company_project') == 1):
+
+		$defaults_raw = $this->admin_m->latest_system_default();
+		$defaults = $defaults_raw->result();
+		$defaults_id = $defaults[0]->defaults_id;
+
+		//$comp_list = $this->company_m->fetch_all_company_type_id('1');
+
+		$all_company_list = $this->company_m->fetch_all_company_type_id('1');
+		if($all_company_list->num_rows > 0){
+			$data['all_company_list'] = $all_company_list->result();
+		}
+
+		$data['main_content'] = 'projects_add_for_company';
+
+
+		$all_aud_states = $this->company_m->fetch_all_states();
+		$data['all_aud_states'] = $all_aud_states->result();
+
+		$focus = $this->admin_m->fetch_all_company_focus();
+		$data['focus'] = $focus->result();
+
+		$project_manager = $this->user_model->fetch_user_by_role(3);
+		$data['project_manager'] = $project_manager->result();
+
+		$maintenance_administrator = $this->user_model->fetch_user_by_role(7);
+		$data['maintenance_administrator'] = $maintenance_administrator->result();
+
+		$project_administrator = $this->user_model->fetch_user_by_role(2);
+		$data['project_administrator'] = $project_administrator->result();
+
+
+		$shopping_center = $this->projects_m->fetch_shopping_center();
+		$data['shopping_center'] = $shopping_center->result();
+
+		$estimator = $this->user_model->fetch_user_by_role(8);
+		$data['estimator'] = $estimator->result();
+
+
+		$data['all_projects'] = $this->projects_m->display_all_projects();
+
+		$company_project_item = array();
+		foreach ($data['all_projects']->result_array() as $row){
+			$company_project_item[$row['company_id']] = $row['company_name'];
+		}
+		asort($company_project_item);
+		$data['all_company_project'] = $company_project_item;
+
+		$this->form_validation->set_rules('project_name', 'Project Name','trim|required|xss_clean|max_length[35]');
+		$this->form_validation->set_rules('site_start', 'Site Start','trim|required|xss_clean');
+		$this->form_validation->set_rules('site_finish', 'Site Finish','trim|required|xss_clean');
+		$this->form_validation->set_rules('job_type', 'Job Type','trim|required|xss_clean');
+		$this->form_validation->set_rules('job_category', 'Job Category','trim|required|xss_clean');
+		$this->form_validation->set_rules('project_date', 'Project Date','trim|required|xss_clean');
+
+		$this->form_validation->set_rules('project_manager', 'Project Manager','trim|required|xss_clean');
+		$this->form_validation->set_rules('project_admin', 'Project Admin','trim|required|xss_clean');
+		$this->form_validation->set_rules('estimator', 'Estimator','trim|required|xss_clean');
+		$this->form_validation->set_rules('company_prg', 'Company Client','trim|required|xss_clean');
+		$this->form_validation->set_rules('contact_person', 'Contact Person','trim|required|xss_clean');
+		$this->form_validation->set_rules('install_hrs', 'Site Hours','trim|xss_clean');
+		$this->form_validation->set_rules('project_total', 'Project Estimate','trim|required|xss_clean');
+		$this->form_validation->set_rules('labour_hrs_estimate', 'Site Labour Estimate','trim|required|xss_clean');
+		$this->form_validation->set_rules('project_markup', 'Project Markup','trim|required|xss_clean');
+
+		if( $this->input->post('job_category') == 'Maintenance' ||  $this->input->post('job_category') == 'Kiosk' || $this->input->post('job_category') == 'Minor Works' || $this->input->post('job_category') == 'Strip Out'|| $this->input->post('job_category') == 'Design Works'  ){
+			$this->form_validation->set_rules('project_area', 'Project Area','trim|xss_clean');
+		}else{
+			$this->form_validation->set_rules('project_area', 'Project Area','trim|required|xss_clean');
+		}
+
+
+
+		
+		//echo $this->company->cap_first_word($this->company->if_set($this->input->post('project_name', true)));
+		//var_dump($_POST);
+		if($this->form_validation->run() === false){
+ 
+		
+ 
+
+
+
+			$this->clear_apost();
+			$data['error' ] = validation_errors();
+			$this->load->view('page', $data);
+			//valid_input_simple
+		}else{
+			$this->clear_apost();
+
+			$focus_id = $this->input->post('focus');
+			$project_name = $this->input->post('project_name');
+			$client_po = $this->input->post('client_po');
+			$job_type = $this->input->post('job_type');
+			$job_category = $this->input->post('job_category');
+			$project_date = $this->input->post('project_date');
+			$job_date = $this->input->post('job_date');
+			$site_start = $this->input->post('site_start');
+			$site_finish = $this->input->post('site_finish');
+
+			if($job_date != ''){
+				$is_wip = 1;
+			}else{
+				$is_wip = 0;
+			}
+
+			$data['unit_level'] = $this->company->if_set($this->input->post('unit_level', true));
+			$data['unit_number'] = $this->company->if_set($this->input->post('unit_number', true));
+			$data['street'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street', true)));
+			$data['postcode_a'] = $this->company->if_set($this->input->post('postcode_a', true));
+
+			$data['pobox'] = $this->company->if_set($this->input->post('pobox', true));
+			$data['unit_level_b'] = $this->company->if_set($this->input->post('unit_level_b', true));
+			$data['number_b'] = $this->company->if_set($this->input->post('number_b', true));			
+			$data['street_b'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street_b', true)));
+			$data['postcode_b'] = $this->company->if_set($this->input->post('postcode_b', true));		
+
+			$state_a_arr = explode('|', $this->input->post('state_a', true));
+			$data['state_a'] = $state_a_arr[3];
+
+			$suburb_a_ar = explode('|',$this->company->if_set($this->input->post('suburb_a', true)));
+			$data['suburb_a'] = strtoupper($suburb_a_ar[0]);
+
+			$state_b_arr = explode('|', $this->input->post('state_b', true));
+			$data['state_b'] = $state_b_arr[3];
+
+			$suburb_b_ar = explode('|',$this->company->if_set($this->input->post('suburb_b', true)));
+			$data['suburb_b'] = strtoupper($suburb_b_ar[0]);
+
+			$project_manager_id = $this->input->post('project_manager');
+			$project_admin_id = $this->input->post('project_admin');
+			$project_estiamator_id = $this->input->post('estimator');
+			
+			$contact_person_id = $this->input->post('contact_person');
+			$project_total = str_replace (',','', $this->input->post('project_total') );
+
+			$install_hrs = $this->input->post('install_hrs');
+
+			$project_markup = $this->input->post('project_markup');
+
+			$project_area = $this->input->post('project_area');
+			$comments = $this->input->post('comments');
+			$project_status_id = 1;
+
+			$copy_work_project_id = $this->input->post('copy_work_project_id');
+			$include_work_estimate = $this->input->post('include_work_estimate');
+
+			$shop_tenancy_number = $this->input->post('shop_tenancy_number'); 
+
+			$focus_user_id = $this->session->userdata('user_id');
+
+
+			$labour_hrs_estimate = $this->input->post('labour_hrs_estimate', true);
+
+			$is_shopping_center = $this->input->post('is_shopping_center');
+
+			$project_notes_id = $this->company_m->insert_notes($comments);
+
+			$is_double_time = $this->input->post('is_double_time');
+
+ 
+
+
+			$company_prg_arr =  explode('|',$this->input->post('company_prg'));
+
+
+			$client_id = $company_prg_arr[1];
+
+			$client_details = $this->company_m->fetch_company_details($client_id);
+			foreach ($client_details->result() as $data){
+				$site_address_id = $data->address_id;
+				$invoice_address_id = $data->address_id;
+			}
+ 
+
+			$inserted_project_id = $this->projects_m->insert_new_project($project_name, $project_date, $contact_person_id, $project_total, $job_date, $is_wip, $client_po, $site_start, $site_finish, $job_category, $job_type, $focus_user_id ,$focus_id, $project_manager_id, $project_admin_id, $project_estiamator_id,$site_address_id, $invoice_address_id, $project_notes_id, $project_markup,$project_status_id, $client_id, $install_hrs, $project_area, $is_double_time, $labour_hrs_estimate, $shop_tenancy_number,$defaults_id);
+
+			if($install_hrs != '' && $install_hrs > 0){
+				$prj_install_hrs = $install_hrs;
+			}else{
+				$prj_install_hrs = $labour_hrs_estimate;
+			}
+
+			$this->insert_cost_total($inserted_project_id,$prj_install_hrs,$is_double_time);
+
+			$this->session->set_flashdata('curr_tab', 'project-details');			
+			redirect('/projects/view/'.$inserted_project_id);
+		}
+
+		else:
+
+			redirect('/projects/');
+
+
+		endif;
+		 
+	}
+
+
 
 
 	public function insert_cost_total($inserted_project_id,$prj_install_hrs,$is_double_time){
@@ -1449,9 +1678,17 @@ $gp = 0;
 			$data['pe_user_last_name'] = $project_estiamator['user_last_name'];
 
 
-			$pg_markup_raw = $this->projects->fetch_mark_up_by($data['job_category'] , $markup_defaults['markup_id']);
-			$pg_markup = explode('|',$pg_markup_raw);
-			$data['min_markup'] = $pg_markup[1];
+
+
+			if($data['job_category'] == 'Company'){
+				$pg_markup = array(0,0,0,0);
+				$data['min_markup'] = $pg_markup[1];
+			}else{
+				$pg_markup_raw = $this->projects->fetch_mark_up_by($data['job_category'] , $markup_defaults['markup_id']);
+				$pg_markup = explode('|',$pg_markup_raw);
+				$data['min_markup'] = $pg_markup[1];
+			}
+
 
 
 			$shopping_center_q = $this->projects_m->select_shopping_center($data['address_id']);
@@ -1561,7 +1798,7 @@ $gp = 0;
 				$prev_project_details = array_shift($q_proj_prev->result_array());
 
 				$attempt = 0;
-				if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 16 || ( $this->session->userdata('user_role_id') == 7 && $prev_project_details['job_category'] == 'Maintenance' )  ){
+				if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 16 || ( $this->session->userdata('user_role_id') == 7 && $prev_project_details['job_category'] == 'Maintenance' ) || ( $this->session->userdata('company_project') == 1 && $prev_project_details['job_category'] == 'Company' ) ){
 					$job_date = $this->input->post('job_date');
 				}else{
 					if($prev_project_details['job_date'] == ''){
@@ -1803,7 +2040,7 @@ $gp = 0;
 			$install_time_hrs = $this->input->post('install_time_hrs');
 		//}
 
-		if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 16 || ( $this->session->userdata('user_role_id') == 7 && $prev_project_details['job_category'] == 'Maintenance' )  ){
+		if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 16 || ( $this->session->userdata('user_role_id') == 7 && $prev_project_details['job_category'] == 'Maintenance' ) || ( $this->session->userdata('company_project') == 1 &&      $prev_project_details['job_category'] == 'Company'          ) ){
 			$job_date = $_POST['job_date'];
 		}else{
 			if($prev_project_details['job_date'] == ''){

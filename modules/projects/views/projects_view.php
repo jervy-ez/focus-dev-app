@@ -395,6 +395,8 @@ estimate-->
 																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control datepicker text-right"  id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3 ||$this->session->userdata('user_role_id') == 16 || ( $this->session->userdata('user_role_id') == 7 && $job_category == 'Maintenance' )  ): ?>
 																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
+																			<?php elseif( $this->session->userdata('company_project') == 1 && $job_category == 'Company' ): ?>
+																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php else: ?>
 																				<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled job-date-set text-right" ><?php echo $job_date; ?></p>
 																				
@@ -498,8 +500,19 @@ estimate-->
 
 															</div>
 														</div>
-														<?php if($this->session->userdata('projects') >= 2): ?>
+
+									    			<?php if( ($job_category == 'Company' && $this->session->userdata('company_project') == 1) || $this->session->userdata('is_admin') == 1 ):  ?>
+
+
+
 															<button type="submit" tabindex="33" class="btn btn-success m-top-10"><i class="fa fa-floppy-o"></i> Save Changes</button>
+
+
+														<?php elseif($this->session->userdata('projects') >= 2 &&  ($job_category != 'Company' && $this->session->userdata('company_project') != 1 )  ): ?>
+
+
+															<button type="submit" tabindex="33" class="btn btn-success m-top-10"><i class="fa fa-floppy-o"></i> Save Changes</button>
+
 														<?php endif; ?>
 
 													</form>
@@ -658,9 +671,36 @@ estimate-->
 																</div>
 
 																<div class="clearfix col-xs-12 col-md-3">
-																<?php if($this->session->userdata('projects') >= 2): ?>
-																	<a href="<?php echo base_url(); ?>projects/update_project_details/<?php echo $project_id; ?>" type="submit" tabindex="33" class="btn btn-success m-top-20 m-right-15 pull-right"><i class="fa fa-pencil-square-o"></i> Update Full Details</a>
-																<?php endif; ?>
+
+
+																<?php //if($this->session->userdata('projects') >= 2): ?>
+
+																	<?php 
+/*
+																<a href="<?php echo base_url(); ?>projects/update_project_details/<?php echo $project_id; ?>" type="submit" tabindex="33" class="btn btn-success m-top-20 m-right-15 pull-right"><i class="fa fa-pencil-square-o"></i> Update Full Details</a>
+															*/
+																?>
+																<?php //endif; ?>
+
+
+
+
+									    		<?php if( ($job_category == 'Company' && $this->session->userdata('company_project') == 1) || $this->session->userdata('is_admin') == 1 ):  ?>
+
+
+																<a href="<?php echo base_url(); ?>projects/update_project_details/<?php echo $project_id; ?>" type="submit" tabindex="33" class="btn btn-success m-top-20 m-right-15 pull-right"><i class="fa fa-pencil-square-o"></i> Update Full Details</a>
+															
+
+									    		<?php elseif($this->session->userdata('projects') >= 2 &&  ($job_category != 'Company' && $this->session->userdata('company_project') != 1 )  ): ?>
+
+
+																<a href="<?php echo base_url(); ?>projects/update_project_details/<?php echo $project_id; ?>" type="submit" tabindex="33" class="btn btn-success m-top-20 m-right-15 pull-right"><i class="fa fa-pencil-square-o"></i> Update Full Details</a>
+															
+									    		<?php endif; ?>
+
+
+
+
 																</div>
 															</div>
 																

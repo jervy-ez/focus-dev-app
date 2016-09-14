@@ -110,8 +110,27 @@
 														<div class="input-group">
 															<span class="input-group-addon"><i class="fa fa-briefcase  fa-lg"></i></span>
 															<select name="company_prg" class="form-control chosen find_contact_person get_address_invoice" id="company_prg" style="width: 100%;" tabindex="2">
-																<option value=''>Select Client Name*</option>																												
-																<?php $this->company->company_list('dropdown'); ?>	
+																<!-- <option value=''>Select Client Name*</option>																												
+																<?php //$this->company->company_list('dropdown'); ?> -->	
+
+																<?php
+
+																	if($this->session->userdata('company_project') == 1){
+																		echo '
+																		<option value="Fsf Group Pty Ltd|75">Fsf Group Pty Ltd</option>
+																		<option value="Focus Shopfit Nsw Pty Ltd|72">Focus Shopfit Nsw Pty Ltd</option>
+																		<option value="Focus Shopfit Pty Ltd|726">Focus Shopfit Pty Ltd</option>';
+
+																	}else{
+
+																		foreach ($all_company_list as $row){
+																			echo '<option value="'.$row->company_name.'|'.$row->company_id.'">'.ucwords(strtolower($row->company_name)).'</option>';
+																		}
+																	}
+
+																?>
+
+
 															</select>
 
 															<?php if($this->input->post('company_prg')): ?>
@@ -181,10 +200,22 @@
 													<label for="job_category" class="col-sm-3 control-label">Job Type*</label>													
 													<div class="col-sm-9  col-xs-12">
 														<select class="form-control" id="job_type" name="job_type" tabindex='4'>
-															<option value="">Choose a Job Type...</option>
-															<option value="Shopping Center">Shopping Center</option>
-															<option value="Street Site">Street Site</option>
-															<option value="Office">Office</option>															
+
+
+															<?php if($this->session->userdata('company_project') != 1): ?>
+																<option value="Shopping Center">Shopping Center</option>
+																<option value="Street Site">Street Site</option>
+																<option value="Office">Office</option>
+															<?php endif; ?>
+
+															<?php if($this->session->userdata('company_project') == 1): ?>
+																<option value="Company">Company</option>
+															<?php endif; ?>
+
+
+
+
+
 														</select>
 
 														<?php if($this->input->post('job_type')): ?>
@@ -198,7 +229,7 @@
 												<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('job_category')){ echo 'has-error has-feedback';} ?>">
 													<label for="job_category" class="col-sm-3 control-label">Job Category*</label>													
 													<div class="col-sm-9  col-xs-12">
-														<select class="form-control postcode-option" id="job_category" name="job_category" tabindex='4'>															
+														<!-- <select class="form-control postcode-option" id="job_category" name="job_category" tabindex='4'>															
 															<option value="">Choose a Job Category</option>
 															<option value="Design Works">Design Works</option>
 															<option value="Kiosk">Kiosk</option>
@@ -207,7 +238,26 @@
 															<option value="Strip Out">Strip Out</option>
 															<option value="Minor Works">Minor Works (Under $20,000.00)</option>
 															<option value="Maintenance">Maintenance</option>
+														</select> -->
+
+														<select class="form-control postcode-option tooltip-test" id="job_category" name="job_category" tabindex='4' data-original-title="On selecting the Job Category, Project Area is only optional if Job Category is Strip Out, Minor Works, Kiosk or Maintenance.">
+															<?php if($this->session->userdata('company_project') != 1): ?>
+															<option value="Design Works">Design Works</option>
+															<option value="Kiosk">Kiosk</option>
+															<option value="Full Fitout">Full Fitout</option>
+															<option value="Refurbishment">Refurbishment</option>
+															<option value="Strip Out">Strip Out</option>
+															<option value="Minor Works">Minor Works (Under $20,000.00)</option>
+															<option value="Maintenance">Maintenance</option>
+															<?php endif; ?>
+
+															<?php if($this->session->userdata('company_project') == 1): ?>
+																<option value="Company">Company</option>
+															<?php endif; ?>
+															<script type="text/javascript">$("select#job_category").val("<?php echo $this->input->post('job_category'); ?>");</script>
 														</select>
+
+
 
 														<?php if($this->input->post('job_category')): ?>
 															<script type="text/javascript">$("select#job_category").val("<?php echo $this->input->post('job_category'); ?>");</script>
@@ -622,13 +672,27 @@
 												<div class="col-sm-4 m-bottom-5 clearfix <?php if(form_error('project_manager')){ echo 'has-error has-feedback';} ?>">
 													<div class="col-sm-12">
 														<label for="project_manager" class="control-label">Project Manager*</label><br />
-														<select name="project_manager" class="form-control presonel_add" id="project_manager" style="width: 100%;" tabindex="27">
+														<!-- <select name="project_manager" class="form-control presonel_add" id="project_manager" style="width: 100%;" tabindex="27">
 															<option value='' disabled="disabled">Select Project Manager</option>
-															<?php
+															<?php /*
 															foreach ($project_manager as $row){
 																echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
-															}?>
+															}*/?>
+														</select> -->
+
+														<select name="project_manager" class="form-control presonel_add" id="project_manager" style="width: 100%;" tabindex="27">
+															
+															<?php if($this->session->userdata('company_project') == 1): ?>
+																<?php echo '<option value="'.$this->session->userdata('user_id').'">'.ucfirst($this->session->userdata('user_first_name')).' '.ucfirst($this->session->userdata('user_last_name')).'</option>'; ?>
+															<?php else: ?>
+																<option value=''>Select Project Manager</option>
+																<?php foreach ($project_manager as $row){
+																	echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																}?>	
+															<?php endif; ?>
 														</select>
+
+
 														<?php if($this->input->post('project_manager')): ?>
 															<script type="text/javascript">$('select#project_manager').val('<?php echo $this->input->post('project_manager'); ?>');</script>
 														<?php else: ?>	
@@ -641,8 +705,24 @@
 			      								<div class="col-sm-4 m-bottom-5 clearfix <?php if(form_error('project_admin')){ echo 'has-error has-feedback';} ?>">											
 													<div class="col-sm-12">
 														<label for="project_administrator" class="control-label">Project Admin*</label>
-														<select name="project_admin" class="form-control presonel_add" id="project_administrator" style="width: 100%;" tabindex="28">
+														<!-- <select name="project_admin" class="form-control presonel_add" id="project_administrator" style="width: 100%;" tabindex="28">
 															<option value='' disabled="disabled">Select Project Admin</option>
+															<?php /*
+															foreach ($project_administrator as $row){
+																echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+															}*/ ?>
+
+															<?php /*
+															foreach ($maintenance_administrator as $row){
+																echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+															}*/ ?>
+														</select> -->
+														<select name="project_admin" class="form-control presonel_add" id="project_administrator" style="width: 100%;" tabindex="28">
+
+														<?php if($this->session->userdata('company_project') == 1): ?>
+															<?php echo '<option value="'.$this->session->userdata('user_id').'">'.ucfirst($this->session->userdata('user_first_name')).' '.ucfirst($this->session->userdata('user_last_name')).'</option>'; ?>
+														<?php else: ?>
+															<option value=''>Select Project Admin</option>
 															<?php
 															foreach ($project_administrator as $row){
 																echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
@@ -652,7 +732,11 @@
 															foreach ($maintenance_administrator as $row){
 																echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
 															}?>
+
+														<?php endif; ?>
 														</select>
+
+
 														<?php if($this->input->post('project_admin')): ?>
 															<script type="text/javascript">$('select#project_administrator').val('<?php echo $this->input->post('project_admin'); ?>');</script>
 														<?php else: ?>		
@@ -664,19 +748,38 @@
 			      								<div class="col-sm-4 m-bottom-5 clearfix <?php if(form_error('estimator')){ echo 'has-error has-feedback';} ?>">						
 													<div class="col-sm-12">
 														<label for="estimator" class="control-label">Estimator*</label>													
-														<select name="estimator" class="form-control presonel_add" id="estimator" style="width: 100%;" tabindex="29">
+														<!-- <select name="estimator" class="form-control presonel_add" id="estimator" style="width: 100%;" tabindex="29">
 															<option value='' disabled="disabled">Select Estimator</option>
 															<option value='0'>None</option>
-															<?php
+															<?php /*
 															foreach ($estimator as $row){
 																echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
-															}?>
+															} */ ?>
 
-															<?php
+															<?php /*
 															foreach ($maintenance_administrator as $row){
 																echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
-															}?>
+															} */?>
+														</select> -->
+														<select name="estimator" class="form-control presonel_add" id="estimator" style="width: 100%;" tabindex="29">
+															<?php if($this->session->userdata('company_project') == 1): ?>
+																<?php echo '<option value="'.$this->session->userdata('user_id').'">'.ucfirst($this->session->userdata('user_first_name')).' '.ucfirst($this->session->userdata('user_last_name')).'</option>'; ?>
+															<?php else: ?>
+																<option value=''>Select Estimator</option>
+																<option value='0'>None</option>
+																<?php
+																foreach ($estimator as $row){
+																	echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																}?>
+
+																<?php
+																foreach ($maintenance_administrator as $row){
+																	echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																}?>
+																
+															<?php endif; ?>
 														</select>
+
 														<?php if($this->input->post('estimator')): ?>
 															<script type="text/javascript">$('select#estimator').val('<?php echo $this->input->post('estimator'); ?>');</script>
 														<?php else: ?>
@@ -688,9 +791,6 @@
 											</div>
 										</div>
 	 									
-										
-										
-										<div class="clearfix"></div>
 									    
 	      								<div class="box m-top-15">
 											<div class="box-head pad-5">
@@ -700,7 +800,7 @@
 											<div class="box-area pad-5 clearfix">
 												<div class="clearfix <?php if(form_error('generalEmail')){ echo 'has-error has-feedback';} ?>">
 													<div class="">
-														<textarea class="form-control" id="project_notes" rows="5"  tabindex="30" name="comments" placeholder="Project Notes"><?php echo ($this->input->post('comments') ?  $this->input->post('comments') : $project_comments ); ?></textarea>														
+														<textarea class="form-control" id="project_notes" rows="5"  tabindex="30" name="comments" placeholder="Project Notes" style="resize: vertical;"><?php echo ($this->input->post('comments') ?  $this->input->post('comments') : $project_comments ); ?></textarea>														
 													</div>
 												</div>
 											</div>
@@ -708,7 +808,22 @@
 										
 									    <div class="m-top-15 clearfix">
 									    	<div>
-									        	<button type="submit" tabindex="33" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save</button>
+
+									    		<?php if( ($job_category == 'Company' && $this->session->userdata('company_project') == 1) || $this->session->userdata('is_admin') == 1 ):  ?>
+
+
+
+									    			<button type="submit" tabindex="33" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Changes</button>
+
+
+									    		<?php elseif($this->session->userdata('projects') >= 2 &&  ($job_category != 'Company' && $this->session->userdata('company_project') != 1 )  ): ?>
+
+
+									    			<button type="submit" tabindex="33" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Changes</button>
+
+									    		<?php endif; ?>
+
+
 									        </div>
 									    </div>
 									</div>

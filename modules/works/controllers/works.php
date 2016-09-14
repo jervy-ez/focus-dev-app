@@ -432,8 +432,8 @@ class Works extends MY_Controller{
 			case "Maintenance":
 				$min_markup = $data['min_maintenance'];
 				break;
-			case "Design Works":
-				$min_markup = $data['min_design_works'];
+			case "Company":
+				$min_markup = 0;
 				break;
 		}
 		return $min_markup;
@@ -2377,9 +2377,7 @@ class Works extends MY_Controller{
 		$proj_q = $this->projects_m->select_particular_project($proj_id);
 		$data['project_t'] = $proj_q;
 		foreach ($proj_q->result_array() as $row){
-			$proj_name = str_replace("&apos;", "'", $row['project_name']);
-			$proj_name = str_replace("–","-", $proj_name);
-			$data['proj_name'] = $proj_name;
+			$data['proj_name'] = str_replace("&apos;", "'", $row['project_name']);
 			$tenancyno = $row['shop_tenancy_number']; 
 		   	$primary_contact_person_id = $row['primary_contact_person_id'];
 		   	$client_id = $row['client_id'];

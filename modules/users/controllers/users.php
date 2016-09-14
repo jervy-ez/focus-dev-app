@@ -108,6 +108,8 @@ $config = Array(
 		$bulletin_board = $_POST['bulletin_board'];
 		$project_schedule = $_POST['project_schedule'];
 		$labour_schedule = $_POST['labour_schedule'];
+		$company_project = $_POST['company_project'];
+		$shopping_center = $_POST['shopping_center'];
 
 		$role_raw = $_POST['role'];
 		$role_arr = explode('|',$role_raw);
@@ -115,7 +117,7 @@ $config = Array(
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule);
+		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
 

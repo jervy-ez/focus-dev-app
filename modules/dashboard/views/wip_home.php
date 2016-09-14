@@ -22,11 +22,9 @@
 					<li>
 						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
 					</li>
-          <?php if($this->session->userdata('wip') >= 2): ?> 
 					<li>
 						<a href="#" class="btn-small btn-primary" data-toggle="modal" data-target="#wip_filter_modal"><i class="fa fa-print"></i> Report</a>
-					</li>     
-          <?php endif; ?> 
+					</li>    
           <li>
             <a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
           </li>
@@ -85,21 +83,7 @@
 								<div class="pull-right" style="margin-top: -15px;">
 									<div class="clearfix m-top-20">
 										<div class="box-content box-list collapse in prj_cmmnt_area pull-right" style="display:none; visibility: hidden;"><ul><li><p>No posted comments yet!</p></li></ul></div>
-										<div class="box-area  pull-right"  style="">
-
-                     <!--  <p class="totals_wip"><?php // echo $this->wip->sum_total_wip_cost($arr); ?></p> -->
-
-
-                      <p class="totals_wip">
-                        <span class="wip_project_total" style="font-size: 16px;"><strong>Project Total: </strong> $<span id="wip_total_value"></span></span> &nbsp;&nbsp;&nbsp;&nbsp; 
-                        <span class="wip_project_estimate green-estimate"><strong>Total Estimated:</strong> $<span id="wip_total_estimated"></span></span> &nbsp;&nbsp;&nbsp;&nbsp; 
-                        <span class="wip_project_quoted"><strong>Total Quoted: </strong> $<span id="wip_total_quoted"></span></span> &nbsp;&nbsp;&nbsp;&nbsp; 
-                        <span class="wip_total_invoiced"><strong>Total Invoiced: </strong> $<span id="wip_total_invoiced"></span></span>
-                      </p>
-
-
-
-                    </div>										
+										<div class="box-area  pull-right"  style=""><p class="totals_wip"><?php echo $this->wip->sum_total_wip_cost($arr); ?></p></div>										
 									</div>
 								</div>
 								<label><?php echo $screen; ?> List</label>							
@@ -112,11 +96,8 @@
 										<tbody>
 
 											<?php
-                      $estimated = 0;
-                      $quoted = 0;
-                      $total_invoiced_init = 0;
-                      $total_invoiced = 0;
 											foreach ($proj_t->result_array() as $row){
+
 
 												if($this->invoice->if_invoiced_all($row['project_id'])  && $this->invoice->if_has_invoice($row['project_id']) > 0 ){
 													
@@ -129,15 +110,10 @@
 
 													if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
 														echo '<td>'.number_format($row['project_total']+$row['variation_total']).'</td>';
-                            $quoted = $quoted + $row['project_total']+$row['variation_total'];
 
 													}else{
 														echo '<td class="green-estimate">'.number_format($row['budget_estimate_total']).'</td>';
-                            $estimated = $estimated + $row['budget_estimate_total'];
 													}
-
-                          $total_invoiced_init = $this->invoice->get_project_invoiced($row['project_id'],$row['project_total'],$row['variation_total']);
-                          $total_invoiced = $total_invoiced + $total_invoiced_init;
 
 													echo '<td>'.$date_finish_mod.'</td></tr>';
 												}
@@ -146,15 +122,7 @@
 											?>
 
 										</tbody>
-									</table>
-
-
-                  <script type="text/javascript">
-                    $('#wip_total_value').text('<?php echo number_format($estimated+$quoted,2); ?>');
-                    $('#wip_total_estimated').text('<?php echo number_format($estimated,2); ?>');
-                    $('#wip_total_quoted').text('<?php echo number_format($quoted,2); ?>');
-                    $('#wip_total_invoiced').text('<?php echo number_format($total_invoiced,2); ?>');
-                  </script>					
+									</table>									
 								</div>
 							</div>
 						</div>
@@ -177,6 +145,23 @@
 
 
 
+<!-- Modal -->
+<div class="modal fade" id="loading_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-sm">
+    <div class="modal-content">
+       
+      <div class="modal-body clearfix pad-10">
+
+        <center><h3>Loading Please Wait</h3></center>
+        <center><h2><i class="fa fa-circle-o-notch fa-spin fa-5x"></i></h2></center>
+        <p>&nbsp;</p>
+  
+  
+
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="report_result hide hidden"></div>
 
@@ -202,7 +187,7 @@
       			<i class="fa fa-briefcase"></i>
       		</span>
       		<?php asort($clients); ?>
-      		<select class="form-control report_company m-bottom-10">
+      		<select class="form-control select-client-tbl m-bottom-10">
       			<option value="">Select Client</option>     		
 
       			<?php
@@ -236,8 +221,6 @@
       			<option selected="selected" value="Strip Out">Strip Out</option>
       			<option selected="selected" value="Minor Works">Minor Works (Under $20,000.00)</option>
       			<option selected="selected" value="Maintenance">Maintenance</option>
-            <option selected="selected" value="Design Works">Design Works</option>
-            <option value="Company">Company</option>
       		</select>
       	</div>
 
