@@ -31,8 +31,9 @@
 
 .sign_in_bg{
 	background: #fff url("../img/sojourn_bg_signin.png") no-repeat center center;
-	margin-top:-40px;
-	height: 96%;
+/*background: #fff url("../img/sojourn_bg_football.png") no-repeat center center;*/
+	height: 99.9%;
+    padding-top: 50px;
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/sojourn_bg_signin.png', sizingMethod='scale');
 	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/sojourn_bg_signin.png', sizingMethod='scale')";
 	no-repeat center center fixed; 
@@ -40,7 +41,9 @@
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
-	padding: 5% 0 0 0;
+    margin-bottom: -70px;
+    z-index: 30;
+    position: relative;
 }
 
 .sign_form{
@@ -130,6 +133,9 @@ textarea {
 	color: #F7901E !important;
 }
 
+.unset, tr.unset td, tr.unset td a{
+	color: #F00 !important;
+}
 
 .green-estimate label,.green-estimate{
 	color: green !important;
@@ -1243,6 +1249,7 @@ tr.active_row_work>td{
  
 	height: 40px;
 	overflow: hidden;
+    list-style: none;
 }
 
 .user_logged #user_list ul{
@@ -2188,6 +2195,42 @@ tr.active_row_work>td{
     -webkit-box-shadow: inset 0 -1px 0 rgba(144, 0, 144, 0.36);
     box-shadow: inset 0 -1px 0 rgba(144, 0, 144, 0.36);
 }
+
+
+
+.adv .widg-content.fill.purple{
+	background: #aa8edc !important;
+}
+.adv .widg-icon-inside.purple{
+	background: #673ab7 !important;
+}
+
+
+.adv .widg-content.fill.brown{
+	background: #a58377 !important;
+}
+.adv .widg-icon-inside.brown{
+	background: #795548 !important;
+}
+
+
+
+.adv .widg-content.fill.violet{
+	background: #c264d2 !important;
+}
+.adv .widg-icon-inside.violet{
+	background: #70177f !important;
+}
+
+.adv .widg-content.fill.dblue{
+	background: #6d6aff !important;
+}
+.adv .widg-icon-inside.dblue{
+	background: #2621f3 !important;
+}
+
+
+
 
 
 

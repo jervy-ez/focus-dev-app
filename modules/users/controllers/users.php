@@ -9,6 +9,8 @@ class Users extends MY_Controller{
 		$this->load->library('form_validation');
 		$this->load->library('upload');
 		$this->load->helper('cookie');
+
+
 		/*
 $config = Array(
 			'protocol' => 'smtp',
@@ -853,6 +855,10 @@ $config = Array(
 					$data['user_id'] = $userdata_session->user_id;
 					$this->session->set_userdata($data);
 
+					date_default_timezone_set("Australia/Perth"); 
+					$time_stamp=time();
+					$this->user_model->set_user_logged_time($userdata_session->user_id,$time_stamp);
+
 					$data['signin_error'] = "User is already logged in on another pc, Do you want to log-off Previous logged-in Account? <button type = 'button' class = 'btn btn-success pull-right' id = 'log_out_prev_user'>Yes</button>";
 					$data['main_content'] = 'signin';
 					$this->load->view('page', $data);
@@ -861,6 +867,9 @@ $config = Array(
 
 					$this->_confirm_active_password($userdata->user_id,$password);
 
+					date_default_timezone_set("Australia/Perth"); 
+					$time_stamp=time();
+					$this->user_model->set_user_logged_time($userdata->user_id,$time_stamp);
 
 
 					$data['user_id'] = $userdata->user_id;
@@ -1321,6 +1330,12 @@ $config = Array(
 						redirect('');
 					}
 				}
+
+			date_default_timezone_set("Australia/Perth"); 
+			$time_stamp=time();
+			$this->user_model->set_user_activity($user_id,$time_stamp);
+
+
 				/*
 				$user_log_str = file_get_contents(base_url().'js/users_log.json');
 				$user_log_json = json_decode($user_log_str,true);
@@ -1550,6 +1565,36 @@ $config = Array(
 	// 	echo $log_modal_shown;
 
 	// }
+
+
+	function user_activity_list(){
+		$admin = $this->session->userdata('is_admin');
+		$log_in_users = $this->user_model->fetch_user_activity();
+
+		date_default_timezone_set("Australia/Perth"); 
+		$time_stamp=time();
+		$set_time = strtotime(  date("Y-m-d h:i:s",$time_stamp)   );
+ 
+		echo "<ul>";
+		foreach ($log_in_users->result() as $users){
+
+			$from_time = strtotime(date("Y-m-d h:i:s",$users->time_stamp));
+			$minute_active = round(abs($set_time - $from_time) / 60,2);
+
+			$logged_time = date("h:i A",$users->time_logged_in);
+
+			if($minute_active < 45){
+
+				if($admin == 1){
+					echo '<li><span class="col-xs-2"><img src = "'.base_url().'uploads/users/'.$users->user_profile_photo.'" style = "width: 40px; margin-right:5px;"></span><span class="col-xs-3">'.$users->user_first_name.'</span><span class="col-xs-4"><span  style="color: #367fb7;"><i class="fa fa-sign-in" aria-hidden="true"></i> '.$logged_time.'</span></span><button type = "button" title = "Log-out User" class = "btn btn-danger btn-xs pull-right" onclick = "btn_logout_user('.$users->user_id.')"><i class = "fa fa-sign-out fa-sm"></i></button></li>';
+				}else{
+					echo '<li><span class="col-xs-2"><img src = "'.base_url().'uploads/users/'.$users->user_profile_photo.'" style = "width: 40px; margin-right:5px;"></span><span class="col-xs-3">'.$users->user_first_name.'</span></li>';
+				}
+
+			}
+		}
+		echo "</ul>";
+	}
 
 	function user_login(){
 		// $str = file_get_contents(base_url().'js/users.json');

@@ -934,23 +934,56 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
     
 
     $('a.currently_logged_user').click(function(){
-     
+      $('#loggedin-sidebar').show();
+      $("#user_list").html('');
 
-       $.post(baseurl+"users/user_login",
-      {},
+      $('.spinner_loading').removeClass('fa-user');
+      $('.spinner_loading').addClass('fa-cog');
+      $('.spinner_loading').addClass('fa-spin');
+      $('.text_loading_users').html('Updating List...');
+      $.post(baseurl+"users/user_activity_list",{},
       function(result){
+
+       setTimeout(function(){
         $("#user_list").html(result);
-        $('.user_logged').show();
+
+        $('.spinner_loading').removeClass('fa-spin');
+        $('.spinner_loading').removeClass('fa-cog');
+        $('.spinner_loading').addClass('fa-user');
+
+        $('.text_loading_users').html('User List - <strong>Reload?</strong>');
+
+
+      },2000);
+
+
+        //$('.user_logged').show();
       });
+    });
+
+    $('.update_currently_logged_user').click(function(){
+      $('#loggedin-sidebar').show();
+      $("#user_list").html('');
+      $('.spinner_loading').removeClass('fa-user');
+      $('.spinner_loading').addClass('fa-cog');
+      $('.spinner_loading').addClass('fa-spin');
+      $('.text_loading_users').html('Updating List...');
+      $.post(baseurl+"users/user_activity_list",{},
+      function(result){
+        
+       setTimeout(function(){
+        $("#user_list").html(result);
+
+        $('.spinner_loading').removeClass('fa-spin');
+        $('.spinner_loading').removeClass('fa-cog');
+        $('.spinner_loading').addClass('fa-user');
+
+        $('.text_loading_users').html('User List - <strong>Reload?</strong>');
 
 
-    // setInterval(function() {
-    //   $.post(baseurl+"users/user_login",
-    //     {},
-    //     function(result){
-    //       $("#user_list").html(result);
-    //     });
-    // }, 10000);
+      },2000);
+        //$('.user_logged').show();
+      });
     });
 
 
@@ -3350,7 +3383,15 @@ $("select.sf_chart_dateSelection").on("change", function(e) {
 $("select#job_category").on("change", function(e) {
 
   var job_category = $(this).val();
+/*
+  if(job_category == 'Company'){
 
+    $("#selectId > option").each(function() {
+      alert(this.text + ' ' + this.value);
+    });
+
+  }
+*/
   if(job_category == 'Maintenance'){
     $("select#project_manager").val('29');
     $("select#project_administrator").val('8');

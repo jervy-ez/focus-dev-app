@@ -1,4 +1,4 @@
-<div class="sign_in_bg">
+﻿<div class="sign_in_bg">
 	<?php if(@$error): ?>
 	<div class="container">
 		<div class="row">
@@ -13,7 +13,7 @@
 	</div>
 	<?php endif; ?>
 	
-	<?php if(@$signin_error): ?>
+	<?php if(isset($signin_error)): ?>
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 col-md-6 col-md-offset-3">

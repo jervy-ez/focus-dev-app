@@ -1,4 +1,16 @@
-	<div class="container-fluid">
+	<style>
+    .idle_alert {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      color: red;
+      background-color: #F6766D;
+    }
+  </style>
+  <div class="col-sm-12">
+    <div class="idle_alert"></div> 
+  </div>
+  <div class="container-fluid">
 		<div class="row">	
 			<footer>
 				<hr />
@@ -54,6 +66,22 @@
     </div>
   </div>
 </div>
+
+
+
+<div class="modal fade" id="loading_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-sm">
+    <div class="modal-content">
+      <div class="modal-body clearfix pad-10">
+        <center><h3>Loading Please Wait</h3></center>
+        <center><h2><i class="fa fa-circle-o-notch fa-spin fa-5x"></i></h2></center>
+        <p>&nbsp;</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 			</footer>
 		</div>

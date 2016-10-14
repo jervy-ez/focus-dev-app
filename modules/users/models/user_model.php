@@ -128,7 +128,8 @@ class User_model extends CI_Model{
 	}
 
 	public function delete_user($user_id){
-		$query = $this->db->query("UPDATE `users` SET `is_active` = '0' WHERE `users`.`user_id` = '$user_id' ");		
+		$query = $this->db->query("UPDATE `users` SET `is_active` = '0' WHERE `users`.`user_id` = '$user_id' ");
+		$this->db->query("UPDATE `user_activity` SET `is_active` = '0' WHERE `users`.`user_id` = '$user_id' ");		
 	}
 
 	public function get_latest_user_password($user_id){
@@ -144,6 +145,25 @@ class User_model extends CI_Model{
 	public function select_static_defaults(){
 		$query = $this->db->query("SELECT * FROM `static_defaults` ORDER BY `static_defaults_id` DESC LIMIT 1");
 		return $query;
+	}
+
+	public function set_user_activity($user_id,$time_stamp){
+		$query = $this->db->query("UPDATE `user_activity` SET `time_stamp` = '$time_stamp' WHERE `user_activity`.`user_id` = '$user_id' ");
+		return $query;
+	}
+
+	public function set_user_logged_time($user_id,$time_stamp){
+		$query = $this->db->query("UPDATE `user_activity` SET `time_logged_in` = '$time_stamp' WHERE `user_activity`.`user_id` = '$user_id' ");
+		return $query;
+	}
+
+	public function fetch_user_activity(){
+		$query = $this->db->query("SELECT `user_activity`.*, `users`.`user_first_name`,`users`.`user_profile_photo`,`user_activity`.`time_stamp`,`user_activity`.`time_logged_in` FROM `user_activity`
+			LEFT JOIN  `users` ON `users`.`user_id`  = `user_activity`.`user_id` 
+			WHERE `user_activity`.`is_active` = '1' AND `users`.`is_active` = '1' AND  `users`.`user_login_status` = '1' AND  `user_activity`.`time_stamp`  > 0
+			ORDER BY `user_activity`.`time_stamp`  DESC ");
+		return $query;
+
 	}
 
 	public function fetch_user($user_id=''){

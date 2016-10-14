@@ -821,7 +821,6 @@
 
 
 
-
 							<?php $labour_schedule_set = $user_access_arr['14'];  ?>
 							
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
@@ -834,6 +833,7 @@
 									<input type="hidden" class="" id="labour_schedule" name="labour_schedule" value="<?php echo $labour_schedule_set; ?>">
 								</div>
 							</div>
+
 
 
 
@@ -861,13 +861,12 @@
 <!-- For Company Project -->
 
 
-
-
-
 							
 							<div class="clearfix"></div>
 							<input type="submit" class="btn btn-primary m-right-10 pull-right m-bottom-10" name="update_user_access" value="Update User Access">
 						</div>
+
+
 						<div class="clearfix"></div>
 					 
 

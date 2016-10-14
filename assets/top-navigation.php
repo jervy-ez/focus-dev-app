@@ -67,6 +67,16 @@
 
 
 
+
+			<ul class="nav navbar-nav navbar-left">
+				<li>
+ 
+<input type="text" id="search_project_num" name="search_project_num" placeholder="seach project no" class="input-control input-xs tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="Seach by Project Number<br />Press the Enter button to submit" style="margin-top: 8px; border-radius: 4px; border: none; padding: 2px 6px;">
+				 
+
+				</li>
+			</ul>
+
 			<ul class="nav navbar-nav navbar-right">
 				<li>
 					<a role="menuitem"><i class="fa fa-quote-left" aria-hidden="true"></i> &nbsp;<em><?php echo $this->session->userdata('role_types'); ?></em>&nbsp; <i class="fa fa-quote-right" aria-hidden="true"></i></a>
@@ -89,6 +99,30 @@
 			
 
 		</div><!--/.navbar-collapse -->
+	</div>
+</div>
+
+
+
+
+<div class="">
+	<div class="modal fade" id="projects_search_result" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-body clearfix pad-10">
+					<table id="" class="table table-striped">
+						<thead>
+							<tr>
+								<th>Number</th>
+								<th>Project Title</th>
+							</tr>
+						</thead>
+						<tbody class="search_result_projects"></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 
