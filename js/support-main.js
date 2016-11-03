@@ -3686,6 +3686,256 @@ $('.box-widg-head .tabs').click(function(){
 });
 
 
+var pattern_reoc = 'daily';
+var no_end_occur = 1;
+
+$('a.pattern_reoc').click(function(){
+  pattern_reoc = $(this).attr('id');
+});
+
+
+$('button.reoccur_submit_now').click(function(){
+
+  var date_a = $('.time_ave_a').val();
+  var date_b = $('.time_ave_b').val();
+  var notes = $('.ave_notes').val();
+  var pathname = window.location.pathname;
+  var status = $('.ave_type').text().trim();
+
+  var user_id_a = $('.prjc_user_id').val();
+  var user_id_b = $('input#user_id_page').val();
+
+  if(document.querySelector("#user_id_page")){
+    var user_id = user_id_b;
+  }else{
+    var user_id = user_id_a;
+  }
+
+  var appointment_time_a = $('.appointment_time_a').val();
+  var appointment_time_b = $('.appointment_time_b').val();
+
+  var range_datetime_picker_1 = $('.range_datetime_picker_1').val();
+  var range_datetime_picker_2 = $('.range_datetime_picker_2').val();
+
+
+  if ($('input.no_end_occur').is(':checked')) {
+    var no_end_occur = 1;
+  }else{
+    var no_end_occur = 0;
+  }
+
+  var data_range_a = '';
+  var data_range_b = '';
+
+  if (pattern_reoc == 'daily') {
+    data_range_a = '';
+    data_range_b = daily_day_set.toString();
+
+  } else if (pattern_reoc == 'weekly') {
+    data_range_a = $('input.recur_every_week_val').val();
+    data_range_b = daily_weekly_set.toString();
+
+  } else if (pattern_reoc == 'monthly') {
+    data_range_b = $('input.pattern_of_monthly_day').val();
+    data_range_a = $('input.recur_every_month_val').val();    
+
+  } else if (pattern_reoc == 'yearly') {
+    data_range_a = $('select.pattern_of_yearly_month').val();
+    data_range_b = $('input.pattern_of_yearly_day').val();
+
+  } else {
+
+  }
+
+
+
+var data = date_a+'`'+date_b+'`'+notes+'`'+user_id+'`'+pathname+'`'+status;
+var reoccur = appointment_time_a+'`'+appointment_time_b+'`'+pattern_reoc+'`'+data_range_a+'`'+data_range_b+'`'+range_datetime_picker_1+'`'+range_datetime_picker_2+'`'+no_end_occur;
+
+//alert(data);
+
+$.post(baseurl+"users/set_availability_reoccur",{
+    'ajax_var':data, 
+    'reoccur':reoccur
+  }, 
+  function(result){
+
+    // alert(result);
+
+    if(result == '1'){
+
+      setTimeout(function(){
+        location.reload();
+      },1000);
+
+    }else{
+      setTimeout(function(){
+        $('#loading_modal').modal('hide');
+      },1000);
+      $('.ave_status_text').html(result+' <b class="caret"></b>');
+    }
+  }
+);
+
+  $('#loading_modal').modal({"backdrop": "static", "show" : true} );
+
+});
+
+
+
+
+
+  var daily_day_set = new Array("sun", "mon", "tue", "wed", "thu", "fri", "sat");
+  var daily_weekly_set = new Array("sun", "mon", "tue", "wed", "thu", "fri", "sat");
+
+$('#daily_p .rep_btn_cstm').click(function(){
+  var day_btn = $(this).attr('id').split("_");
+
+  //alert(day_btn);
+
+  if($(this).hasClass('btn-primary') ){
+    $(this).removeClass('btn-primary');
+
+    var i = daily_day_set.indexOf(day_btn[0]);
+    if(i != -1) {
+      daily_day_set.splice(i, 1);
+    }
+
+  }else{
+    $(this).addClass('btn-primary');
+    daily_day_set.push(day_btn[0]);
+  }
+
+ // alert(daily_day_set.toString());
+});
+
+$('#weekly_p .rep_btn_cstm').click(function (){
+  var day_btn = $(this).attr('id').split("_");
+
+  //alert(day_btn);
+
+  if($(this).hasClass('btn-primary') ){
+    $(this).removeClass('btn-primary');
+
+    var i = daily_weekly_set.indexOf(day_btn[0]);
+    if(i != -1) {
+      daily_weekly_set.splice(i, 1);
+    }
+
+  }else{
+    $(this).addClass('btn-primary');
+    daily_weekly_set.push(day_btn[0]);
+  }
+
+ // alert(daily_weekly_set.toString());
+
+});
+
+$('.set_reoccurrence').click(function(){
+  var needs_date = 0;
+
+  daily_day_set = new Array("sun", "mon", "tue", "wed", "thu", "fri", "sat");
+  daily_weekly_set = new Array("sun", "mon", "tue", "wed", "thu", "fri", "sat");
+
+
+
+  if($('input.time_ave_a').val() != ''){
+    var date_time_raw = $('input.time_ave_a').val().split(" ");
+    $('input.time_ave_a').parent().removeClass('has-error');
+  }else{
+    var date_time_raw = ['','','','',''];
+    needs_date = 1;
+    $('input.time_ave_a').parent().addClass('has-error');
+  }
+
+  $('.range_datetime_picker_1').val(date_time_raw[0]);
+  $('.appointment_time_a').val(date_time_raw[1]+' '+date_time_raw[2]);
+
+  if($('input.time_ave_b').val() != ''){
+    var date_time_raw_b = $('input.time_ave_b').val().split(" ");
+    $('input.time_ave_b').parent().removeClass('has-error');
+  }else{
+    var date_time_raw_b = ['','','','',''];
+    $('input.time_ave_b').parent().addClass('has-error');
+    needs_date = 1;
+  }
+
+  $('.appointment_time_b').val(date_time_raw_b[1]+' '+date_time_raw_b[2]);
+
+  if( date_time_raw[0] != ''){
+    var date_raw = date_time_raw[0].split("/");
+  }else{
+    var date_raw = ['','','','',''];
+    needs_date = 1;
+  }
+
+  if(needs_date == 0){
+    $("#set_availability").modal('hide');
+   $('#setting_reoccurrence').modal('show');
+  } 
+
+  $('.pattern_of_monthly_day').val(date_raw[0]);
+  $('.pattern_of_yearly_day').val(date_raw[0]);
+  $('select.pattern_of_yearly_month').val(date_raw[1]);
+
+  $('button.rep_btn_cstm').addClass('btn-primary');
+  $('button.rep_btn_cstm').addClass('btn-primary');
+
+  $('input.recur_every_week_val').val('1');
+  $('input.recur_every_month_val').val('1');
+  
+  $('.no_end_occur').prop('checked', true);
+  $('.range_datetime_picker_2').val('').prop('disabled', true);
+
+});
+
+$('.no_end_occur').click(function(){
+
+
+  if(this.checked) {
+
+    $('input.range_datetime_picker_2').val('').prop('disabled', true);
+  }else{
+
+    $('input.range_datetime_picker_2').val('').prop('disabled', false);
+  }
+
+});
+
+
+
+
+
+
+$('button.set_full_day').click(function(){
+
+  var currentdate = new Date();
+
+  if(currentdate.getHours() > 12){
+    var time_set = 'PM';
+  }else{
+    var time_set = 'AM';
+  }
+
+  var hours = currentdate.getHours() % 12 || 12;
+
+  var set_month = (currentdate.getMonth()+1) < 10 ? '0' + (currentdate.getMonth()+1) : (currentdate.getMonth()+1);
+
+
+  var current_date_time_a = currentdate.getDate() + "/" + set_month + "/" + currentdate.getFullYear() + " 07:00 AM";
+
+  $('input.time_ave_a').val(current_date_time_a);
+
+
+  var current_date_time_b = currentdate.getDate() + "/" + set_month + "/" + currentdate.getFullYear() + " 05:00 PM";
+
+
+  $('input.time_ave_b').val(current_date_time_b);
+
+
+});
+
+
 $('.print-wip').on("click", function(event) {
   event.preventDefault();
   var totals_wip = $('.totals_wip').html();
