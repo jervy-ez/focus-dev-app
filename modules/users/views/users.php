@@ -96,7 +96,7 @@
 
 												<?php if($focus_comp_group_checker == ''): ?>
 													<?php $focus_comp_group_checker = $user->company_name; $wid_type = 'c'; ?>
-													<div class="col-md-12 col-sm-12 col-lg-12 col-xs-12"><div class="text-center"><h3>FSF Group Pty Ltd</h3></div> </div>
+													<div class="col-md-12 col-sm-12 col-lg-12 col-xs-12"><div class="text-center pad-top-10"><h4>FSF Group Pty Ltd</h4></div> </div>
 												<?php endif; ?>
 
 												<?php if($focus_comp_group != $focus_comp_group_checker  ): ?>
@@ -106,7 +106,7 @@
 													<div class="clearfix"></div>
 													<p>&nbsp;<br /></p>
 
-													<div class="col-md-12 col-sm-12 col-lg-12 col-xs-12"><div class="text-center"><h3><?php echo $user->company_name; ?></h3></div> </div>
+													<div class="col-md-12 col-sm-12 col-lg-12 col-xs-12"><div class="text-center"><h4><?php echo $user->company_name; ?></h4></div> </div>
 													<?php endif; ?>
 												<?php endif; ?>
 

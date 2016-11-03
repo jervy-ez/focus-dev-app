@@ -18,6 +18,8 @@
         <link href="<?php echo base_url(); ?>css/main.css" rel="stylesheet" type="text/css">
         <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/vendor/jquery-1.11.0.min.js"></script>
 
+        <script src="<?php echo base_url(); ?>js/moment.js" ></script>  
+
         <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/jquery-1.12.0.min.js"></script>
         <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/jquery.dataTables.min.js"></script>
         <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/dataTables.fixedColumns.min.js"></script>
@@ -39,6 +41,8 @@
 		<script src="<?php echo base_url(); ?>js/c3/d3.js" charset="utf-8"></script>
 		<script src="<?php echo base_url(); ?>js/c3/c3.js"></script>
 
+        <link href="<?php echo base_url(); ?>css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+        <script src="<?php echo base_url(); ?>js/bootstrap-datetimepicker.min.js" ></script>
 
 	 
     </head>

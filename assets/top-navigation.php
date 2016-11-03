@@ -77,10 +77,50 @@
 				</li>
 			</ul>
 
+
+
+
+
+
 			<ul class="nav navbar-nav navbar-right">
 				<li>
 					<a role="menuitem"><i class="fa fa-quote-left" aria-hidden="true"></i> &nbsp;<em><?php echo $this->session->userdata('role_types'); ?></em>&nbsp; <i class="fa fa-quote-right" aria-hidden="true"></i></a>
 				</li>
+
+
+<!-- avv here -->	<li id="fat-menu" class="dropdown">
+					<a href="#" id="drop3" role="button" class="dropdown-toggle ave_status_text" data-toggle="dropdown"><?php $this->users->get_user_availability($this->session->userdata('user_id')); ?> <b class="caret"></b></a>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+					
+							<li role="">
+								<a class="pointer set_ave_def" role="menuitem" tabindex="-1"  style="color: green;"><i class="fa fa-check-circle"></i> Available </a>
+							</li>
+
+							<li role="">
+								<a class="pointer set_ave" role="menuitem" tabindex="-1" style="color: orange;" data-toggle="modal" data-target="#set_availability" tabindex="-1" href="#"><i class="fa fa-arrow-circle-left"></i> Out of Office </a>
+							</li>
+
+							<li role="">
+								<a class="pointer set_ave" role="menuitem" tabindex="-1" style="color: red;" data-toggle="modal" data-target="#set_availability" tabindex="-1" href="#"><i class="fa fa-exclamation-circle"></i> Busy </a>
+							</li>
+
+							<li role="">
+								<a class="pointer set_ave" role="menuitem" tabindex="-1" style="color: gray;" data-toggle="modal" data-target="#set_availability" tabindex="-1" href="#"><i class="fa fa-minus-circle"></i> Leave </a>
+							</li>
+							
+							<li role="">
+								<a class="pointer set_ave" role="menuitem" tabindex="-1" style="color: purple;" data-toggle="modal" data-target="#set_availability" tabindex="-1" href="#"><i class="fa fa-times-circle"></i> Sick </a>
+							</li>
+							
+							
+					</ul>
+				</li>
+
+
+
+
+
+
 				<li id="fat-menu" class="dropdown">
 					<a href="#" id="drop3" role="button" class="dropdown-toggle tour-6" data-toggle="dropdown"><i class="fa fa-user"></i> <?php echo ucfirst($this->session->userdata('user_first_name')).' '.ucfirst($this->session->userdata('user_last_name')); ?> <b class="caret"></b></a>
 					<ul class="dropdown-menu" role="menu" aria-labelledby="drop3">

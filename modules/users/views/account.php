@@ -48,6 +48,8 @@
 		<div class="section col-sm-12 col-md-11 col-lg-11">
 			<div class="container-fluid">
 
+			<input class="hide" type="hidden" id="user_id_page" value="<?php echo $user_id_page; ?>">
+
 
 
 				<div class="row">
@@ -362,22 +364,38 @@
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('direct_landline')){ echo 'has-error has-feedback';} ?>">
 												<label for="direct_landline" class="col-sm-5 control-label">Direct Landline</label>
 												<div class="col-sm-7">
+
+													<div class="input-group ">
+														<span class="input-group-addon">+</span>
 													<input type="text" class="form-control direct_landline" id="direct_landline" name="direct_landline" onchange="contact_number_assign('direct_landline')" tabindex="11" placeholder="Direct Landline"  value="<?php echo $user->direct_number; ?>">																										
+												</div>
 												</div>
 											</div>
 
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('after_hours')){ echo 'has-error has-feedback';} ?>">
 												<label for="after_hours" class="col-sm-4 control-label">After Hours</label>
 												<div class="col-sm-8">
+
+													<div class="input-group ">
+														<span class="input-group-addon">+</span>
 													<input type="text" class="form-control after_hours" id="after_hours" name="after_hours" onchange="contact_number_assign('after_hours')" tabindex="12" placeholder="After Hours"  value="<?php echo $user->after_hours; ?>">																										
+												</div>
 												</div>
 											</div>
 											
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
 												<label for="mobile_number" class="col-sm-5 control-label">Mobile Number</label>
 												<div class="col-sm-7">
-													<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign('mobile_number')"  tabindex="13" value="<?php echo $user->mobile_number; ?>">
+
+													<div class="input-group ">
+														<span class="input-group-addon">+</span>
+														<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign_user('mobile_number')"  tabindex="13" value="<?php echo $user->mobile_number; ?>">
+													</div>
+
+
 												</div>
+
+
 											</div>
 
 											<?php if($this->session->userdata('is_admin') ==  1): ?>
@@ -587,7 +605,63 @@
 
 					<div class="col-md-3">
 
+
+
 					<div class="m-top-10">
+
+					<div class="panel-group" role="tablist">
+							<div class="panel panel-default">
+								<div class="panel-heading" role="tab" id="collapseListGroupHeading1">
+									<h4 class="panel-title">
+										<a class="collapsed" role="button" data-toggle="collapse" href="#collapseListGroup2" aria-expanded="false" aria-controls="collapseListGroup2">
+											<i class="fa fa-tags fa-lg"></i> Availability <label> <?php $this->users->get_user_availability($user_id_page); ?> </label>
+										</a>
+									</h4>
+								</div> 
+								<div id="collapseListGroup2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading1" aria-expanded="false" style="height: 0px;">
+
+
+									<div class="pad-10">
+										<div class="clearfix m-top-0 m-bottom-10">
+
+
+											<label class="control-label m-top-5 col-xs-12 pointer set_ave_def" style="color: green;"><i class="fa fa-check-circle"></i> Available </label>
+											<label class="control-label m-top-5 col-xs-12 pointer set_ave" style="color: orange;" data-toggle="modal" data-target="#set_availability" tabindex="-1"><i class="fa fa-arrow-circle-left"></i> Out of Office </label>
+											<label class="control-label m-top-5 col-xs-12 pointer set_ave" style="color: red;" data-toggle="modal" data-target="#set_availability" tabindex="-1"><i class="fa fa-exclamation-circle"></i> Busy </label>
+											<label class="control-label m-top-5 col-xs-12 pointer set_ave" style="color: gray;" data-toggle="modal" data-target="#set_availability" tabindex="-1"><i class="fa fa-minus-circle"></i> Leave </label>
+											<label class="control-label m-top-5 col-xs-12 pointer set_ave" style="color: purple;" data-toggle="modal" data-target="#set_availability" tabindex="-1"><i class="fa fa-times-circle"></i> Sick</label>
+
+											<p>&nbsp;</p>
+											<p><strong><i class="fa fa-calendar-o" aria-hidden="true"></i> Future Availability</strong></p>
+											<?php $f_availability = $this->users->fetch_user_future_availability($user_id_page); ?>
+
+											<ul>
+												<?php foreach ($f_availability->result_array() as $avail_data): ?>
+
+													<li>
+														<span> 
+															<strong class="pointer edit_f_ava" data-toggle="modal" data-target="#update_availability" id="<?php echo $avail_data['user_availability_id'].'_'.$avail_data['notes'].'_'.date('d/m/Y h:i A',$avail_data['date_time_stamp_a']).'_'.date('d/m/Y h:i A',$avail_data['date_time_stamp_b']); ?>">
+																<?php echo $avail_data['status']; ?>
+															</strong> - <?php echo date("D jS \of M Y h:i A",$avail_data['date_time_stamp_a']); ?>
+														</span>
+														<span class="pull-right pointer delete_f_ava" id="<?php echo $avail_data['user_availability_id']; ?>" style="color:red">
+															<i class="fa fa-times" aria-hidden="true"></i>
+														</span>
+													</li>
+
+												<?php endforeach; ?>
+											</ul>
+
+										</div>
+									</div>
+
+								</div>
+								</div>
+							</div> 
+
+
+
+							
 						<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id  || $this->session->userdata('is_admin') ==  1  ): ?>
 						<div class="panel-group" role="tablist">
 							<div class="panel panel-default">
@@ -639,6 +713,12 @@
 							</div>
 						</div>
 
+
+
+						
+ 
+
+
 					<?php endif; ?>
 						
 						<?php if( ($this->session->userdata('users') > 1 ) || $this->session->userdata('is_admin') ==  1  ): ?>
@@ -649,15 +729,28 @@
 
  						<input type="hidden" name="user_id_access" value="<?php echo $user_id; ?>">
 
+
+
+
 						<div class="box clearfix">
-							<div class="box-head pad-5 m-bottom-10">
-								<label><i class="fa fa-unlock-alt fa-lg"></i> Select Access</label>
-							</div>						
+							<div class="box-head pad-5">
+								<label><a style="font-weight:normal; color: #333; font-size:16px; margin-left:10px;" class="collapsed" role="button" data-toggle="collapse" href="#collapseListGroup3" aria-expanded="false" aria-controls="collapseListGroup3"> 
+								<i class="fa fa-unlock-alt fa-lg"></i> Select Access</label>
+								</a>
+							</div>		
+
+
 
 							<?php $is_admin_set = $is_user_admin;  ?>
 							
 
-							<div class="col-xs-12 m-bottom-10 clearfix">
+							<div id="collapseListGroup3" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="" aria-expanded="false" style="height: auto;">
+
+
+							<div class="col-xs-12 m-bottom-10 clearfix m-top-10">
+
+
+
 								<label for="is_admin" class="col-sm-3 control-label m-top-5">Role</label>
 
 								<div class="col-sm-9">
@@ -865,6 +958,7 @@
 							<div class="clearfix"></div>
 							<input type="submit" class="btn btn-primary m-right-10 pull-right m-bottom-10" name="update_user_access" value="Update User Access">
 						</div>
+</div>
 
 
 						<div class="clearfix"></div>
@@ -889,7 +983,7 @@
 
 										<?php $comp = explode(',', $direct_company); ?>
 
- 										<input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
+ 										<input type="hidden" name="user_id" class="user_data_id" value="<?php echo $user_id; ?>">
 
 										<select name="fcompd[]" multiple="" style="width: 100%; margin-bottom: 10px;">
 											 

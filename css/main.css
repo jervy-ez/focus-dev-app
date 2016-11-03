@@ -30,9 +30,9 @@
 }
 
 .sign_in_bg{
-	background: #fff url("../img/sojourn_bg_signin.png") no-repeat center center;
-/*background: #fff url("../img/sojourn_bg_football.png") no-repeat center center;*/
-	height: 99.9%;
+	/*background: #fff url("../img/sojourn_bg_signin.png") no-repeat center center;*/
+background: #fff url("../img/SOJOURN_Melbourne_Cup-2016.jpg") no-repeat center center;
+	height: 97.5%; /* 99.9 */
     padding-top: 50px;
 	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/sojourn_bg_signin.png', sizingMethod='scale');
 	-ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../img/sojourn_bg_signin.png', sizingMethod='scale')";
@@ -2229,10 +2229,13 @@ tr.active_row_work>td{
 	background: #2621f3 !important;
 }
 
-
-
-
-
+.ave_status_text span, .ave_status_text_page span{
+    background: #fff;
+    padding: 3px 5px;
+    border-radius: 16px;
+    margin-right: 4px;
+    text-shadow: none;
+}
 
 .sub_head{
 	font-size: 16px;

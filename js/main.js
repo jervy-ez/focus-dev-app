@@ -631,6 +631,50 @@ $("#create_contract").click(function(){
     });
 });
 
+$("#create_design_contract").click(function(){
+    var project_id = get_project_id();
+    var contract_date = $("#contract_date").val();
+    var plans_elv_draw = "";
+    var sched_work_quotation = "";
+    var condition_quote_contract = "";
+
+    if(contract_date == ""){
+      contract_date = $("#reports_contract_date").val();
+      plans_elv_draw = $("#reports_plans_elv_draw").val();
+      sched_work_quotation = $("#reports_sched_work_quotation").val();
+      condition_quote_contract = $("#reports_condition_quote_contract").val();
+    }else{
+      contract_date = $("#contract_date").val();
+      plans_elv_draw = $("#plans_elv_draw").val();
+      sched_work_quotation = $("#sched_work_quotation").val();
+      condition_quote_contract = $("#condition_quote_contract").val();
+    }
+
+    $.post(baseurl+"works/insert_contract_notes",
+    { 
+      project_id : project_id,
+      cont_date: contract_date,
+      plans_elv_draw: plans_elv_draw,
+      sched_works_qoute: sched_work_quotation,
+      cond_quote_cont: condition_quote_contract
+    },
+    function(result){
+      $.post(baseurl+"works/view_send_pdf", 
+      {
+      }, 
+      function(result){
+        $.post(baseurl+"send_emails/display_proj_pdf_list", 
+        { 
+          project_id: project_id
+        }, 
+        function(result){
+          $("#project_pdf_list").html(result);
+          window.open(baseurl+'works/design_contract_tot_rntf/'+project_id);
+        });
+      });
+    });
+});
+
 $("#create_contract_send_pdf").click(function(){ 
     var project_id = get_project_id();
     $.post(baseurl+"works/insert_contract_notes",
@@ -5876,6 +5920,24 @@ $('.work_contractor_click').click(function () {
       $(this).prop({selectionStart: caretPosition,   // restore caret position
                         selectionEnd:   caretPosition});
     }
+    // else{
+    //   rows = $(this).attr('rows');
+    //   //Optiion 2: Limit to arbitrary # of rows
+    //   rows = 30;
+
+    //   var value = '';
+    //   var splitval = $(this).val().split("\n");
+
+    //   for(var a=0;a<rows && typeof splitval[a] != 'undefined';a++) {
+    //     if(a>0) value += "\n";
+    //     value += splitval[a];
+    //   }
+
+    //   $(this).val(value);
+
+    //   $(this).prop({selectionStart: caretPosition,   // restore caret position
+    //                     selectionEnd:   caretPosition});
+    // }
   });
 
   $('#update_work_notes').bind('change keyup', function(event) {
@@ -5899,6 +5961,24 @@ $('.work_contractor_click').click(function () {
       $(this).prop({selectionStart: caretPosition,   // restore caret position
                         selectionEnd:   caretPosition});
     }
+    // else{
+    //   rows = $(this).attr('rows');
+    //   //Optiion 2: Limit to arbitrary # of rows
+    //   rows = 30;
+
+    //   var value = '';
+    //   var splitval = $(this).val().split("\n");
+
+    //   for(var a=0;a<rows && typeof splitval[a] != 'undefined';a++) {
+    //     if(a>0) value += "\n";
+    //     value += splitval[a];
+    //   }
+
+    //   $(this).val(value);
+
+    //   $(this).prop({selectionStart: caretPosition,   // restore caret position
+    //                     selectionEnd:   caretPosition});
+    // }
    
   });
 
@@ -6367,6 +6447,11 @@ window.toggleShoppingCenterDetails = function(id){
 
     $(".select-focus").on("change", function(e) {      
         var myVal = $(this).val();
+
+        $('select#project_manager').val('');
+        $('option.pm_comp_option').hide();
+        $('option.pm_comp_'+myVal).show();
+
         var controller_method = 'projects/set_jurisdiction';
         $('#s2id_state_a .select2-chosen').empty();
 
@@ -7693,12 +7778,13 @@ function contact_number_assign(here){
 
   var curVal = $("#"+here).val().replace(/[^\d]/g, '');
 
-  var valhere = curVal.substring( 0,4)+' '+curVal.substring(4,8)+' '+curVal.substring(8,12)+' '+curVal.substring(12,16)+' '+curVal.substring(16,20);
+  var valhere = curVal.substring(0,2)+' '+curVal.substring(2,3)+' '+curVal.substring(3,7)+' '+curVal.substring(7,16)+' '+curVal.substring(16,20);
 
   var newString = valhere.replace(/\s+/g,' ').trim();
 
   $("#"+here).val(newString);
 }
+
 
 function mobile_number_assign(here){
 //  var curVal = $("#"+here).val().replace(/\s/g, '');
@@ -7709,6 +7795,19 @@ function mobile_number_assign(here){
   $("#"+here).val(newString);
 
 }
+
+
+
+function mobile_number_assign_user(here){
+//  var curVal = $("#"+here).val().replace(/\s/g, '');
+
+  var curVal = $("#"+here).val().replace(/[^\d]/g, '');
+  var valhere = curVal.substring( 0,2)+' '+curVal.substring(2,5)+' '+curVal.substring(5,8)+' '+curVal.substring(8,13)+' '+curVal.substring(13,16);
+  var newString = valhere.replace(/\s+/g,' ').trim();
+  $("#"+here).val(newString);
+
+}
+
 
 function toTitleCase(str){
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});

@@ -11,6 +11,10 @@ class Users extends MY_Controller{
 		$this->load->helper('cookie');
 
 
+
+	//	var_dump($this->session->userdata);
+
+
 		/*
 $config = Array(
 			'protocol' => 'smtp',
@@ -1566,12 +1570,311 @@ $config = Array(
 
 	// }
 
+	function delete_user_ava(){
+		$this->clear_apost();
+		$ava_id = $_POST['ajax_var'];
+		$this->user_model->delete_ava($ava_id);
+	}
+
+
+	function update_availability(){
+		$this->clear_apost();
+		$ave = explode('`', $_POST['ajax_var']);
+
+
+		$date_a = $ave[0];
+		$date_b = $ave[1];
+		$notes = $ave[2];
+		$user_id = $ave[3];
+		$pathname = $ave[4];
+		$status = $ave[5];
+		$ava_id = $ave[6];
+
+
+
+		$time_stamp_a = $this->date_formater_to_timestamp($date_a);
+		$time_stamp_b = $this->date_formater_to_timestamp($date_b);
+
+		$this->user_model->update_ava($ava_id,$notes, $time_stamp_a , $time_stamp_b);
+
+
+
+
+		$user_q = $this->user_model->fetch_user($user_id);
+		$user_detail = array_shift($user_q->result());
+		$user_name = ucfirst($user_detail->user_first_name).' '.ucfirst($user_detail->user_last_name);
+
+		$person_did = $this->session->userdata('user_id');
+		$type = 'User Availability';
+		$actions = 'Availability: '.$status.' is updated to.'.$user_name;
+		$date = date("d/m/Y");
+		$time = date("H:i:s");
+		$this->user_model->insert_user_log($person_did,$date,$time,$actions,'',$type,'7');
+
+
+
+
+/*
+		echo "$ava_id,$notes, $time_stamp_a , $time_stamp_b";
+
+		if (strpos($pathname, 'users') !== false) {
+			echo '1';
+		}
+*/
+
+	//	var_dump($ave);
+	}
+
+
+	function set_availability(){
+		$this->clear_apost();
+		$ave = explode('`', $_POST['ajax_var']);
+		
+		$date_a = $ave[0];
+		$date_b = $ave[1];
+		$notes = $ave[2];
+		$user_id = $ave[3];
+		$pathname = $ave[4];
+		$status = $ave[5];
+
+		$user_q = $this->user_model->fetch_user($user_id);
+		$user_detail = array_shift($user_q->result());
+		$user_name = ucfirst($user_detail->user_first_name).' '.ucfirst($user_detail->user_last_name);
+
+		$person_did = $this->session->userdata('user_id');
+
+		$type = 'User Availability';
+		$actions = 'Availability: '.$status.' is been set to.'.$user_name;
+		//
+
+		//date_default_timezone_set("Australia/Perth");
+
+
+
+		$this->load->module('admin');
+		$this->load->model('admin_m');
+
+		
+		$fetch_user_loc = $this->admin_m->fetch_user_location($person_did);
+		$user_location = array_shift($fetch_user_loc->result_array());
+
+		if (strpos($user_location['location'], 'NSW') !== false) {
+			date_default_timezone_set('Australia/Sydney');
+		}elseif (strpos($user_location['location'], 'QLD') !== false) {
+			date_default_timezone_set('Australia/Melbourne');
+		}elseif (strpos($user_location['location'], 'WA') !== false) {
+			date_default_timezone_set('Australia/Perth');
+		}else{
+			date_default_timezone_set('Australia/Perth');
+		} 
+
+
+		$date = date("d/m/Y");
+		$time = date("H:i:s");
+		$this->user_model->insert_user_log($person_did,$date,$time,$actions,'',$type,'7');
+
+
+		//var_dump($date_a);
+
+		$time_stamp_a = $this->date_formater_to_timestamp($date_a);
+		$time_stamp_b = $this->date_formater_to_timestamp($date_b);
+		$this->user_model->inset_availability($user_id,$status,$notes,$time_stamp_a,$time_stamp_b);
+
+		if (strpos($pathname, 'users') !== false) {
+			echo '1';
+		}else{
+			echo $this->get_user_availability($user_id);
+		}
+
+	}
+
+
+	function reset_availability(){
+ 
+
+		$data_reset = explode('`', $_POST['ajax_var']);
+
+		$pathname = $data_reset[0];
+		$user_id = $data_reset[1];
+
+		if (strpos($pathname, 'users') !== false) {
+			echo '1';
+		}
+
+		$current_date_time = strtotime(date("Y-m-d h:i A"));
+		$this->user_model->remove_availability($user_id,$current_date_time);
+	}
+
+	function availability(){
+		if(!$this->_is_logged_in() ): 		
+			redirect('', 'refresh');
+		endif;
+
+		$this->_check_user_access('users',1);
+
+		$fetch_user= $this->user_model->list_user_short();
+		$data['users'] = $fetch_user->result();
+		$data['main_content'] = 'availability';
+
+		$data['screen'] = 'User Availability';
+		$this->load->view('page', $data);		
+	}
+
+
+	function if_user_is_available($user_id){
+		$current_date_time = strtotime(date("Y-m-d h:i A"));
+		$user_ave_q = $this->user_model->get_user_availability($user_id,$current_date_time);
+		if($user_ave_q->num_rows === 1){
+			return false;
+		}else{
+			return true;
+		}
+	}
+
+	function fetch_user_ave_data($user_id){
+		$current_date_time = strtotime(date("Y-m-d h:i A"));
+		$user_ave_q = $this->user_model->get_user_availability($user_id,$current_date_time);
+		$user_ave = array_shift($user_ave_q->result_array());
+		return $user_ave;
+	}
+
+	function fetch_user_future_availability($user_id){
+		$current_date_time = strtotime(date("Y-m-d h:i A"));
+		$user_ave_q = $this->user_model->fetch_future_availability($user_id,$current_date_time);
+		return $user_ave_q;
+	}
+
+	function get_user_availability($user_id,$mod=''){
+
+		$current_date_time = strtotime(date("Y-m-d h:i A"));
+
+		$user_ave_q = $this->user_model->get_user_availability($user_id,$current_date_time);
+		$user_ave = array_shift($user_ave_q->result_array());
+
+		if($mod != ''){
+
+			if($user_ave_q->num_rows === 1){
+
+				if($user_ave['status'] == 'Busy'){
+					echo '<span style="color:white; background: red;"><i class="fa fa-exclamation-circle"></i>';
+				}elseif($user_ave['status'] == 'Sick'){
+					echo '<span style="color:white; background: purple;"><i class="fa fa-times-circle"></i>';
+				}elseif($user_ave['status'] == 'Leave'){
+					echo '<span style="color:white; background: gray;"><i class="fa fa-minus-circle"></i>';
+				}elseif($user_ave['status'] == 'Out of Office'){
+					echo '<span style="color:white; background: orange;"><i class="fa fa-arrow-circle-left"></i>';
+				}else{ }
+
+				echo ' '.$user_ave['status'].' </span>';
+
+			}else{
+				echo '<span style="color:white; background: green;"><i class="fa fa-check-circle"></i>';
+				echo ' Available </span>';
+			}
+
+		}else{
+
+			if($user_ave_q->num_rows === 1){
+
+				if($user_ave['status'] == 'Busy'){
+					echo '<span style="color: red;"><i class="fa fa-exclamation-circle"></i>';
+				}elseif($user_ave['status'] == 'Sick'){
+					echo '<span style="color: purple;"><i class="fa fa-times-circle"></i>';
+				}elseif($user_ave['status'] == 'Leave'){
+					echo '<span style="color: gray;"><i class="fa fa-minus-circle"></i>';
+				}elseif($user_ave['status'] == 'Out of Office'){
+					echo '<span style="color: orange;"><i class="fa fa-arrow-circle-left"></i>';
+				}else{ }
+
+				echo ' '.$user_ave['status'].' </span>';
+
+			}else{
+				echo '<span style="color: green;"><i class="fa fa-check-circle"></i>';
+				echo ' Available </span>';
+			}
+		}
+
+	}
+
+	function get_user_ave_comments($user_id){
+
+
+		$fetch_user_loc = $this->admin_m->fetch_user_location($user_id);
+		$user_location = array_shift($fetch_user_loc->result_array());
+
+		if (strpos($user_location['location'], 'NSW') !== false) {
+			date_default_timezone_set('Australia/Sydney');
+		}elseif (strpos($user_location['location'], 'QLD') !== false) {
+			date_default_timezone_set('Australia/Melbourne');
+		}elseif (strpos($user_location['location'], 'WA') !== false) {
+			date_default_timezone_set('Australia/Perth');
+		}else{
+			date_default_timezone_set('Australia/Perth');
+		} 
+
+
+
+
+		$current_date_time = strtotime(date("Y-m-d h:i A"));
+
+		$user_ave_q = $this->user_model->get_user_availability($user_id,$current_date_time);
+		$user_ave = array_shift($user_ave_q->result_array());
+
+
+		if( strlen($user_ave['notes']) > 0 ){
+			echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" title="" data-original-title="'.$user_ave['notes'].' Return:'.date('l jS \of F Y h:iA',$user_ave['date_time_stamp_b']).'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
+		}else{
+			if($user_ave['status']!= ''){
+				echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" title="" data-original-title="Return: '.date('l jS \of F Y h:iA',$user_ave['date_time_stamp_b']).'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
+			}
+		}
+
+	}
+
+
+	function date_formater_to_timestamp($input_datetime){
+
+
+		//05/10/2016 03:53 PM
+		$set = explode(' ',$input_datetime);
+		$date = explode('/', $set[0]);
+		$time = explode(':', $set[1]);
+/*
+		if($set[2] == 'PM'){
+			$time[0] = $time[0] + 12;
+		}
+*/
+
+
+		$userid = $this->session->userdata('user_id');
+
+		$fetch_user_loc = $this->admin_m->fetch_user_location($userid);
+		$user_location = array_shift($fetch_user_loc->result_array());
+
+		if (strpos($user_location['location'], 'NSW') !== false) {
+			date_default_timezone_set('Australia/Sydney');
+		}elseif (strpos($user_location['location'], 'QLD') !== false) {
+			date_default_timezone_set('Australia/Melbourne');
+		}elseif (strpos($user_location['location'], 'WA') !== false) {
+			date_default_timezone_set('Australia/Perth');
+		}else{
+			date_default_timezone_set('Australia/Perth');
+		} 
+
+		$date_formatted = $date[2].'-'.$date[1].'-'.$date[0].' '.$time[0].':'.$time[1].' '.$set[2];
+		//  '2016-10-05 15:00 AM';
+		$timestamp = strtotime("$date_formatted");
+		return $timestamp;
+	}
+
 
 	function user_activity_list(){
 		$admin = $this->session->userdata('is_admin');
 		$log_in_users = $this->user_model->fetch_user_activity();
 
-		date_default_timezone_set("Australia/Perth"); 
+
+
+
 		$time_stamp=time();
 		$set_time = strtotime(  date("Y-m-d h:i:s",$time_stamp)   );
  

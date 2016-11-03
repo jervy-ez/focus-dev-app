@@ -89,6 +89,53 @@ class User_model extends CI_Model{
 		return $query;
 	}
 
+	public function inset_availability($user_id,$status,$notes,$date_time_stamp_a,$date_time_stamp_b){
+		$query = $this->db->query(" INSERT INTO  `user_availability` (`user_id`, `status`, `notes`, `date_time_stamp_a`, `date_time_stamp_b`) VALUES ( '$user_id', '$status', '$notes', '$date_time_stamp_a', '$date_time_stamp_b')	");
+		return $query;
+	}
+
+	public function delete_ava($ava_id){
+		$query = $this->db->query("DELETE FROM `user_availability` WHERE `user_availability`.`user_availability_id` = '$ava_id' ");
+		return $query;
+	}
+
+	public function remove_availability($user_id,$time_stamp){
+		$query = $this->db->query("DELETE FROM `user_availability`
+			WHERE `user_availability`.`user_id` = '$user_id'
+			AND `user_availability`.`date_time_stamp_b` >= '$time_stamp'
+			AND `user_availability`.`date_time_stamp_a` <= '$time_stamp' ");
+		return $query;
+	}
+
+	public function update_ava($user_availability_id,$notes, $date_time_stamp_a , $date_time_stamp_b){
+		$query = $this->db->query("UPDATE `user_availability` SET `notes` = '$notes', `date_time_stamp_a` = '$date_time_stamp_a', `date_time_stamp_b` = '$date_time_stamp_b' WHERE `user_availability`.`user_availability_id` = '$user_availability_id'");
+		return $query;
+	}
+
+	public function fetch_future_availability($user_id,$time_stamp){
+		$query = $this->db->query("SELECT * FROM `user_availability` WHERE `user_availability`.`user_id` = '$user_id' AND `user_availability`.`date_time_stamp_a` > '$time_stamp' ORDER BY `user_availability`.`user_availability_id` ASC");
+		return $query;
+	}
+
+	public function list_user_short(){
+		$query = $this->db->query("SELECT `users`.`user_id` AS `primary_user_id` , `users`.`user_first_name`, `users`.`user_last_name` , `users`.`user_focus_company_id`,`users`.`user_profile_photo`, `users`.`user_focus_company_id`, `company_details`.`company_name` FROM `users`
+		LEFT JOIN `company_details` ON `company_details`.`company_id` = `users`.`user_focus_company_id`
+		 WHERE `users`.`is_active` = '1' ORDER BY `users`.`user_first_name` ASC");
+		return $query;
+	}
+
+	public function get_user_availability($user_id,$time_stamp){
+		$query = $this->db->query("SELECT * FROM `user_availability`
+			LEFT JOIN  `users` ON `users`.`user_id` =  `user_availability`.`user_id`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `users`.`user_focus_company_id`
+			WHERE `user_availability`.`user_id` = '$user_id'
+			AND `user_availability`.`date_time_stamp_b` >= '$time_stamp'
+			AND `user_availability`.`date_time_stamp_a` <= '$time_stamp'
+			ORDER BY `user_availability`.`user_availability_id` DESC LIMIT 1");
+		return $query;
+		//if($query->num_rows === 1){
+	}
+
 	public function fetch_admin_defaults(){
 		$query = $this->db->query("SELECT * FROM `admin_defaults`");
 		return $query;

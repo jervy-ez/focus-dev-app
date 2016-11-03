@@ -752,18 +752,14 @@ function validate_progress_dates(date_id){
 
 //alert(data);
 
-  ajax_data(data,'invoice/insert_invoice_progress','');
-     $('#loading_modal').modal('show');
+     setTimeout(function(){
+      ajax_data(data,'invoice/insert_invoice_progress','');
+     },500);
+    });
 
-});
-
-
- setTimeout(function(){
-      window.location.assign("?submit_invoice="+project_id);
- },8000);
-    
-
-
+     setTimeout(function(){
+          window.location.assign("?submit_invoice="+project_id);
+     },10000);
   }
 
 
@@ -773,24 +769,23 @@ function validate_progress_dates(date_id){
     $('.progress-body').find('tr').each(function(){
       var final_payment = $(this).find("input.final_payment").val();
 
-   // alert($(this).html());
-   progres_counter++;    
-   var row_progress_percent = $(this).find('input.progress-percent').val();
-   var total_cost_progress = $(this).find('.total_cost_progress').text();
-   var progress_date = $(this).find('input.progress_date').val();
-   var data = row_progress_percent+'*'+progres_counter+'*'+total_cost_progress+'*'+final_payment+'*'+progress_date+'*'+project_id;
+       // alert($(this).html());
+       progres_counter++;    
+       var row_progress_percent = $(this).find('input.progress-percent').val();
+       var total_cost_progress = $(this).find('.total_cost_progress').text();
+       var progress_date = $(this).find('input.progress_date').val();
+       var data = row_progress_percent+'*'+progres_counter+'*'+total_cost_progress+'*'+final_payment+'*'+progress_date+'*'+project_id;
 
 //alert(data);
 
-ajax_data(data,'invoice/insert_invoice_few_progress','');
+      setTimeout(function(){
+        ajax_data(data,'invoice/insert_invoice_few_progress','');
+      },500);
+      });
 
-});
-
-
- setTimeout(function(){
-      window.location.assign("?submit_invoice="+project_id);
- },8000);
-
+       setTimeout(function(){
+            window.location.assign("?submit_invoice="+project_id);
+       },10000);
   }
 
 
@@ -1217,6 +1212,219 @@ ajax_data(data,'invoice/insert_invoice_few_progress','');
   });
 
 
+$('.set_ave').click(function(){
+  var type = $(this).text();
+  $('.ave_type').text(type);
+
+  $('.time_ave_a').val('');
+  $('.time_ave_b').val('');
+  $('.ave_notes').val('');
+
+});
+
+
+$('.set_ave_def').click(function(){
+
+
+
+  var user_id_a = $('.prjc_user_id').val();
+  var user_id_b = $('input#user_id_page').val();
+
+  var pathname = window.location.pathname;
+
+  if(document.querySelector("#user_id_page")){
+    var user_id = user_id_b;
+  }else{
+    var user_id = user_id_a;
+  }
+
+var data = pathname+'`'+user_id;
+
+
+
+  if (pathname.toLowerCase().indexOf("users") >= 0){
+   
+  }else{
+    
+   $('.ave_status_text').html('<span style="color: green;"><i class="fa fa-check-circle"></i> Available </span> <b class="caret"></b>');
+
+  }
+
+
+
+  $.post(baseurl+"users/reset_availability",{
+    'ajax_var':data 
+  }, 
+  function(result){
+
+    if(result == '1'){
+
+
+  $('#loading_modal').modal('show');
+
+      setTimeout(function(){
+        location.reload();
+      },1000);
+
+    }
+  }
+);
+});
+
+
+$('.edit_f_ava').click(function(){
+  var raw_data = $(this).attr('id');
+  var data_set = raw_data.split("_");
+
+
+  $('.time_ave_a_up').val(data_set[2]);
+  $('.time_ave_b_up').val(data_set[3]);
+  $('.ave_notes_up').val(data_set[1]);
+
+  $('input#ava_id_data').val(data_set[0]);
+  
+  var status = $(this).text().trim();
+
+
+  $('.ave_type_up').text(status);
+
+
+});
+
+$('.delete_f_ava').click(function(){
+$('#loading_modal').modal('show');
+
+  var data = $(this).attr('id');
+
+  $.post(baseurl+"users/delete_user_ava",{
+    'ajax_var':data 
+  });
+
+
+  setTimeout(function(){
+   location.reload();
+ },1000);
+
+});
+
+
+$('.update_ave').click(function(){
+  var ava_id = $('input#ava_id_data').val();
+  var date_a = $('.time_ave_a_up').val();
+  var date_b = $('.time_ave_b_up').val();
+  var notes = $('.ave_notes_up').val();
+
+  var pathname = window.location.pathname;
+  var status = $('.ave_type_up').text().trim();
+
+
+  var user_id_a = $('.prjc_user_id').val();
+  var user_id_b = $('input#user_id_page').val();
+
+  if(document.querySelector("#user_id_page")){
+    var user_id = user_id_b;
+  }else{
+    var user_id = user_id_a;
+  }
+
+var data = date_a+'`'+date_b+'`'+notes+'`'+user_id+'`'+pathname+'`'+status+'`'+ava_id;
+
+
+//alert(data);
+
+
+$('#update_availability').modal('hide');
+$('#loading_modal').modal('show');
+
+
+$.post(baseurl+"users/update_availability",{
+    'ajax_var':data 
+  }, 
+  function(result){
+
+ //   alert(result);
+ 
+
+      setTimeout(function(){
+       location.reload();
+      },1000);
+
+     
+  }
+);
+
+
+
+});
+
+$('.submit_ave').click(function(){
+
+
+  var date_a = $('.time_ave_a').val();
+  var date_b = $('.time_ave_b').val();
+  var notes = $('.ave_notes').val();
+
+  var pathname = window.location.pathname;
+  var status = $('.ave_type').text().trim();
+
+
+  var user_id_a = $('.prjc_user_id').val();
+  var user_id_b = $('input#user_id_page').val();
+
+  if(document.querySelector("#user_id_page")){
+    var user_id = user_id_b;
+  }else{
+    var user_id = user_id_a;
+  }
+
+/*
+  if (pathname.toLowerCase().indexOf("users") >= 0){
+    var user_id = user_id_b;
+  }else{
+    var user_id = user_id_a;
+  }
+*/
+
+var data = date_a+'`'+date_b+'`'+notes+'`'+user_id+'`'+pathname+'`'+status;
+
+
+$('#set_availability').modal('hide');
+$('#loading_modal').modal('show');
+
+
+$.post(baseurl+"users/set_availability",{
+    'ajax_var':data 
+  }, 
+  function(result){
+
+    if(result == '1'){
+
+      setTimeout(function(){
+        location.reload();
+      },1000);
+
+    }else{
+      //alert(result);
+      setTimeout(function(){
+        $('#loading_modal').modal('hide');
+      },1000);
+      $('.ave_status_text').html(result+' <b class="caret"></b>');
+    }
+  }
+);
+
+
+/*
+alert(date_a+' '+date_b+' '+notes+' '+user_id+' '+pathname);
+*/
+
+});
+
+
+
+
+
+ 
 
   $('input.click_select').click(function(){
     $(this).select();
@@ -2437,6 +2645,9 @@ $('.save_progress_values').click(function(){
 });
 
 $('.update_progress_values_b').click(function(){
+
+     $('#loading_modal').modal({"backdrop": "static", "show" : true} );
+
   delete_project_invoice_b();
   setTimeout(function(){
     update_project_invoice_b();
@@ -2445,6 +2656,9 @@ $('.update_progress_values_b').click(function(){
 
 
 $('.update_progress_values').click(function(){
+
+       $('#loading_modal').modal({"backdrop": "static", "show" : true} );
+
   delete_project_invoice();
   setTimeout(function(){
     update_project_invoice();

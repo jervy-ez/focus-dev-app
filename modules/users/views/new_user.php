@@ -296,7 +296,7 @@
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
 												<label for="mobile_number" class="col-sm-4 control-label">Mobile Number</label>
 												<div class="col-sm-8">
-													<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign('mobile_number')"  tabindex="13" value="<?php echo $this->input->post('mobile_number'); ?>">
+													<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign_user('mobile_number')"  tabindex="13" value="<?php echo $this->input->post('mobile_number'); ?>">
 												</div>
 											</div>
 											
