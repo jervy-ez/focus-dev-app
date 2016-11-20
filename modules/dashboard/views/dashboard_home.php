@@ -584,8 +584,6 @@ $current_date = date("d/m/Y");
 </div>
 
 
-<?php //var_dump($focus_pm_forecast); ?>
-
 
 <?php $this->load->view('assets/logout-modal'); ?>
 <?php $this->bulletin_board->list_latest_post(); ?>
@@ -1153,10 +1151,10 @@ colors: {
 	'Pyi Paing Aye Win WIP': '#009E73',
 	'Pyi Paing Aye Win': '#E69F00',
 
-	'Kristoff Kiezun Forecast': '#CC79A7',
-	'Kristoff Kiezun Last Year': '#AAAAAA',
-	'Kristoff Kiezun WIP': '#009E73',
-	'Kristoff Kiezun': '#E69F00',
+	'Krzysztof Kiezun Forecast': '#CC79A7',
+	'Krzysztof Kiezun Last Year': '#AAAAAA',
+	'Krzysztof Kiezun WIP': '#009E73',
+	'Krzysztof Kiezun': '#E69F00',
 
 	'Maintenance Manager Forecast': '#CC79A7',
 	'Maintenance Manager Last Year': '#AAAAAA',
@@ -1195,7 +1193,7 @@ groups: [ ['Focus Overall WIP','Overall Sales'],['Focus Shopfit Pty Ltd','Focus 
 ['Alan Liddell','Alan Liddell WIP'],
 ['Stuart Hubrich','Stuart Hubrich WIP'],
 ['Pyi Paing Aye Win','Pyi Paing Aye Win WIP'],
-['Kristoff Kiezun','Kristoff Kiezun WIP'],
+['Krzysztof Kiezun','Krzysztof Kiezun WIP'],
 ['Maintenance Manager','Maintenance Manager WIP'],
 ['Joshua Gamble','Joshua Gamble WIP']],
 
@@ -1259,7 +1257,7 @@ $('select.chart_data_selection').on("change", function(e) {
 	if(data == 'Pm_Outstanding'){
 		chart.hide();
 		setTimeout(function () {
-			chart.show(['Trevor Gamble Outstanding','Alan Liddell Outstanding','Stuart Hubrich Outstanding','Pyi Paing Aye Win Outstanding','Kristoff Kiezun Outstanding','Maintenance Manager Outstanding']);
+			chart.show(['Trevor Gamble Outstanding','Alan Liddell Outstanding','Stuart Hubrich Outstanding','Pyi Paing Aye Win Outstanding','Krzysztof Kiezun Outstanding','Maintenance Manager Outstanding']);
 		}, 500);	
 	}
 
@@ -1307,10 +1305,10 @@ $('select.chart_data_selection').on("change", function(e) {
 		}, 500);
 	}
 
-	if(data == 'Kristoff Kiezun'){ 
+	if(data == 'Krzysztof Kiezun'){ 
 		chart.hide(); 
 		setTimeout(function () {
-			chart.show(['Kristoff Kiezun','Kristoff Kiezun WIP','Kristoff Kiezun Forecast','Kristoff Kiezun Last Year']);
+			chart.show(['Krzysztof Kiezun','Krzysztof Kiezun WIP','Krzysztof Kiezun Forecast','Krzysztof Kiezun Last Year']);
 		}, 500);
 	}
 
@@ -1376,7 +1374,7 @@ function bttnE(element_obj){
 	var forecast_display = element_obj.getAttribute("id");
 	chart.hide(); 
 	setTimeout(function () {
-		chart.show(['Alan Liddell', 'Stuart Hubrich', 'Pyi Paing Aye Win','Kristoff Kiezun','Maintenance Manager','Trevor Gamble']);
+		chart.show(['Alan Liddell', 'Stuart Hubrich', 'Pyi Paing Aye Win','Krzysztof Kiezun','Maintenance Manager','Trevor Gamble']);
 	}, 500);
 }
 
@@ -1638,14 +1636,6 @@ var donuta = c3.generate({
  */ ?>
 
  <!-- Modal -->
-
-
-
-
-
-
-<!-- 
-
  <div class="modal fade" id="add_data_chart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
  	<div class="modal-dialog" role="document">
  		<div class="modal-content">
@@ -1677,7 +1667,7 @@ var donuta = c3.generate({
  		</div>
  	</div>
  </div>
- -->
+
  <script type="text/javascript" src="<?php echo base_url(); ?>js/maps/maps.js"></script>
  	<?php /*
 <script type="text/javascript" src="<?php echo base_url(); ?>js/maps/large_map.js"></script>
