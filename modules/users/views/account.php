@@ -389,7 +389,7 @@
 
 													<div class="input-group ">
 														<span class="input-group-addon">+</span>
-														<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign_user('mobile_number')"  tabindex="13" value="<?php echo $user->mobile_number; ?>">
+														<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign('mobile_number')"  tabindex="13" value="<?php echo $user->mobile_number; ?>">
 													</div>
 
 
@@ -632,25 +632,78 @@
 											<label class="control-label m-top-5 col-xs-12 pointer set_ave" style="color: purple;" data-toggle="modal" data-target="#set_availability" tabindex="-1"><i class="fa fa-times-circle"></i> Sick</label>
 
 											<p>&nbsp;</p>
-											<p><strong><i class="fa fa-calendar-o" aria-hidden="true"></i> Future Availability</strong></p>
 											<?php $f_availability = $this->users->fetch_user_future_availability($user_id_page); ?>
+											<?php if($f_availability->num_rows > 0): ?>
+												<p><strong><i class="fa fa-calendar-o" aria-hidden="true"></i> Future Availability</strong></p>
+												<ul>
+													<?php foreach ($f_availability->result_array() as $avail_data): ?>
+														<li>
+															<span> 
+																<strong class="pointer edit_f_ava" data-toggle="modal" data-target="#update_availability" id="<?php echo $avail_data['user_availability_id'].'_'.$avail_data['notes'].'_'.date('d/m/Y h:i A',$avail_data['date_time_stamp_a']).'_'.date('d/m/Y h:i A',$avail_data['date_time_stamp_b']); ?>">
+																	<?php echo $avail_data['status']; ?>
+																</strong> - <?php echo date("D jS \of M Y h:i A",$avail_data['date_time_stamp_a']); ?>
+															</span>
+															<span class="pull-right pointer delete_f_ava" id="<?php echo $avail_data['user_availability_id']; ?>" style="color:red">
+																<i class="fa fa-times" aria-hidden="true"></i>
+															</span>
+														</li>
+													<?php endforeach; ?>
+												</ul>
+											<?php endif; ?>
 
-											<ul>
-												<?php foreach ($f_availability->result_array() as $avail_data): ?>
 
-													<li>
-														<span> 
-															<strong class="pointer edit_f_ava" data-toggle="modal" data-target="#update_availability" id="<?php echo $avail_data['user_availability_id'].'_'.$avail_data['notes'].'_'.date('d/m/Y h:i A',$avail_data['date_time_stamp_a']).'_'.date('d/m/Y h:i A',$avail_data['date_time_stamp_b']); ?>">
-																<?php echo $avail_data['status']; ?>
-															</strong> - <?php echo date("D jS \of M Y h:i A",$avail_data['date_time_stamp_a']); ?>
-														</span>
-														<span class="pull-right pointer delete_f_ava" id="<?php echo $avail_data['user_availability_id']; ?>" style="color:red">
-															<i class="fa fa-times" aria-hidden="true"></i>
-														</span>
-													</li>
+											<?php $rec_availability = $this->users->fetch_user_future_reocc_ava($user_id_page); ?>
 
-												<?php endforeach; ?>
-											</ul>
+											<?php if($rec_availability->num_rows > 0): ?>
+										
+												<p><strong><i class="fa fa-calendar-o" aria-hidden="true"></i> Reoccuring Availability</strong></p>
+												<ul>
+													<?php foreach ($rec_availability->result_array() as $avail_data): ?>
+														<li>
+															<span> 
+																<strong class="" id="">
+																	<?php echo $avail_data['status']; ?>
+																</strong> -
+
+
+																<?php 
+
+																$pattern_type = $avail_data['pattern_type'];
+
+																switch ($pattern_type) {																	
+																	case "daily": 
+																		echo "Daily every <strong>".strtoupper($avail_data['range_reoccur']).'</strong>';
+																	break;
+
+																	case "weekly": 
+																		echo "Weekly every <strong>".$avail_data['limits']."</strong> week(s)<br />during <strong>".strtoupper($avail_data['range_reoccur']).'</strong>';
+																	break;
+
+																	case "monthly":
+																		echo "Monthly every <strong>".$avail_data['limits']."</strong> month(s)<br />during <strong>".$avail_data['range_reoccur']."".$this->users->ordinalSuffix($avail_data['range_reoccur']).' day of the month.</strong>';
+																	break;
+
+																	case "yearly":
+
+																		$arr_months = array("","January","February","March","April","May","June","July","August","September","October","November","December");
+																		echo "Yearly every <strong>".$avail_data['range_reoccur']."".$this->users->ordinalSuffix($avail_data['range_reoccur'])." of ".$arr_months[abs($avail_data['limits'])]."</strong>";
+																	break;
+																}
+
+
+																 ?>
+
+
+															</span>
+															<span class="pull-right pointer delete_rec_ava" id="<?php echo $avail_data['reoccur_id']; ?>" style="color:red">
+																<i class="fa fa-times" aria-hidden="true"></i>
+															</span>
+														</li>
+													<?php endforeach; ?>
+												</ul>
+											<?php endif; ?>
+
+
 
 										</div>
 									</div>

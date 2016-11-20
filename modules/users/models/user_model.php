@@ -61,7 +61,7 @@ class User_model extends CI_Model{
 			AND   `user_reoccur_availability`.`date_future` <> ''
 			AND   `user_reoccur_availability`.`start_time` <= '$time_set'
 			AND   `user_reoccur_availability`.`end_time` >= '$time_set'
-			AND   `user_availability`.`user_id` = '$user_id'
+			AND   `user_availability`.`user_id` = '$user_id' 
 			ORDER BY `user_reoccur_availability`.`reoccur_id` DESC LIMIT 1");
 		return $query;
 	}
@@ -131,15 +131,29 @@ class User_model extends CI_Model{
 	}
 
 	public function delete_ava($ava_id){
-		$query = $this->db->query("DELETE FROM `user_availability` WHERE `user_availability`.`user_availability_id` = '$ava_id' ");
+		$query = $this->db->query("UPDATE `user_availability` SET `is_active` = '0' WHERE `user_availability`.`user_availability_id` = '$ava_id' ");
+		return $query;
+	}
+
+	public function delete_ava_rec($ava_id){
+		$query = $this->db->query("UPDATE `user_reoccur_availability` SET `is_active` = '0' WHERE `user_reoccur_availability`.`reoccur_id` = '$ava_id' ");
+		return $query;
+	}	
+
+	public function get_upcomming_reoccuring_ave($user_id){
+		$query = $this->db->query("SELECT * FROM `user_reoccur_availability`
+			LEFT JOIN `user_availability` ON `user_availability`.`reoccur_id`  = `user_reoccur_availability`.`reoccur_id` 
+			WHERE `user_reoccur_availability`.`is_active` = '1'   AND `user_availability`.`user_id` = '$user_id' ORDER BY `user_availability`.`date_time_stamp_a` ASC");
 		return $query;
 	}
 
 	public function remove_availability($user_id,$time_stamp){
-		$query = $this->db->query("DELETE FROM `user_availability`
-			WHERE `user_availability`.`user_id` = '$user_id'
+		$query = $this->db->query("UPDATE `user_availability` SET `is_active` = '0' WHERE `user_availability`.`user_id` = '$user_id'
 			AND `user_availability`.`date_time_stamp_b` >= '$time_stamp'
-			AND `user_availability`.`date_time_stamp_a` <= '$time_stamp' ");
+			AND `user_availability`.`date_time_stamp_a` <= '$time_stamp' 
+
+
+			");
 		return $query;
 	}
 
@@ -149,7 +163,7 @@ class User_model extends CI_Model{
 	}
 
 	public function fetch_future_availability($user_id,$time_stamp){
-		$query = $this->db->query("SELECT * FROM `user_availability` WHERE `user_availability`.`user_id` = '$user_id' AND `user_availability`.`date_time_stamp_a` > '$time_stamp' ORDER BY `user_availability`.`user_availability_id` ASC");
+		$query = $this->db->query("SELECT * FROM `user_availability` WHERE `user_availability`.`user_id` = '$user_id' AND `user_availability`.`date_time_stamp_a` > '$time_stamp' AND `user_availability`.`is_active` = '1' AND `user_availability`.`reoccur_id` = '0' ORDER BY `user_availability`.`user_availability_id` ASC");
 		return $query;
 	}
 
@@ -165,8 +179,8 @@ class User_model extends CI_Model{
 			LEFT JOIN  `users` ON `users`.`user_id` =  `user_availability`.`user_id`
 			LEFT JOIN `company_details` ON `company_details`.`company_id` = `users`.`user_focus_company_id`
 			WHERE `user_availability`.`user_id` = '$user_id'
-			AND `user_availability`.`date_time_stamp_b` >= '$time_stamp'
-			AND `user_availability`.`date_time_stamp_a` <= '$time_stamp'
+			AND `user_availability`.`date_time_stamp_b` >= '$time_stamp' AND `user_availability`.`reoccur_id` = '0'
+			AND `user_availability`.`date_time_stamp_a` <= '$time_stamp' AND `user_availability`.`is_active` = '1'
 			ORDER BY `user_availability`.`user_availability_id` DESC LIMIT 1");
 		return $query;
 		//if($query->num_rows === 1){

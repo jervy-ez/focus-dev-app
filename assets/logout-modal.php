@@ -39,28 +39,35 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
-
-					<div class='col-xs-2'>
-						<button class="btn btn-info set_full_day">Full Day</button>
+					 
+					<div class='col-xs-4'>
+						<div class="form-group">
+							<div class='input-group date' id='datetimepicker5'>
+								<input type='text' class="form-control day_set_non_rec" placeholder="Date" value="<?php echo date("d/m/Y"); ?>" />
+								<span class="input-group-addon">
+									Day <span class="fa fa-calendar fa-lg"></span>
+								</span>
+							</div>
+						</div>
 					</div>
 					 
-					<div class='col-xs-5'>
+					<div class='col-xs-4'>
 						<div class="form-group">
 							<div class='input-group date' id='datetimepicker6'>
-								<input type='text' class="form-control time_ave_a" placeholder="DD/MM/YYYY HH:MM"/>
+								<input type='text' class="form-control time_ave_a" placeholder="Start"/>
 								<span class="input-group-addon">
-									<span class="fa fa-calendar fa-lg"></span>
+									Start <span class="fa fa-clock-o fa-lg"></span>
 								</span>
 							</div>
 						</div>
 					</div>
 
-					<div class='col-xs-5'>
+					<div class='col-xs-4'>
 						<div class="form-group">
 							<div class='input-group date' id='datetimepicker7'>
-								<input type='text' class="form-control time_ave_b" placeholder="DD/MM/YYYY HH:MM"/>
+								<input type='text' class="form-control time_ave_b" placeholder="End"/>
 								<span class="input-group-addon">
-									<span class="fa fa-calendar fa-lg"></span>
+									End <span class="fa fa-clock-o fa-lg"></span>
 								</span>
 							</div>
 						</div>
@@ -78,6 +85,12 @@
 				</div>
 			</div>
 			<div class="modal-footer">
+
+
+						<button class="btn btn-info set_full_day pull-left">Full Day</button>
+					
+
+
 				<button type="button" class="btn btn-default m-right-10" data-dismiss="modal">Cancel</button>
 
 				<div class="btn-group pull-right">
@@ -213,23 +226,23 @@
 
 					<div class="tab-content m-top-10" id="myTabContent">
 						<div class="tab-pane fade active in" id="daily_p" >							
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="sun_d">Sun</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="mon_d">Mon</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="tue_d">Tue</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="wed_d">Wed</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="thu_d">Thu</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="fri_d">Fri</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="sat_d">Sat</button>
+							<button class="btn btn-default rep_btn_cstm" id="sun_d">Sun</button>
+							<button class="btn btn-default rep_btn_cstm" id="mon_d">Mon</button>
+							<button class="btn btn-default rep_btn_cstm" id="tue_d">Tue</button>
+							<button class="btn btn-default rep_btn_cstm" id="wed_d">Wed</button>
+							<button class="btn btn-default rep_btn_cstm" id="thu_d">Thu</button>
+							<button class="btn btn-default rep_btn_cstm" id="fri_d">Fri</button>
+							<button class="btn btn-default rep_btn_cstm" id="sat_d">Sat</button>
 						</div>
 						<div class="tab-pane fade" id="weekly_p" >
 							<p>Recur every <input type="text" style="width: 30px;" value="1" class="pad-3 recur_every_week_val"> week(s) on:</p>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="sun_w">Sun</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="mon_w">Mon</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="tue_w">Tue</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="wed_w">Wed</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="thu_w">Thu</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="fri_w">Fri</button>
-							<button class="btn btn-default rep_btn_cstm btn-primary" id="sat_w">Sat</button>
+							<button class="btn btn-default rep_btn_cstm" id="sun_w">Sun</button>
+							<button class="btn btn-default rep_btn_cstm" id="mon_w">Mon</button>
+							<button class="btn btn-default rep_btn_cstm" id="tue_w">Tue</button>
+							<button class="btn btn-default rep_btn_cstm" id="wed_w">Wed</button>
+							<button class="btn btn-default rep_btn_cstm" id="thu_w">Thu</button>
+							<button class="btn btn-default rep_btn_cstm" id="fri_w">Fri</button>
+							<button class="btn btn-default rep_btn_cstm" id="sat_w">Sat</button>
 						</div>
 						<div class="tab-pane fade" id="monthly_p" >							
 							<p>Day <input type="text" style="width: 30px;" value="27" class="pad-3 pattern_of_monthly_day"> of every <input type="text" style="width: 30px;" value="1" class="pad-3 recur_every_month_val"> month(s)</p>
@@ -264,7 +277,7 @@
 
 
 					<div class='col-xs-6'>
-						<div class="form-group">
+						<div class="form-group tooltip-enabled" data-html="true" data-placement="top" data-original-title="The first occurence will commence at the indicated<br />start date." >
 							<div class='input-group date' id='range_datetime_picker_1'>
 								<span class="input-group-addon">Start Date</span>
 								<input type='text' class="form-control range_datetime_picker_1" placeholder="DD/MM/YYYY"/>
@@ -297,7 +310,7 @@
 			<input type="hidden" id="ava_id_data">
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-				<button type="button" name="" class="btn btn-success reoccur_submit_now" data-dismiss="modal">Submit</button>
+				<button type="button" name="" class="btn btn-success reoccur_submit_now">Submit</button>
 			</div>
 		</div>
 	</div>
@@ -318,17 +331,20 @@
   		var set_month = (currentdate.getMonth()+1) < 10 ? '0' + (currentdate.getMonth()+1) : (currentdate.getMonth()+1);
     	var current_date_set = currentdate.getDate() + "/" + set_month + "/" + currentdate.getFullYear();
 
-    	$('#datetimepicker6').datetimepicker({ format: 'DD/MM/YYYY hh:mm A'});
+
+    	$('#datetimepicker5').datetimepicker({ format: 'DD/MM/YYYY'});
+
+    	$('#datetimepicker6').datetimepicker({ format: 'hh:mm A'});
     	$('#datetimepicker7').datetimepicker({
            useCurrent: false, //Important! See issue #1075
-           format: 'DD/MM/YYYY hh:mm A'
+           format: 'hh:mm A'
        });
     	$("#datetimepicker6").on("dp.change", function (e) {
     		$('#datetimepicker7').data("DateTimePicker").minDate(e.date);
 
     		$('#datetimepicker7').datetimepicker({
 	           useCurrent: false, //Important! See issue #1075
-	           format: 'DD/MM/YYYY hh:mm A'
+	           format: 'hh:mm A'
 	       });
 
     	});

@@ -1577,6 +1577,12 @@ $config = Array(
 		$this->user_model->delete_ava($ava_id);
 	}
 
+	function delete_user_ava_rec(){
+		$this->clear_apost();
+		$ava_id = $_POST['ajax_var'];
+		$this->user_model->delete_ava_rec($ava_id);
+	}
+
 
 	function update_availability(){
 		$this->clear_apost();
@@ -1667,6 +1673,13 @@ $config = Array(
 
 			$this->user_model->update_future_reoccur_present_date($current_timestamp,$date_future,$reoccur->reoccur_id);
 		}
+	}
+
+	function ordinalSuffix($num) {
+		$suffixes = array("st", "nd", "rd");
+		$lastDigit = $num % 10;
+		if(($num < 20 && $num > 9) || $lastDigit == 0 || $lastDigit > 3) return "th";
+		return $suffixes[$lastDigit - 1];
 	}
 
 
@@ -1921,6 +1934,11 @@ $config = Array(
 		return $user_ave_q;
 	}
 
+	function fetch_user_future_reocc_ava($user_id){
+		$user_ave_q = $this->user_model->get_upcomming_reoccuring_ave($user_id);
+		return $user_ave_q;
+	}
+
 	function get_user_availability($user_id,$mod=''){
 
 		$this->reset_reoccur_avaialbility();
@@ -2059,10 +2077,6 @@ $config = Array(
 				$reoccur_ave = array_shift($user_ave_roc_q->result_array());
 
 			}
-
-
-
-
 
 		return $reoccur_ave;
 	}
