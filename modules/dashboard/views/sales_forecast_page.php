@@ -20,11 +20,8 @@
 			<div class="page-nav-options col-md-6 col-sm-8 col-xs-12 pull-right hidden-xs">
 				<ul class="nav nav-tabs navbar-right">
 					<li>
-						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
-					</li>  
-					<li>
-						<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
-					</li>
+						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Dashboard</a>
+					</li> 
 					<!-- 
 						<li>
 							<a href="<?php echo base_url(); ?>wip" class="btn btn-small btn-warning"><i class="fa fa-refresh fa-lg"></i> Reset Table</a>

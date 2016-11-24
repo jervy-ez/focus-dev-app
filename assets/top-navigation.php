@@ -83,6 +83,15 @@
 
 
 			<ul class="nav navbar-nav navbar-right">
+
+
+
+				<?php if (strpos($_SERVER['REQUEST_URI'], 'dashboard') !== false): ?>
+					<li>
+						<a role="menuitem" data-toggle="modal" data-target="#management_report" tabindex="-1" href="#"><i class="fa fa-file-text" aria-hidden="true"></i> Management Report</a>
+					</li>
+				<?php endif; ?>
+
 				<li>
 					<a role="menuitem"><i class="fa fa-quote-left" aria-hidden="true"></i> &nbsp;<em><?php echo $this->session->userdata('role_types'); ?></em>&nbsp; <i class="fa fa-quote-right" aria-hidden="true"></i></a>
 				</li>
@@ -164,7 +173,52 @@
 			</div>
 		</div>
 	</div>
+
+
+
+	<div class="modal fade" id="management_report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Management Report Setup</h4>
+				</div>
+				<form method="post" >
+					<div class="modal-body pad-10">
+
+						<div id="" class=""><select id="management_report_year" class="form-control m-bottom-10">
+							<option selected value="">Select Year</option>
+							<?php
+							for ($starting_count=2015; $starting_count <= date('Y'); $starting_count++) { 
+								echo '<option value="'.$starting_count.'">'.$starting_count.'</option>';
+							}
+							?>
+
+						</select></div>
+
+						<div id="" class=""><select id="management_report_pm" class="form-control m-bottom-10">
+							<option selected value="">Select Project Manager</option>
+							<?php foreach ($project_manager as $row){
+								if($row->user_id != '29'){
+									echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+								}
+							}?>
+						</select></div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<input type="button" class="btn btn-success set_management_report" data-dismiss="modal" value="Set Report">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
 </div>
+
+
 
 
 <div id="sb-site">

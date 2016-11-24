@@ -775,10 +775,10 @@ foreach ($focus_pm_wip as $key => $value) {
             'Pyi Paing Aye Win WIP': '#009E73',
             'Pyi Paing Aye Win': '#E69F00',
 
-            'Krzysztof Kiezun Forecast': '#CC79A7',
-            'Krzysztof Kiezun Last Year': '#AAAAAA',
-            'Krzysztof Kiezun WIP': '#009E73',
-            'Krzysztof Kiezun': '#E69F00',
+            'Kristoff Kiezun Forecast': '#CC79A7',
+            'Kristoff Kiezun Last Year': '#AAAAAA',
+            'Kristoff Kiezun WIP': '#009E73',
+            'Kristoff Kiezun': '#E69F00',
 
             'Maintenance Manager Forecast': '#CC79A7',
             'Maintenance Manager Last Year': '#AAAAAA',
@@ -817,7 +817,7 @@ foreach ($focus_pm_wip as $key => $value) {
 ['Alan Liddell','Alan Liddell WIP'],
 ['Stuart Hubrich','Stuart Hubrich WIP'],
 ['Pyi Paing Aye Win','Pyi Paing Aye Win WIP'],
-['Krzysztof Kiezun','Krzysztof Kiezun WIP'],
+['Kristoff Kiezun','Kristoff Kiezun WIP'],
 ['Maintenance Manager','Maintenance Manager WIP'],
 ['Joshua Gamble','Joshua Gamble WIP']],
 
@@ -885,7 +885,7 @@ $('select.chart_data_selection').on("change", function(e) {
 	if(data == 'Pm_Outstanding'){
 		chart.hide();
 		setTimeout(function () {
-			chart.show(['Trevor Gamble Outstanding','Alan Liddell Outstanding','Stuart Hubrich Outstanding','Pyi Paing Aye Win Outstanding','Krzysztof Kiezun Outstanding','Maintenance Manager Outstanding']);
+			chart.show(['Trevor Gamble Outstanding','Alan Liddell Outstanding','Stuart Hubrich Outstanding','Pyi Paing Aye Win Outstanding','Kristoff Kiezun Outstanding','Maintenance Manager Outstanding']);
 		}, 500);	
 	}
 
@@ -933,10 +933,10 @@ $('select.chart_data_selection').on("change", function(e) {
 		}, 500);
 	}
 
-	if(data == 'Krzysztof Kiezun'){ 
+	if(data == 'Kristoff Kiezun'){ 
 		chart.hide(); 
 		setTimeout(function () {
-			chart.show(['Krzysztof Kiezun','Krzysztof Kiezun WIP','Krzysztof Kiezun Forecast','Krzysztof Kiezun Last Year']);
+			chart.show(['Kristoff Kiezun','Kristoff Kiezun WIP','Kristoff Kiezun Forecast','Kristoff Kiezun Last Year']);
 		}, 500);
 	}
 
@@ -1002,7 +1002,7 @@ function bttnE(element_obj){
 	var forecast_display = element_obj.getAttribute("id");
 	chart.hide(); 
 	setTimeout(function () {
-			chart.show(['Alan Liddell', 'Stuart Hubrich', 'Pyi Paing Aye Win','Krzysztof Kiezun','Maintenance Manager','Trevor Gamble']);
+			chart.show(['Alan Liddell', 'Stuart Hubrich', 'Pyi Paing Aye Win','Kristoff Kiezun','Maintenance Manager','Trevor Gamble']);
 	}, 500);
 }
 

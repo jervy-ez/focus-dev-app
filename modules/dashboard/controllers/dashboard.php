@@ -1911,7 +1911,7 @@ class Dashboard extends MY_Controller{
 			$overall_cost = array_shift($q_clients_overall->result_array());
 			$grand_total = $overall_cost['total_price'];
 
-			echo '<p> <div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
 			$comp_name = $company->company_name;
 			if(strlen($comp_name) > 40){
@@ -1926,7 +1926,7 @@ class Dashboard extends MY_Controller{
 			$last_year_sale = array_shift($last_year_q->result_array());
 			$lst_year_total = $last_year_sale['total_price'];
 
-			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
 		}
 
 
@@ -1977,7 +1977,7 @@ class Dashboard extends MY_Controller{
 
 		foreach ($client_details as $company) {
 			$percent = round(100/($list_total/$company->grand_total));
-			echo '<p> <div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
 			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
 			$vr_val = array_shift($q_vr_c->result_array());
@@ -1995,7 +1995,7 @@ class Dashboard extends MY_Controller{
 			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$company->company_id);
 			$last_year_sale = array_shift($last_year_q->result_array());
 			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
-			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->grand_total+ $vr_val['total_variation']).'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->grand_total+ $vr_val['total_variation']).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
 		}
 
 
@@ -3422,7 +3422,7 @@ $q1_result = $query1->result();
 			$overall_cost = array_shift($q_clients_overall->result_array());
 			$grand_total = $overall_cost['total_price'];
 
-			echo '<p> <div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
 			$comp_name = $company->company_name;
 			if(strlen($comp_name) > 40){
@@ -3437,7 +3437,7 @@ $q1_result = $query1->result();
 			$last_year_sale = array_shift($last_year_q->result_array());
 			$lst_year_total = $last_year_sale['total_price'];
 
-			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
 		}
 	}
 
@@ -3498,7 +3498,7 @@ $q1_result = $query1->result();
 
 		foreach ($comp_total as $raw_id => $compute_amount) {
 			$percent = round(100/($list_total/$compute_amount),1);
-			echo '<p> <div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
 			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$raw_id,$comp_q);
 			$vr_val = array_shift($q_vr_c->result_array());
@@ -3516,7 +3516,7 @@ $q1_result = $query1->result();
 			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $current_start_year,$raw_id);
 			$last_year_sale = array_shift($last_year_q->result_array());
 			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
-			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
 		}
 	}
 
@@ -4450,11 +4450,28 @@ $q1_result = $query1->result();
 
 
 
-	public function average_date_invoice_pm(){
-		$pm_type = $this->pm_type();
-		$user_id = $this->session->userdata('user_id');
+	public function average_date_invoice_pm($pm_data_id=''){
+
+		$user_id = ($pm_data_id == '' ? $this->session->userdata('user_id') : $pm_data_id);
 		$fetch_user = $this->user_model->fetch_user($user_id);
 		$user_details = array_shift($fetch_user->result_array());
+ 
+		if($pm_data_id != ''){
+			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
+				$pm_type = 1;
+			endif; //for directors 
+
+			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 4): //for PM 
+				$pm_type = 2;
+			endif; //for PM 
+		}else{
+			$pm_type = $this->pm_type();
+		}
+
+
+
+
+
 
 		if($pm_type == 1){ // for director/pm
 			$direct_company = explode(',',$user_details['direct_company'] );
@@ -4534,8 +4551,8 @@ $q1_result = $query1->result();
 
 		$total_string = '';
 
- 
 
+		$comp_custom_msge = '';
 		$all_focus_company = $this->admin_m->fetch_all_company_focus();
 		$focus_company = $all_focus_company->result();
 
@@ -4570,20 +4587,12 @@ $q1_result = $query1->result();
 
 				$total_string .= '<div class=\'row\'><span class=\'col-xs-8\'>'.str_replace("Pty Ltd","",$company->company_name).'</span><span class=\'col-xs-4\'>'.round($average_comp,1).'</span></div>';
 
+				if($pm_data_id != ''){
+					$comp_custom_msge .= '<br />'.str_replace("Pty Ltd","",$company->company_name).': '.round($average_comp,1);
+				}
+
 			}
 		}
-
-// 	var_dump($pms_averg);
- 
-
-/*
-		if($pm_type == 1 &&  in_array($company->company_id, $direct_company)     ){
-
-
-		}
-
-
-*/
 
 			if($pm_type == 1){ // for director/pm
 
@@ -4622,8 +4631,12 @@ $q1_result = $query1->result();
 				<div id="" class="clearfix m-top-10">
 					<div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div>
 					<div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div>
-				</div>
-			</div>';
+				</div>';
+				if($pm_data_id != ''){
+					 echo "<center style='margin-top:-20px;'><span><strong>$comp_custom_msge</strong></span></center>";
+				}
+
+			echo '</div>';
 
 	}
 
@@ -5986,55 +5999,238 @@ $q1_result = $query1->result();
 	}
 
 
+	public function focus_top_ten_clients_pm($pm_data_id = '', $year_set=''){
+		$user_id = ($pm_data_id == '' ? $this->session->userdata('user_id') : $pm_data_id);
 
-
-	public function focus_top_ten_clients_pm(){
-
-
-		$pm_type = $this->pm_type();
-		$user_id = $this->session->userdata('user_id');
 		$fetch_user = $this->user_model->fetch_user($user_id);
 		$user_details = array_shift($fetch_user->result_array());
+		$comp_q = '';
+		$comp_q .= 'AND (';
+		$limit = 0;
+ 
+		if($pm_data_id != ''){
+			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
+				$pm_type = 1;
+			endif; //for directors 
+
+			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 4): //for PM 
+				$pm_type = 2;
+			endif; //for PM 
+		}else{
+			$pm_type = $this->pm_type();
+		}
 
 		if($pm_type == 1){ // for director/pm
 			$direct_company = explode(',',$user_details['direct_company'] );
+			$size = count($direct_company );
+
+			foreach ($direct_company as $key => $value) {
+				$comp_q .= '`project`.`focus_company_id` = '.$value.'';
+				$limit++;
+				if($size != $limit){
+					$comp_q .= ' OR ';
+				}
+			}
 		}
 
 		if($pm_type == 2){ // for pm only
-			$direct_company = explode(',',$user_details['user_focus_company_id'] );
+			$comp_q .= ' `project`.`project_manager_id` = '.$user_id.'';
+			//$direct_company = explode(',',$user_details['user_focus_company_id'] );
 		}
 
-		$size = count($direct_company );
-		$limit = 0;
-
-		$comp_q = '';
-
-		$comp_q .= 'AND (';
-		foreach ($direct_company as $key => $value) {
-			$comp_q .= '`project`.`focus_company_id` = '.$value.'';
-			$limit++;
-
-			if($size != $limit){
-				$comp_q .= ' OR ';
-			}
-
-
-		}
 		$comp_q .= ')';
 
 
-		$current_date = date("d/m/Y");
-		$year = date("Y");
+
+if($year_set != ''){
+	$current_date = date("d/m/").''.$year_set;
+	$year = $year_set;
+	$last_year = $year_set -1;
+}else{
+	$current_date = date("d/m/Y");
+	$year = date("Y");
+	$last_year = intval(date("Y")) - 1;
+}
+
+
+  
 		$next_year_date = '01/01/'.($year+1);
 		$current_start_year = '01/01/'.$year;
 		$last_start_year = '01/01/'.($year-1);
 
 		$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date,'','',$comp_q);
 		$client_details  = $q_clients->result();
-		
 		$list_total = 0;
 
-		//if( in_array($project['focus_company_id'], $direct_company) ){
+		foreach ($client_details as $company) {
+			$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+			$vr_val_t = array_shift($q_vr_c_t->result_array());
+			$list_total = $list_total + $company->grand_total + $vr_val_t['total_variation'];
+		}
+ 
+		$this_month = date("m");
+		$this_day = date("d");
+ 
+		$date_a_last = "01/01/$last_year";
+		$date_b_last = "$this_day/$this_month/$last_year";
+/*
+		foreach ($client_details as $company) {
+			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+
+			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+			$vr_val = array_shift($q_vr_c->result_array());
+
+			$comp_name = $company->company_name;
+
+			$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$company->client_id,$comp_q);
+			$vr_val_u = array_shift($q_vr_c_u->result_array());
+
+			$percent = round(100/($list_total/($company->grand_total+$vr_val['total_variation'])  ),1);
+
+			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$company->company_id);
+			$last_year_sale = array_shift($last_year_q->result_array());
+			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
+			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->grand_total+ $vr_val['total_variation']).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+		}
+
+
+
+
+
+
+
+
+*/
+
+$comp_total = array();
+
+
+		foreach ($client_details as $company) {
+			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+			$vr_val = array_shift($q_vr_c->result_array());
+			$cost_gtotl_amnt = round($company->grand_total+ $vr_val['total_variation']);
+			$comp_total[$company->company_id] = $cost_gtotl_amnt;
+			$comp_name[$company->company_id] = $company->company_name;
+
+		}
+
+		arsort($comp_total);
+
+		foreach ($comp_total as $raw_id => $compute_amount) {
+			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			$percent = round(100/($list_total/$compute_amount),1);
+			$company_name = $comp_name[$raw_id];
+ 
+			
+			if($pm_data_id != ''){
+
+				if(strlen($company_name) > 50){
+					echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name.'">'.substr($company_name,0,50).'...</span>';
+				}else{
+					echo $company_name;
+				}
+
+			}else{
+				if(strlen($company_name) > 40){
+					echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name.'">'.substr($company_name,0,40).'...</span>';
+				}else{
+					echo $company_name;
+				}
+			}
+
+
+			$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$raw_id);
+			$vr_val_u = array_shift($q_vr_c_u->result_array());
+
+			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$raw_id);
+			$last_year_sale = array_shift($last_year_q->result_array());
+			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
+			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	public function focus_top_ten_clients_pm_donut($pm_data_id = '',$year_set=''){
+		$user_id = ($pm_data_id == '' ? $this->session->userdata('user_id') : $pm_data_id);
+
+		$fetch_user = $this->user_model->fetch_user($user_id);
+		$user_details = array_shift($fetch_user->result_array());
+		$comp_q = '';
+		$comp_q .= 'AND (';
+		$limit = 0;
+ 
+		if($pm_data_id != ''){
+			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
+				$pm_type = 1;
+			endif; //for directors 
+
+			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 4): //for PM 
+				$pm_type = 2;
+			endif; //for PM 
+		}else{
+			$pm_type = $this->pm_type();
+		}
+
+		if($pm_type == 1){ // for director/pm
+			$direct_company = explode(',',$user_details['direct_company'] );
+			$size = count($direct_company );
+
+			foreach ($direct_company as $key => $value) {
+				$comp_q .= '`project`.`focus_company_id` = '.$value.'';
+				$limit++;
+				if($size != $limit){
+					$comp_q .= ' OR ';
+				}
+			}
+		}
+
+		if($pm_type == 2){ // for pm only
+			$comp_q .= ' `project`.`project_manager_id` = '.$user_id.'';
+			//$direct_company = explode(',',$user_details['user_focus_company_id'] );
+		}
+
+		$comp_q .= ')';
+
+		$current_date = date("d/m/Y");
+		$year = date("Y");
+
+		if($year_set != ''){
+			$current_date = date("d/m/").''.$year_set;
+			$year = $year_set;
+			$last_year = $year_set -1;
+		}else{
+			$current_date = date("d/m/Y");
+			$year = date("Y");
+			$last_year = intval(date("Y")) - 1;
+		}
+
+
+		$next_year_date = '01/01/'.($year+1);
+		$current_start_year = '01/01/'.$year;
+		$last_start_year = '01/01/'.($year-1);
+
+		$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date,'','',$comp_q);
+		$client_details  = $q_clients->result();
+		$list_total = 0;
 
 		foreach ($client_details as $company) {
 			$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
@@ -6042,7 +6238,6 @@ $q1_result = $query1->result();
 			$list_total = $list_total + $company->grand_total + $vr_val_t['total_variation'];
 		}
 
-		$last_year = intval(date("Y")) - 1;
 		$this_month = date("m");
 		$this_day = date("d");
  
@@ -6050,28 +6245,73 @@ $q1_result = $query1->result();
 		$date_b_last = "$this_day/$this_month/$last_year";
 
 		foreach ($client_details as $company) {
-			$percent = round(100/($list_total/$company->grand_total));
-			echo '<p> <div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			//echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
 			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
 			$vr_val = array_shift($q_vr_c->result_array());
-
 			$comp_name = $company->company_name;
+/*
 			if(strlen($comp_name) > 40){
 				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,40).'...</span>';
 			}else{
-				echo $comp_name;
+				
 			}
 
+*/
+		//	$percent = round(100/($list_total/($company->grand_total+$vr_val['total_variation'])   ));
+		//	echo "['wwww', $percent],";
+
+			$cost = $company->grand_total+$vr_val['total_variation'];
+
+
+			echo "['". str_replace("'","&apos;",$comp_name)."', ".$cost."],";
+
+			//['Flight Centre Ltd', 2792461.453315]
+
+/*
 			$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$company->client_id,$comp_q);
 			$vr_val_u = array_shift($q_vr_c_u->result_array());
 
 			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$company->company_id);
 			$last_year_sale = array_shift($last_year_q->result_array());
 			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
-			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->grand_total+ $vr_val['total_variation']).'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->grand_total+ $vr_val['total_variation']).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+		
+*/
+
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6113,7 +6353,7 @@ $q1_result = $query1->result();
 		arsort($comp_total);
 
 		foreach ($comp_total as $raw_id => $compute_amount) {
-			echo '<p> <div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 			$percent = round(100/($list_total/$compute_amount),1);
 			$company_name = $comp_name[$raw_id];
  
@@ -6129,7 +6369,7 @@ $q1_result = $query1->result();
 			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$raw_id);
 			$last_year_sale = array_shift($last_year_q->result_array());
 			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
-			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
 		}
 	}
 
@@ -6138,12 +6378,30 @@ $q1_result = $query1->result();
 
 
 
-	public function focus_top_ten_con_sup_pm($type){
+	public function focus_top_ten_con_sup_pm($type,$pm_data_id = ''){
+		$user_id = ($pm_data_id == '' ? $this->session->userdata('user_id') : $pm_data_id);
 
-		$pm_type = $this->pm_type();
-		$user_id = $this->session->userdata('user_id');
+		$direct_company = '';
 		$fetch_user = $this->user_model->fetch_user($user_id);
 		$user_details = array_shift($fetch_user->result_array());
+
+
+
+		if($pm_data_id != ''){
+			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
+				$pm_type = 1;
+			endif; //for directors 
+
+			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 4): //for PM 
+				$pm_type = 2;
+			endif; //for PM 
+		}else{
+			$pm_type = $this->pm_type();
+		}
+
+
+
+
 
 		if($pm_type == 1){ // for director/pm
 			$direct_company = explode(',',$user_details['direct_company'] );
@@ -6207,7 +6465,7 @@ $q1_result = $query1->result();
 			$overall_cost = array_shift($q_clients_overall->result_array());
 			$grand_total = $overall_cost['total_price'];
 
-			echo '<p> <div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
 			$comp_name = $company->company_name;
 			if(strlen($comp_name) > 40){
@@ -6222,7 +6480,7 @@ $q1_result = $query1->result();
 			$last_year_sale = array_shift($last_year_q->result_array());
 			$lst_year_total = $last_year_sale['total_price'];
 
-			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
 		}
 	}
 
@@ -6258,7 +6516,7 @@ $q1_result = $query1->result();
 			$overall_cost = array_shift($q_clients_overall->result_array());
 			$grand_total = $overall_cost['total_price'];
 
-			echo '<p> <div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
 			$comp_name = $company->company_name;
 			if(strlen($comp_name) > 40){
@@ -6273,7 +6531,7 @@ $q1_result = $query1->result();
 			$last_year_sale = array_shift($last_year_q->result_array());
 			$lst_year_total = $last_year_sale['total_price'];
 
-			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
 		}
 	}
 
@@ -6469,18 +6727,11 @@ $q1_result = $query1->result();
 
 		foreach ($client_details as $company) {
 			$percent = round(100/($list_total/$company->grand_total));
-		//	echo '<p> <div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
 			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id);
 			$vr_val = array_shift($q_vr_c->result_array());
-
 			$comp_name = $company->company_name;
-			// if(strlen($comp_name) > 40){
-			// 	echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,40).'...</span>';
-			// }else{
-			// 	echo $comp_name;
-			// }
-
+		
 			$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$company->client_id);
 			$vr_val_u = array_shift($q_vr_c_u->result_array());
 
@@ -6488,20 +6739,8 @@ $q1_result = $query1->result();
 			$last_year_sale = array_shift($last_year_q->result_array());
 			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
 
-/*
-		//	echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format().'</p></div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-		
-		
-
-*/
-
-$client_cost = $company->grand_total+ $vr_val['total_variation'];
-
-
-//,['Alan Liddell Last Year',61474.00],
-echo "['". str_replace("'","&apos;",$comp_name)."', ".$client_cost."],";
-
-
+			$client_cost = $company->grand_total+ $vr_val['total_variation'];
+			echo "['". str_replace("'","&apos;",$comp_name)."', ".$client_cost."],";
 		}
 	}
 
@@ -7124,6 +7363,48 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 
 
 		$this->load->view('page', $data);
+	}
+
+
+	public function management_report(){
+	//	echo $this->uri->segment(3);
+		//redirect('/dashboard', 'refresh');
+
+		$report_arr = explode("_", $this->uri->segment(3));
+		$report_year = $report_arr[0];
+		$pm_id = $report_arr[1];
+
+
+		$fetch_user = $this->user_model->fetch_user($pm_id);
+		$data['user_details'] = array_shift($fetch_user->result_array());
+
+		$data['report_year'] = $report_arr[0];
+		$data['pm_id'] = $report_arr[1];
+
+
+		$q_focus_pm_forecast = $this->dashboard_m->get_pm_forecast($report_year,$pm_id);
+		$data['pm_forecast'] = array_shift($q_focus_pm_forecast->result_array());
+
+	  
+		$focus_data_forecast_p = $this->dashboard_m->get_focus_comp_forecast($report_year);
+		$q_focus_data_forecast_p = $focus_data_forecast_p->result();
+		$forecast_per_comp = array();
+		
+
+		foreach ($q_focus_data_forecast_p as $ffcp){
+			$forecast_percent_val = $ffcp->total * ( $ffcp->forecast_percent / 100 );
+			$forecast_per_comp[$ffcp->comp_id] = $forecast_percent_val;
+		}
+
+		$data['focus_comp_forecast'] = $forecast_per_comp;
+
+		$pm_actual_sales_q = $this->dashboard_m->fetch_pm_sales_year($report_year,$pm_id);
+		$data['pm_actual_sales'] = array_shift($pm_actual_sales_q->result_array());
+
+		$pms_sales_last_year_q = $this->dashboard_m->fetch_pm_sales_old_year($report_year-1,$pm_id);
+		$data['pm_last_year_sales'] = array_shift($pms_sales_last_year_q->result_array());
+
+		$this->load->view('dashboard_report', $data);
 	}
 
 	function _check_monthly_share_adjust($year,$value,$month,$current=0,$percent=0){

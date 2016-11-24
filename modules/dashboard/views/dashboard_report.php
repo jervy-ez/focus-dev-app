@@ -380,9 +380,9 @@ $wip_costs = implode(',', $wip_values);
 <p>&nbsp;</p>
 
 <table width="100%" style="" class="table_style_a">
-<tr>
-  <td valign="top" width="15%" ><div id="pie_a" class=""></div></td>
-  <td valign="top" width="85%" ><div style="padding-left:25px;"><p style="text-align:center; font-size: 20px; font-weight: bold;">Top 20 Clients</p><?php echo $this->dashboard->focus_top_ten_clients_pm($pm_id,$report_year); ?></div></td>
+<tr  style="border:none !important;">
+  <td style="border:none !important;" valign="top" width="15%" ><div id="pie_a" class=""></div></td>
+  <td style="border:none !important;" valign="top" width="85%" ><div style="padding-left:25px;"><p style="text-align:center; font-size: 20px; font-weight: bold;">Top 20 Clients</p><?php echo $this->dashboard->focus_top_ten_clients_pm($pm_id,$report_year); ?></div></td>
 </tr>
 </table>
 

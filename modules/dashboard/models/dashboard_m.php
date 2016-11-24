@@ -66,11 +66,13 @@ class Dashboard_m extends CI_Model{
 		return $query;
 	}
 
-	public function fetch_pm_sales_year($year){
+	public function fetch_pm_sales_year($year,$pm_id = ''){
 		$query = $this->db->query(" SELECT `revenue_focus`.* , CONCAT_WS(' ', `users`.`user_first_name`, `users`.`user_last_name`) AS `user_pm_name`
 			FROM `revenue_focus` 
 			LEFT JOIN `users` ON `users`.`user_id` = `revenue_focus`.`proj_mngr_id`
-			WHERE `revenue_focus`.`year` = '$year' ORDER BY `revenue_focus`.`proj_mngr_id` ASC  ");
+			WHERE `revenue_focus`.`year` = '$year' 
+			".($pm_id != '' ? " AND  `revenue_focus`.`proj_mngr_id` = '$pm_id' " : "")."
+			ORDER BY `revenue_focus`.`proj_mngr_id` ASC  ");
 		return $query;
 	}
 
@@ -85,19 +87,20 @@ class Dashboard_m extends CI_Model{
 		return $query;
 	}
 
-	public function get_pm_forecast($year){
+	public function get_pm_forecast($year,$pm_id=''){
 		$query = $this->db->query("SELECT `revenue_forecast`.*,`revenue_forecast_individual`.* , CONCAT_WS(' ', `users`.`user_first_name`, `users`.`user_last_name`) AS `user_pm_name`
 			FROM `revenue_forecast`
 			LEFT JOIN `revenue_forecast_individual` ON `revenue_forecast_individual`.`revenue_forecast_id` = `revenue_forecast`.`revenue_forecast_id`
 			LEFT JOIN `users` ON `users`.`user_id` = `revenue_forecast_individual`.`pm_id`
 			WHERE `revenue_forecast`.`is_active` = '1'
 			AND `revenue_forecast`.`is_primary` = '1' AND  `revenue_forecast_individual`.`pm_id` > '0'
+			".($pm_id != '' ? " AND  `revenue_forecast_individual`.`pm_id` = '$pm_id' " : "")."
 			AND `revenue_forecast`.`year` = '$year' AND  `revenue_forecast_individual`.`year` = '$year'
 			AND `revenue_forecast_individual`.`forecast_percent` > '0' ");
 		return $query;
 	}
 
-	public function fetch_pm_sales_old_year($year){
+	public function fetch_pm_sales_old_year($year,$pm_id=''){
 		$query = $this->db->query(" SELECT `revenue_focus`.* , CONCAT_WS(' ', `users`.`user_first_name`, `users`.`user_last_name`) AS `user_pm_name`,
 SUM(`revenue_focus`.`rev_jan`) AS `rev_jn`,SUM(`revenue_focus`.`rev_feb`) AS `rev_fb`,
 SUM(`revenue_focus`.`rev_mar`) AS `rev_mr`,SUM(`revenue_focus`.`rev_apr`) AS `rev_ar`,
@@ -109,6 +112,7 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `re
 			FROM `revenue_focus` 
 			LEFT JOIN `users` ON `users`.`user_id` = `revenue_focus`.`proj_mngr_id`
 			WHERE `revenue_focus`.`year` = '$year'
+			".($pm_id != '' ? " AND  `revenue_focus`.`proj_mngr_id` = '$pm_id' " : "")."
             GROUP BY  `revenue_focus`.`proj_mngr_id`
             ORDER BY `revenue_focus`.`proj_mngr_id` ASC  ");
 		return $query;
