@@ -66,17 +66,17 @@ class Dashboard extends MY_Controller{
 		$c_month = date("m");
 		$c_year = date("Y");
 
-		for ($my_year = 2015; $my_year <= $c_year; $my_year++){
+	//	for ($my_year = 2015; $my_year <= $c_year; $my_year++){
 			for ($month=1; $month < 13; $month++) { 
-				if($month > $c_month && $c_year == $my_year){
-				}else{
-					//echo "$my_year,$month<br />";
-					$this->_check_sales($my_year,$month); // automatically updates sales of the current month
+			//	if($month > $c_month && $c_year == $c_year){
+			//	}else{
+				//	echo "$my_year,$month<br />";
+					$this->_check_sales($c_year,$month); // automatically updates sales of the current month
 				}
-			}
+		//	}
 	//		$this->check_outstanding($my_year);
 	//		$this->check_estimates($my_year);
-		}
+	//	}
 
 	}	
 
@@ -403,7 +403,7 @@ class Dashboard extends MY_Controller{
 	function _if_sales_changed($year,$proj_mngr_id,$focus_comp_id,$rev_month,$checkAmount){
 	//	echo "-----$year,$proj_mngr_id,$focus_comp_id,$rev_month,$checkAmount----<br />";
 
-		$q_sales = $this->dashboard_m->look_for_sales($year,$proj_mngr_id,$focus_comp_id,$rev_month);
+		$q_sales = $this->dashboard_m->look_for_sales($year,$proj_mngr_id,$focus_comp_id);
 		//$rev_month = 'rev_'.strtolower(date('M'));
 
 		$sales = array_shift($q_sales->result_array());
@@ -413,7 +413,8 @@ class Dashboard extends MY_Controller{
 
 		$checkAmount = round($checkAmount,2);
 
-	//	echo "<br />$sales[$rev_month] != $checkAmount<br />";
+	//	echo "<br /><br />";
+	//	echo "<br />$sales[$rev_month] != $checkAmount***$year,$proj_mngr_id,$focus_comp_id,$rev_month,$checkAmount<br />";
 
 		if($sales[$rev_month] != $checkAmount){
 			return $sales['revenue_id'];
@@ -610,7 +611,7 @@ class Dashboard extends MY_Controller{
 		$see_outstanding_mn = 0;
 		$see_outstanding_pm = 0;
 		$init_invoied_amount = 0;
-
+ 
 		$currentYear = $c_year;
 
 		$n_month = $c_month+1;
@@ -627,46 +628,65 @@ class Dashboard extends MY_Controller{
 		$mons = array(1 => "jan", 2 => "feb", 3 => "mar", 4 => "apr", 5 => "may", 6 => "jun", 7 => "jul", 8 => "aug", 9 => "sep", 10 => "oct", 11 => "nov", 12 => "dec");
 
 		$rev_month = 'rev_'.$mons[$c_month];
-
 		$q_list_pms = $this->dashboard_m->list_pm_bysales($date_a,$date_b);
-		$list_pms = $q_list_pms->result();
 
+//	 echo "$date_a,$date_b,$rev_month ***$c_year,$c_month<br />";
+
+
+	 $this->dashboard_m->reset_revenue($rev_month,$c_year);
+
+
+
+
+		$list_pms = $q_list_pms->result();
 		foreach ($list_pms as $pm_data ){
 
 			$pm_id = $pm_data->user_id;
 			$comp_id = $pm_data->focus_company_id;
 
-
 			$q_get_sales = $this->dashboard_m->get_sales($date_a,$date_b,$pm_id,$comp_id);
 			$pm_get_sales = $q_get_sales->result();
-
 			$pm_sale_total= 0;
 
-
 			foreach ($pm_get_sales as $pm_sales ){
-
 				if($pm_sales->label == 'VR'){
 					$sales_total = $pm_sales->variation_total;
 				}else{
 					$sales_total = $pm_sales->project_total*($pm_sales->progress_percent/100);
 				}
-
 				$pm_sale_total = $pm_sale_total + $sales_total;
-
-
 			}
 
-			$revenue_id =  intval($this->_if_sales_changed($currentYear,$pm_data->user_id,$pm_data->focus_company_id,$rev_month,$pm_sale_total));
+			$revenue_id = intval($this->_if_sales_changed($currentYear,$pm_data->user_id,$pm_data->focus_company_id,$rev_month,$pm_sale_total));
+ 
 
-			//echo "$pm_sale_total ----  $pm_data->user_first_name----$revenue_id---<br />";
+
+
+//echo "$currentYear,$pm_data->user_id,$pm_data->focus_company_id,$rev_month,$pm_sale_total **<br />";
+
+
 
 			if($revenue_id > 1){
 				$this->dashboard_m->update_sales($revenue_id,$rev_month,$pm_sale_total);
+				$pm_sale_total= 0;
 			}elseif($revenue_id == 0){
 				$sales_id = $this->dashboard_m->set_sales($pm_data->user_id, $rev_month, $pm_sale_total, $pm_data->focus_company_id, $currentYear);
+				$pm_sale_total= 0;
 			}else{
 
 			}	
+
+
+			if($q_list_pms->num_rows >= 1){}else{
+
+
+				if($pm_data->user_id == 16){
+			//		echo "$currentYear,$pm_data->user_id,$pm_data->focus_company_id,$rev_month <br />";
+				}
+
+			}
+
+
 
 		//	echo "<br />$revenue_id<br />";
 
@@ -4464,6 +4484,10 @@ $q1_result = $query1->result();
 			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 4): //for PM 
 				$pm_type = 2;
 			endif; //for PM 
+
+			if($user_id == 29):
+				$pm_type = 2;
+			endif; //for maintenance manager 
 		}else{
 			$pm_type = $this->pm_type();
 		}
@@ -4480,6 +4504,10 @@ $q1_result = $query1->result();
 		if($pm_type == 2){ // for pm only
 			$direct_company = explode(',',$user_details['user_focus_company_id'] );
 		}
+
+		if($user_id == 29):
+			$direct_company = explode(',','5,6');
+		endif; //for maintenance manager 
 
 		$c_year = date("Y");		
 		$date_a = "01/01/$c_year";
@@ -6073,34 +6101,6 @@ if($year_set != ''){
  
 		$date_a_last = "01/01/$last_year";
 		$date_b_last = "$this_day/$this_month/$last_year";
-/*
-		foreach ($client_details as $company) {
-			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
-
-			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
-			$vr_val = array_shift($q_vr_c->result_array());
-
-			$comp_name = $company->company_name;
-
-			$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$company->client_id,$comp_q);
-			$vr_val_u = array_shift($q_vr_c_u->result_array());
-
-			$percent = round(100/($list_total/($company->grand_total+$vr_val['total_variation'])  ),1);
-
-			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$company->company_id);
-			$last_year_sale = array_shift($last_year_q->result_array());
-			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
-			echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->grand_total+ $vr_val['total_variation']).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-		}
-
-
-
-
-
-
-
-
-*/
 
 $comp_total = array();
 
@@ -6158,7 +6158,65 @@ $comp_total = array();
 
 
 
+ public function focus_clients_report($pmid,$year_set,$alternator = ''){
+ 	$current_year_date = "01/01/$year_set";
+	$next_year = $year_set+1;
+	$next_year_date = "01/01/$next_year";
 
+//	echo "$current_year_date,$next_year_date,$pmid <br />";
+
+ 	$q_clients = $this->dashboard_m->get_top_comp_lists_name($current_year_date,$next_year_date,$pmid);
+ 	$client_details  = $q_clients->result();
+ 	$company_list_arr = array();
+ 	$company_cost_arr = array();
+
+ 	foreach ($client_details as $company){
+ 		$company_list_arr[$company->company_id] = $company->company_name;
+// 		echo $company->company_name."<br />";
+ 		$company_cost_arr[$company->company_id] = 0;
+ 	}
+
+ 	$q_get_sales = $this->dashboard_m->get_sales($current_year_date,$next_year_date,$pmid);
+ 	$pm_get_sales = $q_get_sales->result();
+
+ 	foreach ($pm_get_sales as $pm_sales ){
+ 		$sales_total = 0;
+ 		if($pm_sales->label == 'VR'){
+ 			$sales_total = $pm_sales->variation_total;
+ 		}else{
+ 			$sales_total = $pm_sales->project_total*($pm_sales->progress_percent/100);
+ 		}
+ 		$company_cost_arr[$pm_sales->company_id] = $company_cost_arr[$pm_sales->company_id] + $sales_total;
+ 	}
+
+ 	$total_sale = array_sum($company_cost_arr);
+
+ 	arsort($company_cost_arr);
+
+ 	//var_dump($company_list_arr);
+ 	//var_dump($company_cost_arr);
+//['JB Hi Fi', 1020411.2725],
+
+
+ 	if($alternator != ''){
+
+ 		foreach ($company_cost_arr as $key => $value) {
+ 			$percent = round(100/($total_sale/$value),1);
+ 			echo "['".$company_list_arr[$key]."',". $value."],";
+ 		}
+
+
+ 	}else{
+
+ 		foreach ($company_cost_arr as $key => $value) {
+ 			$percent = round(100/($total_sale/$value),1);
+ 			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; '.$company_list_arr[$key].'</div>
+ 			<div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>
+ 			<div class="col-md-3 col-sm-4"><i class="fa fa-usd"></i><strong>$ '.number_format($value).'</strong></div>
+ 			<div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+ 		}
+ 	}
+ }
 
 
 

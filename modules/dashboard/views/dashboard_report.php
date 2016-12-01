@@ -337,6 +337,9 @@ $wip_costs = implode(',', $wip_values);
 
   <?php 
 
+  $total_wip = array_sum($wip_values);
+  $total_sales = array_sum($sales_values);
+
   $current_total = round(array_sum($wip_values) + array_sum($sales_values));
   $old_total = array_sum($old_sales_values);
   $forecast_total = array_sum($forecast_values);
@@ -361,13 +364,13 @@ $wip_costs = implode(',', $wip_values);
   
 
    ?>
-
+   
 
 <tr>
-    <td></td>
-    <td></td>
-    <td></td>
     <td><strong>Total</strong></td>
+    <td><strong>$ <?php echo number_format($forecast_total); ?></strong></td>
+    <td><strong>$ <?php echo number_format($total_wip); ?></strong></td>
+    <td><strong>$ <?php echo number_format($total_sales); ?></strong></td>
     <td  style="border-right:1px solid #eee;"><strong>$ <?php echo number_format($current_total); ?></strong></td>
     <td>$ <?php echo number_format($old_total); ?></td>
     <td><strong style="color:<?php echo $feed_back; ?>;">$ <?php echo number_format($total_difference); ?></strong></td>
@@ -382,9 +385,12 @@ $wip_costs = implode(',', $wip_values);
 <table width="100%" style="" class="table_style_a">
 <tr  style="border:none !important;">
   <td style="border:none !important;" valign="top" width="15%" ><div id="pie_a" class=""></div></td>
-  <td style="border:none !important;" valign="top" width="85%" ><div style="padding-left:25px;"><p style="text-align:center; font-size: 20px; font-weight: bold;">Top 20 Clients</p><?php echo $this->dashboard->focus_top_ten_clients_pm($pm_id,$report_year); ?></div></td>
+  <td style="border:none !important;" valign="top" width="85%" ><div style="padding-left:25px;"><p style="text-align:center; font-size: 20px; font-weight: bold;">Top 20 Clients</p><?php echo $this->dashboard->focus_clients_report($pm_id,$report_year); ?></div></td>
 </tr>
 </table>
+
+<?php //echo $this->dashboard->focus_top_ten_clients_pm($pm_id,$report_year); ?>
+
 
 <script type="text/javascript">
    var chart_b = c3.generate({ 
@@ -446,14 +452,14 @@ $wip_costs = implode(',', $wip_values);
  
  chart_b.select();
  
- 
+ <?php //echo $this->dashboard->focus_top_ten_clients_pm_donut($pm_id,$report_year); ?>
  
  var pie_a = c3.generate({
    size: {
      height: 330,
      width: 330
    },data: {
-     columns: [<?php echo $this->dashboard->focus_top_ten_clients_pm_donut($pm_id,$report_year); ?> ],
+     columns: [<?php echo $this->dashboard->focus_clients_report($pm_id,$report_year,1); ?>],
      type : 'pie',
      onclick: function (d, i) { console.log("onclick", d, i); },
      onmouseover: function (d, i) { console.log("onmouseover", d, i); },

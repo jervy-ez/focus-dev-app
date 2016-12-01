@@ -66,13 +66,40 @@ class Dashboard_m extends CI_Model{
 		return $query;
 	}
 
+	public function reset_revenue($month,$year){
+		$query = $this->db->query(" UPDATE `revenue_focus` SET `$month` = '0.00' WHERE `revenue_focus`.`year` = '$year' ");
+		return $query;
+	}
+
 	public function fetch_pm_sales_year($year,$pm_id = ''){
-		$query = $this->db->query(" SELECT `revenue_focus`.* , CONCAT_WS(' ', `users`.`user_first_name`, `users`.`user_last_name`) AS `user_pm_name`
-			FROM `revenue_focus` 
-			LEFT JOIN `users` ON `users`.`user_id` = `revenue_focus`.`proj_mngr_id`
-			WHERE `revenue_focus`.`year` = '$year' 
-			".($pm_id != '' ? " AND  `revenue_focus`.`proj_mngr_id` = '$pm_id' " : "")."
-			ORDER BY `revenue_focus`.`proj_mngr_id` ASC  ");
+
+if($pm_id != ''){
+
+			$query = $this->db->query("SELECT CONCAT_WS(' ', `users`.`user_first_name`, `users`.`user_last_name`) AS `user_pm_name`,
+`revenue_focus`.`focus_comp_id`,`revenue_focus`.`year`,`revenue_focus`.`revenue_id`,`revenue_focus`.`proj_mngr_id`,
+SUM(`revenue_focus`.`rev_jan`) AS `rev_jan`,SUM(`revenue_focus`.`rev_feb`) AS `rev_feb`,
+SUM(`revenue_focus`.`rev_mar`) AS `rev_mar`,SUM(`revenue_focus`.`rev_apr`) AS `rev_apr`,
+SUM(`revenue_focus`.`rev_may`) AS `rev_may`,SUM(`revenue_focus`.`rev_jun`) AS `rev_jun`,
+SUM(`revenue_focus`.`rev_jul`) AS `rev_jul`,SUM(`revenue_focus`.`rev_aug`) AS `rev_aug`,
+SUM(`revenue_focus`.`rev_sep`) AS `rev_sep`,SUM(`revenue_focus`.`rev_oct`) AS `rev_oct`,
+SUM(`revenue_focus`.`rev_nov`) AS `rev_nov`,SUM(`revenue_focus`.`rev_dec`) AS `rev_dec`
+
+
+				FROM `revenue_focus` 
+				LEFT JOIN `users` ON `users`.`user_id` = `revenue_focus`.`proj_mngr_id`
+				WHERE `revenue_focus`.`year` = '$year'
+				AND  `revenue_focus`.`proj_mngr_id` = '$pm_id'
+				GROUP BY  `revenue_focus`.`proj_mngr_id`
+				ORDER BY `revenue_focus`.`proj_mngr_id` ASC");
+			return $query;		
+	}else{
+			$query = $this->db->query("SELECT `revenue_focus`.* , CONCAT_WS(' ', `users`.`user_first_name`, `users`.`user_last_name`) AS `user_pm_name`
+				FROM `revenue_focus` 
+				LEFT JOIN `users` ON `users`.`user_id` = `revenue_focus`.`proj_mngr_id`
+				WHERE `revenue_focus`.`year` = '$year' 
+				ORDER BY `revenue_focus`.`proj_mngr_id` ASC  ");
+		}
+
 		return $query;
 	}
 
@@ -390,8 +417,27 @@ array(4) {
 
 
 
-	public function get_sales($date_a,$date_b,$pm_id,$comp_id){
-		$query = $this->db->query("SELECT `project`.`project_id`,`users`.`user_first_name`,`users`.`user_last_name`, `project`.`focus_company_id`, `users`.`user_id`,
+	public function get_sales($date_a,$date_b,$pm_id,$comp_id=''){
+		$query = $this->db->query("SELECT `project`.`project_id`,`users`.`user_first_name`,`users`.`user_last_name`, `project`.`focus_company_id`, `users`.`user_id`,`invoice`.`progress_percent`,`invoice`.`label`,`project_cost_total`.`variation_total`,`project`.`project_total`,`company_details`.`company_id`
+			FROM `invoice`
+			LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
+			LEFT JOIN `users` ON `users`.`user_id` = `project`.`project_manager_id`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+			LEFT JOIN `payment` ON `payment`.`invoice_id` = `invoice`.`invoice_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			WHERE `project`.`is_active` = '1' AND`project`.`job_date` <> '' AND `invoice`.`is_invoiced` = '1' AND `users`.`user_id` = '$pm_id'   AND  `project`.`job_category` != 'Company'
+			".($comp_id != '' ? " AND  `project`.`focus_company_id` = '$comp_id' " : "")." 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <  UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+			GROUP BY `invoice`.`invoice_id`");
+		return $query;
+	}
+
+
+/*
+
+
+SELECT `project`.`project_id`,`users`.`user_first_name`,`users`.`user_last_name`, `project`.`focus_company_id`, `users`.`user_id`,
 			#SUM(`invoice`.`invoiced_amount`) AS `invoiced_amount`, SUM(`project_cost_total`.`variation_total`) AS `vr_total`,
 			`invoice`.`progress_percent`,`invoice`.`label`,
 			`project_cost_total`.`variation_total`,`project`.`project_total`
@@ -408,20 +454,18 @@ array(4) {
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) < '$date_b' 
 */
 
-
+/*
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <  UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
 
 			/* with in btwn months*/
 
 			#GROUP BY `project`.`project_manager_id`, `project`.`focus_company_id`
-			ORDER BY `project`.`focus_company_id` ASC , `users`.`user_first_name` ASC");
-
-		return $query;
-	}
+		/*	ORDER BY `project`.`focus_company_id` ASC , `users`.`user_first_name` ASC
 
 
 
+*/
 
 
 
@@ -432,8 +476,8 @@ array(4) {
 
 
 
-	public function look_for_sales($year,$proj_mngr_id,$focus_comp_id,$rev_month){
-		$query = $this->db->query("SELECT * FROM `revenue_focus` WHERE `year` = '$year' AND `proj_mngr_id` = '$proj_mngr_id' AND `focus_comp_id` = '$focus_comp_id'");
+	public function look_for_sales($year,$proj_mngr_id,$focus_comp_id){
+		$query = $this->db->query("SELECT * FROM `revenue_focus` WHERE `year` = '$year' AND `proj_mngr_id` = '$proj_mngr_id' AND `focus_comp_id` = '$focus_comp_id' ");
 		return $query;
 	}
 
@@ -1155,7 +1199,17 @@ ORDER BY `project`.`focus_company_id` ASC
 		return $query;
 	}
 
-
+	public function get_top_comp_lists_name($date_a,$date_b,$pm_id = ''){
+		$query = $this->db->query("SELECT `company_details`.`company_id` ,`company_details`.`company_name` FROM `invoice`
+			LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+			WHERE `invoice`.`is_invoiced` = '1' AND `invoice`.`set_invoice_date` <> ''	AND `project`.is_active = '1' AND `project`.`job_date` <> ''
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+			".($pm_id != '' ? " AND  `project`.`project_manager_id` = '$pm_id' " : "")." 
+			GROUP BY `company_details`.`company_id` ");
+		return $query;
+	}
 
 
 
@@ -1182,77 +1236,65 @@ $query = $this->db->query("SELECT  `project`.`client_id`,`company_details`.`comp
 }else{
 
 
-if($comp_id != ''){
-	$query = $this->db->query("SELECT  `project`.`client_id`,`company_details`.`company_name` , SUM(   `project`.`project_total` *(`invoice`.`progress_percent`/100) ) AS `grand_total`, SUM(`project_cost_total`.`variation_total`) AS `total_variation` 
-			FROM `invoice`
-			LEFT JOIN `project` ON `project`.`project_id`=  `invoice`.`project_id`
-			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
-			LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+	if($comp_id != ''){
+		$query = $this->db->query("SELECT  `project`.`client_id`,`company_details`.`company_name` , SUM(   `project`.`project_total` *(`invoice`.`progress_percent`/100) ) AS `grand_total`, SUM(`project_cost_total`.`variation_total`) AS `total_variation` 
+				FROM `invoice`
+				LEFT JOIN `project` ON `project`.`project_id`=  `invoice`.`project_id`
+				LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+				LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
 
-			WHERE `invoice`.`is_invoiced` = '1' AND `invoice`.`set_invoice_date` <> ''
+				WHERE `invoice`.`is_invoiced` = '1' AND `invoice`.`set_invoice_date` <> ''
 
-			AND `project`.`client_id` = '$comp_id' AND  `project`.`job_category` != 'Company'
-			AND `invoice`.`label`  != 'VR' AND `project`.`job_date` <> '' AND `project`.`is_active` = '1' 
+				AND `project`.`client_id` = '$comp_id' AND  `project`.`job_category` != 'Company'
+				AND `invoice`.`label`  != 'VR' AND `project`.`job_date` <> '' AND `project`.`is_active` = '1' 
 
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )");
-}else{
+				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )");
+	}else{
 
-		$query = $this->db->query("
+			$query = $this->db->query("SELECT  `project`.`client_id`,`company_details`.`company_name`, `company_details`.`company_id` , SUM(   `project`.`project_total` *(`invoice`.`progress_percent`/100) ) AS `grand_total`,SUM(`project_cost_total`.`variation_total`) AS `total_variation`  
+	FROM `invoice`
+	LEFT JOIN `project` ON `project`.`project_id`=  `invoice`.`project_id`
+	LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+	LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
 
+	WHERE `invoice`.`is_invoiced` = '1' AND `invoice`.`set_invoice_date` <> '' AND  `project`.`job_category` != 'Company'
+	 
+	AND `invoice`.`label` != 'VR' AND `project`.`job_date` <> '' AND `project`.`is_active` = '1' 
 
+	AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+	AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+	 $extra_q
+	             
 
-			SELECT  `project`.`client_id`,`company_details`.`company_name`, `company_details`.`company_id` , SUM(   `project`.`project_total` *(`invoice`.`progress_percent`/100) ) AS `grand_total`,SUM(`project_cost_total`.`variation_total`) AS `total_variation`  
-FROM `invoice`
-LEFT JOIN `project` ON `project`.`project_id`=  `invoice`.`project_id`
-LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
-LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
-
-WHERE `invoice`.`is_invoiced` = '1' AND `invoice`.`set_invoice_date` <> '' AND  `project`.`job_category` != 'Company'
- 
-AND `invoice`.`label` != 'VR' AND `project`.`job_date` <> '' AND `project`.`is_active` = '1' 
-
-AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
- $extra_q
-             
-
-GROUP BY `project`.`client_id`
-ORDER BY `grand_total` DESC
-LIMIT 0,20
- 
+	GROUP BY `project`.`client_id`
+	ORDER BY `grand_total` DESC
+	LIMIT 0,20
 
 
-/*
 
-SELECT `company_details`.`company_id`,`company_details`.`company_name` 
-
-			,SUM(`invoice`.`invoiced_amount`) AS `total_invoiced`, SUM(`project_cost_total`.`variation_total`) AS `vr_total` ,
-			SUM(`invoice`.`invoiced_amount`) +   SUM(`project_cost_total`.`variation_total`) AS `grand_total`
-
-			FROM `project`
-			LEFT JOIN  `invoice` ON `invoice`.`project_id` = `project`.`project_id`
-			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
-			LEFT JOIN  `company_details` ON `company_details`.`company_id` = `project`.`client_id`
-
-			WHERE `project`.`is_active` = '1'
-			AND `project`.`job_date` <> '' AND  `project`.`job_category` != 'Company'
-			AND  `invoice`.`set_invoice_date` <> ''
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
-
-			GROUP BY `project`.`client_id`
-			ORDER BY `grand_total` DESC
-			LIMIT 0,20
-*/
-
-			");
-}
+	");
+	}
 
 }
 
 		return $query;
 	}
+
+
+	/*
+
+SELECT *,`payment`.`payment_id`,`payment`.`project_id` as `payment_project_id`,`invoice`.`project_id` as `invoice_project_id`,  UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') )  AS `in_set_ord`  FROM `invoice`
+			LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+			LEFT JOIN `payment` ON `payment`.`invoice_id` = `invoice`.`invoice_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			$has_where $project_num_q $progress_claim_q $client_q $invoice_status_q $project_manager_q
+			AND `project`.is_active = '1'
+			AND `project`.`job_date` <> '' GROUP BY `invoice`.`invoice_id`  $order_q
+
+*/
+
 
 	public function get_top_ten_clients_overall($id){
 		$query = $this->db->query("SELECT `company_details`.`company_name`,SUM(`project`.`project_total`) AS `total_project`, SUM(`project_cost_total`.`variation_total`) AS `vr_total` FROM `project`
