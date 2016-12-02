@@ -86,11 +86,14 @@
 
 
 
+<?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 16 || $this->session->userdata('is_admin') == 1 ): ?>
+
 				<?php if (strpos($_SERVER['REQUEST_URI'], 'dashboard') !== false): ?>
 					<li>
 						<a role="menuitem" data-toggle="modal" data-target="#management_report" tabindex="-1" href="#"><i class="fa fa-file-text" aria-hidden="true"></i> Management Report</a>
 					</li>
 				<?php endif; ?>
+	<?php endif; ?>
 
 				<li>
 					<a role="menuitem"><i class="fa fa-quote-left" aria-hidden="true"></i> &nbsp;<em><?php echo $this->session->userdata('role_types'); ?></em>&nbsp; <i class="fa fa-quote-right" aria-hidden="true"></i></a>
@@ -199,9 +202,8 @@
 						<div id="" class=""><select id="management_report_pm" class="form-control m-bottom-10">
 							<option selected value="">Select Project Manager</option>
 							<?php foreach ($project_manager as $row){
-								if($row->user_id != '29'){
-									echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
-								}
+								echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+								
 							}?>
 						</select></div>
 

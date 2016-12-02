@@ -200,6 +200,21 @@ class Shopping_center extends MY_Controller{
 
 		$address_id = $this->company_m->insert_address_detail($street,$general_address_a,'',$street_number);
 		$this->shopping_center_m->insert_new_shopping_center($brand,$common_name,$address_id);
+
+
+
+			// user log creation shoppinc center
+					$name_added = ($brand == '' ? $common_name : $brand);
+					$type = 'Insert';
+					$actions = 'Added new shopping center, named '.$name_added;
+					date_default_timezone_set("Australia/Perth");
+					$user_id = $this->session->userdata('user_id');
+					$date = date("d/m/Y");
+					$time = date("H:i:s");
+					$this->user_model->insert_user_log($user_id,$date,$time,$actions,'000000',$type,'2');
+			// user log creation shoppinc center
+
+
 	}
 
 	public function display_shopping_center(){
@@ -254,6 +269,19 @@ class Shopping_center extends MY_Controller{
 		$is_submit = $this->company->if_set($this->input->post('is_submit', true));
 
 
+
+			// user log creation shoppinc center
+					$name_added = ($brand == '' ? $common_name : $brand);
+					$type = 'Update';
+					$actions = 'Updated shopping center, named '.$name_added;
+					date_default_timezone_set("Australia/Perth");
+					$user_id = $this->session->userdata('user_id');
+					$date = date("d/m/Y");
+					$time = date("H:i:s");
+					$this->user_model->insert_user_log($user_id,$date,$time,$actions,'000000',$type,'2');
+			// user log creation shoppinc center
+
+
 		if($is_submit){
 			$address_id = $this->company_m->insert_address_detail($street,$general_address_a,'',$street_number);
 			$this->shopping_center_m->update_shopping_center($shopping_center_id,$brand,$common_name,$address_id);
@@ -268,6 +296,19 @@ class Shopping_center extends MY_Controller{
 	public function delete(){
 		$shopping_center_id = $this->uri->segment(3);
 		$this->shopping_center_m->delete_shopping_center($shopping_center_id);
+
+
+			// user log creation shoppinc center
+					$type = 'Delete';
+					$actions = 'Deleted shopping center ID '.$shopping_center_id;
+					date_default_timezone_set("Australia/Perth");
+					$user_id = $this->session->userdata('user_id');
+					$date = date("d/m/Y");
+					$time = date("H:i:s");
+					$this->user_model->insert_user_log($user_id,$date,$time,$actions,'000000',$type,'2');
+			// user log creation shoppinc center
+
+
 		$this->session->set_flashdata('success_remove', 'You just removed a shopping center.');
 		redirect('/shopping_center');		
 	}
