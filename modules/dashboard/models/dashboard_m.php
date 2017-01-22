@@ -790,7 +790,7 @@ SELECT `project`.`project_id`,`users`.`user_first_name`,`users`.`user_last_name`
 		
 	}
 
-	public function dash_total_pm_sales($proj_mngr_id,$year,$is_out='',$date_a='',$date_b='', $comp_id = ''){
+	public function dash_total_pm_sales($proj_mngr_id,$year='',$is_out='',$date_a='',$date_b='', $comp_id = ''){
 
 
 		if($comp_id != ''){
@@ -805,16 +805,8 @@ WHERE `invoice`.`set_invoice_date` <> ''
 AND `invoice`.`is_invoiced` = '1' AND `project`.`is_active` = '1' 
 AND `project`.`job_date` <> '' AND `project`.`project_manager_id` = '$proj_mngr_id' AND `project`.`focus_company_id` = '$comp_id' AND  `project`.`job_category` != 'Company'
 
-
-
-
 AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
 AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
-
-
-
-
-
 
 
 			");
@@ -824,9 +816,6 @@ AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= U
 
 
 		if($is_out!=''){
-
-
-
 
 			$query = $this->db->query("SELECT *  ,`invoice`.`project_id` as `invoice_project_id`,  `invoice`.`invoice_id` AS `invoice_top_id`  FROM `invoice`
 			LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
@@ -854,17 +843,8 @@ WHERE `invoice`.`set_invoice_date` <> ''
 AND `invoice`.`is_invoiced` = '1' AND `project`.`is_active` = '1'  AND  `project`.`job_category` != 'Company'
 AND `project`.`job_date` <> '' AND `project`.`project_manager_id` = '$proj_mngr_id'
 
-
-
-
 AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
 AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
-
-
-
-
-
-
 
 			");
 		}	
