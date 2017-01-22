@@ -1609,10 +1609,9 @@ $config = Array(
 		$time_stamp_a = $this->date_formater_to_timestamp($date_a);
 		$time_stamp_b = $this->date_formater_to_timestamp($date_b);
 
+	//	echo "$ava_id,$notes, $time_stamp_a , $time_stamp_b";
+
 		$this->user_model->update_ava($ava_id,$notes, $time_stamp_a , $time_stamp_b);
-
-
-
 
 		$user_q = $this->user_model->fetch_user($user_id);
 		$user_detail = array_shift($user_q->result());
@@ -1660,6 +1659,7 @@ $config = Array(
 
 
 		$current_timestamp = strtotime(date("Y-m-d"));
+		//$current_timestamp = strtotime("2016-12-05");
 		$reoccur_q = $this->user_model->list_active_reoccur_availability($current_timestamp);
 
 		foreach ($reoccur_q->result() as $reoccur){
@@ -1878,19 +1878,181 @@ $config = Array(
 
 
 	function reset_availability(){
- 
-
 		$data_reset = explode('`', $_POST['ajax_var']);
-
 		$pathname = $data_reset[0];
 		$user_id = $data_reset[1];
+
+		$availability_id = 0;
+		$type = 0;
 
 		if (strpos($pathname, 'users') !== false) {
 			echo '1';
 		}
 
+/*
+		$data_reset = explode('`', $_POST['ajax_var']);
+		$pathname = $data_reset[0];
+		$user_id = $data_reset[1];
+		if (strpos($pathname, 'users') !== false) {
+			echo '1';
+		}
 		$current_date_time = strtotime(date("Y-m-d h:i A"));
+		echo "$user_id,$current_date_time<br />";
 		$this->user_model->remove_availability($user_id,$current_date_time);
+
+
+
+*/
+
+
+
+		$current_date_time = strtotime(date("Y-m-d h:i A"));
+
+		$current_date = date('Y/m/d');
+		$tomorrow = date('Y-m-d',strtotime($current_date . "+1 days"));
+
+
+	//	echo "$tomorrow---";
+
+		$this->reset_reoccur_avaialbility();
+
+		$availability_id = 0;
+		$type = 0;
+
+		$is_available = 0;
+		$stage_b = 1;
+
+		$user_ave_q = $this->user_model->get_user_availability($user_id,$current_date_time);
+		$user_ave = array_shift($user_ave_q->result_array());
+
+		if($user_ave_q->num_rows === 1){
+			$availability_id = $user_ave['user_availability_id']; 
+			$stage_b = 0;
+			$type = 1;
+		//	echo "$availability_id,$type xxx  remove regular<br />";
+			$this->user_model->remove_availability($availability_id);
+		}else{
+
+/*
+			foreach ($reoccur_q->result() as $reoccur){
+
+				switch ($reoccur->pattern_type) {
+					case "weekly": 
+					$date_future = strtotime(date("Y-m-d").' + '.$reoccur->limits.' week');
+					break;
+
+					case "monthly":
+					$date_future = strtotime(date("Y-m").'-'.$reoccur->range_reoccur.' + '.$reoccur->limits.' month');
+					break;
+
+					case "yearly":
+					$date_future = strtotime(date("Y").'-'.$reoccur->limits.'-'.$reoccur->range_reoccur.' + 1 year');
+					break;
+				}
+
+				$this->user_model->update_future_reoccur_present_date($current_timestamp,$date_future,$reoccur->reoccur_id);
+			}
+
+*/
+
+
+		}
+
+		$current_timestamp = strtotime(date("Y-m-d"));
+	//	$current_timestamp = strtotime(date("2017-11-01"));
+		$time_extended = date("Hi");
+		$day_like = strtolower(date("D") );
+
+		if($stage_b == 1){
+
+			$reoccur_q = $this->user_model->get_reoccur_ave_year_month($current_timestamp,$time_extended,$user_id);
+			if($reoccur_q->num_rows === 1){
+
+				$reoccur = array_shift($reoccur_q->result_array());
+				$availability_id = $reoccur['reoccur_id'];
+				$pattern_type = $reoccur['pattern_type']; 
+				$type = 2;
+
+				//var_dump($reoccur);
+
+				//echo " ***$availability_id,$type reoccur a*** <br />";
+
+
+
+
+				switch ($pattern_type) {
+
+					case "weekly": 
+						$date_future = strtotime(date("Y-m-d").' + '.$reoccur['limits'].' week');
+					break;
+
+
+					case "monthly":
+					$date_future = strtotime(date("Y-m").'-'.$reoccur['range_reoccur'].' + '.$reoccur['limits'].' month');
+					//$date_future_more = strtotime(date("Y-m", $date_future).'-'.$reoccur['range_reoccur'].' + '.$reoccur['limits'].' month' );
+					break;
+
+					case "yearly":
+					$date_future = strtotime(date("Y").'-'.$reoccur['limits'].'-'.$reoccur['range_reoccur'].' + 1 year');
+					//$date_future_more = strtotime(date("Y", $date_future).'-'.$reoccur['limits'].'-'.$reoccur['range_reoccur'].' + 1 year');
+					break;
+				}
+
+				$this->user_model->update_future_reoccur_present_date($date_future,$reoccur['date_range_b'],$availability_id);
+
+
+
+
+
+				//$this->user_model->remove_availability($availability_id,$type);
+
+			}else{
+				$is_available = 1;
+			}
+		}
+
+		//echo "($current_date_time, $time_extended, $day_like,$user_id)";
+
+		if($is_available == 1){
+			$user_ave_roc_q = $this->user_model->get_reoccur_availability($current_date_time, $time_extended, $day_like,$user_id);
+
+
+			if($user_ave_roc_q->num_rows === 1){
+				$reoccur = array_shift($user_ave_roc_q->result_array());
+				$availability_id = $reoccur['reoccur_id']; 
+				$type = 2;
+				$pattern_type = $reoccur['pattern_type']; 
+
+				//echo '****'.$reoccur['limits'].'****';
+
+
+				switch ($pattern_type) {
+
+					case "weekly": 
+						$date_future = strtotime(date("Y-m-d").' + '.$reoccur['limits'].' week');
+						$this->user_model->update_future_reoccur_present_date($date_future,$reoccur['date_range_b'],$availability_id);
+					break;
+
+
+					case "daily": 
+						$date_future = strtotime(date("Y-m-d").' + 1 day');
+						$this->user_model->update_future_reoccur_present_date($date_future,$reoccur['date_range_b'],$availability_id);
+					break;
+
+
+				}
+
+					 
+
+				//echo "$date_future, $availability_id";
+
+				//$this->user_model->remove_availability($availability_id,$type);
+
+
+			}
+		}
+
+
 	}
 
 	function availability(){
@@ -1946,6 +2108,7 @@ $config = Array(
 		return $user_ave_q;
 	}
 
+	
 	function get_user_availability($user_id,$mod=''){
 
 		$this->reset_reoccur_avaialbility();
@@ -2033,7 +2196,6 @@ $config = Array(
 		}
 
 
-//echo "($current_date_time, $time_extended, $day_like,$user_id)";
 
 
 		if($is_available == 1){
@@ -2157,6 +2319,9 @@ $config = Array(
 
 
 	function date_formater_to_timestamp($input_datetime){
+
+		$this->load->module('admin');
+		$this->load->model('admin_m');
 
 
 		//05/10/2016 03:53 PM

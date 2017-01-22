@@ -201,9 +201,8 @@
 
 						<div id="" class=""><select id="management_report_pm" class="form-control m-bottom-10">
 							<option selected value="">Select Project Manager</option>
-							<?php foreach ($project_manager as $row){
-								echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
-								
+							<?php foreach ($project_manager as $row){							
+									echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
 							}?>
 						</select></div>
 

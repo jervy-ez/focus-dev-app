@@ -122,41 +122,58 @@
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 				<h4 class="modal-title">Set Availability Details : <span class="ave_type_up"></span></h4>
 			</div>
+			 
+
 			<div class="modal-body">
 				<div class="row">
 					 
-					<div class='col-xs-6'>
+					<div class='col-xs-4'>
 						<div class="form-group">
-							<div class='input-group date' id='datetimepicker8'>
-								<input type='text' class="form-control time_ave_a_up" placeholder="DD/MM/YYYY HH:MM"/>
+							<div class='input-group date' id='datetimepicker10'>
+								<input type='text' class="form-control time_day_set_non_rec" placeholder="Date" value="<?php echo date("d/m/Y"); ?>" />
 								<span class="input-group-addon">
-									<span class="glyphicon glyphicon-calendar"></span>
+									Day <span class="fa fa-calendar fa-lg"></span>
 								</span>
 							</div>
 						</div>
 					</div>
-					<div class='col-xs-6'>
+					 
+					<div class='col-xs-4'>
 						<div class="form-group">
-							<div class='input-group date' id='datetimepicker9'>
-								<input type='text' class="form-control time_ave_b_up" placeholder="DD/MM/YYYY HH:MM"/>
+							<div class='input-group date' id='datetimepicker8'>
+								<input type='text' class="form-control time_ave_a_up" placeholder="Start"/>
 								<span class="input-group-addon">
-									<span class="glyphicon glyphicon-calendar"></span>
+									Start <span class="fa fa-clock-o fa-lg"></span>
 								</span>
 							</div>
 						</div>
 					</div>
 
+					<div class='col-xs-4'>
+						<div class="form-group">
+							<div class='input-group date' id='datetimepicker9'>
+								<input type='text' class="form-control time_ave_b_up" placeholder="End"/>
+								<span class="input-group-addon">
+									End <span class="fa fa-clock-o fa-lg"></span>
+								</span>
+							</div>
+						</div>
+					</div>
 
 
 					<div class='col-xs-12'>
-						<div class="form-group">
-							<div  >
-								<textarea class="form-control ave_notes_up" id="ave_notes" name="ave_notes" placeholder="Comments"></textarea>
+						<div class="">
+							<div>
+								<textarea class="form-control ave_notes_up" id="ave_notes_up" name="ave_notes" placeholder="Comments"></textarea>
 							</div>
 						</div>
 					</div> 
+
 				</div>
 			</div>
+
+
+
 			<input type="hidden" id="ava_id_data">
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -173,8 +190,8 @@
 
 
 
-<div id="setting_reoccurrence" class="modal fade" tabindex="-1" data-width="760" style="display: none; overflow: hidden;">
-	<div class="modal-dialog">
+<div id="setting_reoccurrence" class="modal fade" tabindex="-1" data-width="860" style="display: none; overflow: hidden;">
+	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 
 			<div class="modal-header">
@@ -183,6 +200,8 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
+
+				<div id="" class="col-md-9">
 
 				<p><strong>Appointment Time</strong></p>
 					 
@@ -267,6 +286,7 @@
 						</div>
 						<div id="" class="clearfix"></div>
 					</div>
+
 				</div>
 
 				<p><hr /></p>
@@ -302,6 +322,27 @@
 					<div id="" class="col-xs-6">
 						<div class="checkbox">
 							<label><input type="checkbox" checked class="no_end_occur">No End Date</label>
+						</div>
+					</div>
+					</div>
+					
+					<div id="" class="col-md-3">
+						<div id="" class="pad-left-15" style="border-left:1px solid #DDDDDD;">
+							<p><strong>Summary</strong></p>
+							<p>Status: <strong><span id="summ_status_text"></span></strong></p>
+							<p>Starting Date: <strong><span id="summ_starting_date"></span></strong></p>
+							<p>End Date: <strong><span id="summ_end_date">No End</span></strong></p>
+							<p>Time: <strong><span id="summ_time"></span></strong></p>
+
+							<hr />
+
+							<p>Note: <strong>The availability will commence at the selected "Starting Date".</strong><br /><br /><em>To change the Start Date, located at the "Range of Reoccurrence" change the Start Date.</em></p>
+
+
+
+
+
+							<p>&nbsp;</p>
 						</div>
 					</div>
 
@@ -368,9 +409,20 @@
 	           format: 'hh:mm A'
 	       });
 
+    		var time_a = e.date.format('hh:mm A');
+    		var time_b = $('input.appointment_time_b').val();
+
+    		$('#summ_time').text( time_a+' - '+time_b );
+
     	});
     	$("#time_picker_2").on("dp.change", function (e) {
     		$('#time_picker_1').data("DateTimePicker").maxDate(e.date);
+
+
+    		var time_a = $('input.appointment_time_a').val();
+    		var time_b = e.date.format('hh:mm A');
+
+    		$('#summ_time').text( time_a+' - '+time_b );
     	});
 
 
@@ -390,13 +442,14 @@
 	           useCurrent: false, //Important! See issue #1075
 	           format: 'DD/MM/YYYY'
 	       });
+ 
+    	$('#summ_starting_date').text( e.date.format('DD/MM/YYYY') );
 
     	});
     	$("#range_datetime_picker_2").on("dp.change", function (e) {
-
     		$(this).data("DateTimePicker").minDate(e.date);
-
     		$('#range_datetime_picker_1').data("DateTimePicker").maxDate(e.date);
+    		$('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
     	});
 
 
@@ -404,18 +457,27 @@
 
 
 
-        $('#datetimepicker8').datetimepicker({ format: 'DD/MM/YYYY hh:mm A'});
-        $("#datetimepicker8").on("dp.change", function (e) {
-            $('#datetimepicker9').data("DateTimePicker").minDate(e.date);
+    	$('#datetimepicker10').datetimepicker({ format: 'DD/MM/YYYY'});
 
-	        $('#datetimepicker9').datetimepicker({
-	            useCurrent: false, //Important! See issue #1075
-	             format: 'DD/MM/YYYY hh:mm A'
-	        });
-        });
-        $("#datetimepicker9").on("dp.change", function (e) {
-            $('#datetimepicker8').data("DateTimePicker").maxDate(e.date);
-        });
+    	$('#datetimepicker8').datetimepicker({ format: 'hh:mm A'});
+    	$('#datetimepicker9').datetimepicker({
+           useCurrent: false, //Important! See issue #1075
+           format: 'hh:mm A'
+       });
+    	$("#datetimepicker8").on("dp.change", function (e) {
+    		$('#datetimepicker9').data("DateTimePicker").minDate(e.date);
+
+    		$('#datetimepicker9').datetimepicker({
+	           useCurrent: false, //Important! See issue #1075
+	           format: 'hh:mm A'
+	       });
+
+    	});
+    	$("#datetimepicker9").on("dp.change", function (e) {
+    		$('#datetimepicker8').data("DateTimePicker").maxDate(e.date);
+    	});
+
+
     });
 </script>
 
