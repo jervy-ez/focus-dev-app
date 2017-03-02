@@ -83,17 +83,17 @@
 									<div class="widg-head box-widg-head pad-5"><i class="fa fa-cog"></i> 
 										<strong class="pointer collapsed" data-toggle="collapse" data-target=".data_forecast">Forecast Settings</strong>
 										<span class="badges pull-right m-right-10"> 
-											<span class="tabs <?php if($tab_view == 'form'){ echo 'active';  } ?>" id="tab_addnew">Add New</span> 
+											<span class="tabs active" id="tab_addnew">Add New</span> 
 											<span class="tabs <?php if($tab_view == 'view'){ echo 'active';  } ?>" id="tab_forecasts">Forecasts</span> 
 										</span>
 									</div>
 
 
 								
-									<div class="box-area clearfix data_forecast collapse <?php if(isset($form_toggle)){ echo 'in'; }else{ echo 'out'; } ?>">
+									<div class="box-area clearfix data_forecast collapse in <?php if(isset($form_toggle)){ echo ''; }else{ echo 'out'; } ?>">
 										<div class="widg-content clearfix">
 											<div class="tab_container">
-												<div id="tab_addnew_area" class="tab_area active clearfix row pad-right-15  pad-left-15 no-pad-t"  <?php if($tab_view != 'form'){ echo 'style="display:none;"';  } ?> >
+												<div id="tab_addnew_area" class="tab_area active clearfix row pad-right-15  pad-left-15 no-pad-t"  >
 													<form method="post" id="forecast_form" class="m-top-0 m-bottom-5 clearfix" action="">
 
 													<div class="col-md-8 col-sm-12 col-xs-12" id="">
@@ -301,9 +301,11 @@
 													<?php //echo "$old_year"; ?>
 
 
+													<p><hr /></p>
 												</div>		
 
-												<div id="tab_forecasts_area" class="tab_area" <?php if($tab_view != 'view'){ echo 'style="display:none;"';  } ?>>
+
+												<div id="tab_forecasts_area" class="tab_area" >
 													<div class="col-lg-5 col-sm-12 col-xs-12" id="">
 														<strong class="m-bottom-10 block data_label">Saved Forecasts</strong>
 
@@ -736,68 +738,7 @@
 						<!-- ************************ -->
 
 
-						<!-- ************************ -->						
-						
-						<div class="col-md-12 col-sm-12 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head box-widg-head pad-5 clearfix">
-									<strong class="pointer collapsed pull-left " data-toggle="collapse" data-target=".data_sales_chart">Sales</strong>
-									<div class="pull-left" style="margin: -5px 0px -8px;">
-										<select class="form-control sf_chart_dateSelection" id="calendar_year" style="height: 31px;    border-radius: 0;    border: none;    font-weight: bold;">
-											
-											<?php $year=2015; for($i=0; $i < 10; $i++){	
-												if( $year+$i < date('Y')+1  ){
-													echo '<option value="'.($year+$i).'">'.($year+$i).'</option>';
-												}
-											}?>
-
-											<script type="text/javascript">$('select#calendar_year').val(<?php echo $old_year+1; ?>);</script>											
-										</select>
-									</div>
-
-									<div class="pull-right" style="margin: -5px -10px -8px;">
-										<select class="form-control sf_chart_dateSelection" id="calendar_view" style="height: 31px;    border-radius: 0;    border: none;    font-weight: bold;">
-											<option value="1" >Financial Year</option>
-											<option value="2" selected="selected"  >Calendar Year</option>
-											<script type="text/javascript">$('select#calendar_view').val(<?php echo $calendar_view; ?>);</script>											
-										</select>
-									</div>
-								</div>
-
-								<div class="box-area clearfix row pad-right-10 pad-left-10 data_sales_chart collapse in">
-										<div class="loading_chart" style="height: 320px;    text-align: center;    padding: 100px 53px;    color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
-										<div class id="job_book_area">
-											<div id="chart_a"></div>
-										</div>
-										<hr class="block m-bottom-10 m-top-5">
-
-										<div class="m-left-10 m-bottom-10">
-
-										<button class="btn btn-info btn-sm" id="reset_chart" onclick="bttnB(this)" ><i class="fa fa-exchange"></i> Reset Chart</button>
-										<button class="btn btn-primary btn-sm" id="visible_overall" onclick="bttnA(this)" ><i class="fa fa-exchange"></i> Outstanding</button>
-
-										<button class="btn btn-warning btn-sm" id="visible_forecast" onclick="bttnC(this)" ><i class="fa fa-exchange"></i> Focus WA</button>
-										<button class="btn btn-success btn-sm" id="visible_forecast" onclick="bttnD(this)" ><i class="fa fa-exchange"></i> Focus NSW</button>
-										<button class="btn btn-sm" id="visible_forecast" onclick="bttnE(this)" ><i class="fa fa-exchange"></i> PM Actual Sales</button>
-
-
-
-
-										<button class="hide btn btn-primary btn-sm m-left-5" onclick="funca()" ><i class="fa fa-exchange"></i> Project Manager Shares</button>
-										<button class="hide btn btn-sm m-left-5" onclick="funcb()" ><i class="fa fa-exchange"></i> Focus Sales</button>
-										<button class="hide btn btn-info btn-sm pull-right m-right-10" onclick='print_job_book();'><i class="fa fa-print"></i> Print</button>
-											
-
-										</div>
-										
-								</div>
-							</div>
-						</div>
-
-						
-						<div class="clearfix"></div>
-
+		  
 
 
 
@@ -813,48 +754,12 @@
 
 						<!-- ************************ -->
 
-
-						<div class="col-md-6 col-sm-12 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-a widg-head-styled">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Current Month's Sales Per Project Manager</strong></div>
-								<div class="box-area clearfix">
-									<div class="widg-content clearfix">
-										<div class="loading_chart" style="height: 400px;    text-align: center;    padding: 100px 53px;    color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
-										<div id="chart_b"></div>	
-										<hr class="hide block m-bottom-10 m-top-5">
-										<button class="hide btn btn-warning btn-sm" id="visible_forecast_b" onclick="funcd(this)" ><i class="fa fa-exchange"></i> Show Individual</button>	
-
-										<button class="hide btn btn-info btn-sm pull-right" onclick='print_job_book();'><i class="fa fa-print"></i> Print</button>										
-									</div>
-								</div>
-							</div>
-						</div>
 
 
 						<!-- ************************ -->
 						<!-- ************************ -->						
 						
 		 
-
-
-						<div class="col-md-6 col-sm-12 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-b widg-head-styled">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>This Month's Focus Sales</strong></div>
-								<div class="box-area clearfix">
-									<div class="widg-content clearfix">
-										<div class="loading_chart" style="height: 400px;    text-align: center;    padding: 100px 53px;    color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
-										<div id="chart_c"></div>	
-										<hr class="hide block m-bottom-10 m-top-5">
-										<button class="hide btn btn-warning btn-sm" id="visible_forecast_b" onclick="funcd(this)" ><i class="fa fa-exchange"></i> Show Individual</button>	
-
-										<button class="hide btn btn-info btn-sm pull-right" onclick='print_job_book();'><i class="fa fa-print"></i> Print</button>										
-									</div>
-								</div>
-							</div>
-						</div>
-
 
 
 
@@ -916,570 +821,9 @@
 <link rel="stylesheet" type="text/css" href="http://rawgit.com/masayuki0812/c3/master/c3.css">
  -->
 <script type='text/javascript'>
-	var chart = c3.generate({
-      size: {
-        height: 500
-      },data: {
-        x : 'x',
-        columns: [
-          ['x',
 
-          <?php 
 
-          for($i=0; $i < 12 ; $i++){
-          	$alternator = $calendar_view; $counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-
-          	$month_index = $months[$counter];
-          	echo "'".$month_index."',";
-          }
-
-
-
-
-
-          ?> ],
-
-
-
-<?php
-
-echo "['".$swout['company_name']."',";
-
-for($i=0; $i < 12 ; $i++){	
-	$alternator = $calendar_view;
-	$counter = $i;
-
-	if($alternator == 1){
-		$counter = $counter + 6;
-	}
-
-	if($alternator == 1 && $counter > 11){
-		$counter = $counter - 12;
-	}
-
-	$month_index = 'sales_data_'.strtolower($months[$counter]);
-	echo $swout[$month_index].',';
-}
-
-?>],
-
-<?php
-
-echo "['".$fcsOT['company_name']."',";
-
-for($i=0; $i < 12 ; $i++){	
-	$alternator = $calendar_view;
-	$counter = $i;
-
-	if($alternator == 1){
-		$counter = $counter + 6;
-	}
-
-	if($alternator == 1 && $counter > 11){
-		$counter = $counter - 12;
-	}
-
-	$month_index = 'out_'.strtolower($months[$counter]);
-	echo $fcsOT[$month_index].',';
-}
-
-?>],
-
-<?php
-
-echo "['".$fcsO['company_name']."',";
-
-for($i=0; $i < 12 ; $i++){	
-	$alternator = $calendar_view;
-	$counter = $i;
-
-	if($alternator == 1){
-		$counter = $counter + 6;
-	}
-
-	if($alternator == 1 && $counter > 11){
-		$counter = $counter - 12;
-	}
-
-	$month_index = 'rev_'.strtolower($months[$counter]);
-	echo $fcsO[$month_index].',';
-}
-
-?>],
-
-<?php
-
-echo "['".$fcsC['company_name']."',";
-
-for($i=0; $i < 12 ; $i++){	
-	$alternator = $calendar_view;
-	$counter = $i;
-
-	if($alternator == 1){
-		$counter = $counter + 6;
-	}
-
-	if($alternator == 1 && $counter > 11){
-		$counter = $counter - 12;
-	}
-
-	$month_index = 'rev_'.strtolower($months[$counter]);
-	echo $fcsC[$month_index].',';
-}
-
-?>],
-
-
-<?php
-
-
-
-
-		foreach ($inv_fcs_overall_sales as $key => $value) {
-				echo "['$key Overall',";	
-				
-
-
-
-				for($i=0; $i < 12 ; $i++){
-					$counter = $i;
-				$alternator = $calendar_view;	
-
-	if($alternator == 1){
-		$counter = $counter + 6;
-	}
-
-	if($alternator == 1 && $counter > 11){
-		$counter = $counter - 12;
-	}
-
-
-
-					$month_index_a = 'out_'.strtolower($months[$counter]);
-					$month_index_b = 'rev_'.strtolower($months[$counter]);
-
-					$month_overall = $inv_fcs_overall_sales[$key][$month_index_a] + $inv_fcs_overall_sales[$key][$month_index_b];
-
-					echo  $month_overall.',';
-
-
-				}
-
-				echo "],";
-				
-		}
-
-
- ?>
-
-
-
-
-
-
-<?php foreach ($focus_indv_comp_sales->result_array() as $indv_comp_sales): ?>
-	<?php //var_dump($indv_comp_sales); ?>
-
-	<?php echo "['".$indv_comp_sales['company_name']."',"; ?>
-
-
-<?php 
-
-          for($i=0; $i < 12 ; $i++){	
-          	$alternator = $calendar_view;
-          	$counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-
-          	
-
-          	$month_index = 'rev_'.strtolower($months[$counter]);
-
-          	$item_forecast = $indv_comp_sales[$month_index];
-
-
-
-          	echo $item_forecast.',';
-
-          }
-
-
-
-
-
-          ?>
-
-
-
-
-	<?php echo "],"; ?>
-
-
-	<?php endforeach; ?>
- 
-
-
-
-
-
-
-
-
-
-
-<?php foreach ($focus_indv_comp_outstanding->result_array() as $indv_comp_sales): ?>
-	<?php //var_dump($indv_comp_sales); ?>
-
-	<?php echo "['".$indv_comp_sales['company_name']." Outstanding',"; ?>
-
-
-<?php 
-
-          for($i=0; $i < 12 ; $i++){	
-          	$alternator = $calendar_view;
-          	$counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-
-          	
-
-          	$month_index = 'out_'.strtolower($months[$counter]);
-
-          	$item_forecast = $indv_comp_sales[$month_index];
-
-
-
-          	echo $item_forecast.',';
-
-          }
-
-
-
-
-
-          ?>
-
-
-
-
-	<?php echo "],"; ?>
-
-
-	<?php endforeach; ?>
- 
-
-
-
-
-
-<?php foreach ($pms_sales_c_year->result_array() as $pm_sales_data ) {
-	echo "['".$pm_sales_data['user_pm_name']."',".$pm_sales_data['rev_jan'].",".$pm_sales_data['rev_feb'].",".$pm_sales_data['rev_mar'].",".$pm_sales_data['rev_apr'].",".$pm_sales_data['rev_may'].",".$pm_sales_data['rev_jun'].",".$pm_sales_data['rev_jul'].",".$pm_sales_data['rev_aug'].",".$pm_sales_data['rev_sep'].",".$pm_sales_data['rev_oct'].",".$pm_sales_data['rev_nov'].",".$pm_sales_data['rev_dec']."],";
-} ?>
-
-
-
-<?php foreach ($focus_indv_comp_sales_old->result_array() as $indv_comp_sales): ?>
-	<?php //var_dump($indv_comp_sales); ?>
-
-	<?php echo "['".$indv_comp_sales['company_name']." Last Year',"; ?>
-
-
-<?php 
-
-          for($i=0; $i < 12 ; $i++){	
-          	$alternator = $calendar_view;
-          	$counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-
-          	
-
-          	$month_index = 'rev_'.strtolower($months[$counter]);
-
-          	$item_forecast = $indv_comp_sales[$month_index];
-
-
-
-          	echo $item_forecast.',';
-
-          }
-
-
-
-
-
-          ?>
-
-
-
-
-	<?php echo "],"; ?>
-
-
-	<?php endforeach; ?>
- 
-
-
-
-
-
-
-
-
-<?php foreach ($focus_indv_comp_forecast->result_array() as $indv_comp_forec): ?>
-
-
-	<?php echo "['".$indv_comp_forec['company_name']." Forecast',"; ?>
-
-
-<?php 
-
-          for($i=0; $i < 12 ; $i++){	
-          	$alternator = $calendar_view;
-          	$counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-
-
-          	$comp_total_forec = $indv_comp_forec['total'] *($indv_comp_forec['forecast_percent']/100);
-
-
-
-
-          	$month_index = 'forecast_'.strtolower($months[$counter]);
-
-          	$item_forecast = $comp_total_forec * ($fetch_forecast[$month_index]/100);
-
-
-
-          	echo round($item_forecast,2).',';
-
-          }
-
-
-
-
-
-          ?>
-
-
-
-
-	<?php echo "],"; ?>
-
-
-	<?php endforeach; ?>
- 
-
-
-
-
-
-
-		
-
-		['Forecast',
-		<?php 
-
-          for($i=0; $i < 12 ; $i++){	
-          	$alternator = $calendar_view;
-          	$counter = $i;
-
-          	if($alternator == 1){
-          		$counter = $counter + 6;
-          	}
-
-          	if($alternator == 1 && $counter > 11){
-          		$counter = $counter - 12;
-          	}
-
-          	
-
-          	$month_index = 'forecast_'.strtolower($months[$counter]);
-
-          	$item_forecast = $fetch_forecast['total'] * ($fetch_forecast[$month_index]/100);
-
-
-
-          	echo $item_forecast.',';
-
-          }
-
-
-
-
-
-          ?> ],
-
- 
-
-        ],
-        selection: {enabled: true},
-        type: 'bar',
-        colors: {
-            'Forecast': '#764B8E'
-        },
-        types: {   'Forecast' : 'line',  
-
-
-
-<?php foreach ($focus_indv_comp_forecast->result_array() as $indv_comp_forec): ?>
-
-
-	<?php echo "'".$indv_comp_forec['company_name']." Forecast': 'line',"; ?>
-
-
-	<?php endforeach; ?>
- 
-
-
-        },
-        groups: [ ['Outstanding','Focus Sales'],['Focus Shopfit Pty Ltd','Focus Shopfit Pty Ltd Outstanding'],['Focus Shopfit NSW Pty Ltd','Focus Shopfit NSW Pty Ltd Outstanding']  ],
-        order: 'desc',
-      },
-    tooltip: {
-        grouped: true // false // Default true
-    },
-             bindto: "#chart_a",
-bar:{ width:{ ratio: 0.5 }},
-point:{ select:{ r: 6 }},
-onrendered: function () { $('.loading_chart').remove(); },
-zoom: {enabled: true, rescale: true,extent: [1, 7]},
-legend: { show: false },
-
-
-axis: {x: {type: 'category', tick: {rotate: 0,multiline: false}, height: 0} },
-tooltip: {
-        format: {
-     //     title: function (x) { return 'Data ' + x; },
-            value: function (value, ratio, id) {
-               // var format = id === 'data1' ? d3.format(',') : d3.format('$');
-                var format = d3.format(',');
-                
-             	var mod_value = Math.round(value)
-                return format(mod_value);
-            }
-        } 
-
-    }
-    });
-
-chart.select();
-
-
-chart.hide();
-chart.show(['Overall Sales','Forecast','Last Year Sales']);
-
-
-
-
-function funca(){
-	chart.hide();
-	chart.groups([
-      	 ['Alan Liddell','Trevor Gamble','Pyi Paing Aye Win','Krzysztof Kiezun','Maintenance Manager 5','Stuart Hubrich','Maintenance Manager 6'],
-         ['Focus WA','Focus NSW']
-    ]);
-  	setTimeout(function () {
-    	chart.show(['Alan Liddell','Krzysztof Kiezun','Pyi Paing Aye Win','Trevor Gamble','Stuart Hubrich','Maintenance Manager 5','Maintenance Manager 6']);
-	}, 500);
-	setTimeout(function () {   chart.show(['Forecast 2015']); }, 1000);
-}
-
-
-function funcb(){
-	chart.hide();
-	setTimeout(function () {
-		chart.groups([['Focus NSW','Focus WA']]);
-		chart.show(['Focus WA', 'Focus NSW']);
-	}, 500);
-
-	setTimeout(function () {   chart.show(['Forecast 2015']); }, 1000);
-}
-
-
-
-
-
-function bttnA(element_obj){
-	var forecast_display = element_obj.getAttribute("id");
-	chart.hide();
-	setTimeout(function () {
-			chart.show(['Outstanding', 'Focus Sales','Forecast','Last Year Sales']);
-			element_obj.setAttribute("id", "hidden_forecast");
-	}, 500);	
-}
-
-
-function bttnB(element_obj){
-	var forecast_display = element_obj.getAttribute("id");
-	chart.hide(); 
-	setTimeout(function () {
-			chart.show(['Overall Sales','Forecast','Last Year Sales']);
-	}, 500);
-}
-
-
- 
-function bttnC(element_obj){
-	var forecast_display = element_obj.getAttribute("id");
-	chart.hide(); 
-	setTimeout(function () {
-			chart.show(['Focus Shopfit Pty Ltd Forecast', 'Focus Shopfit Pty Ltd Last Year', 'Focus Shopfit Pty Ltd','Focus Shopfit Pty Ltd Outstanding','Focus Shopfit Pty Ltd Overall']);
-	}, 500);
-}
-
-
-function bttnD(element_obj){
-	var forecast_display = element_obj.getAttribute("id");
-	chart.hide(); 
-	setTimeout(function () {
-			chart.show(['Focus Shopfit NSW Pty Ltd Forecast', 'Focus Shopfit NSW Pty Ltd Last Year', 'Focus Shopfit NSW Pty Ltd','Focus Shopfit NSW Pty Ltd Outstanding','Focus Shopfit NSW Pty Ltd Overall']);
-	}, 500);
-}
-
-
-
-function bttnE(element_obj){
-	var forecast_display = element_obj.getAttribute("id");
-	chart.hide(); 
-	setTimeout(function () {
-			chart.show(['Alan Liddell', 'Stuart Hubrich', 'Pyi Paing Aye Win','Krzysztof Kiezun','Maintenance Manager','Trevor Gamble']);
-	}, 500);
-}
-
-
+/*
 var chart_b = c3.generate({
       size: { height: 395 },
       data: {
@@ -1518,8 +862,8 @@ tooltip: {
 
     }
 });
-
-
+*/
+/*
 var chart_c = c3.generate({
       size: { height: 395 },
       data: {
@@ -1572,22 +916,9 @@ tooltip: {
     }
 });
 
+*/
 
-
-setTimeout(function () {
-//  chart.hide(['data2', 'data3']);
- // chart.show(['data2', 'data5']);
-//chart.hide(['data2', 'data5']);
-}, 3000);
-
-function printDiv(divName) {
-   var printContents = document.getElementById(divName).innerHTML;     
-   var originalContents = document.body.innerHTML;       
-   document.body.innerHTML = printContents;      
-   window.print();      
-   document.body.innerHTML = originalContents;
-}
-
+ 
 
 </script>
 

@@ -136,7 +136,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 
 										<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-5">
-												<div class=" " id=""><p>Uninvoiced <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+												<div class=" " id=""><p>Uninvoiced</p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
 												<div class="pad-top-5" id="" ><?php $this->dashboard->uninvoiced_widget_pm(); ?></div>
 											</div>							
@@ -152,7 +152,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 
 										<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-5">
-												<div class=" " id=""><p>Outstanding <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+												<div class=" " id=""><p>Outstanding</p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
 												<div class="pad-top-5" id="" ><?php $this->dashboard->outstanding_payments_widget_pm(); ?></div>
 											</div>							

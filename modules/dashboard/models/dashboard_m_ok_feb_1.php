@@ -239,7 +239,7 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `re
 	}
 
 
-	public function get_site_labour_hrs($currect_date,$date_project_created = ''){
+	public function get_site_labour_hrs($currect_date){
 
 		$query = $this->db->query("SELECT  UNIX_TIMESTAMP( STR_TO_DATE(`project_labour_sched`.`labour_sched_date`, '%Y-%m-%d') ) AS `date_set`, SUM(`project_labour_sched`.`number_of_hrs`) AS `time` , `project`.`focus_company_id`,`states`.`shortname`,`address_general`.`state_id`
 			FROM `project_labour_sched`
@@ -252,14 +252,7 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `re
 
 			 /* YYYY-MM-DD */
 			WHERE   UNIX_TIMESTAMP( STR_TO_DATE(`project_labour_sched`.`labour_sched_date`, '%Y-%m-%d') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$currect_date', '%Y-%m-%d') )
-
-
-			 
-		".($date_project_created != '' ? "  AND   UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_project_created', '%Y-%m-%d') )     " : " AND `project`.`is_paid` = '0' " )." 
-
-
-
-			AND   `project`.`job_date` <> '' AND `project`.`is_active` = '1'  AND `project`.`unaccepted_date` = '' 
+			AND   `project`.`job_date` <> '' AND `project`.`is_active` = '1'  AND `project`.`is_paid` = '0' AND `project`.`unaccepted_date` = '' 
 			 AND `project`.`job_category` != 'Design Works'
 			 AND `project`.`job_category` != 'Minor Works'
 			 AND `project`.`job_category` != 'Maintenance'
@@ -274,43 +267,16 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `re
 			return $query;
 		}
 
-	public function get_all_active_projects($old_date='',$old_date_b=''){
+	public function get_all_active_projects(){
 
-		if($old_date != ''){
-
-
-			$query = $this->db->query("SELECT `states`.`shortname`,`address_general`.`state_id`,`project`.`unaccepted_date`,`project`.`date_site_commencement`,`project`.`job_date`,`project`.`is_paid`,`project`.`job_category`,`project`.`project_estiamator_id`,`project`.`project_manager_id`,`project_cost_total`.`work_estimated_total`,`project`.`focus_company_id`,`project_cost_total`.`variation_total`,`project`.`install_time_hrs`,`project`.`project_total`,`project`.`budget_estimate_total`   
+		$query = $this->db->query("SELECT `states`.`shortname`,`address_general`.`state_id`,`project`.`unaccepted_date`,`project`.`date_site_commencement`,`project`.`job_date`,`project`.`is_paid`,`project`.`job_category`,`project`.`project_estiamator_id`,`project`.`project_manager_id`,`project_cost_total`.`work_estimated_total`,`project`.`focus_company_id`,`project_cost_total`.`variation_total`,`project`.`install_time_hrs`,`project`.`project_total`,`project`.`budget_estimate_total`   
 			FROM `project` 
 			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
 			LEFT JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
 			LEFT JOIN `address_general` ON `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
 			LEFT JOIN `states` ON `states`.`id` = `address_general`.`state_id`
-			WHERE `project`.`is_active` = '1'
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$old_date', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) > UNIX_TIMESTAMP( STR_TO_DATE('$old_date', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$old_date_b', '%d/%m/%Y') ) "); 
 
-
-
-
-
-		}else{
-			$query = $this->db->query("SELECT `states`.`shortname`,`address_general`.`state_id`,`project`.`unaccepted_date`,`project`.`date_site_commencement`,`project`.`job_date`,`project`.`is_paid`,`project`.`job_category`,`project`.`project_estiamator_id`,`project`.`project_manager_id`,`project_cost_total`.`work_estimated_total`,`project`.`focus_company_id`,`project_cost_total`.`variation_total`,`project`.`install_time_hrs`,`project`.`project_total`,`project`.`budget_estimate_total`   
-			FROM `project` 
-			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
-			LEFT JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
-			LEFT JOIN `address_general` ON `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
-			LEFT JOIN `states` ON `states`.`id` = `address_general`.`state_id`
 			WHERE `project`.`is_active` = '1'");
-		}
-
-
-
-
-
-
-
-
 		return $query;
 		
 	}
@@ -841,7 +807,7 @@ ORDER BY  `invoice`.`project_id` ASC,   `payment`.`payment_id` DESC ");
 				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
 				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
 				AND `project`.`is_active` = '1' AND  `invoice`.`is_paid` = '0' AND  `invoice`.`is_invoiced` = '1' /*AND `project`.`is_paid` = '0' */
-				AND  `project`.`focus_company_id` = '$comp_id'   AND  `project`.`job_category` != 'Company' 
+				AND  `project`.`focus_company_id` = '$comp_id' /* AND  `project`.`job_category` != 'Company'*/
 				GROUP BY `invoice`.`invoice_id`
 				ORDER BY `invoice`.`project_id` ASC");
 			return $query;
