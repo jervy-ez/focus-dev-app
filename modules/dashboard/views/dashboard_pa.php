@@ -118,7 +118,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 
 										<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-5">
-												<div class=" " id=""><p>Uninvoiced <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+												<div class=" " id=""><p>Uninvoiced</p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
 												<div class="pad-top-5" id="" ><?php $this->dashboard->uninvoiced_widget_pa(); ?></div>
 											</div>							
@@ -134,7 +134,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 
 										<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-5">
-												<div class=" " id=""><p>Outstanding <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+												<div class=" " id=""><p>Outstanding</p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
 												<div class="pad-top-5" id="" ><?php $this->dashboard->outstanding_payments_widget_pa(); ?></div>
 											</div>							
@@ -254,9 +254,18 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 										<div class="" id="">
 											<?php $status_forecast = $this->dashboard->pm_sales_widget_pa(); ?>
 											<script type="text/javascript">
-												var overall_progress = parseInt(<?php echo $status_forecast; ?>);
+												//var overall_progress = parseInt(<?php echo $status_forecast; ?>);
+												//$('.full_p').css('width',overall_progress+'%');
+												//$('.full_p').html(overall_progress+'%');
+											</script>
+											<script type="text/javascript">
+												var raw_overall = '<?php echo $status_forecast; ?>';
+												var overall_arr =  raw_overall.split('_');
+												var overall_progress = parseInt(overall_arr[0]);
+												var status_forecast = overall_arr[1];
 												$('.full_p').css('width',overall_progress+'%');
 												$('.full_p').html(overall_progress+'%');
+											  	$('.full_p').prop('title','$'+status_forecast+' - Overall Progress');											  
 											</script>
 										</div>							
 									</div>

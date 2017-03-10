@@ -253,9 +253,7 @@ $current_date = date("d/m/Y");
 												var status_forecast = overall_arr[1];
 												$('.full_p').css('width',overall_progress+'%');
 												$('.full_p').html(overall_progress+'%');
-											  	$('.full_p').prop('title','$'+status_forecast+' - Overall Progress');
-
-											  
+											  	$('.full_p').prop('title','$'+status_forecast+' - Overall Progress');											  
 											</script>
 										</div>							
 									</div>
