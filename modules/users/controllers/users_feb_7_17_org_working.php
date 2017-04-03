@@ -1650,20 +1650,14 @@ $config = Array(
 		$fetch_user_loc = $this->admin_m->fetch_user_location($person_did);
 		$user_location = array_shift($fetch_user_loc->result_array());
 
-		$user_state_raw = explode(',', $user_location['location']);
-		$user_site = trim($user_state_raw[1]);
-		switch ($user_site) {
-			case "NSW": 
+		if (strpos($user_location['location'], 'NSW') !== false) {
 			date_default_timezone_set('Australia/Sydney');
-			break;
-
-			case "QLD":
+		}elseif (strpos($user_location['location'], 'QLD') !== false) {
+			date_default_timezone_set('Australia/Melbourne');
+		}elseif (strpos($user_location['location'], 'WA') !== false) {
 			date_default_timezone_set('Australia/Perth');
-			break;
-
-			case "WA":
+		}else{
 			date_default_timezone_set('Australia/Perth');
-			break;
 		}
 
 
@@ -1708,22 +1702,15 @@ $config = Array(
 		$fetch_user_loc = $this->admin_m->fetch_user_location($person_did);
 		$user_location = array_shift($fetch_user_loc->result_array());
 
-		$user_state_raw = explode(',', $user_location['location']);
-		$user_site = trim($user_state_raw[1]);
-		switch ($user_site) {
-			case "NSW": 
+		if (strpos($user_location['location'], 'NSW') !== false) {
 			date_default_timezone_set('Australia/Sydney');
-			break;
-
-			case "QLD":
+		}elseif (strpos($user_location['location'], 'QLD') !== false) {
+			date_default_timezone_set('Australia/Melbourne');
+		}elseif (strpos($user_location['location'], 'WA') !== false) {
 			date_default_timezone_set('Australia/Perth');
-			break;
-
-			case "WA":
+		}else{
 			date_default_timezone_set('Australia/Perth');
-			break;
-		}
-
+		} 
 
 		$ave = explode('`', $_POST['ajax_var']);
 
@@ -1862,22 +1849,15 @@ $config = Array(
 		$fetch_user_loc = $this->admin_m->fetch_user_location($person_did);
 		$user_location = array_shift($fetch_user_loc->result_array());
 
-		$user_state_raw = explode(',', $user_location['location']);
-		$user_site = trim($user_state_raw[1]);
-		switch ($user_site) {
-			case "NSW": 
+		if (strpos($user_location['location'], 'NSW') !== false) {
 			date_default_timezone_set('Australia/Sydney');
-			break;
-
-			case "QLD":
+		}elseif (strpos($user_location['location'], 'QLD') !== false) {
+			date_default_timezone_set('Australia/Melbourne');
+		}elseif (strpos($user_location['location'], 'WA') !== false) {
 			date_default_timezone_set('Australia/Perth');
-			break;
-
-			case "WA":
+		}else{
 			date_default_timezone_set('Australia/Perth');
-			break;
-		}
-
+		} 
 
 
 		$date = date("d/m/Y");
@@ -1980,8 +1960,8 @@ $config = Array(
 
 
 		}
- 
-		$current_timestamp = strtotime(date("Y-m-d h:i A"));
+
+		$current_timestamp = strtotime(date("Y-m-d"));
 	//	$current_timestamp = strtotime(date("2017-11-01"));
 		$time_extended = date("Hi");
 		$day_like = strtolower(date("D") );
@@ -2038,7 +2018,7 @@ $config = Array(
 
 		if($is_available == 1){
 
-			$current_date_time = strtotime(date("Y-m-d h:i A"));
+			$current_date_time = strtotime(date("Y-m-d"));
 			$user_ave_roc_q = $this->user_model->get_reoccur_availability($current_date_time, $time_extended, $day_like,$user_id);
 
 
@@ -2185,8 +2165,8 @@ $config = Array(
 			}
 		}
 
- 
-		$current_timestamp = strtotime(date("Y-m-d h:i A"));
+
+		$current_timestamp = strtotime(date("Y-m-d"));
 	//	$current_timestamp = strtotime(date("2017-11-01"));
 		$time_extended = date("Hi");
 		$day_like = strtolower(date("D") );
@@ -2225,7 +2205,7 @@ $config = Array(
 
 		if($is_available == 1){
 
-			$current_date_time = strtotime(date("Y-m-d h:i A"));
+			$current_date_time = strtotime(date("Y-m-d"));
 			$user_ave_roc_q = $this->user_model->get_reoccur_availability($current_date_time, $time_extended, $day_like,$user_id);
 			$reoccur_ave = array_shift($user_ave_roc_q->result_array());
 
@@ -2258,15 +2238,15 @@ $config = Array(
 		$time_extended = date("Hi");
 		$day_like = strtolower(date("D") );
 		$current_date_time = strtotime(date("Y-m-d h:i A"));
-		$current_timestamp = strtotime(date("Y-m-d"));  
+		$current_timestamp = strtotime(date("Y-m-d")); 
 
-		$reoccur_q = $this->user_model->get_reoccur_ave_year_month($current_date_time,$time_extended,$user_id);
+		$reoccur_q = $this->user_model->get_reoccur_ave_year_month($current_timestamp,$time_extended,$user_id);
 			if($reoccur_q->num_rows === 1){
 
 				$reoccur_ave = array_shift($reoccur_q->result_array());
 
 			}else{
-			$current_date_time = strtotime(date("Y-m-d h:i A"));
+				$current_date_time = strtotime(date("Y-m-d"));
 				$user_ave_roc_q = $this->user_model->get_reoccur_availability($current_date_time, $time_extended, $day_like,$user_id);
 				$reoccur_ave = array_shift($user_ave_roc_q->result_array());
 
@@ -2281,22 +2261,15 @@ $config = Array(
 		$fetch_user_loc = $this->admin_m->fetch_user_location($user_id);
 		$user_location = array_shift($fetch_user_loc->result_array());
 
-		$user_state_raw = explode(',', $user_location['location']);
-		$user_site = trim($user_state_raw[1]);
-		switch ($user_site) {
-			case "NSW": 
+		if (strpos($user_location['location'], 'NSW') !== false) {
 			date_default_timezone_set('Australia/Sydney');
-			break;
-
-			case "QLD":
+		}elseif (strpos($user_location['location'], 'QLD') !== false) {
+			date_default_timezone_set('Australia/Melbourne');
+		}elseif (strpos($user_location['location'], 'WA') !== false) {
 			date_default_timezone_set('Australia/Perth');
-			break;
-
-			case "WA":
+		}else{
 			date_default_timezone_set('Australia/Perth');
-			break;
-		}
-
+		} 
 
 
 
@@ -2336,54 +2309,12 @@ $config = Array(
 				$min = substr($reoccur_ave['end_time'] ,-2).'AM';
 			}
 
-			//$dis_time = $end_time.':'.$min;
-
-
-			
-
-			if( $reoccur_ave['is_no_end'] == 1){
-$date_end = date("l ",$reoccur_ave['date_range_b']);//.' '.$reoccur_ave['user_availability_id'];
-			}else{
-
-$date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);//.' '.$reoccur_ave['user_availability_id'];
-			}
-
-
-
-			echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" title="" data-original-title="'.$reoccur_ave['notes'].' Return:'.$date_end.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
-
-
-
-/*
-			$hr = substr($reoccur_ave['end_time'] ,0,2);
-
-			if($hr > 12){
-				$end_time = $hr-12;
-				$min = substr($reoccur_ave['end_time'] ,-2).'PM';
-			}else{
-				$end_time = $hr;
-				$min = substr($reoccur_ave['end_time'] ,-2).'AM';
-			}
-
 			$dis_time = $end_time.':'.$min;
 
 
-			
 
-			
+			echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" title="" data-original-title="'.$reoccur_ave['notes'].' Return:Today at '.$dis_time.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
 
-			if( $reoccur_ave['is_no_end'] == 1){
-$date_end = date("l ",$reoccur_ave['date_range_b']);
-			}else{
-
-$date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
-			}
-
-
-
-
-			echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" title="" data-original-title="'.$reoccur_ave['notes'].' Return:'.$date_end.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
-*/
 
 		}
 
@@ -2414,22 +2345,15 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		$fetch_user_loc = $this->admin_m->fetch_user_location($userid);
 		$user_location = array_shift($fetch_user_loc->result_array());
 
-		$user_state_raw = explode(',', $user_location['location']);
-		$user_site = trim($user_state_raw[1]);
-		switch ($user_site) {
-			case "NSW": 
+		if (strpos($user_location['location'], 'NSW') !== false) {
 			date_default_timezone_set('Australia/Sydney');
-			break;
-
-			case "QLD":
+		}elseif (strpos($user_location['location'], 'QLD') !== false) {
+			date_default_timezone_set('Australia/Melbourne');
+		}elseif (strpos($user_location['location'], 'WA') !== false) {
 			date_default_timezone_set('Australia/Perth');
-			break;
-
-			case "WA":
+		}else{
 			date_default_timezone_set('Australia/Perth');
-			break;
-		}
-
+		} 
 
 		$date_formatted = $date[2].'-'.$date[1].'-'.$date[0].' '.$time[0].':'.$time[1].' '.$set[2];
 		//  '2016-10-05 15:00 AM';

@@ -87,6 +87,11 @@ class User_model extends CI_Model{
 		return $query;
 	}
 
+	public function fetch_user_role_dept($user_id){
+		$query = $this->db->query("SELECT `users`.`user_department_id`,  `users`.`user_role_id`,`users`.`user_focus_company_id`,`users`.`direct_company`  FROM `users` WHERE `users`.`is_active` = '1' AND `users`.`user_id` = '$user_id' ");
+		return $query;
+	}
+
 	public function fetch_user_logs(){
 		$query = $this->db->query("SELECT `user_log`.*, `users`.`user_first_name`, `users`.`user_last_name` ,`project`.`project_name`, `company_details`.`company_name`
 			FROM `user_log` 
@@ -190,8 +195,8 @@ class User_model extends CI_Model{
 
 			WHERE `user_reoccur_availability`.`date_range_a` <= '$current_timestamp'
 			AND   `user_reoccur_availability`.`date_range_b` >= '$current_timestamp'
-			AND `user_reoccur_availability`.`start_time` <= '$time_extended'
-			AND `user_reoccur_availability`.`end_time` >= '$time_extended'
+			/*AND `user_reoccur_availability`.`start_time` <= '$time_extended'
+			AND `user_reoccur_availability`.`end_time` >= '$time_extended'*/
 			AND `user_reoccur_availability`.`is_active` = '1' AND `user_availability`.`is_active` = '1'
 			AND `user_reoccur_availability`.`range_reoccur` LIKE '%$day_like%'
 			AND `user_availability`.`user_id` = '$user_id'

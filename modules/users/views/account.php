@@ -218,8 +218,6 @@
 
 									</div>
 
-
-
 												<div class="col-md-9 col-sm-10 col-xs-12">
 
 
