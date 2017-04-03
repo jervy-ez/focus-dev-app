@@ -541,8 +541,7 @@ $current_date = date("d/m/Y");
 
 						<div class="clearfix"></div>
 
-
-						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 box-widget pad-10" >
+						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-a widg-head-styled ">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5">

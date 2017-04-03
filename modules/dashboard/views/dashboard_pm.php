@@ -23,8 +23,16 @@
 ?>
 
 <?php 
-	$pm_type = $this->dashboard->pm_type();
-	$user_id = $this->session->userdata('user_id');
+	
+
+	if(isset($assign_id) && $assign_id != ''){
+		$user_id = $assign_id;
+	}else{
+		$user_id = $this->session->userdata('user_id');
+	}
+
+	$pm_type = $this->dashboard->pm_type($user_id); 
+
 	$fetch_user = $this->user_model->fetch_user($user_id);
 	$user_details = array_shift($fetch_user->result_array());
 
@@ -37,14 +45,29 @@
 	}
 ?>
 
-<?php $pm_name = $this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name'); ?>
+<?php 
+
+
+if($pm_setter != '' && isset($pm_setter)){
+	$pm_name = $pm_setter;
+
+	  
+echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_name.'");</script>';
+	 
+}else{
+	$pm_name = $this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name'); 
+}
+
+
+?>
 
  <!-- maps api js -->
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDs1g6kHxbVrkQe7e_CmR6MsfV_3LmLSlc"></script>
 
 <script type="text/javascript">
-var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_pm(); ?>};
+	var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_pm($assign_id); ?>};
+	var emp_data = { "locations": <?php echo $this->dashboard->emp_get_locations_points(); ?>};
 </script>
 
 <script type="text/javascript" src="<?php echo base_url(); ?>js/maps/markerclusterer_packed.js"></script>
@@ -122,7 +145,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 											<div class="pad-5">
 												<div class=" " id=""><p>Invoiced <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
-												<div class="pad-top-5" id="" ><?php $this->dashboard->invoiced_pm(); ?></div>
+												<div class="pad-top-5" id="" ><?php $this->dashboard->invoiced_pm($assign_id); ?></div>
 											</div>							
 										</div>
 									</div>
@@ -138,7 +161,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 											<div class="pad-5">
 												<div class=" " id=""><p>Uninvoiced</p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
-												<div class="pad-top-5" id="" ><?php $this->dashboard->uninvoiced_widget_pm(); ?></div>
+												<div class="pad-top-5" id="" ><?php $this->dashboard->uninvoiced_widget_pm($assign_id); ?></div>
 											</div>							
 										</div>
 									</div>
@@ -154,7 +177,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 											<div class="pad-5">
 												<div class=" " id=""><p>Outstanding</p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
-												<div class="pad-top-5" id="" ><?php $this->dashboard->outstanding_payments_widget_pm(); ?></div>
+												<div class="pad-top-5" id="" ><?php $this->dashboard->outstanding_payments_widget_pm($assign_id); ?></div>
 											</div>							
 										</div>
 									</div>
@@ -172,7 +195,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 											<div class="pad-5">
 												<div class=" " id=""><p>WIP</p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
-												<div class="pad-top-5" id="" ><?php $this->dashboard->wip_widget_pm(); ?></div>
+												<div class="pad-top-5" id="" ><?php $this->dashboard->wip_widget_pm($assign_id); ?></div>
 											</div>							
 										</div>
 									</div>
@@ -249,7 +272,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 											<p class="text-center m-bottom-10"><strong style="font-size: 16px;">Average Final Invoice Days</strong></p>
 											<p><br /></p>
 
-											<?php echo $this->dashboard->average_date_invoice_pm(); ?>
+											<?php echo $this->dashboard->average_date_invoice_pm($assign_id); ?>
 											<!--
 												<div id="" class="tooltip-enabled" title="" data-placement="bottom" data-original-title="77% - $1,381,545 / $1,800,000 ">
 													<input class="knob" data-width="100%" value="35" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="40">
@@ -279,7 +302,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<div class="" id="">
-											<?php $status_forecast = $this->dashboard->pm_sales_widget_pm(); ?>
+											<?php $status_forecast = $this->dashboard->pm_sales_widget_pm($assign_id); ?>
 											<script type="text/javascript">
 												//var overall_progress = parseInt(<?php echo $status_forecast; ?>);
 												//$('.full_p').css('width',overall_progress+'%');
@@ -310,7 +333,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 										<div class="pad-3">
 											<div class="pad-left-5 pad-top-3" id=""><p>Invoiced - WIP Count <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 2px;">
-											<div class="pad-top-5" id="" ><?php $this->dashboard->focus_projects_count_widget_pm(); ?></div>
+											<div class="pad-top-5" id="" ><?php $this->dashboard->focus_projects_count_widget_pm($assign_id); ?></div>
 										</div>							
 									</div>
 								</div>
@@ -326,7 +349,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 											<div class=" " id=""><p>Quotes Unaccepted <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<div class="pad-top-5" id="" >
-												<?php $this->dashboard->pm_estimates_widget_pm(); ?>
+												<?php $this->dashboard->pm_estimates_widget_pm($assign_id); ?>
 											</div>
 										</div>							
 									</div>
@@ -342,7 +365,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 										<div class="pad-5">
 											<div class=" " id=""><p>Maintenance AVG Days <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<div class="pad-top-5" id="" ><?php $this->dashboard->maintanance_average_pm(); ?></div>
+											<div class="pad-top-5" id="" ><?php $this->dashboard->maintanance_average_pm($assign_id); ?></div>
 										</div>							
 									</div>
 								</div>
@@ -359,7 +382,7 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 										<div class="pad-5">
 											<div class=" " id=""><p>Purchase Orders <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<div class="pad-top-5" id="" ><?php $this->dashboard->focus_get_po_widget_pm(); ?></div>
+											<div class="pad-top-5" id="" ><?php $this->dashboard->focus_get_po_widget_pm($assign_id); ?></div>
 										</div>							
 									</div>
 								</div>
@@ -375,11 +398,146 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 
 						<!-- ************************ -->
 
-						<div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 box-widget pad-10">
+
+						<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-0 widg-head-styled">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong><span class="pull-right"> <?php echo date('Y'); ?></span></div>
+								<div class="box-area clearfix" style="height:320px;">
+									<div class="widg-content clearfix">
+										<div id="" class="pad-5" style="height: 290px; overflow: auto;">
+											<?php echo $this->dashboard->focus_projects_by_type_widget_pm($assign_id); ?>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+						<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-e widg-head-styled">
+								<div class="  fill box-widg-head pad-right-10 pad-left-10 m-left-15 pull-right pad-top-3 m-3">									
+									<strong>
+										<?php echo date('Y'); ?> <span  data-placement="left" class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="left" data-original-title="Top 20 Clients/Contractors/Suppliers having the highest job cost for the year <?php echo date('Y'); ?>."></i></span>
+									</strong>
+								</div>
+								<div class="tabs_widget" >
+									<ul  class="nav nav-tabs" role="tablist" style="height: 32px;">
+										<li role="presentation" class="active"><a href="#clients" class="tab_btn_dhb" role="tab" id="clients-tab_a" data-toggle="tab" >Clients</a></li>
+										<li role="presentation" class=""><a href="#contractors" class="tab_btn_dhb" role="tab" id="contractors-tab_a" data-toggle="tab" >Contractors</a></li>
+										<li role="presentation" class=""><a href="#suppliers" class="tab_btn_dhb" role="tab" id="suppliers-tab_a" data-toggle="tab" >Suppliers</a></li>
+
+
+										<li role="presentation" class="active"><a href="#clients_mtnc" style="display:none;" class="tab_btn_dhb_mntnc" role="tab" id="clients-tab_b" data-toggle="tab" >Clients</a></li>
+										<li role="presentation" class=""><a href="#contractors_mtnc" style="display:none;" class="tab_btn_dhb_mntnc" role="tab" id="contractors-tab_b" data-toggle="tab" >Contractors</a></li>
+										<li role="presentation" class=""><a href="#suppliers_mtnc" style="display:none;" class="tab_btn_dhb_mntnc" role="tab" id="suppliers-tab_b" data-toggle="tab" >Suppliers</a></li>
+
+
+									</ul>
+
+
+									<div id="myTabContent" class="tab-content pad-10 clearfix"> 
+										
+										<div role="tabpanel" class="tab-pane active fade in" id="clients" >
+											<div id="" class="col-lg-5">
+												<div class="loading_chart" style="height: 300px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
+												<div class="" id="donut_a" style="text-align: center;"></div>
+											</div>
+											<div id="" class="col-lg-7">
+												<div id="" class="" style="height: 300px; overflow: auto;">
+													<?php echo $this->dashboard->focus_top_ten_clients_pm($assign_id); ?>
+												</div>
+											</div>
+										</div>
+
+										<div role="tabpanel" class="tab-pane fade in" id="contractors">
+											<div id="" class="center col-lg-5 clearfix">
+												<div class="" id="donut_b" style="text-align: center;"></div>
+											</div>
+											<div id="" class="col-lg-7 clearfix">
+												<div id="" class="clearfix" style="height: 300px; overflow: auto;">
+													<?php echo $this->dashboard->focus_top_ten_con_sup_pm('2',$assign_id); ?>
+												</div>
+											</div>
+										</div>
+
+										<div role="tabpanel" class="tab-pane fade in" id="suppliers">
+											<div id="" class="center col-lg-5 clearfix">
+												<div class="" id="donut_c" style="text-align: center;"></div>
+											</div>
+											<div id="" class="col-lg-7 clearfix">
+												<div id="" class="clearfix" style="height: 300px; overflow: auto;">
+													<?php echo $this->dashboard->focus_top_ten_con_sup_pm('3',$assign_id); ?>
+												</div>
+											</div>
+										</div>
+   
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+						<div class="clearfix"></div>
+
+						<!-- ************************ -->
+
+
+
+
+
+						<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-a widg-head-styled ">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-map-marker fa-lg"></i> <strong>On-Going Projects in Australia</strong></div>
-								<div class="box-area clearfix  pad-0-imp" style="height:300px;">
+								<div class="box-area clearfix  pad-0-imp" style="height:500px;">
 									<div class="widg-content clearfix pad-0-imp">
 										<div id="map"></div>									
 									</div>
@@ -387,49 +545,23 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_p
 							</div>
 						</div>
 
-						<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled">
+
+						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 box-widget pad-10" >
+							<div class="widget wid-type-a widg-head-styled ">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong><span class="pull-right"> <?php echo date('Y'); ?></span></div>
-								<div class="box-area clearfix">
-									<div class="widg-content clearfix">
-										<div id="" class="pad-5" style="height: 290px; overflow: auto;">
-											<?php echo $this->dashboard->focus_projects_by_type_widget_pm(); ?>
-										</div>
+								<div class="widg-head fill box-widg-head pad-5">
+									<i class="fa fa-users  fa-lg"></i> 
+									<strong>Focus Employee Locations</strong>
+								</div>
+								<div class="box-area clearfix  pad-0-imp" style="height:500px;">
+									<div class="widg-content clearfix pad-0-imp">
+										<div id="employee-map-canvas" class="" style="width: 100%; height: 100%;"></div>
 									</div>
 								</div>
 							</div>
 						</div>
 
-						<div class="col-lg-5 col-md-6 col-sm-12 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-e widg-head-styled">
-								<div class="  fill box-widg-head pad-right-10 pull-right pad-top-3 m-3">
-									<strong>
-										<?php echo date('Y'); ?> <span  data-placement="left" class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="left" data-original-title="Top 20 Clients/Contractors/Suppliers having the highest job cost for the year <?php echo date('Y'); ?>."></i></span>
-									</strong>
-								</div>
-								<div class="tabs_widget" >
-									<ul  class="nav nav-tabs" role="tablist" style="height: 32px;">
-										<li role="presentation" class="active"><a href="#clients" role="tab" id="clients-tab" data-toggle="tab" >Clients</a></li>
-										<li role="presentation" class=""><a href="#contractors" role="tab" id="contractors-tab" data-toggle="tab" >Contractors</a></li>
-										<li role="presentation" class=""><a href="#suppliers" role="tab" id="suppliers-tab" data-toggle="tab" >Suppliers</a></li>
 
-									</ul>
-									<div id="myTabContent" class="tab-content pad-10" style="height: 300px; overflow: auto;"> 
-										<div role="tabpanel" class="tab-pane fade active in" id="clients">
-											<?php echo $this->dashboard->focus_top_ten_clients_pm(); ?>
-										</div>
-										<div role="tabpanel" class="tab-pane fade in" id="contractors">
-											<?php echo $this->dashboard->focus_top_ten_con_sup_pm('2'); ?>
-										</div>
-										<div role="tabpanel" class="tab-pane fade" id="suppliers" aria-labelledby="profile-tab"> 
-											<?php echo $this->dashboard->focus_top_ten_con_sup_pm('3'); ?>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
- 
 						<div class="clearfix"></div>
 
 						<!-- ************************ -->
@@ -1016,10 +1148,121 @@ function bttnE(element_obj){
 }
 
 
+ 
+var donuta = c3.generate({
+	size: {
+		height: 300,
+		width: 300
+	},data: {
+		columns: [ <?php   $this->dashboard->focus_top_ten_clients_pm_donut($assign_id); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_a",
+	donut: {
+		title: '<?php echo date('Y'); ?> Projects by Type'
+	},tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
+
+
+
+													 
+ 
+var donuta = c3.generate({
+	size: {
+		height: 300,
+		width: 300
+	},data: {
+		columns: [ <?php   $this->dashboard->focus_top_ten_con_sup_pm_donut('2',$assign_id); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_b",
+	donut: {
+		title: '<?php echo date('Y'); ?> Projects by Type'
+	},tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
+
+
+
+ 
+var donuta = c3.generate({
+	size: {
+		height: 300,
+		width: 300
+	},data: {
+		columns: [ <?php    $this->dashboard->focus_top_ten_con_sup_pm_donut('3',$assign_id); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_c",
+	donut: {
+		title: '<?php echo date('Y'); ?> Projects by Type'
+	},tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
+
+
+
+ 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 var donuta = c3.generate({
      size: {
         height: 457
@@ -1051,7 +1294,7 @@ var donuta = c3.generate({
 
     }
 });
-
+*/
 
 
 /*
@@ -1131,3 +1374,4 @@ var donuta = c3.generate({
 
 
 <script type="text/javascript" src="<?php echo base_url(); ?>js/maps/maps.js"></script>
+<script type="text/javascript" src="<?php echo base_url(); ?>js/maps/employee_map.js"></script>
