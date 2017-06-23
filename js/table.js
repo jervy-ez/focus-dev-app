@@ -11,7 +11,7 @@ $.fn.dataTableExt.oApi.fnResetAllFilters = function (oSettings, bDraw/*default t
 var url = $(location).attr('href').split("/").splice(0, 7).join("/");
 var segments = url.split( '/' );
 var segmentlength = segments.length;
-var company = segments[3].replace("#", ""); // Change to 3 when live / 4 for local
+var company = segments[4].replace("#", ""); // Change to 3 when live / 4 for local
 
 if(company == 'company'){
     var companyTable = $('#companyTable').dataTable({
@@ -125,6 +125,27 @@ $('#sitelabourTable').dataTable({
     "iDisplayLength": 13,
     "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]],
     "order": []
+});
+
+$('#pending_leaves_tbl').dataTable({
+    "iDisplayLength": 13,
+    "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
+});
+$('#approved_leaves_tbl').dataTable({
+    "iDisplayLength": 13,
+    "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
+});
+$('#unapproved_leaves_tbl').dataTable({
+    "iDisplayLength": 13,
+    "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
+});
+$('#pending_by_superv_tbl').dataTable({
+    "iDisplayLength": 13,
+    "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
+});
+$('#approved_by_superv_tbl').dataTable({
+    "iDisplayLength": 13,
+    "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]]
 });
 
 var variationTable = $('#variationTable').dataTable({
