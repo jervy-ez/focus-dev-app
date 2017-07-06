@@ -1125,7 +1125,7 @@
 								<div class="col-sm-9">										
 									<div class="dashboard_access">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($dashboard_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($dashboard_access_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($dashboard_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="dashboard_access" name="dashboard_access" value="<?php echo $dashboard_access_set; ?>">
 								</div>
@@ -1138,7 +1138,7 @@
 								<div class="col-sm-9">										
 									<div class="company_access">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($company_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($company_access_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($company_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="company_access" name="company_access" value="<?php echo $company_access_set; ?>">
 								</div>
@@ -1151,7 +1151,7 @@
 								<div class="col-sm-9">										
 									<div class="projects_access">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($projects_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($projects_access_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($projects_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="projects_access" name="projects_access" value="<?php echo $projects_access_set; ?>">
 								</div>
@@ -1164,7 +1164,7 @@
 								<div class="col-sm-9">										
 									<div class="wip_access">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($wip_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($wip_access_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($wip_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="wip_access" name="wip_access" value="<?php echo $wip_access_set; ?>">
 								</div>
@@ -1177,7 +1177,7 @@
 								<div class="col-sm-9">										
 									<div class="purchase_orders_access">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($purchase_orders_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($purchase_orders_access_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($purchase_orders_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="purchase_orders_access" name="purchase_orders_access" value="<?php echo $purchase_orders_access_set; ?>">
 								</div>
@@ -1190,7 +1190,7 @@
 								<div class="col-sm-9">										
 									<div class="invoice_access">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($invoice_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($invoice_access_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($invoice_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="invoice_access" name="invoice_access" value="<?php echo $invoice_access_set; ?>">
 								</div>
@@ -1203,7 +1203,7 @@
 								<div class="col-sm-9">										
 									<div class="users_access">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($users_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($users_access_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($users_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="users_access" name="users_access" value="<?php echo $users_access_set; ?>">
 								</div>
@@ -1216,7 +1216,7 @@
 								<div class="col-sm-9">										
 									<div class="bulletin_board">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($bulletin_board_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($bulletin_board_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($bulletin_board_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="bulletin_board" name="bulletin_board" value="<?php echo $bulletin_board_set; ?>">
 								</div>
@@ -1229,7 +1229,7 @@
 								<div class="col-sm-9">										
 									<div class="project_schedule">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($project_schedule_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($project_schedule_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($project_schedule_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="project_schedule" name="project_schedule" value="<?php echo $project_schedule_set; ?>">
 								</div>
@@ -1243,7 +1243,7 @@
 								<div class="col-sm-9">										
 									<div class="shopping_center">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($shopping_center_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($shopping_center_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($shopping_center_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="shopping_center" name="shopping_center" value="<?php echo $shopping_center_set; ?>">
 								</div>
@@ -1258,7 +1258,7 @@
 								<div class="col-sm-9">										
 									<div class="labour_schedule">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($labour_schedule_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($labour_schedule_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($labour_schedule_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="labour_schedule" name="labour_schedule" value="<?php echo $labour_schedule_set; ?>">
 								</div>
@@ -1299,7 +1299,7 @@
 								<div class="col-sm-9">										
 									<div class="site_labour">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($site_labour_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+ Edit" <?php echo ($site_labour_set == 2 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($site_labour_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="site_labour" name="site_labour" value="<?php echo $site_labour_set; ?>">
 								</div>

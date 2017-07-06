@@ -1,4 +1,4 @@
-var segment_index = 5;  // 5 if live |||   6 is local
+var segment_index = 6;  // 5 if live |||   6 is local
 
     //dynamic_value_ajax
     function ajax_data(value,controller_method,classLocation){
@@ -553,7 +553,7 @@ function get_project_totals(){
             },
             function(result){  
               var result_arr = result.split('|');
-              var proj_ex_gst = result_arr[0];
+              var proj_ex_gst = result_arr[3];
               var proj_inc_gst = result_arr[1];
               // proj_ex_gst = numberWithCommas(proj_ex_gst);
               // alert(proj_ex_gst);
@@ -1015,23 +1015,18 @@ $("#create_contract_send_pdf").click(function(){
     $("#var_delete").hide();
   });
   $("#var_save").click(function(){
-    var var_name = $("#variation_name").val(),
-    var_name = var_name.replace(/'/g, '`');
-    var var_notes = $("#variation_notes").val();
-    var_notes = var_notes.replace(/'/g, '`');
-
     var var_credit = $("#var_credit").val();
     var_credit = var_credit.replace(',', '' );
     $.post(baseurl+"variation/add_variation", 
     { 
       proj_id: proj_id,
-      var_name: var_name, //$("#variation_name").val(),
+      var_name: $("#variation_name").val(),
       var_site_hrs: $("#var_site_hrs").val(),
       var_is_double_time: $("#var_is_double_time").val(),
       var_credit: var_credit,
       var_markup: $("#var_markup").val(),
       var_acceptance_date: $("#var_acceptance_date").val(),
-      var_notes: var_notes//$("#variation_notes").val(),
+      var_notes: $("#variation_notes").val(),
     }, 
     function(result){
       $("#proj_variation_list").html(result);
@@ -1111,24 +1106,19 @@ $("#create_contract_send_pdf").click(function(){
     return false;
   }
   $("#var_update").click(function(){
-    var var_name = $("#variation_name").val(),
-    var_name = var_name.replace(/'/g, '`');
-    var var_notes = $("#variation_notes").val();
-    var_notes = var_notes.replace(/'/g, '`');
-
     var var_credit = $("#var_credit").val();
     var_credit = var_credit.replace(',', '' );
     $.post(baseurl+"variation/update_variation", 
     { 
       proj_id: proj_id,
       variation_id: variation_id,
-      var_name: var_name, //$("#variation_name").val(),
+      var_name: $("#variation_name").val(),
       var_site_hrs: $("#var_site_hrs").val(),
       var_is_double_time: $("#var_is_double_time").val(),
       var_credit: var_credit,
       var_markup: $("#var_markup").val(),
       var_acceptance_date: $("#var_acceptance_date").val(),
-      var_notes: var_notes//$("#variation_notes").val(),
+      var_notes: $("#variation_notes").val(),
     }, 
     function(result){
       $("#proj_variation_list").html(result);
@@ -6455,7 +6445,7 @@ window.toggleShoppingCenterDetails = function(id){
     }
 
 
-    $(".select-focus").on("change", function(e) {      
+    $(".select-focus").on("change", function(e) {   
         var myVal = $(this).val();
 
         $('select#project_manager').val('');
@@ -6472,6 +6462,16 @@ window.toggleShoppingCenterDetails = function(id){
         $('select.select_state_shopping_center').empty();
         var classLocation = 'select.select_state_shopping_center';
         ajax_data(myVal,controller_method,classLocation);
+
+        $('p .selected_shopping_center_text').text('Select Shopping Centre');
+        $('input#selected_shopping_center_detail').val('');
+        $('input#brand_shopping_center').val('');
+
+
+        $('select#state_a').val('');
+        $('select#project_manager').val('');
+
+
 
         ajax_data(myVal,'projects/set_jurisdiction_shoping_center','.brand_shopping_center');
     });
