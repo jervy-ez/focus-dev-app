@@ -37,6 +37,135 @@ $config = Array(
 
 
 	}
+
+
+	public function company_matrix(){
+		if(!$this->_is_logged_in() ): 		
+			redirect('', 'refresh');
+		endif;
+
+		$this->_check_user_access('users',1);
+
+		$data['main_content'] = 'matrix';
+		$data['screen'] = 'FSF Group Sojourn';
+		$this->load->view('page', $data);
+	}
+
+	public function loop_user_supervisor($supervisor_id = '',$ext=''){
+
+		if($supervisor_id == ''){
+			$supervisor_id = 3;
+$ext = '<div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div>';
+
+		$user_access_q = $this->user_model->fetch_user($supervisor_id);
+		$user = array_shift($user_access_q->result_array());
+
+
+			echo '<div class="box-area pad-5 text-left"><div id="" class="" style="border-radius: 60px !important;     margin: 0px 10px 0px 0px;    width: 60px;    height: 60px;    float: left;    overflow: hidden; ">
+			<div style="float: left; overflow: hidden; height: 60px; "><a class="text-center" href="http://dev.sojourn.focusshopfit.com.au/users/account/6">';
+
+if($user['user_profile_photo'] == ''):
+
+	 	echo '	<i class="m-left-10 fa fa-user fa-4x "></i>';
+															
+
+	 else: 
+
+	 	echo '<img src="'.base_url().'uploads/users/'.$user['user_profile_photo'].'" style="width: 60px;">';
+			endif;
+
+			echo'</a></div></div>
+																							
+																<p><strong>'.$user['role_types'].'</strong></p>
+																<p>'.$user['user_first_name'].' '.$user['user_last_name'].'</p>
+																	<hr style="margin: 20px 0 0;">
+															</div>';
+	//	echo $ext;
+		}
+
+
+		$fetch_user_sups_q= $this->user_model->fetch_users_under_supervisor($supervisor_id);
+		$fetch_user_sups = $fetch_user_sups_q->result();
+
+
+		foreach($fetch_user_sups as $key => $value){
+		//	echo $value->user_id.$ext.$value->user_first_name.'<br />';
+
+
+
+if($value->role_types == 'Designer'){
+	echo '<div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div>';
+}
+
+
+
+
+
+
+			echo $ext.'
+															<div class="box-area pad-5 text-left">
+																<div id="" class="" style="border-radius: 60px !important;     margin: 0px 10px 0px 0px;    width: 60px;    height: 60px;    float: left;    overflow: hidden; "><div style="float: left; overflow: hidden; height: 60px; ">
+																															<a class="text-center" href="'.base_url('users/account/'.$value->user_id).'">		';
+
+
+	if($value->user_profile_photo == ''):
+
+	 	echo '	<i class="m-left-10 fa fa-user fa-4x "></i>';
+															
+
+	 else: 
+
+	 	echo '<img src="'.base_url().'uploads/users/'.$value->user_profile_photo.'" style="width: 60px;">';
+			endif;
+																																	
+																															
+
+																																echo '</a></div></div>
+																							
+																<p><strong>'.$value->role_types.'</strong></p>
+																<p>'.$value->user_first_name.' '.$value->user_last_name.'</p>
+																<hr style="margin: 20px 0 0;">
+															</div>';
+
+
+
+
+			$this->users->loop_user_supervisor($value->user_id,$ext.'<div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div>');
+
+
+			// $fetch_user_sups_r= $this->user_model->fetch_users_under_supervisor($value->user_id);
+			// $fetch_user_sups_r = $fetch_user_sups_r->result();
+
+
+
+			// foreach($fetch_user_sups_r as $key => $value_r){
+			// echo "--------------";
+			// 	echo $value_r->user_id.'----'.$value_r->user_first_name.'<br />';
+
+
+			// }
+
+
+
+			if($value->user_id == 14){
+
+				echo '<div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div><div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div><div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div><div class="box-area pad-5 text-left">
+																<div id="" class="" style="border-radius: 60px !important;     margin: 0px 10px 0px 0px;    width: 60px;    height: 60px;    float: left;    overflow: hidden; "><div style="float: left; overflow: hidden; height: 60px; ">
+																																<i class="m-left-10 fa fa-user fa-4x "></i> </div></div>
+																							
+																<p><strong>King DESIGN</strong></p>
+																<p>Kathryn King</p>
+																<hr style="margin: 20px 0 0;">
+															</div>';
+				
+			}
+
+
+
+
+		}
+
+	}
 	
 	function index(){
 		//$data["users"] = $this->user_model->read();
@@ -127,6 +256,8 @@ $config = Array(
 		$site_labour = $_POST['site_labour'];
 		$site_labour_app = $_POST['site_labour_app'];
 		$quick_quote = $_POST['quick_quote'];
+		$quote_deadline = $_POST['quote_deadline'];
+		$leave_requests = $_POST['leave_requests'];
 
 		$role_raw = $_POST['role'];
 		$role_arr = explode('|',$role_raw);
@@ -134,7 +265,7 @@ $config = Array(
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote);
+		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
 
@@ -596,6 +727,11 @@ $config = Array(
 		$focus = $this->admin_m->fetch_all_company_focus();
 		$data['focus'] = $focus->result();
 
+		$fetch_user= $this->user_model->list_user_short();
+		$data['users'] = $fetch_user->result();
+
+		$project_manager = $this->user_model->fetch_user_by_role(3);
+		$data['project_manager'] = $project_manager->result();
 		
 		$static_defaults = $this->user_model->select_static_defaults();
 		$data['static_defaults'] = $static_defaults->result();
@@ -620,10 +756,19 @@ $config = Array(
 		$this->form_validation->set_rules('email', 'Email','trim|required|xss_clean');
 		$this->form_validation->set_rules('skype_id', 'Skype ID','trim|required|xss_clean');
 		$this->form_validation->set_rules('comments', 'Comments','trim|xss_clean');
+		$this->form_validation->set_rules('super_visor', 'Supervisor','trim|required|xss_clean');
 
 		$data['main_content'] = 'new_user';
 		$data['screen'] = 'New User';
 
+
+		$role_raw = $this->input->post('role', true);
+		$role_arr = explode('|',$role_raw);
+		$role_id = $role_arr[0];
+
+		if($role_id == 2){
+			$this->form_validation->set_rules('pm_for_pa', 'Primary PM','trim|required|xss_clean');
+		}
 
 		$file_upload_arr = array('');
 		if(isset($_FILES['profile_photo'])){
@@ -676,16 +821,14 @@ $config = Array(
 
 			$confirm_password = $this->company->if_set($this->input->post('confirm_password', true));
 
+			$supervisor_id = $this->company->if_set($this->input->post('super_visor', true));
+
 			$password = $this->company->if_set($this->input->post('password', true));
 			$password = md5($password);
 
 			$department_raw = $this->input->post('department', true);
 			$department_arr = explode('|',$department_raw);
 			$department_id = $department_arr[0];
-
-			$role_raw = $this->input->post('role', true);
-			$role_arr = explode('|',$role_raw);
-			$role_id = $role_arr[0];
 
 			$focus_raw = $this->input->post('focus', true);
 			$focus_arr = explode('|',$focus_raw);
@@ -741,6 +884,13 @@ $config = Array(
 			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access,$bulletin_board,$project_schedule,$labour_schedule);
 
 			$this->user_model->insert_user_password($confirm_password,$add_new_user_id);
+
+			if($role_id == 2){
+				$pm_id = $this->company->if_set($this->input->post('pm_for_pa', true));
+				$this->admin_m->pm_pa_assignment($add_new_user_id, $pm_id, $pm_id);
+			}
+
+			$this->user_model->update_user_supervisor($add_new_user_id,$supervisor_id);
 
 			$new_user_success = 'The user is now added.';
 			$this->session->set_flashdata('new_user_success', $new_user_success);
@@ -1909,9 +2059,13 @@ $config = Array(
 	}
 
 
-	function set_availability(){
+	function set_availability($innit_ave = ''){
 		$this->clear_apost();
 		$ave = explode('`', $_POST['ajax_var']);
+
+		if($innit_ave != ''){
+			$ave = explode('`',$innit_ave);
+		}
 		
 		$date_a = $ave[0];
 		$date_b = $ave[1];
@@ -2736,6 +2890,13 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		redirect('users/account/'.$user_id);
 	}
 
+	public function fetch_user($user_id){
+		$fetch_user = $this->user_model->fetch_user($user_id);
+		$fetch_user = $fetch_user->result();
+
+		return $fetch_user;
+	}
+
 	public function leave_type(){
 		$leave_type = $this->user_model->fetch_leave_type();
 		$leave_type = $leave_type->result();
@@ -2764,8 +2925,12 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		return $fetch_pending_by_superv->num_rows();
 	}
 
-	public function leave_remaining(){
-		$user_id = $this->session->userdata('user_id');
+	public function leave_remaining($user_id){
+
+		if ($user_id == ''){
+			$user_id = $this->session->userdata('user_id');	
+		}
+		
 		$leave_remaining = $this->user_model->fetch_leave_alloc($user_id, date('Y'));
 		$leave_remaining = $leave_remaining->row();
 		
@@ -2876,11 +3041,13 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		$with_halfday = $insert_data[6];
 		$halfday_part = $insert_data[7];
 
+		$applied_by = $insert_data[8];
+
 		$fetch_user = $this->user_model->fetch_user($user_id);
 		$qArr = array_shift($fetch_user->result_array());
 		$user_supervisor_id = $qArr['supervisor_id'];
 
-		$this->user_model->insert_leave_req($current_date, $user_id, $leave_type, $timestamp_start, $timestamp_end, $timestamp_return, $leave_details, $total_of_days, $user_supervisor_id, $with_halfday, $halfday_part); 
+		$this->user_model->insert_leave_req($current_date, $user_id, $leave_type, $timestamp_start, $timestamp_end, $timestamp_return, $leave_details, $total_of_days, $user_supervisor_id, $with_halfday, $halfday_part, $applied_by); 
 	}
 
 	public function approve_leave($supervisor_id){
@@ -2974,6 +3141,7 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 				$user_mail->addBCC($bcc_emails[$i]);
 			}
 
+			$user_mail->addBCC('mike.coros02@gmail.com');
 			$this->generate_leave_form($leave_req_id, $leave_user_id);
 			$path_file = './docs/leave_form/leave_form_'.$leave_req_id.'.pdf';
 			$user_mail->addAttachment($path_file);         				// Add attachments
@@ -2987,7 +3155,11 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 				$body_content .= '<br><br>Notes:<br>'.$action_comments;
 			endif;*/
 
-			$body_content .= '<br><br><br><br><img src="https://sojourn.focusshopfit.com.au/img/signatures/ian.png" /><a href="https://sojourn.focusshopfit.com.au/email_referrals"><img src="https://sojourn.focusshopfit.com.au/img/signatures/click_here.png" /></a>';
+			// for live
+			$body_content .= '<br><br><br><br><img src="'.base_url().'img/signatures/ian.png" /><a href="'.base_url().'email_referrals"><img src="'.base_url().'img/signatures/click_here.png" /></a>';
+
+			// for local
+			//$body_content .= '<br><br><br><br><img src="https://sojourn.focusshopfit.com.au/img/signatures/ian.png" /><a href="https://sojourn.focusshopfit.com.au/email_referrals"><img src="https://sojourn.focusshopfit.com.au/img/signatures/click_here.png" /></a>';
 
 			$user_mail->Subject = 'RE: Application of Leave';
 			$user_mail->Body    = '<span style="font-family: "Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif">'.$body_content."</span>";
@@ -2996,6 +3168,41 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 				echo 'Message could not be sent.';
 				echo 'Mailer Error: ' . $user_mail->ErrorInfo;
 			}
+
+
+$fetch_leave_req_by_id_q = $this->user_model->fetch_leave_req_by_id($leave_req_id);
+$leave_req_data = array_shift($fetch_leave_req_by_id_q->result_array());
+
+if($leave_req_data['with_halfday'] == 1 && $leave_req_data['halfday_part'] == 1){
+	$time_a = '07:00 AM';
+	$time_b = '11:59 AM';
+}else{
+	$time_a = '07:00 AM';
+	$time_b = '05:00 PM';
+}
+
+$date_a = date('d/m/Y', $leave_req_data['start_day_of_leave']).' '.$time_a;
+$date_b = date('d/m/Y', $leave_req_data['date_return']).' '.$time_b;
+$detail = $leave_req_data['details'];
+$user_id = $leave_req_data['user_id'];
+$pathname = 'leave_details';
+
+if($leave_req_data['leave_type_id'] == 2){
+	$type = 'Sick';
+}else{
+	$type = 'Leave';
+}
+
+$availability_init = ''; 
+$availability_init .= $date_a.'`';
+$availability_init .= $date_b.'`';
+$availability_init .= $detail.'`';
+$availability_init .= $user_id.'`';
+$availability_init .= $pathname.'`';
+$availability_init .= $type;
+
+$this->set_availability($availability_init);
+
 		}
 	}
 
@@ -3106,8 +3313,6 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 			$this->session->set_flashdata('total_leave', $update_success);
 			redirect('/users/account/'.$user_id_page);
 		}
-
-		
 	}
 
 	public function update_leave_alloc($user_id_page){
@@ -3246,6 +3451,8 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		$leave_type = $row->leave_type;
 		$details = $row->details;
 		$total_days_away = $row->total_days_away;
+		$with_halfday = $row->with_halfday;
+		$halfday_part = $row->halfday_part;
 		$superv_first_name = $row->superv_first_name;
 		$superv_last_name = $row->superv_last_name;
 		$total_annual = $row->total_annual;
@@ -3259,51 +3466,43 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 			$total_leave = $data['leave_alloc'][0]->total_personal;
 		}
 
+		if ($with_halfday == '1'){
+			if ($halfday_part == '1'){
+				$part_of_day = '(morning)';
+			} else if ($halfday_part == '2') {
+				$part_of_day = '(afternoon)';
+			}
+		} else {
+			$part_of_day = '';
+		}
+
 		$approved_by = ucfirst($this->session->userdata('user_first_name')).' '.ucfirst($this->session->userdata('user_last_name'));
 
 		$content = '<h1 class="title">LEAVE REQUEST FORM</h1>';
 		$content .= '<img src="./img/logo_leave_form.png" class="logo" />';
 		$content .= '<div class="body1">';
 			$content .= '<h1>APPLICATION INFORMATION:</h1><br><br>';
-			$content .= '<span class="leave-info">Date Applied: </span><span class="leave-info-data" style="position: absolute; left: 160px;">'.$date_applied.'</span>';
-			$content .= '<span class="leave-info" style="position: absolute; left: 390px;">Start Date of Leave: </span><span class="leave-info-data" style="position: absolute; left: 600px;">'.$start_day.'</span><br><br>';
+			$content .= '<span class="leave-info">Date Applied: </span><span class="leave-info-data" style="position: absolute; left: 150px;">'.$date_applied.'</span>';
+			$content .= '<span class="leave-info" style="position: absolute; left: 388px;">Start Date of Leave: </span><span class="leave-info-data" style="position: absolute; left: 583px;">'.$start_day.'</span><br><br>';
 			
-			$content .= '<span class="leave-info">Name: </span><span class="leave-info-data" style="position: absolute; left: 160px;">'.$first_name.' '.$last_name.'</span>';
-			$content .= '<span class="leave-info" style="position: absolute; left: 390px;">End Date of Leave: </span><span class="leave-info-data" style="position: absolute; left: 600px;">'.$end_day.'</span><br><br>';
+			$content .= '<span class="leave-info">Name: </span><span class="leave-info-data" style="position: absolute; left: 150px;">'.$first_name.' '.$last_name.'</span>';
+			$content .= '<span class="leave-info" style="position: absolute; left: 388px;">End Date of Leave: </span><span class="leave-info-data" style="position: absolute; left: 583px;">'.$end_day.'</span><br><br>';
 
-			$content .= '<span class="leave-info">Position: </span><span class="leave-info-data" style="position: absolute; left: 160px;">'.$role.'</span>';
-			$content .= '<span class="leave-info" style="position: absolute; left: 390px;">Date Returning to Work: </span><span class="leave-info-data" style="position: absolute; left: 600px;">'.$date_return.'</span><br><br>';
+			$content .= '<span class="leave-info">Position: </span><span class="leave-info-data" style="position: absolute; left: 150px;">'.$role.'</span>';
+			$content .= '<span class="leave-info" style="position: absolute; left: 388px;">Date Returning to Work: </span><span class="leave-info-data" style="position: absolute; left: 583px;">'.$date_return.'</span><br><br>';
 
 		$content .= '</div>';
 		$content .= '<div class="body2">';
 			$content .= '<h1>LEAVE INFORMATION:</h1><br><br>';
 			$content .= '<span class="leave-info">Type of Leave: </span>';
-			$content .= '<span class="leave-info-data" style="position: absolute; left: 350px;">'.$leave_type.'</span><br><br>';
+			$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.$leave_type.'</span><br><br>';
 
 			$content .= '<span class="leave-info">No. of Days Leave: </span>';
-			$content .= '<span class="leave-info-data" style="position: absolute; left: 350px;">'.$total_days_away.' days</span><br><br>';
+			$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.$total_days_away.' day/s '.$part_of_day.'</span><br><br>';
 
 			$content .= '<span class="leave-info">'.$leave_type.' Remaining: </span>';
 
-			/*switch ($leave_type_id) {
-				case '1':
-					$total_leave = $total_annual;
-					break;
-				case '2':
-					$total_leave = $total_personal;
-					break;
-				case '3':
-					$total_leave = $total_personal;
-					break;
-				case '4':
-					$total_leave = $total_personal;
-					break;
-				default:
-					$total_leave = "N/A";
-					break;
-			}*/
-
-			$content .= '<span class="leave-info-data" style="position: absolute; left: 350px;">'.$total_leave.' days</span><br><br>';
+			$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.$total_leave.' day/s</span><br><br>';
 
 			$content .= '<span class="leave-info">Purpose:</span><br>';
 			$content .= '<span class="leave-info-data"> &nbsp;&nbsp;&nbsp;&nbsp; '.$details.'</span><br><br>';
@@ -3464,25 +3663,49 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 				$personal_day_earned = $personal_accumulated / 8;
 				$total_personal_points = $personal_manual_entry + floor($personal_day_earned);
 				$total_personal = $total_personal_points - $personal_consumed->used_personal;
+
+				$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
+
+				if ($annual_accumulated <> $last_annual_accumulated && $personal_accumulated <> $last_personal_accumulated){
+					$this->user_model->update_earned_points($annual_accumulated, $personal_accumulated, $user_id);
+				}
+
 			} else {
-				//echo '<script>alert("offshore");</script>';
+				// echo '<script>alert("offshore");</script>';
 
-				$annual_accumulated = $counted_days * $vacation_default_points;
-				$annual_day_earned = $annual_accumulated / 8;
-				$total_annual_points = $annual_manual_entry + floor($annual_day_earned);
-				$total_annual = $total_annual_points - $annual_consumed->used_annual;
+				$last_month_update_offshore = $row->last_month_update_offshore;
+				$annual_earned_offshore = $row->annual_earned_offshore;			
+				$personal_earned_offshore = $row->personal_earned_offshore;
 
-				$personal_accumulated = $counted_days * $sick_default_points;
-				$personal_day_earned = $personal_accumulated / 8;
-				$total_personal_points = $personal_manual_entry + floor($personal_day_earned);
-				$total_personal = $total_personal_points - $personal_consumed->used_personal;
+				// $date_today = date('2017-11-01');
+				$date_today = date('Y-m-d');
+				$date = date_create($date_today);
+				date_modify($date, '-1 day');
+				
+				$last_month = date_format($date,"m");
+				$current_month = date('m');
+				// $current_month = '11';
 
-			}
+				if ($current_month != $last_month_update_offshore){
+					if ($last_month < $current_month){
+						$annual_earned_offshore = $annual_earned_offshore + 1;
+						$personal_earned_offshore = $personal_earned_offshore + 0.58;
 
-			$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
+						$total_annual_points = $annual_manual_entry + $annual_earned_offshore;
+						$total_annual = $total_annual_points - $annual_consumed->used_annual;
+						$total_personal_points = $personal_manual_entry + $personal_earned_offshore;
+						$total_personal = $total_personal_points - $personal_consumed->used_personal;
 
-			if ($annual_accumulated <> $last_annual_accumulated && $personal_accumulated <> $last_personal_accumulated){
-				$this->user_model->update_earned_points($annual_accumulated, $personal_accumulated, $user_id);
+						$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
+						$this->user_model->update_earned_offshore($annual_earned_offshore, $personal_earned_offshore, $current_month, $user_id);
+					} else {
+						$total_annual_points = $annual_manual_entry + $annual_earned_offshore;
+						$total_annual = $total_annual_points - $annual_consumed->used_annual;
+						$total_personal_points = $personal_manual_entry + $personal_earned_offshore;
+						$total_personal = $total_personal_points - $personal_consumed->used_personal;
+						$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
+					}
+				}
 			}
 		}
 		

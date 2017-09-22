@@ -123,8 +123,8 @@ class User_model extends CI_Model{
 		return $query;			
 	}
 
-	public function update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote){
-		$query = $this->db->query("UPDATE `user_access` SET `dashboard` = '$dashboard', `company` = '$company', `projects` = '$projects', `wip` = '$wip', `purchase_orders` = '$purchase_orders', `invoice` = '$invoice', `users` = '$users', `bulletin_board` = '$bulletin_board', `project_schedule` = '$project_schedule', `labour_schedule` = '$labour_schedule', `company_project` = '$company_project', `shopping_centre` = '$shopping_center',`site_labour` = '$site_labour',`quick_quote` = '$quick_quote' WHERE `user_access`.`user_id` = '$user_id' ");
+	public function update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests){
+		$query = $this->db->query("UPDATE `user_access` SET `dashboard` = '$dashboard', `company` = '$company', `projects` = '$projects', `wip` = '$wip', `purchase_orders` = '$purchase_orders', `invoice` = '$invoice', `users` = '$users', `bulletin_board` = '$bulletin_board', `project_schedule` = '$project_schedule', `labour_schedule` = '$labour_schedule', `company_project` = '$company_project', `shopping_centre` = '$shopping_center',`site_labour` = '$site_labour',`quick_quote` = '$quick_quote',`quote_deadline` = '$quote_deadline',`leave_requests` = '$leave_requests' WHERE `user_access`.`user_id` = '$user_id' ");
 		$this->db->flush_cache();
 		$query = $this->db->query("UPDATE `users` SET `if_admin` = '$is_admin', `user_role_id` = '$role_id', `site_access` = '$site_labour_app' WHERE `users`.`user_id` ='$user_id' ");
 		return $query;
@@ -349,13 +349,26 @@ class User_model extends CI_Model{
 		return $query;	
 	}
 
+	public function update_user_supervisor($user_id,$supervisor_id){
+		$query = $this->db->query("UPDATE `users` SET `supervisor_id` = '$supervisor_id' WHERE `users`.`user_id` = '$user_id'");
+		return $query;
+	}
+
+	public function fetch_users_under_supervisor($supervisor_id){
+		$query = $this->db->query(" SELECT * FROM `users` 
+			LEFT JOIN `role` ON `role`.`role_id` = `users`.`user_role_id`
+			WHERE `users`.`is_active` = '1' AND `users`.`supervisor_id` = '$supervisor_id' AND `users`.`user_id` <> '3' 
+			ORDER BY `users`.`user_role_id` ASC ,   `users`.`user_first_name` ASC  ");
+		return $query;
+	}
+
 	public function fetch_user_state($user_id){
 		$query = $this->db->query("SELECT `user_id`, `user_focus_company_id` FROM `users` WHERE `user_id` = '$user_id'");
 		return $query;
 	}
 	
-	public function insert_leave_req($current_date, $user_id, $leave_type, $timestamp_start, $timestamp_end, $timestamp_return, $leave_details, $total_days_away, $user_supervisor_id, $with_halfday, $halfday_part) {
-		$query = $this->db->query("INSERT INTO `leave_request`(`date`, `user_id`, `leave_type_id`, `start_day_of_leave`, `end_day_of_leave`, `date_return`, `details`, `total_days_away`, `is_approve_supervisor_id`, `with_halfday`, `halfday_part`) VALUES ('$current_date', '$user_id', '$leave_type', '$timestamp_start', '$timestamp_end', '$timestamp_return', '$leave_details', '$total_days_away', '$user_supervisor_id', $with_halfday, $halfday_part)");
+	public function insert_leave_req($current_date, $user_id, $leave_type, $timestamp_start, $timestamp_end, $timestamp_return, $leave_details, $total_days_away, $user_supervisor_id, $with_halfday, $halfday_part, $applied_by) {
+		$query = $this->db->query("INSERT INTO `leave_request`(`date`, `user_id`, `leave_type_id`, `start_day_of_leave`, `end_day_of_leave`, `date_return`, `details`, `total_days_away`, `is_approve_supervisor_id`, `with_halfday`, `halfday_part`, `applied_by`) VALUES ('$current_date', '$user_id', '$leave_type', '$timestamp_start', '$timestamp_end', '$timestamp_return', '$leave_details', '$total_days_away', '$user_supervisor_id', $with_halfday, $halfday_part, '$applied_by')");
 		 return $query; //$this->db->insert_id(); no use
 	}
 
@@ -540,7 +553,7 @@ class User_model extends CI_Model{
 		if ($user_supervisor_id == 3){
 
 			$query = $this->db->query("SELECT t1.`leave_request_id`, t1.`date`, t2.`user_first_name`, t2.`user_last_name`, t3.`role_types`, t1.`start_day_of_leave`, t1.`end_day_of_leave`, t1.`date_return`,
-				t1.`leave_type_id`, t4.`leave_type`, t1.`details`, t1.`total_days_away`, t5.`user_first_name` AS 'superv_first_name', t5.`user_last_name` AS 'superv_last_name', 
+				t1.`leave_type_id`, t4.`leave_type`, t1.`details`, t1.`total_days_away`, t1.`with_halfday`, t1.`halfday_part`, t5.`user_first_name` AS 'superv_first_name', t5.`user_last_name` AS 'superv_last_name', 
 				t6.`total_annual`, t6.`total_personal`
 				FROM `leave_request` AS t1
 				LEFT JOIN `users` AS t2
@@ -557,7 +570,7 @@ class User_model extends CI_Model{
 			return $query;
 		} else {
 			$query = $this->db->query("SELECT t1.`leave_request_id`, t1.`date`, t2.`user_first_name`, t2.`user_last_name`, t3.`role_types`, t1.`start_day_of_leave`, t1.`end_day_of_leave`, t1.`date_return`,
-				t1.`leave_type_id`, t4.`leave_type`, t1.`details`, t1.`total_days_away`, t6.`user_first_name` AS 'superv_first_name', t6.`user_last_name` AS 'superv_last_name', 
+				t1.`leave_type_id`, t4.`leave_type`, t1.`details`, t1.`total_days_away`, t1.`with_halfday`, t1.`halfday_part`, t6.`user_first_name` AS 'superv_first_name', t6.`user_last_name` AS 'superv_last_name', 
 				t7.`total_annual`, t7.`total_personal`, t5.`action_comments`
 				FROM `leave_request` AS t1
 				LEFT JOIN `users` AS t2
@@ -639,6 +652,11 @@ class User_model extends CI_Model{
 		return $query;
 	}
 
+	public function update_earned_offshore($annual_earned_offshore, $personal_earned_offshore, $current_month, $user_id){
+		$query = $this->db->query("UPDATE `leave_allocation` SET `annual_earned_offshore` = '$annual_earned_offshore', `personal_earned_offshore` = '$personal_earned_offshore', `last_month_update_offshore` = '$current_month' WHERE `user_id` = '$user_id'");
+		return $query;
+	}
+
 	public function get_leave_alloc($user_id){
 		$query = $this->db->query("SELECT * FROM `leave_actions` AS t1
 			LEFT JOIN `leave_request` AS t2
@@ -655,8 +673,7 @@ class User_model extends CI_Model{
 	}
 
 	public function get_total_leave_personal($user_id) {
-		$query = $this->db->query("SELECT SUM(total_days_away) AS 'used_personal' FROM `leave_request` WHERE `is_approve` = '1' AND `user_id` = '$user_id' AND `leave_type_id` = '2' OR `leave_type_id` = '3' OR `leave_type_id` = '4'");
-
+		$query = $this->db->query("SELECT SUM(total_days_away) AS 'used_personal' FROM `leave_request` WHERE `is_approve` = '1' AND `user_id` = '$user_id' AND `leave_type_id` IN('2','3','4')");
 		return $query;
 	}
 }

@@ -76,6 +76,26 @@
 							<?php if($this->session->userdata('is_admin') ==  1): ?>
 								<a href="../delete_user/<?php echo $user_id_page; ?>" class="btn btn-danger submit_form pull-right" id="focus_add_company" name="save_bttn" >Delete User</a>
 							<?php endif; ?>
+
+							<?php $user_access_arr = explode(',',  $this->users->get_user_access($this->session->userdata('user_id')) ); ?>
+							<input type="hidden" name="user_id_access" value="<?php echo $this->session->userdata('user_id'); ?>">
+
+							<?php 
+
+								$leave_requests = $user_access_arr['19'];
+								if ($leave_requests == 1):
+									if ($this->session->userdata('user_id') != $user_id_page):
+							?>	
+										<a target="_blank" href="<?php echo base_url(); ?>users/leave_details/<?php echo $user_id_page; ?>" class="btn btn-info submit_form pull-right" id="apply_other_user" name="apply_other_user" style="margin-right: 5px;">View Leave Requests of this User</a>
+
+										<a class="btn btn-warning submit_form pull-right" id="apply_other_user" name="apply_other_user" style="margin-right: 5px; cursor: pointer;" onclick="apply_for_leave(<?php echo $user_id_page; ?>);">Apply Leave for this User</a>
+							<?php 
+									endif; 
+								endif;
+
+							?>
+							
+							
 								<label><?php echo $screen; ?></label><span> (<a href="#" data-placement="right" class="popover-test" title="" data-content="Welcome, this is  a profile page." data-original-title="Welcome">?</a>)</span>
 
 															
@@ -333,7 +353,7 @@
 
 															<option value="0">Select Supervisor</option>
 															<?php foreach ($user_list as $key => $value): ?>
-																<?php if($value->primary_user_id !== $user_id_page): ?>
+																<?php if($value->primary_user_id !== $user_id_page || $user_id_page === '3'): ?>
 																<option value="<?php echo $value->primary_user_id; ?>" ><?php echo $value->user_first_name." ".$value->user_last_name; ?></option>
 																<?php endif; ?>
 															<?php endforeach; ?>
@@ -382,6 +402,9 @@
 												<input type="hidden" name="department" class="hide" value="<?php echo $user->department_id.'|'.$user->department_name; ?>">
 												<input type="hidden" name="focus" class="hide" value="<?php echo $user->company_id.'|'.$user->company_name; ?>">
 
+												<input type="hidden" name="supervisor" class="hide" value="<?php echo $user->supervisor_id; ?>">
+												<input type="hidden" name="is_offshore" class="hide" value="<?php echo $user->is_offshore; ?>">
+												
 											<?php endif; ?>
 
 
@@ -647,195 +670,215 @@
 									</form>
 								<?php endif; ?>
 
+								<?php $user_access_arr = explode(',',  $this->users->get_user_access($this->session->userdata('user_id')) ); ?>
+								<input type="hidden" name="user_id_access" value="<?php echo $this->session->userdata('user_id'); ?>">
 
-								<div class="box">
-									<div class="box-head pad-5">
-										<label for="project_notes"><i class="fa fa-calendar fa-lg"></i> Schedule of Work and Total Leaves</label>
-									</div>
+								<?php $leave_requests = $user_access_arr['19']; ?>
+								<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('user_id') == $user_id || $this->session->userdata('is_admin') ==  1 || $leave_requests == 1 ): ?>
+									<div class="box">
+										<div class="box-head pad-5">
+											<label for="project_notes"><i class="fa fa-calendar fa-lg"></i> Schedule of Work and Total Leaves</label>
+										</div>
 
-									<div class="box-area pad-5 clearfix">
-										
-										<div class="clearfix">												
-											<div class="pad-10 col-sm-2" style="padding-left: 20px;">
-												<?php 
-													if (!$leave_alloc): 
-														if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ):
-															echo '<form id="add_leave_total" method="post" action="../add_leave_alloc/'.$user_id_page.'">';
+										<div class="box-area pad-5 clearfix">
+											
+											<div class="clearfix">												
+												<div class="pad-10 col-sm-2" style="padding-left: 20px;">
+													<?php 
+														if (!$leave_alloc): 
+															if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ):
+																echo '<form id="add_leave_total" method="post" action="../add_leave_alloc/'.$user_id_page.'">';
+															endif; 
+													 	else: 
+															echo '<form id="update_leave_total" method="post" action="../update_leave_alloc/'.$user_id_page.'">';
 														endif; 
-												 	else: 
-														echo '<form id="update_leave_total" method="post" action="../update_leave_alloc/'.$user_id_page.'">';
-													endif; 
-												 	
-												?>
-													<div class="checkbox">
-													    <label>
-													      <input type="checkbox" name="sched[]" value="0" <?php if (!empty($get_sched_of_work)){echo (in_array("0", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Sunday
-													    </label>
-													</div> 
-													<div class="checkbox">
-													    <label>
-													      <input type="checkbox" name="sched[]" value="1" <?php if (!empty($get_sched_of_work)){echo (in_array("1", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Monday
-													    </label>
+													 	
+													?>
+														<div class="checkbox">
+														    <label>
+														      <input type="checkbox" name="sched[]" value="0" <?php if (!empty($get_sched_of_work)){echo (in_array("0", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Sunday
+														    </label>
+														</div> 
+														<div class="checkbox">
+														    <label>
+														      <input type="checkbox" name="sched[]" value="1" <?php if (!empty($get_sched_of_work)){echo (in_array("1", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Monday
+														    </label>
+														</div>
+														<div class="checkbox">
+														    <label>
+														      <input type="checkbox" name="sched[]" value="2" <?php if (!empty($get_sched_of_work)){echo (in_array("2", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Tuesday
+														    </label>
+														</div>
+														<div class="checkbox">
+														    <label>
+														      <input type="checkbox" name="sched[]" value="3" <?php if (!empty($get_sched_of_work)){echo (in_array("3", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Wednesday
+														    </label>
+														</div>
+														<div class="checkbox">
+														    <label>
+														      <input type="checkbox" name="sched[]" value="4" <?php if (!empty($get_sched_of_work)){echo (in_array("4", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Thursday	
+														    </label>
+														</div>
+														<div class="checkbox">
+														    <label>
+														      <input type="checkbox" name="sched[]" value="5" <?php if (!empty($get_sched_of_work)){echo (in_array("5", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Friday
+														    </label>
+														</div>
+														<div class="checkbox">
+														    <label>
+														      <input type="checkbox" name="sched[]" value="6" <?php if (!empty($get_sched_of_work)){echo (in_array("6", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Saturday
+														    </label>
+														</div>
+														<br>
 													</div>
-													<div class="checkbox">
-													    <label>
-													      <input type="checkbox" name="sched[]" value="2" <?php if (!empty($get_sched_of_work)){echo (in_array("2", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Tuesday
-													    </label>
-													</div>
-													<div class="checkbox">
-													    <label>
-													      <input type="checkbox" name="sched[]" value="3" <?php if (!empty($get_sched_of_work)){echo (in_array("3", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Wednesday
-													    </label>
-													</div>
-													<div class="checkbox">
-													    <label>
-													      <input type="checkbox" name="sched[]" value="4" <?php if (!empty($get_sched_of_work)){echo (in_array("4", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Thursday	
-													    </label>
-													</div>
-													<div class="checkbox">
-													    <label>
-													      <input type="checkbox" name="sched[]" value="5" <?php if (!empty($get_sched_of_work)){echo (in_array("5", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Friday
-													    </label>
-													</div>
-													<div class="checkbox">
-													    <label>
-													      <input type="checkbox" name="sched[]" value="6" <?php if (!empty($get_sched_of_work)){echo (in_array("6", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Saturday
-													    </label>
-													</div>
+
 													<br>
-												</div>
 
-												<br>
+													<div class="pad-10 col-sm-5">
 
-												<div class="pad-10 col-sm-5">
+														<label for="annual_manual_entry" class="col-sm-6 control-label">Starting Annual Leave*:</label>
+														<div class="col-sm-5">								
+																<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
+																	<div class="input-group ">
+																		<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
+																		<input type="text" class="form-control text-center" id="annual_manual_entry" name="annual_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
+																	</div>
+																<?php else: ?>
+																	<input type="hidden" name="annual_manual_entry" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?>">
+																	<label name="annual_manual_entry" id="annual_manual_entry" class="control-label" style="color: #555; font-weight: bold;"><?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?></label>
+																<?php endif; ?>
+														</div>
 
-													<label for="annual_manual_entry" class="col-sm-6 control-label">Starting Annual Leave*:</label>
-													<div class="col-sm-5">								
+														<div class="clearfix"></div><br>
+
+														<?php 
+															if (!empty($leave_alloc)){
+																if ($user->is_offshore == 1) {
+																	$earned_annual_points = $leave_alloc->annual_earned_offshore;
+																} else {
+																	$annual_manual_entry = $leave_alloc->annual_manual_entry;
+																	$annual_accumulated = $leave_alloc->annual_accumulated;
+																	$last_annual_accumulated = $leave_alloc->last_annual_accumulated;
+																	$total_annual_points = $annual_accumulated + $last_annual_accumulated;
+																	$earned_annual_points = $total_annual_points / 8;
+
+																	//echo $total_annual_points;
+																}
+															}
+														?>
+
+														<label for="annual_day_earned" class="col-sm-6 control-label">Earned Annual Leave:</label>
+														<div class="col-sm-5">
+														<?php if ($user->is_offshore == 1) {?>
+															<label name="annual_day_earned" id="annual_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? $earned_annual_points : '0' ); ?></label>
+														<?php } else { ?>
+															<label name="annual_day_earned" id="annual_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? floor($earned_annual_points) : '0' ); ?></label>
+														<?php } ?>
+														</div>
+
+														<div class="clearfix"></div><br>
+
+														<label for="used_annual" class="col-sm-6 control-label">Used Annual Leave:</label>
+														<div class="col-sm-5">
+															<label name="used_annual" id="used_annual" class="control-label" style="color: red; font-weight: bold;"><?php echo (!empty($used_annual_total->used_annual) ? $used_annual_total->used_annual : '0' ); ?></label>
+														</div>
+
+														<div class="clearfix"></div><br>
+
+														<label for="total_annual" class="col-sm-6 control-label">Total Annual Leave:</label>
+														<div class="col-sm-5">
+															<label name="total_annual" id="total_annual" class="control-label" style="color: green; font-weight: bold;"><?php echo (!empty($leave_alloc->total_annual) ? $leave_alloc->total_annual : '0' ); ?></label>
+														</div>
+													</div>
+
+													<div class="pad-10 col-sm-5">
+
+														<label for="personal_manual_entry" class="col-sm-6 control-label">Starting Personal Leave*:</label>
+														<div class="col-sm-5">
 															<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
 																<div class="input-group ">
 																	<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
-																	<input type="text" class="form-control text-center" id="annual_manual_entry" name="annual_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
+																	<input type="text" class="form-control text-center" id="personal_manual_entry" name="personal_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
 																</div>
 															<?php else: ?>
-																<input type="hidden" name="annual_manual_entry" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?>">
-																<label name="annual_manual_entry" id="annual_manual_entry" class="control-label" style="color: #555; font-weight: bold;"><?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?></label>
+																<input type="hidden" name="personal_manual_entry" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?>">
+																<label name="personal_manual_entry" id="personal_manual_entry" class="control-label" style="color: #555; font-weight: bold;"><?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?></label>
 															<?php endif; ?>
-													</div>
+														</div>
 
-													<div class="clearfix"></div><br>
+														<div class="clearfix"></div><br>
 
-													<?php 
-														if (!empty($leave_alloc)){
-															$annual_manual_entry = $leave_alloc->annual_manual_entry;
-															$annual_accumulated = $leave_alloc->annual_accumulated;
-															$last_annual_accumulated = $leave_alloc->last_annual_accumulated;
-															$total_annual_points = $annual_accumulated + $last_annual_accumulated;
-															$earned_annual_points = $total_annual_points / 8;
-
-															//echo $total_annual_points;
-														}
-													?>
-
-													<label for="annual_day_earned" class="col-sm-6 control-label">Earned Annual Leave*:</label>
-													<div class="col-sm-5">
-														<label name="annual_day_earned" id="annual_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? floor($earned_annual_points) : '0' ); ?></label>
-													</div>
-
-													<div class="clearfix"></div><br>
-
-													<label for="used_annual" class="col-sm-6 control-label">Used Annual Leave*:</label>
-													<div class="col-sm-5">
-														<label name="used_annual" id="used_annual" class="control-label" style="color: red; font-weight: bold;"><?php echo (!empty($used_annual_total->used_annual) ? $used_annual_total->used_annual : '0' ); ?></label>
-													</div>
-
-													<div class="clearfix"></div><br>
-
-													<label for="total_annual" class="col-sm-6 control-label">Total Annual Leave*:</label>
-													<div class="col-sm-5">
-														<label name="total_annual" id="total_annual" class="control-label" style="color: green; font-weight: bold;"><?php echo (!empty($leave_alloc->total_annual) ? $leave_alloc->total_annual : '0' ); ?></label>
-													</div>
-												</div>
-
-												<div class="pad-10 col-sm-5">
-
-													<label for="personal_manual_entry" class="col-sm-6 control-label">Starting Personal Leave*:</label>
-													<div class="col-sm-5">
-														<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
-															<div class="input-group ">
-																<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
-																<input type="text" class="form-control text-center" id="personal_manual_entry" name="personal_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
-															</div>
-														<?php else: ?>
-															<input type="hidden" name="personal_manual_entry" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?>">
-															<label name="personal_manual_entry" id="personal_manual_entry" class="control-label" style="color: #555; font-weight: bold;"><?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?></label>
-														<?php endif; ?>
-													</div>
-
-													<div class="clearfix"></div><br>
-
-													<?php 
-														if (!empty($leave_alloc)){
-															$personal_manual_entry = $leave_alloc->personal_manual_entry;
-															$personal_accumulated = $leave_alloc->personal_accumulated;
-															$last_personal_accumulated = $leave_alloc->last_personal_accumulated;
-															$total_personal_points = $personal_accumulated + $last_personal_accumulated;
-															$earned_personal_points = $total_personal_points / 8;
-
-															//echo $total_personal_points;
-														}
-													?>
-
-													<label for="personal_day_earned" class="col-sm-6 control-label">Earned Personal Leave*:</label>
-													<div class="col-sm-5">
-														<label name="personal_day_earned" id="personal_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_personal_points) ? floor($earned_personal_points) : '0' ); ?></label>
-													</div>
-
-													<div class="clearfix"></div><br>
-
-													<label for="used_personal" class="col-sm-6 control-label">Used Personal Leave*:</label>
-													<div class="col-sm-5">
-														<label name="used_personal" id="used_personal" class="control-label" style="color: red; font-weight: bold;"><?php echo (!empty($used_personal_total->used_personal) ? $used_personal_total->used_personal : '0' ); ?></label>
-													</div>
-
-													<div class="clearfix"></div><br>
-													
-													<label for="total_personal" class="col-sm-6 control-label">Total Personal Leave*:</label>
-													<div class="col-sm-5">
-														<label name="total_personal" id="total_personal" class="control-label" style="color: green; font-weight: bold;"><?php echo (!empty($leave_alloc->total_personal) ? $leave_alloc->total_personal : '0' ); ?></label>
-													</div>
-
-												</div>
-
-												<div class="pad-top-10 m-top-10 row">
-													<?php 
-														if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
-														<?php if (!$leave_alloc): ?>
-																<div class="pad-top-10 m-top-10 col-sm-4 col-sm-offset-3">
-																	<button type="submit" class="btn btn-warning" name="insert_leave_alloc" id="insert_leave_alloc">Insert Leave Allocations and Work Schedule</button>
-																</div>
-														<?php else: ?>
-																<div class="pad-top-10 m-top-10 col-sm-4 col-sm-offset-3">
-																	<button type="submit" class="btn btn-primary" name="update_leave_alloc">Update Leave Allocations and Work Schedule</button>
-																</div>
 														<?php 
-															endif;
-														else: ?>
-															<?php if ($leave_alloc && $user_id_page == $this->session->userdata('user_id')): ?>
-																<!--<div class="pad-top-10 m-top-10 col-sm-4 col-sm-offset-3">
-																	<button type="submit" class="btn btn-primary" name="update_leave_alloc">Update Work Schedule</button>
-																</div>-->
+															if (!empty($leave_alloc)){
+																if ($user->is_offshore == 1) {
+																	$earned_personal_points = $leave_alloc->personal_earned_offshore;
+																} else {
+																	$personal_manual_entry = $leave_alloc->personal_manual_entry;
+																	$personal_accumulated = $leave_alloc->personal_accumulated;
+																	$last_personal_accumulated = $leave_alloc->last_personal_accumulated;
+																	$total_personal_points = $personal_accumulated + $last_personal_accumulated;
+																	$earned_personal_points = $total_personal_points / 8;
 
-															<?php endif;
-													
-														endif; 
-													?>
-												</form>
+																	//echo $total_personal_points;
+																}
+															}
+														?>
+
+														<label for="personal_day_earned" class="col-sm-6 control-label">Earned Personal Leave:</label>
+														<div class="col-sm-5">
+														<?php if ($user->is_offshore == 1) {?>
+															<label name="personal_day_earned" id="personal_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_personal_points) ? $earned_personal_points : '0' ); ?></label>
+														<?php } else { ?>
+															<label name="personal_day_earned" id="personal_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_personal_points) ? floor($earned_personal_points) : '0' ); ?></label>
+														<?php } ?>
+														</div>
+
+														<div class="clearfix"></div><br>
+
+														<label for="used_personal" class="col-sm-6 control-label">Used Personal Leave:</label>
+														<div class="col-sm-5">
+															<label name="used_personal" id="used_personal" class="control-label" style="color: red; font-weight: bold;"><?php echo (!empty($used_personal_total->used_personal) ? $used_personal_total->used_personal : '0' ); ?></label>
+														</div>
+
+														<div class="clearfix"></div><br>
+														
+														<label for="total_personal" class="col-sm-6 control-label">Total Personal Leave:</label>
+														<div class="col-sm-5">
+															<label name="total_personal" id="total_personal" class="control-label" style="color: green; font-weight: bold;"><?php echo (!empty($leave_alloc->total_personal) ? $leave_alloc->total_personal : '0' ); ?></label>
+														</div>
+
+													</div>
+
+													<div class="pad-top-10 m-top-10 row">
+														<?php 
+															if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
+															<?php if (!$leave_alloc): ?>
+																	<div class="pad-top-10 m-top-10 col-sm-4 col-sm-offset-3">
+																		<button type="submit" class="btn btn-warning" name="insert_leave_alloc" id="insert_leave_alloc">Insert Leave Allocations and Work Schedule</button>
+																	</div>
+															<?php else: ?>
+																	<div class="pad-top-10 m-top-10 col-sm-4 col-sm-offset-3">
+																		<button type="submit" class="btn btn-primary" name="update_leave_alloc">Update Leave Allocations and Work Schedule</button>
+																	</div>
+															<?php 
+																endif;
+															else: ?>
+																<?php if ($leave_alloc && $user_id_page == $this->session->userdata('user_id')): ?>
+																	<!--<div class="pad-top-10 m-top-10 col-sm-4 col-sm-offset-3">
+																		<button type="submit" class="btn btn-primary" name="update_leave_alloc">Update Work Schedule</button>
+																	</div>-->
+
+																<?php endif;
+														
+															endif; 
+														?>
+													</form>
+												</div>
+												<div class="clearfix"></div><br>
 											</div>
-											<div class="clearfix"></div><br>
 										</div>
 									</div>
-								</div>
-											 
+								<?php endif; ?>
 							</div>
 						</div>
 					</div>
@@ -1276,8 +1319,8 @@
 							<?php $company_project_set = $user_access_arr['15'];  ?>
 							
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Company Project</label>											 
-								<div class="col-sm-9">										
+								<label class="col-sm-4 control-label m-top-5">Company Project</label>											 
+								<div class="col-sm-8">										
 									<div class="company_project">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Enabled" <?php echo ($company_project_set >= 1 ? 'checked="true"' : ''); ?>>
 									</div>
@@ -1309,8 +1352,8 @@
 							<?php $site_labour_app_set = $user->site_access;?>
 							
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Site Labour App</label>											 
-								<div class="col-sm-9">										
+								<label class="col-sm-4 control-label m-top-5">Site Labour App</label>											 
+								<div class="col-sm-8">										
 									<div class="site_labour_app">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="2" data-label-text="Have Access" <?php echo ($site_labour_app_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
@@ -1324,10 +1367,9 @@
 
  
 							<?php $quick_quote_set = $user_access_arr['17'];  ?> 
-							
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Quick Quote</label>											 
-								<div class="col-sm-9">										
+								<label class="col-sm-4 control-label m-top-5">Quick Quote</label>											 
+								<div class="col-sm-8">										
 									<div class="quick_quote">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($quick_quote_set == 1? 'checked="true"' : ''); ?>>
 									</div>
@@ -1335,6 +1377,31 @@
 								</div>
 							</div>
 
+
+
+ 
+							<?php $quote_deadline = $user_access_arr['18'];  ?> 
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-4 control-label m-top-5">Quote Deadline</label>											 
+								<div class="col-sm-8">										
+									<div class="quote_deadline">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($quote_deadline == 1? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="quote_deadline" name="quote_deadline" value="<?php echo $quote_deadline; ?>">
+								</div>
+							</div>
+
+							<?php $leave_requests = $user_access_arr['19'];  ?> 
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-4 control-label m-top-5">Leave Requests</label>											 
+								<div class="col-sm-8">										
+									<div class="leave_requests">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($leave_requests == 1? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="leave_requests" name="leave_requests" value="<?php echo $leave_requests; ?>">
+								</div>
+							</div>
+							
 							
 							<div class="clearfix"></div>
 							<input type="submit" class="btn btn-primary m-right-10 pull-right m-bottom-10" name="update_user_access" value="Update User Access">
