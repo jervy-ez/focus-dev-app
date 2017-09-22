@@ -184,6 +184,15 @@
       								<div class="box bank_account" >
 										<div class="box-head pad-5 m-bottom-5">
 											<label><i class="fa fa-suitcase fa-lg"></i> Account Details</label>
+
+											<div class="pull-right  clearfix <?php if(form_error('password')){ echo 'has-error has-feedback';} ?>">
+												 
+													<div class="m-top-5 m-right-5 ">
+														<p>Temporary Password: <strong><?php echo $static_defaults[0]->temp_user_psswrd; ?></strong></p>
+														</div>
+													</div>
+
+
 										</div>
 										
 										<div class="box-area pad-5 clearfix">
@@ -258,11 +267,52 @@
 												</div>
 											</div>
 
-											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('password')){ echo 'has-error has-feedback';} ?>">
-												<label for="password" class="col-sm-2 control-label"></label>
-												<div class="col-sm-10">
-													<p>Temporary Password: 										
-													<strong><?php echo $static_defaults[0]->temp_user_psswrd; ?></strong></p>
+
+											<div class="col-md-6 col-sm-6 col-xs-12  m-bottom-10  clearfix <?php if(form_error('super_visor')){ echo 'has-error has-feedback';} ?>">
+												<label for="super_visor" class="col-sm-4 control-label">Supervisor*</label>
+												<div class="col-sm-8">
+													<select name="super_visor" class="form-control super_visor" id="super_visor" >
+														<option value="">Select Personel*</option>
+														<?php foreach($users as $key => $value): ?>
+															<option value="<?php echo $value->primary_user_id; ?>"><?php echo $value->user_first_name.' '.$value->user_last_name; ?></option>
+														<?php endforeach; ?>
+													</select>
+
+													<?php $super_visor = ($this->input->post('super_visor') != '' ? $this->input->post('super_visor') : ''); ?>
+													<script type="text/javascript">$('.super_visor').val('<?php echo $super_visor; ?>');</script>
+												</div> 
+
+												
+
+
+
+											</div>
+
+
+
+
+											<div class="div_pm_for_pa col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('pm_for_pa')){ echo 'has-error has-feedback';} ?>" style="display:none;">
+												<label for="pm_for_pa" class="col-sm-3 control-label">Primary PM*</label>
+												<div class="col-sm-9">
+													<select name="pm_for_pa" class="form-control pm_for_pa " id="pm_for_pa" >
+														 <option value="">Select Project Manager</option>
+														 <?php
+														 	foreach ($project_manager as $row){
+														 		echo '<option class="" value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+														 	}
+														 ?>
+													</select>
+
+
+													<?php if($this->input->post('pm_for_pa') != ''): ?>														
+														<?php $pm_for_pa = ($this->input->post('pm_for_pa') != '' ? $this->input->post('pm_for_pa') : ''); ?>
+														<script type="text/javascript">$('select.pm_for_pa').val('<?php echo $pm_for_pa; ?>'); $('.div_pm_for_pa').show(); </script>
+													<?php endif; ?>
+
+													<?php if(form_error('pm_for_pa')): ?>
+														<script type="text/javascript">  $('.div_pm_for_pa').show(); </script>
+													<?php endif; ?>
+
 												</div>
 											</div>
 
@@ -552,6 +602,25 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	
+
+  $('select.user-role-selection').on("change", function(e) {
+  	var data = $(this).val();
+  	var data_set = data.split("|");
+
+  	if(data_set[0] == 2){
+  		$('.div_pm_for_pa').show();
+  		$('select.pm_for_pa').val('');  
+  	}else{
+  		$('.div_pm_for_pa').hide();
+  		$('select.pm_for_pa').val('');  		
+  	}
+
+});
+
+</script>
 
 <?php $this->load->view('assets/logout-modal'); ?>
 <?php if(!isset($_POST['is_form_submit'])){	echo '<script type="text/javascript">$("#first_name").focus();</script>';}?>

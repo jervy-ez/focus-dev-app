@@ -5,9 +5,12 @@
 
  	$user_id = $this->uri->segment(3);
 
- 	if ($user_id != $this->session->userdata('user_id')) {
+ 	$user_access_arr = explode(',',  $this->users->get_user_access($this->session->userdata('user_id')) );
+ 	$leave_requests = $user_access_arr['19'];
+
+ 	if ($leave_requests != 1 && $user_id != $this->session->userdata('user_id')) {
 		redirect(base_url().'users', 'refresh');
-	} 
+	}
 
  	foreach($user as $key => $user):
 

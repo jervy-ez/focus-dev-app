@@ -414,43 +414,70 @@
 		$("#add_comment_textarea").val('Leave request is approved.');
 		$("#add_comment_title").text("Are you sure you want to approve this?");
 		$("#add_comment_buttons").html('<button type="button" class="btn btn-warning" data-dismiss="modal">No</button> ' +
-									   '<button type="button" id="btnLeaveApproved" class="btn btn-success">Yes</button>');
+									   '<button type="button" id="btnLeaveApproved" data-loading-text="Loading..." class="btn btn-success">Yes</button>');
 		
 		$("#add_comment_modal").modal('show');
 
 		$("button#btnLeaveApproved").click(function(){
 			
-			var add_comment = $("#add_comment_textarea").val();
+			$("button#btnLeaveApproved").button('loading');
 
+			var add_comment = $("#add_comment_textarea").val();
 			var data = leave_request_id+'|'+add_comment+'|'+leave_user_id;	
 
 			if (add_comment != "" && leave_request_id != ""){
-				ajax_data(data,'users/approve_leave/<?php echo $this->session->userdata('user_id') ?>',''); //alert(data);
-				alert('You successfully approved this leave request!');
-				$('#add_comment_modal').modal('hide');
-	
-				if (user_id == 3){
-
-					$("h4.modal-title").text("Loading PDF Leave Request...");
-					$("#confirmText").html('<center><i class="fa fa-circle-o-notch fa-spin fa-5x "></i></center>');
-					$("#confirmModal").modal('show');
-
-					setTimeout(function(){ 
-						$("#confirmModal").modal('hide');						
+				$.ajax({
+					'url' : '<?php echo base_url().'users/approve_leave/'.$this->session->userdata('user_id'); ?>',
+					'type' : 'POST',
+					'data' : {'ajax_var' : data },
+					'success' : function(data){
 						
-						window.open("<?php echo base_url().'docs/leave_form/leave_form_'; ?>"+leave_request_id+".pdf");
+						$("button#btnLeaveApproved").button('reset');
 
-						//if (window.location.href.split('#')[0] == "<?php //echo base_url().'users/leave_approvals/'.$this->session->userdata('user_id'); ?>"){
-						$(window).focus(function() {
-							location.reload();
-						});
+						alert('You successfully approved this leave request!');
+						$('#add_comment_modal').modal('hide');
 
-					}, 5000);
-				} else {
-					if (window.location.href.split('#')[0] == "<?php echo base_url().'users/leave_approvals/'.$this->session->userdata('user_id'); ?>"){
-						location.reload();
+						if (user_id == 3){			
+							window.open("<?php echo base_url().'docs/leave_form/leave_form_'; ?>"+leave_request_id+".pdf");
+							$(window).focus(function() {
+								location.reload();
+							});
+						} else {
+							if (window.location.href.split('#')[0] == "<?php echo base_url().'users/leave_approvals/'.$this->session->userdata('user_id'); ?>"){
+								location.reload();
+							}
+						}
+
 					}
-				}
+				});
+
+				// ajax_data(data,'users/approve_leave/<?php //echo $this->session->userdata('user_id') ?>',''); //alert(data);
+				// alert('You successfully approved this leave request!');
+				// $('#add_comment_modal').modal('hide');
+	
+				// if (user_id == 3){
+
+				// 	$("h4.modal-title").text("Loading PDF Leave Request...");
+				// 	$("#confirmText").html('<center><i class="fa fa-circle-o-notch fa-spin fa-5x "></i></center>');
+				// 	$("#confirmModal").modal('show');
+
+				// 	setTimeout(function(){ 
+				// 		$("#confirmModal").modal('hide');						
+						
+				// 		window.open("<?php //echo base_url().'docs/leave_form/leave_form_'; ?>"+leave_request_id+".pdf");
+
+				// 		//if (window.location.href.split('#')[0] == "<?php //echo base_url().'users/leave_approvals/'.$this->session->userdata('user_id'); ?>"){
+				// 		$(window).focus(function() {
+				// 			location.reload();
+				// 		});
+
+				// 	}, 5000);
+				// } else {
+				// 	if (window.location.href.split('#')[0] == "<?php //echo base_url().'users/leave_approvals/'.$this->session->userdata('user_id'); ?>"){
+				// 		location.reload();
+				// 	}
+				// }
+
 			} else {
 				alert("Please filled the required (*) fields");
 				return false;
