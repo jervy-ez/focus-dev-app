@@ -36,6 +36,15 @@ class User_model extends CI_Model{
 		return $query->row();
 	}
 
+	public function fetch_pms_year($year){
+		$query = $this->db->query(" SELECT `project`.`project_manager_id`,`users`.*  FROM `project`
+			LEFT JOIN `users` ON`users`.`user_id` = `project`.`project_manager_id`
+
+			WHERE `project`.`is_active` = '1' AND  `project`.`project_date` LIKE '%$year' AND `project`.`job_category` <> 'Company'
+			GROUP BY `project`.`project_manager_id` ");
+		return $query;
+	}
+
 	function list_active_reoccur_availability($time_stamp){
 		$query = $this->db->query("SELECT * FROM `user_reoccur_availability` 
 			WHERE `user_reoccur_availability`.`date_future` = '$time_stamp' 
@@ -254,7 +263,7 @@ class User_model extends CI_Model{
 
 	public function delete_user($user_id){
 		$query = $this->db->query("UPDATE `users` SET `is_active` = '0' WHERE `users`.`user_id` = '$user_id' ");
-		$this->db->query("UPDATE `user_activity` SET `is_active` = '0' WHERE `users`.`user_id` = '$user_id' ");		
+		$this->db->query("UPDATE `user_activity` SET `is_active` = '0' WHERE `user_activity`.`user_id` = '$user_id' ");		
 	}
 
 	public function get_latest_user_password($user_id){

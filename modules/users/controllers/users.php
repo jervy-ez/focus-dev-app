@@ -1449,6 +1449,7 @@ if($value->role_types == 'Designer'){
 		}		
 	}
 
+
 	function _confirm_active_password($user_id,$user_password){
 
 		$this->session->set_userdata('re_pass_user_id',$user_id);
@@ -3313,6 +3314,8 @@ $this->set_availability($availability_init);
 			$this->session->set_flashdata('total_leave', $update_success);
 			redirect('/users/account/'.$user_id_page);
 		}
+
+		
 	}
 
 	public function update_leave_alloc($user_id_page){
@@ -3677,12 +3680,12 @@ $this->set_availability($availability_init);
 				$annual_earned_offshore = $row->annual_earned_offshore;			
 				$personal_earned_offshore = $row->personal_earned_offshore;
 
-				// $date_today = date('2017-11-01');
+				// $date_today = date('2017-11-02');
 				$date_today = date('Y-m-d');
 				$date = date_create($date_today);
 				date_modify($date, '-1 day');
-				
 				$last_month = date_format($date,"m");
+
 				$current_month = date('m');
 				// $current_month = '11';
 

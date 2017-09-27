@@ -1,4 +1,4 @@
-﻿<div class="sign_in_bg">
+﻿<div class="sign_in_bg" style="background-image:url('<?php echo base_url(); ?>img/SOJOURN_SEASONS_Aus_rules_football_2017.jpg') !important;">
 	<?php if(@$error): ?>
 	<div class="container">
 		<div class="row">

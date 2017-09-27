@@ -741,7 +741,7 @@
 																<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
 																	<div class="input-group ">
 																		<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
-																		<input type="text" class="form-control text-center" id="annual_manual_entry" name="annual_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
+																		<input type="text" class="form-control text-center" id="annual_manual_entry" name="annual_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
 																	</div>
 																<?php else: ?>
 																	<input type="hidden" name="annual_manual_entry" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?>">
@@ -798,7 +798,7 @@
 															<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
 																<div class="input-group ">
 																	<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
-																	<input type="text" class="form-control text-center" id="personal_manual_entry" name="personal_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
+																	<input type="text" class="form-control text-center" id="personal_manual_entry" name="personal_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
 																</div>
 															<?php else: ?>
 																<input type="hidden" name="personal_manual_entry" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?>">
@@ -878,7 +878,7 @@
 											</div>
 										</div>
 									</div>
-								<?php endif; ?>
+								<?php endif; ?>		 
 							</div>
 						</div>
 					</div>
