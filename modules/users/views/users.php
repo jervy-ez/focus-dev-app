@@ -18,6 +18,11 @@
 					<li>
 						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
 					</li>
+					<li>
+						<a href="<?php echo base_url(); ?>users/company_matrix"><i class="fa fa-university"></i> Company Chart</a>
+					</li>
+
+
 					<?php if($this->session->userdata('users') > 0 || $this->session->userdata('is_admin') ==  1): ?>
 						<li>
 							<a href="<?php echo base_url(); ?>users/account/<?php echo $this->session->userdata('user_id'); ?>"><i class="fa fa-cog"></i> My Account</a>
@@ -52,6 +57,21 @@
 	</div>
 </div>
 <!-- title bar -->
+
+
+												<style type="text/css">
+													.gray{
+														background: #555 !important;
+														border-color: #000 !important;
+													}
+
+													.gray .box-widg-head{
+														background: #9e9e9e !important;
+
+													}
+
+												</style>
+
 
 <div class="container-fluid">
 	<!-- Example row of columns -->
@@ -90,20 +110,28 @@
 
 										<?php $focus_comp_group_checker = ''; $counter = 0; ?>	
 										<?php $focus_comp_group = ''; ?>
-										<?php $wid_type = ''; ?>
 
-									
+										
+										<?php $wid_type = ''; ?>
 
 										
 										<?php foreach($users as $key => $user): ?>
-											<?php $focus_comp_group = $user->company_name; ?>
+											<?php $focus_comp_group = $user->company_name; $gray_color = '';?>
 
+
+
+
+
+
+ 
 
 
 												<?php if($focus_comp_group_checker == ''): ?>
 													<?php $focus_comp_group_checker = $user->company_name; $wid_type = 'c'; ?>
 													<div class="col-md-12 col-sm-12 col-lg-12 col-xs-12"><div class="text-center pad-top-10"><h4>FSF Group Pty Ltd</h4></div> </div>
 												<?php endif; ?>
+
+
 
 												<?php if($focus_comp_group != $focus_comp_group_checker  ): ?>
 													<?php $focus_comp_group_checker = $user->company_name; $wid_type = 'b'; ?>
@@ -118,9 +146,12 @@
 
 												<?php if( $user->company_name == 'Focus Shopfit NSW Pty Ltd'){ $wid_type = 'a'; } ?>
 
+ 																
+											<?php if($user->is_third_party == 1 ){ $gray_color = 'gray';	} ?>
+ 
 
 												<div class="col-md-6 col-sm-6 col-lg-4 col-xs-12 box-widget">
-													<div class="box wid-type-<?php echo $wid_type; ?>">
+													<div class="box wid-type-<?php echo $wid_type.' '.$gray_color; ?>">
 														<div class="widg-head box-widg-head pad-5"><?php echo $user->department_name; ?> <span class="sub-h pull-right"><?php echo $user->company_name; ?></span></div>							
 														<?php if($user->user_profile_photo == ''): ?>
 															<div class="box-area pad-5 text-center">
@@ -155,6 +186,8 @@
 												</div>
 
 												<?php $counter++; ?>
+
+
 					
 
 										<?php endforeach; ?>						

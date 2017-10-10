@@ -1895,7 +1895,7 @@ $gp = 0;
 				$prev_project_details = array_shift($q_proj_prev->result_array());
 
 				$attempt = 0;
-				if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 16 || ( $this->session->userdata('user_role_id') == 7 && $prev_project_details['job_category'] == 'Maintenance' ) || ( $this->session->userdata('company_project') == 1 && $prev_project_details['job_category'] == 'Company' ) ){
+				if($this->session->userdata('is_admin') == 1 || $this->session->userdata('job_date') == 1 || ( $this->session->userdata('user_role_id') == 7 && $prev_project_details['job_category'] == 'Maintenance' ) || ( $this->session->userdata('company_project') == 1 && $prev_project_details['job_category'] == 'Company' ) ){
 					$job_date = $this->input->post('job_date');
 				}else{
 					if($prev_project_details['job_date'] == ''){
@@ -2167,7 +2167,7 @@ $gp = 0;
 			$install_time_hrs = $this->input->post('install_time_hrs');
 		//}
 
-		if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 16 || ( $this->session->userdata('user_role_id') == 7 && $prev_project_details['job_category'] == 'Maintenance' ) || ( $this->session->userdata('company_project') == 1 &&      $prev_project_details['job_category'] == 'Company'          ) ){
+		if($this->session->userdata('is_admin') == 1 || $this->session->userdata('job_date') == 1 || ( $this->session->userdata('user_role_id') == 7 && $prev_project_details['job_category'] == 'Maintenance' ) || ( $this->session->userdata('company_project') == 1 &&      $prev_project_details['job_category'] == 'Company'          ) ){
 			$job_date = $_POST['job_date'];
 		}else{
 			if($prev_project_details['job_date'] == ''){

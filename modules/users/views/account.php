@@ -345,13 +345,25 @@
 													</div>
 												</div>
 
+
+												<div class="col-md-6 col-sm-4 col-xs-12 m-bottom-10 clearfix ">
+													<label for="contractor_employee" class="col-sm-4 control-label">Contractor Employee</label>
+													<div class="col-sm-8">
+														<select name="contractor_employee" class="form-control contractor_employee"   id="contractor_employee">
+															<option value="1">Yes</option>
+															<option value="0">No</option>
+														</select>
+														<script type="text/javascript">$('.contractor_employee').val('<?php echo $user->is_third_party; ?>');</script>
+													</div>
+												</div>
+
 												<div class="col-md-6 col-sm-4 col-xs-12 m-bottom-10 clearfix <?php if(form_error('focus')){ echo 'has-error has-feedback';} ?>">
-													<label for="focus" class="col-sm-3 control-label">Supervisor </label>
+													<label for="focus" class="col-sm-3 control-label">Direct Reports</label>
 													<div class="col-sm-9">
 
 														<select name="supervisor" class="form-control supervisor" id="supervisor" tabindex="10">
 
-															<option value="0">Select Supervisor</option>
+															<option value="0">Select Personel</option>
 															<?php foreach ($user_list as $key => $value): ?>
 																<?php if($value->primary_user_id !== $user_id_page || $user_id_page === '3'): ?>
 																<option value="<?php echo $value->primary_user_id; ?>" ><?php echo $value->user_first_name." ".$value->user_last_name; ?></option>
@@ -396,6 +408,13 @@
 													<label class="col-sm-4  text-right">Offshore Employee</label>
 													<div class="col-sm-8">
 														<strong><?php echo ($user->is_offshore == 1) ? 'Yes' : 'No'; ?></strong>
+													</div>
+												</div>
+
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+													<label class="col-sm-4  text-right">Contractor Employee</label>
+													<div class="col-sm-8">
+														<strong><?php echo ($user->is_third_party == 1) ? 'Yes' : 'No'; ?></strong>
 													</div>
 												</div>
 
@@ -741,7 +760,7 @@
 																<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
 																	<div class="input-group ">
 																		<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
-																		<input type="text" class="form-control text-center" id="annual_manual_entry" name="annual_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
+																		<input type="text" class="form-control text-center" id="annual_manual_entry" name="annual_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
 																	</div>
 																<?php else: ?>
 																	<input type="hidden" name="annual_manual_entry" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?>">
@@ -798,7 +817,7 @@
 															<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
 																<div class="input-group ">
 																	<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
-																	<input type="text" class="form-control text-center" id="personal_manual_entry" name="personal_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
+																	<input type="text" class="form-control text-center" id="personal_manual_entry" name="personal_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
 																</div>
 															<?php else: ?>
 																<input type="hidden" name="personal_manual_entry" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?>">
@@ -878,7 +897,7 @@
 											</div>
 										</div>
 									</div>
-								<?php endif; ?>		 
+								<?php endif; ?>
 							</div>
 						</div>
 					</div>
@@ -1103,6 +1122,101 @@
 						
 						<?php if( ($this->session->userdata('users') > 1 ) || $this->session->userdata('is_admin') ==  1  ): ?>
 
+
+
+
+<?php if($user->role_id == 2): ?>
+							<div class="panel-group" role="tablist">
+							<div class="panel panel-default">
+								<div class="panel-heading" role="tab" id="collapseListGroupHeading1">
+									<h4 class="panel-title">
+										<a class="collapsed" role="button" data-toggle="collapse" href="#collapseListGroup_pm" aria-expanded="false" aria-controls="collapseListGroup_pm">
+											<i class="fa fa-users  fa-lg"></i> Update PM Assignments
+										</a>
+									</h4>
+								</div>
+																	<div id="collapseListGroup_pm" class="panel-collapse collapse" role="tabpanel" aria-labelledby="collapseListGroupHeading1" aria-expanded="false" style="height: 0px;">
+									
+										<div class="pad-10">
+											 
+
+											 
+
+
+												<form class="form-horizontal" role="form" method="post" action="<?php echo base_url(); ?>admin/primay_pa_pm">
+
+												<?php
+	  
+
+						$assignment =   $this->admin->list_pa_assignment($user_id);
+
+						$pa_assignment = explode(',',$assignment['project_manager_ids']   );
+						$pa_primary =  $assignment['project_manager_primary_id'];
+
+						echo '<div class="">';
+
+						foreach ($user_list as $pm){
+
+							 
+
+						if($pm->user_role_id == 3):
+
+
+						 
+
+
+							$fetch_user = $this->user_model->fetch_user($pm->primary_user_id);
+							$pm_data = array_shift( $fetch_user->result() ); 
+
+							echo '<p class="m-bottom-15">';
+
+								if($pa_primary == $pm->primary_user_id){
+									echo '<input type="radio" name="pm_primary'.$user_id.'" value="'.$pm->primary_user_id.'" id="prime'.$user_id.''.$pm->primary_user_id.'" checked="checked">';
+								}else{
+									echo '<input type="radio" name="pm_primary'.$user_id.'" value="'.$pm->primary_user_id.'" id="prime'.$user_id.''.$pm->primary_user_id.'">';
+								}
+
+								echo '<label class="m-right-15 m-left-5"  for="prime'.$user_id.''.$pm->primary_user_id.'">Prime</label>';
+								 
+								if( in_array($pm->primary_user_id, $pa_assignment) ){
+									echo '<input  type="checkbox" id="'.$user_id.''.$pm->primary_user_id.'" name="pm_set_'.$user_id.'[]" value="'.$pm->primary_user_id.'" checked="checked">';
+								}else{
+									echo '<input  type="checkbox" id="'.$user_id.''.$pm->primary_user_id.'" name="pm_set_'.$user_id.'[]" value="'.$pm->primary_user_id.'">';
+								}
+
+								echo '<label  class="m-left-5" for="'.$user_id.''.$pm->primary_user_id.'">'.$pm->user_first_name.'  '.$pm->user_last_name.' &nbsp; <strong> <em> <sub>'.$pm_data->company_name.'</sub></em></strong> </label>';
+
+							echo '</p>';
+						
+
+						endif;
+					}
+						echo '</div>';
+					 
+
+					?>
+
+					<input type="hidden" name="pa_user_id" value="<?php echo "$user_id"; ?>" >
+<button type="submit" class="btn btn-success m-bottom-10 m-right-5"><i class="fa fa-floppy-o"></i> Save Assignment</button>	
+
+
+
+												<div class="clearfix"></div>
+
+												
+												
+
+											</form>
+										</div>
+
+									</div>
+								</div>
+							</div>
+
+<?php endif; ?>
+
+
+
 						<form method="post" action="../update_user_access">
 			
  						<?php $user_access_arr = explode(',',  $this->users->get_user_access($user_id) ); ?>
@@ -1114,8 +1228,14 @@
 
 						<div class="box clearfix">
 							<div class="box-head pad-5">
-								<label><a style="font-weight:normal; color: #333; font-size:16px; margin-left:10px;" class="collapsed" role="button" data-toggle="collapse" href="#collapseListGroup3" aria-expanded="false" aria-controls="collapseListGroup3"> 
+								<label>
+ 
+
+								<a style="font-weight:normal; color: #333; font-size:16px; margin-left:10px;" class="collapsed" role="button" data-toggle="collapse" href="#collapseListGroup3" aria-expanded="false" aria-controls="collapseListGroup3"> 
+
+
 								<i class="fa fa-unlock-alt fa-lg"></i> Select Access</label>
+
 								</a>
 							</div>		
 
@@ -1123,8 +1243,9 @@
 
 							<?php $is_admin_set = $is_user_admin;  ?>
 							
+ 
 
-							<div id="collapseListGroup3" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="" aria-expanded="false" style="height: auto;">
+							<div id="collapseListGroup3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="" aria-expanded="false" style="height: 0px;">
 
 
 							<div class="col-xs-12 m-bottom-10 clearfix m-top-10">
@@ -1401,10 +1522,24 @@
 									<input type="hidden" class="" id="leave_requests" name="leave_requests" value="<?php echo $leave_requests; ?>">
 								</div>
 							</div>
+
+
+
+							<?php $job_date_access = $user_access_arr['20'];  ?> 
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Job Date</label>											 
+								<div class="col-sm-8">										
+									<div class="job_date_access">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Control" <?php echo ($job_date_access == 1 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="job_date_access" name="job_date_access" value="<?php echo $job_date_access; ?>">
+								</div>
+							</div>
 							
 							
 							<div class="clearfix"></div>
-							<input type="submit" class="btn btn-primary m-right-10 pull-right m-bottom-10" name="update_user_access" value="Update User Access">
+							<input type="submit" class="btn btn-success m-left-10  m-top-10 m-bottom-10" name="update_user_access" value="Update User Access">
 						</div>
 </div>
 

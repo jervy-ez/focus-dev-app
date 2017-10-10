@@ -267,12 +267,12 @@
 												</div>
 											</div>
 
-
-											<div class="col-md-6 col-sm-6 col-xs-12  m-bottom-10  clearfix <?php if(form_error('super_visor')){ echo 'has-error has-feedback';} ?>">
-												<label for="super_visor" class="col-sm-4 control-label">Supervisor*</label>
+<div id="" class="col-md-6 col-sm-6 col-xs-12  m-bottom-10   ">
+											<div class="clearfix  m-bottom-10  <?php if(form_error('super_visor')){ echo 'has-error has-feedback';} ?>">
+												<label for="super_visor" class="col-sm-4 control-label">Direct Reports*</label>
 												<div class="col-sm-8">
 													<select name="super_visor" class="form-control super_visor" id="super_visor" >
-														<option value="">Select Personel*</option>
+														<option value="">Select Personel</option>
 														<?php foreach($users as $key => $value): ?>
 															<option value="<?php echo $value->primary_user_id; ?>"><?php echo $value->user_first_name.' '.$value->user_last_name; ?></option>
 														<?php endforeach; ?>
@@ -282,13 +282,31 @@
 													<script type="text/javascript">$('.super_visor').val('<?php echo $super_visor; ?>');</script>
 												</div> 
 
+											</div>
+
+
+											<div id="" class=" m-bottom-10">
 												
 
+												<label for="contractor_employee" class="col-sm-4 control-label">Contractor Employee*</label>
+												<div class="col-sm-8">
+													<select name="contractor_employee" class="form-control contractor_employee" id="contractor_employee" >
+														<option value="" disabled style="display:none">Select</option>
+														<option value="0">No</option>
+														<option value="1">Yes</option>
+													</select>
+
+													<?php $contractor_employee = ($this->input->post('contractor_employee') != '' ? $this->input->post('contractor_employee') : ''); ?>
+													<script type="text/javascript">$('.contractor_employee').val('<?php echo $contractor_employee; ?>');</script>
+												</div> 
 
 
 											</div>
 
 
+
+
+</div>
 
 
 											<div class="div_pm_for_pa col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('pm_for_pa')){ echo 'has-error has-feedback';} ?>" style="display:none;">
@@ -588,6 +606,22 @@
 									<input type="hidden" class="" id="labour_schedule" name="labour_schedule" value="<?php echo $labour_schedule_set; ?>">
 								</div>
 							</div>
+
+
+
+							<?php $job_date_access = (isset($_POST['job_date_access']) ? $_POST['job_date_access'] : 0);  ?>
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Job Date</label>											 
+								<div class="col-sm-8">										
+									<div class="job_date_access">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Control" <?php echo ($job_date_access == 1 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="job_date_access" name="job_date_access" value="<?php echo $job_date_access; ?>">
+								</div>
+							</div>
+
+
 
 							<div class="clearfix"></div><br />
 						</div>

@@ -45,6 +45,28 @@ class User_model extends CI_Model{
 		return $query;
 	}
 
+	public function fetch_company_group($company_id = '' ,$is_prime = ''){
+
+
+		if($is_prime != ''){
+
+			$query = $this->db->query("SELECT `admin_company`.* , `company_details`.`company_name`,  `states`.`name` AS `state_name` FROM `admin_company`
+				LEFT JOIN `company_details` ON `company_details`.`company_id` =  `admin_company`.`admin_company_details_id`
+				LEFT JOIN  `address_detail` ON  `address_detail`.`address_detail_id` =  `company_details`.`address_id`
+				LEFT JOIN  `address_general` ON  `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
+				LEFT JOIN  `states` ON  `states`.`id` =  `address_general`.`state_id`
+				WHERE `admin_company`.`admin_company_details_id`  = '$company_id' AND  `company_details`.`active` = '1'");
+		}else{
+			$query = $this->db->query("SELECT `admin_company`.* , `company_details`.`company_name`,  `states`.`name` AS `state_name` FROM `admin_company`
+				LEFT JOIN `company_details` ON `company_details`.`company_id` =  `admin_company`.`admin_company_details_id`
+				LEFT JOIN  `address_detail` ON  `address_detail`.`address_detail_id` =  `company_details`.`address_id`
+				LEFT JOIN  `address_general` ON  `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
+				LEFT JOIN  `states` ON  `states`.`id` =  `address_general`.`state_id`
+				WHERE `admin_company`.`parent`  = '$company_id' AND  `company_details`.`active` = '1'");
+		}
+		return $query;
+	}
+
 	function list_active_reoccur_availability($time_stamp){
 		$query = $this->db->query("SELECT * FROM `user_reoccur_availability` 
 			WHERE `user_reoccur_availability`.`date_future` = '$time_stamp' 
@@ -126,14 +148,14 @@ class User_model extends CI_Model{
 		return $query;
 	}
 
-	public function insert_user_access($user_id,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$bulletin_board,$project_schedule,$labour_schedule){
-		$query = $this->db->query("INSERT INTO `user_access` (`user_id`, `dashboard`, `company`, `projects`, `wip`, `purchase_orders`, `invoice`, `users`, `bulletin_board`, `project_schedule`, `labour_schedule`)
-				 VALUES ( '$user_id', '$dashboard', '$company', '$projects', '$wip', '$purchase_orders', '$invoice', '$users', '$bulletin_board', '$project_schedule', '$labour_schedule')	");
+	public function insert_user_access($user_id,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$bulletin_board,$project_schedule,$labour_schedule,$job_date_access){
+		$query = $this->db->query("INSERT INTO `user_access` (`user_id`, `dashboard`, `company`, `projects`, `wip`, `purchase_orders`, `invoice`, `users`, `bulletin_board`, `project_schedule`, `labour_schedule`, `job_date`)
+				 VALUES ( '$user_id', '$dashboard', '$company', '$projects', '$wip', '$purchase_orders', '$invoice', '$users', '$bulletin_board', '$project_schedule', '$labour_schedule', '$job_date_access')	");
 		return $query;			
 	}
 
-	public function update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests){
-		$query = $this->db->query("UPDATE `user_access` SET `dashboard` = '$dashboard', `company` = '$company', `projects` = '$projects', `wip` = '$wip', `purchase_orders` = '$purchase_orders', `invoice` = '$invoice', `users` = '$users', `bulletin_board` = '$bulletin_board', `project_schedule` = '$project_schedule', `labour_schedule` = '$labour_schedule', `company_project` = '$company_project', `shopping_centre` = '$shopping_center',`site_labour` = '$site_labour',`quick_quote` = '$quick_quote',`quote_deadline` = '$quote_deadline',`leave_requests` = '$leave_requests' WHERE `user_access`.`user_id` = '$user_id' ");
+	public function update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access){
+		$query = $this->db->query("UPDATE `user_access` SET `dashboard` = '$dashboard', `company` = '$company', `projects` = '$projects', `wip` = '$wip', `purchase_orders` = '$purchase_orders', `invoice` = '$invoice', `users` = '$users', `bulletin_board` = '$bulletin_board', `project_schedule` = '$project_schedule', `labour_schedule` = '$labour_schedule', `company_project` = '$company_project', `shopping_centre` = '$shopping_center',`site_labour` = '$site_labour',`quick_quote` = '$quick_quote',`quote_deadline` = '$quote_deadline',`leave_requests` = '$leave_requests',`job_date` = '$job_date_access' WHERE `user_access`.`user_id` = '$user_id' ");
 		$this->db->flush_cache();
 		$query = $this->db->query("UPDATE `users` SET `if_admin` = '$is_admin', `user_role_id` = '$role_id', `site_access` = '$site_labour_app' WHERE `users`.`user_id` ='$user_id' ");
 		return $query;
@@ -180,7 +202,7 @@ class User_model extends CI_Model{
 	}
 
 	public function list_user_short(){
-		$query = $this->db->query("SELECT `users`.`user_id` AS `primary_user_id` , `users`.`user_first_name`, `users`.`user_last_name` , `users`.`user_focus_company_id`,`users`.`user_profile_photo`, `users`.`user_focus_company_id`, `company_details`.`company_name` FROM `users`
+		$query = $this->db->query("SELECT `users`.`user_id` AS `primary_user_id` , `users`.`user_first_name`, `users`.`user_last_name` ,`users`.`user_role_id` , `users`.`user_focus_company_id`,`users`.`user_profile_photo`, `users`.`user_focus_company_id`, `company_details`.`company_name` FROM `users`
 		LEFT JOIN `company_details` ON `company_details`.`company_id` = `users`.`user_focus_company_id`
 		 WHERE `users`.`is_active` = '1' ORDER BY `users`.`user_first_name` ASC");
 		return $query;
@@ -222,9 +244,9 @@ class User_model extends CI_Model{
 		return $query;
 	}
 
-	public function add_new_user($login_name,$password,$user_first_name,$user_last_name,$user_gender,$user_department_id,$user_profile_photo,$user_timestamp_registered,$user_role_id,$user_email_id,$user_skype,$user_skype_password,$user_contact_number_id,$user_focus_company_id,$user_date_of_birth,$user_comments_id,$admin,$site_select){
-		$this->db->query("INSERT INTO `users` (`login_name`, `password`, `user_first_name`, `user_last_name`, `user_gender`, `user_department_id`, `user_profile_photo`, `user_timestamp_registered`, `user_role_id`, `user_email_id`, `user_skype`,`user_skype_password`, `user_contact_number_id`, `user_focus_company_id`, `user_date_of_birth`, `user_comments_id`,`if_admin`,`site_access`)
-		VALUES ('$login_name', '$password', '$user_first_name', '$user_last_name', '$user_gender', '$user_department_id', '$user_profile_photo', '$user_timestamp_registered', '$user_role_id', '$user_email_id', '$user_skype','$user_skype_password', '$user_contact_number_id', '$user_focus_company_id', '$user_date_of_birth', '$user_comments_id','$admin','$site_select')");
+	public function add_new_user($login_name,$password,$user_first_name,$user_last_name,$user_gender,$user_department_id,$user_profile_photo,$user_timestamp_registered,$user_role_id,$user_email_id,$user_skype,$user_skype_password,$user_contact_number_id,$user_focus_company_id,$user_date_of_birth,$user_comments_id,$admin,$site_select,$contractor_employee){
+		$this->db->query("INSERT INTO `users` (`login_name`, `password`, `user_first_name`, `user_last_name`, `user_gender`, `user_department_id`, `user_profile_photo`, `user_timestamp_registered`, `user_role_id`, `user_email_id`, `user_skype`,`user_skype_password`, `user_contact_number_id`, `user_focus_company_id`, `user_date_of_birth`, `user_comments_id`,`if_admin`,`site_access`,`is_third_party`)
+		VALUES ('$login_name', '$password', '$user_first_name', '$user_last_name', '$user_gender', '$user_department_id', '$user_profile_photo', '$user_timestamp_registered', '$user_role_id', '$user_email_id', '$user_skype','$user_skype_password', '$user_contact_number_id', '$user_focus_company_id', '$user_date_of_birth', '$user_comments_id','$admin','$site_select','$contractor_employee')");
 		$last_insert_id = $this->db->insert_id();
 		return $last_insert_id;
 	}
@@ -243,8 +265,8 @@ class User_model extends CI_Model{
 		$query = $this->db->query("UPDATE `notes` SET `comments` = '$comments'  WHERE `notes`.`notes_id` = '$user_comments_id'  ");
 	}
 
-	public function update_user_details($user_id,$login_name,$user_first_name,$user_last_name,$user_skype,$user_skype_password,$user_gender,$user_date_of_birth,$department_id,$is_offshore,$user_focus_company_id,$user_comments_id,$profile,$supervisor_id){
-		$query = $this->db->query("UPDATE `users` SET `login_name` = '$login_name', `user_first_name` = '$user_first_name', `user_last_name` = '$user_last_name',`user_profile_photo`='$profile',`user_comments_id` = '$user_comments_id', `user_skype` = '$user_skype',`user_skype_password` = '$user_skype_password',`user_focus_company_id`='$user_focus_company_id', `user_gender`='$user_gender',`user_date_of_birth`='$user_date_of_birth',`user_department_id` = '$department_id', `is_offshore` = '$is_offshore', `supervisor_id` = '$supervisor_id'  WHERE `users`.`user_id` = '$user_id' ");
+	public function update_user_details($user_id,$login_name,$user_first_name,$user_last_name,$user_skype,$user_skype_password,$user_gender,$user_date_of_birth,$department_id,$is_offshore,$user_focus_company_id,$user_comments_id,$profile,$supervisor_id,$contractor_employee){
+		$query = $this->db->query("UPDATE `users` SET `login_name` = '$login_name', `user_first_name` = '$user_first_name', `user_last_name` = '$user_last_name',`user_profile_photo`='$profile',`user_comments_id` = '$user_comments_id', `user_skype` = '$user_skype',`user_skype_password` = '$user_skype_password',`user_focus_company_id`='$user_focus_company_id', `user_gender`='$user_gender',`user_date_of_birth`='$user_date_of_birth',`user_department_id` = '$department_id', `is_offshore` = '$is_offshore', `supervisor_id` = '$supervisor_id', `is_third_party` = '$contractor_employee'    WHERE `users`.`user_id` = '$user_id' ");
 	}
 
 	public function change_user_password($new_password,$user_id,$days_psswrd_exp){
@@ -312,7 +334,7 @@ class User_model extends CI_Model{
 				LEFT JOIN `notes` ON `notes`.`notes_id` = `users`.`user_comments_id`
 				WHERE  `users`.`user_id` = '$user_id' ");
 		}else{
-			$query = $this->db->query("SELECT `users`.*,`department`.`department_id`,`department`.`department_name`,`role`.`role_types`,`email`.`general_email`,`contact_number`.*,`company_details`.`company_name`,`notes`.`comments`,`users`.`if_admin`, `users`.`direct_company`
+			$query = $this->db->query("SELECT `users`.*,`department`.`department_id`,`department`.`department_name`,`role`.`role_types`,`email`.`general_email`,`contact_number`.*,`company_details`.`company_name`,`notes`.`comments`,`users`.`if_admin`, `users`.`direct_company` ,`users`.`is_third_party`
 				FROM `users` 
 				LEFT JOIN `department` ON `department`.`department_id` =`users`.`user_department_id`
 				LEFT JOIN `role` ON `role`.`role_id` = `users`.`user_role_id`

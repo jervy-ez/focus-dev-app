@@ -1,6 +1,8 @@
 <?php date_default_timezone_set("Australia/Perth");  // date is set to perth and important setting for diff timezone acounts ?>
 <?php $this->load->module('bulletin_board'); ?>
-<!-- title bar -->
+<?php $color_group = array('000','4DAB4D','935FA6','795548','00ADEF','F779B5','F7901E','4DAB4D','935FA6','795548'); ?>
+
+ <!-- title bar -->
 <div class="container-fluid head-control">
 	<div class="container-fluid">
 		<div class="row">
@@ -68,8 +70,6 @@
 						<div class="left-section-box">
 							<div class="box-head pad-10 clearfix">						
 
-
-								<?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('users') > 1): ?><a href="./users/add" class="btn btn-primary pull-right"><i class="fa fa-briefcase"></i>&nbsp; Update</a><?php endif; ?>
 								<label><?php echo $screen; ?></label><span> (<a href="#" data-placement="right" class="popover-test" title="" data-content="Hello there mate! This is the new Focus organizational chart and resposibility matrix screen." data-original-title="Welcome">?</a>)</span>
 								<p class="hide"><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p>								
 							</div>
@@ -87,19 +87,116 @@
 								<?php endif; ?>
 								
 									<div class="row clearfix pad-left-15  pad-right-15 pad-bottom-10">
+ 
+<p><br /></p>
+										 <h4>Company Chart</h4>
+										 <hr style="margin: 5px 0;">
 
-										 <p>Company Chart</p>
+
+										 <style type="text/css">
+
+										 	.box-area a,.box-area h3{
+										 		color: #fff !important;
+
+										 	}
+
+										 	.box-area a:hover{
+										 		text-transform:none !important;
+										 		text-decoration: none !important;
+										 	}
+
+										 	.gray_color{
+												border: 3px solid gray !important;
+										 	}
+
+										 	.gray_color{
+												border: 3px solid #555 !important;
+										 	}
+
+										 	.gray_color + p + p{
+												color: #555 !important;
+
+										 	}
+
+										 	 .gray_color + p strong{
+													background: #555 !important;
+													color: #fff !important;
+													padding: 3px 6px;
+													border-radius: 6px;
+												}
+
+										 </style>
+
+
+
+<div class="box-area clearfix">
+
+<?php echo $this->users->loop_compamy_group(4); ?>
+
+
+										<?php foreach ($all_focus_company as $key => $value): ?>
+											
+										
+												<style type="text/css">
+
+												.user_<?php echo $value->company_id; ?>_comp_group{
+													border: 3px solid #<?php echo $color_group[$value->company_id]; ?>;
+												}
+
+												.user_<?php echo $value->company_id; ?>_comp_group + p strong{
+													background: #<?php echo $color_group[$value->company_id]; ?>;
+													color: #fff;
+													padding: 3px 6px;
+													border-radius: 6px;
+												}
+
+
+												.user_<?php echo $value->company_id; ?>_comp_group + p + p{
+													color: #<?php echo $color_group[$value->company_id]; ?>;
+													font-weight: bold;
+													    margin-top: -5px;
+												}
+
+
+
+ 
+
+			.wid-type-<?php echo $value->company_id; ?>_comp_group .widg-head{
+				opacity: 0.5;
+				background: #fff !important;
+
+				color: #<?php echo $color_group[$value->company_id]; ?> !important;
+				padding-left: 20px;
+			}
+
+			.wid-type-<?php echo $value->company_id; ?>_comp_group{
+																	background: #<?php echo $color_group[$value->company_id]; ?> !important;
+ 
+			}
+ 
+
+
+
+
+
+												</style>
+
+										<?php endforeach; ?>
+
+										</div>
 									
 
-									<p><hr /></p>
+									<p><br /></p>
 
-										 <p>Resposibility Matrix</p>
+									<p><br /></p>
+
+										 <h4>Responsibility Matrix</h4>
+										<hr style="margin: 5px 0;">
 
 										 <?php $this->users->loop_user_supervisor(); ?>
 
 									</div>
 					
-							
 
 
 

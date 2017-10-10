@@ -431,28 +431,35 @@ class Admin extends MY_Controller{
 	public function primay_pa_pm(){
 	//	var_dump($_POST);
 
-		$project_admin = $this->user_model->fetch_user_by_role(2);
-		$project_admin_list = $project_admin->result();
+	//	$project_admin = $this->user_model->fetch_user_by_role(2);
+	//	$project_admin_list = $project_admin->result();
 
-		foreach ($project_admin_list as $pa ) {
-			if( isset($_POST['pm_set_'.$pa->user_id] ) ){
-				$pm_list = implode(',',$_POST['pm_set_'.$pa->user_id]);
+	//	foreach ($project_admin_list as $pa ) {
+
+		$pa_user_id = $_POST['pa_user_id'];
+
+			if( isset($_POST['pm_set_'.$pa_user_id] ) ){
+				$pm_list = implode(',',$_POST['pm_set_'.$pa_user_id]);
 			}else{
 				$pm_list = 0;
 			}
 
-			if( isset($_POST['pm_primary'.$pa->user_id])  ){
-				$primary_pm = $_POST['pm_primary'.$pa->user_id];
+			if( isset($_POST['pm_primary'.$pa_user_id])  ){
+				$primary_pm = $_POST['pm_primary'.$pa_user_id];
 			}else{
 				$primary_pm = 0;
 			}
 
-			$this->admin_m->pm_pa_assignment($pa->user_id, $pm_list,$primary_pm);
-		}
+			$this->admin_m->pm_pa_assignment($pa_user_id, $pm_list,$primary_pm);
+	//	}
 
 		$update_success = 'The record is now updated.';
 		$this->session->set_flashdata('update_assignment', $update_success);
-		redirect('/admin');
+
+
+$redirect_back = $this->session->userdata('referrer_url');
+  redirect( $redirect_back );
+
 	}
 
 	public function list_pa_assignment($pa_id){
@@ -750,6 +757,9 @@ class Admin extends MY_Controller{
 	}
 
 	public function admin_company(){
+		if($this->session->userdata('is_admin') != 1 ):		
+			redirect('', 'refresh');
+		endif;
 
 		$curr_admin_id = $this->uri->segment(3);
 

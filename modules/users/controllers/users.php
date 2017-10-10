@@ -15,28 +15,128 @@ class Users extends MY_Controller{
 		$this->load->helper('cookie');
 		$this->load->helper('file');
 
+		$this->load->library('user_agent');  // load user agent library
 
-
-	//	var_dump($this->session->userdata);
-
-
-		/*
-$config = Array(
-			'protocol' => 'smtp',
-			'smtp_host' => 'mail.sojourn.focusshopfit.com.au',
-			'smtp_port' => 587,
-			'smtp_user' => 'userconf@sojourn.focusshopfit.com.au',
-			'smtp_pass' => 'wzVrX6sxcpXR%{jh',
-			'mailtype'  => 'html', 
-			'charset'   => 'iso-8859-1'
-			);
-		$this->load->library('email', $config);
-*/
-
- //echo $this->input->cookie('user_id', false);
+    //Set session for the referrer url
+	 $this->session->set_userdata('referrer_url', $this->agent->referrer() ); 
 
 
 	}
+
+ 
+ 
+	public function loop_compamy_group($company_id = ''){
+		
+	//	if($company_id != ''){
+
+
+			$admin_company_details = $this->user_model->fetch_company_group($company_id,1);
+			$data = array_shift($admin_company_details->result_array() );
+
+			echo '<div class="col-lg-offset-4 col-lg-4 col-md-6 col-md-offset-3 col-xs-12 box-widget" >
+				<div class="box wid-type-'.$data['admin_company_details_id'].'_comp_group" style="    border-radius: 22px !important;">
+					<div class="widg-head box-widg-head pad-5">'.$data['state_name'].'<span class="sub-h pull-right"></span></div>							
+					<div class="box-area pad-5 text-center m-bottom-10">';
+
+					if($this->session->userdata('is_admin') ==  1){
+						echo '<a href="'.base_url().'admin/admin_company/'.$data['admin_company_details_id'].'" class="" id=""><h3>'.$data['company_name'].'</h3></a>';
+					}else{
+						echo '<h3>'.$data['company_name'].'</h3>';
+					}
+
+					echo'</div>
+				</div>
+			</div>';
+
+			echo '<div class="clearfix"></div>';
+
+
+			echo '<style type="text/css">
+
+				.wid-type-'.$data['admin_company_details_id'].'_comp_group .widg-head{
+					background: #3EC4F7;
+					color: #fff;
+				}
+
+				.wid-type-'.$data['admin_company_details_id'].'_comp_group{
+					background: #00ADEF;
+				}
+
+			</style>';
+
+	//	}else{
+
+
+echo '<div id="" class="col-lg-2"><p>&nbsp;</p></div>';
+
+			$admin_company_group_q = $this->user_model->fetch_company_group($company_id);
+
+
+				if($admin_company_group_q->num_rows){
+
+			$admin_company_group = $admin_company_group_q->result();
+
+
+			foreach($admin_company_group as $key => $comp){
+
+
+
+				echo '<div class=" col-lg-4 col-md-4 col-xs-12 box-widget" >
+				<div class="box wid-type-'.$comp->admin_company_details_id.'_comp_group" style="    border-radius: 22px !important;">
+					<div class="widg-head box-widg-head pad-5">'.$comp->state_name.'<span class="sub-h pull-right"></span></div>							
+					<div class="box-area pad-5 text-center m-bottom-10">';
+
+
+
+					if($this->session->userdata('is_admin') ==  1){
+						echo '<a href="'.base_url().'admin/admin_company/'.$comp->admin_company_details_id.'" class="" id=""><h3>'.$comp->company_name.'</h3></a>';
+					}else{
+						echo '<h3>'.$comp->company_name.'</h3>';
+					}
+
+
+
+						
+					echo'</div>
+				</div>
+			</div>'; 
+
+
+			
+
+
+
+
+
+				// $admin_company_group_r = $this->user_model->fetch_company_group($comp->admin_company_details_id);
+
+				// if($admin_company_group_r->num_rows === 1){
+
+				// 	$admin_company_group_set = $admin_company_group_r->result(); 
+
+
+				// 	foreach($admin_company_group as $key => $comp){
+
+
+
+				// 	}
+
+				// }
+
+
+			}
+
+			}
+
+
+
+	//	}
+
+	}
+
+
+
+
 
 
 	public function company_matrix(){
@@ -46,32 +146,44 @@ $config = Array(
 
 		$this->_check_user_access('users',1);
 
+
+		$this->load->module('admin');
+		$all_focus_company = $this->admin_m->fetch_all_company_focus();
+		$data['all_focus_company'] = $all_focus_company->result();
+
+
+
 		$data['main_content'] = 'matrix';
 		$data['screen'] = 'FSF Group Sojourn';
 		$this->load->view('page', $data);
 	}
 
+ 
+ 
+ 
 	public function loop_user_supervisor($supervisor_id = '',$ext=''){
+		$is_gray = '';
 
 		if($supervisor_id == ''){
 			$supervisor_id = 3;
-$ext = '<div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div>';
+			$ext = '<div id="" class="block pad-10 m-10 pull-left" style="width:200px;"></div>';
 
-		$user_access_q = $this->user_model->fetch_user($supervisor_id);
-		$user = array_shift($user_access_q->result_array());
+			$user_access_q = $this->user_model->fetch_user($supervisor_id);
+			$user = array_shift($user_access_q->result_array());
 
 
-			echo '<div class="box-area pad-5 text-left"><div id="" class="" style="border-radius: 60px !important;     margin: 0px 10px 0px 0px;    width: 60px;    height: 60px;    float: left;    overflow: hidden; ">
-			<div style="float: left; overflow: hidden; height: 60px; "><a class="text-center" href="http://dev.sojourn.focusshopfit.com.au/users/account/6">';
 
-if($user['user_profile_photo'] == ''):
+			echo '<div class="box-area photo_frame pad-5 text-left"><div id="" class="user_'.$user['user_focus_company_id'].'_comp_group" style="border-radius: 60px !important;     margin: 0px 10px 0px 0px;    width: 60px;    height: 60px;    float: left;    overflow: hidden; ">
+			<div style="float: left; overflow: hidden; height: 60px; "><a class="text-center" href="'.base_url().'users/account/'.$user['user_id'].'">';
+
+				if($user['user_profile_photo'] == ''):
 
 	 	echo '	<i class="m-left-10 fa fa-user fa-4x "></i>';
 															
 
 	 else: 
 
-	 	echo '<img src="'.base_url().'uploads/users/'.$user['user_profile_photo'].'" style="width: 60px;">';
+	 	echo '<img src="'.base_url().'uploads/users/'.$user['user_profile_photo'].'" style="width: 60px;     margin-top: -3px;">';
 			endif;
 
 			echo'</a></div></div>
@@ -91,12 +203,12 @@ if($user['user_profile_photo'] == ''):
 		foreach($fetch_user_sups as $key => $value){
 		//	echo $value->user_id.$ext.$value->user_first_name.'<br />';
 
-
-
-if($value->role_types == 'Designer'){
-	echo '<div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div>';
-}
-
+			if($value->is_third_party == 1){
+				$is_gray = 'gray_color';
+			}else{
+				$is_gray = '';
+			}
+ 
 
 
 
@@ -104,7 +216,7 @@ if($value->role_types == 'Designer'){
 
 			echo $ext.'
 															<div class="box-area pad-5 text-left">
-																<div id="" class="" style="border-radius: 60px !important;     margin: 0px 10px 0px 0px;    width: 60px;    height: 60px;    float: left;    overflow: hidden; "><div style="float: left; overflow: hidden; height: 60px; ">
+																<div id="" class="user_'.$value->user_focus_company_id.'_comp_group '.$is_gray.'" style="border-radius: 60px !important;     margin: 0px 10px 0px 0px;    width: 60px;    height: 60px;    float: left;    overflow: hidden; "><div style="float: left; overflow: hidden; height: 60px; ">
 																															<a class="text-center" href="'.base_url('users/account/'.$value->user_id).'">		';
 
 
@@ -115,7 +227,7 @@ if($value->role_types == 'Designer'){
 
 	 else: 
 
-	 	echo '<img src="'.base_url().'uploads/users/'.$value->user_profile_photo.'" style="width: 60px;">';
+	 	echo '<img src="'.base_url().'uploads/users/'.$value->user_profile_photo.'" style="width: 60px;     margin-top: -3px;">';
 			endif;
 																																	
 																															
@@ -130,35 +242,10 @@ if($value->role_types == 'Designer'){
 
 
 
-			$this->users->loop_user_supervisor($value->user_id,$ext.'<div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div>');
-
-
-			// $fetch_user_sups_r= $this->user_model->fetch_users_under_supervisor($value->user_id);
-			// $fetch_user_sups_r = $fetch_user_sups_r->result();
+			$this->users->loop_user_supervisor($value->user_id,$ext.'<div id="" class="block pad-10 m-10 pull-left" style="width:200px;"></div>');
 
 
 
-			// foreach($fetch_user_sups_r as $key => $value_r){
-			// echo "--------------";
-			// 	echo $value_r->user_id.'----'.$value_r->user_first_name.'<br />';
-
-
-			// }
-
-
-
-			if($value->user_id == 14){
-
-				echo '<div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div><div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div><div id="" class="block pad-10 m-10 pull-left" style="width:100px;"></div><div class="box-area pad-5 text-left">
-																<div id="" class="" style="border-radius: 60px !important;     margin: 0px 10px 0px 0px;    width: 60px;    height: 60px;    float: left;    overflow: hidden; "><div style="float: left; overflow: hidden; height: 60px; ">
-																																<i class="m-left-10 fa fa-user fa-4x "></i> </div></div>
-																							
-																<p><strong>King DESIGN</strong></p>
-																<p>Kathryn King</p>
-																<hr style="margin: 20px 0 0;">
-															</div>';
-				
-			}
 
 
 
@@ -166,6 +253,9 @@ if($value->role_types == 'Designer'){
 		}
 
 	}
+	
+
+
 	
 	function index(){
 		//$data["users"] = $this->user_model->read();
@@ -258,6 +348,7 @@ if($value->role_types == 'Designer'){
 		$quick_quote = $_POST['quick_quote'];
 		$quote_deadline = $_POST['quote_deadline'];
 		$leave_requests = $_POST['leave_requests'];
+		$job_date_access = $_POST['job_date_access'];
 
 		$role_raw = $_POST['role'];
 		$role_arr = explode('|',$role_raw);
@@ -265,7 +356,7 @@ if($value->role_types == 'Designer'){
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests);
+		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
 
@@ -500,6 +591,7 @@ if($value->role_types == 'Designer'){
 			$dob = $this->company->if_set($this->input->post('dob', true));
 			$login_name = $this->company->if_set($this->input->post('login_name', true));
 			$is_offshore = $this->input->post('is_offshore', true);
+			$contractor_employee = $this->input->post('contractor_employee', true);
 
 			$department_raw = $this->input->post('department', true);
 			$department_arr = explode('|',$department_raw);
@@ -589,7 +681,7 @@ if($value->role_types == 'Designer'){
 
 			$this->session->set_flashdata('account_update_msg', 'User account is now updated.');
 
-			$this->user_model->update_user_details($user_id,$login_name,$first_name,$last_name,$skype_id,$skype_password,$gender,$dob,$department_id,$is_offshore,$focus_id,$user_comments_id,$profile,$supervisor_id);
+			$this->user_model->update_user_details($user_id,$login_name,$first_name,$last_name,$skype_id,$skype_password,$gender,$dob,$department_id,$is_offshore,$focus_id,$user_comments_id,$profile,$supervisor_id,$contractor_employee);
 
 			$this->user_model->update_contact_email($email_id,$email,$contact_number_id,$direct_landline,$mobile_number,$after_hours);
 
@@ -756,7 +848,11 @@ if($value->role_types == 'Designer'){
 		$this->form_validation->set_rules('email', 'Email','trim|required|xss_clean');
 		$this->form_validation->set_rules('skype_id', 'Skype ID','trim|required|xss_clean');
 		$this->form_validation->set_rules('comments', 'Comments','trim|xss_clean');
-		$this->form_validation->set_rules('super_visor', 'Supervisor','trim|required|xss_clean');
+		$this->form_validation->set_rules('super_visor', 'Direct Reports','trim|required|xss_clean');
+		$this->form_validation->set_rules('contractor_employee', 'Contractor Employee','trim|required|xss_clean');
+
+
+
 
 		$data['main_content'] = 'new_user';
 		$data['screen'] = 'New User';
@@ -868,6 +964,10 @@ if($value->role_types == 'Designer'){
 			$bulletin_board = $this->input->post('bulletin_board', true);
 			$project_schedule = $this->input->post('project_schedule', true);
 			$labour_schedule = $this->input->post('labour_schedule', true);
+			$job_date_access = $this->input->post('job_date_access', true);
+			$contractor_employee = $this->input->post('contractor_employee', true);
+
+
 
 			date_default_timezone_set("Australia/Perth");
 			$user_timestamp_registered = time();
@@ -879,9 +979,9 @@ if($value->role_types == 'Designer'){
 				$admin = 0;
 			}			
 
-			$add_new_user_id = $this->user_model->add_new_user($login_name,$password,$first_name,$last_name,$gender,$department_id,$profile_photo,$user_timestamp_registered,$role_id,$email_id,$skype_id,$skype_password,$contact_number_id,$focus_id,$dob,$user_notes_id,$admin,$site_select);
+			$add_new_user_id = $this->user_model->add_new_user($login_name,$password,$first_name,$last_name,$gender,$department_id,$profile_photo,$user_timestamp_registered,$role_id,$email_id,$skype_id,$skype_password,$contact_number_id,$focus_id,$dob,$user_notes_id,$admin,$site_select,$contractor_employee);
 
-			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access,$bulletin_board,$project_schedule,$labour_schedule);
+			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access,$bulletin_board,$project_schedule,$labour_schedule,$job_date_access);
 
 			$this->user_model->insert_user_password($confirm_password,$add_new_user_id);
 
@@ -1224,6 +1324,27 @@ if($value->role_types == 'Designer'){
 			        //echo $user_id;
 			        //print_r($user_id);
 
+
+
+
+
+					$person_did = $userdata->user_id;
+					$type = 'User Login';
+
+					$date = date("d/m/Y");
+					$time = date("H:i:s");
+
+					$user_ip = $this->input->ip_address();
+					$actions = 'Logged in IP '.$user_ip;
+
+					$this->user_model->insert_user_log($person_did,$date,$time,$actions,'',$type,'8');
+
+
+
+
+
+
+
 			        $this->_fetch_system_defaults();
 					$this->session->set_userdata($data);
 					redirect('', 'refresh');
@@ -1449,7 +1570,6 @@ if($value->role_types == 'Designer'){
 		}		
 	}
 
-
 	function _confirm_active_password($user_id,$user_password){
 
 		$this->session->set_userdata('re_pass_user_id',$user_id);
@@ -1471,6 +1591,18 @@ if($value->role_types == 'Designer'){
 	
 	function logout(){
 		$userid = $this->session->userdata('user_id');
+
+		$person_did = $userid;
+		$type = 'User Logout';
+
+		$date = date("d/m/Y");
+		$time = date("H:i:s");
+
+		$user_ip = $this->input->ip_address();
+		$actions = 'Logged in IP '.$user_ip;
+
+		$this->user_model->insert_user_log($person_did,$date,$time,$actions,'',$type);
+
 		delete_cookie("user_id");
 
 		// $str = file_get_contents(base_url().'js/users.json');
@@ -3314,8 +3446,6 @@ $this->set_availability($availability_init);
 			$this->session->set_flashdata('total_leave', $update_success);
 			redirect('/users/account/'.$user_id_page);
 		}
-
-		
 	}
 
 	public function update_leave_alloc($user_id_page){
@@ -3680,12 +3810,12 @@ $this->set_availability($availability_init);
 				$annual_earned_offshore = $row->annual_earned_offshore;			
 				$personal_earned_offshore = $row->personal_earned_offshore;
 
-				// $date_today = date('2017-11-02');
+				// $date_today = date('2017-11-01');
 				$date_today = date('Y-m-d');
 				$date = date_create($date_today);
 				date_modify($date, '-1 day');
+				
 				$last_month = date_format($date,"m");
-
 				$current_month = date('m');
 				// $current_month = '11';
 

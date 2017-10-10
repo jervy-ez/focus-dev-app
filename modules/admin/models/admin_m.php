@@ -51,7 +51,7 @@ class Admin_m extends CI_Model{
 	}
 
 	public function fetch_all_company_focus(){
-		$query = $this->db->query("SELECT `company_details`.`company_id`,`company_details`.`company_name` ,  `address_general`.`suburb` ,  `states`.`name` AS `state_name`  , `contact_number`.`area_code`,  `contact_number`.`office_number`,`email`.`general_email`,`company_details`.`abn`,`company_details`.`acn`
+		$query = $this->db->query("SELECT `company_details`.`company_id`,`company_details`.`company_name` ,  `address_general`.`suburb` ,  `states`.`name` AS `state_name`  , `contact_number`.`area_code`,  `contact_number`.`office_number`,`email`.`general_email`,`company_details`.`abn`,`company_details`.`acn`,`admin_company`.`parent`
 			FROM  `company_details`			
 			LEFT JOIN  `address_detail` ON  `address_detail`.`address_detail_id` =  `company_details`.`address_id` 
 			LEFT JOIN  `address_general` ON  `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
@@ -65,12 +65,15 @@ class Admin_m extends CI_Model{
 	}
 
 	public function fetch_single_company_focus($id){
-		$query = $this->db->query("SELECT `admin_company`.`admin_contact_number_id`,`admin_company`.`admin_email_id`,`company_details`.`company_id`,`company_details`.`company_name`,`company_details`.`abn`,`company_details`.`acn`,`company_details`.`bank_account_id`,`company_details`.`address_id`,`company_details`.`postal_address_id`,`admin_company`.`logo`,`admin_company`.`admin_jurisdiction_state_ids`,`bank_account`.*,`contact_number`.`contact_number_id`,`contact_number`.`area_code`,`contact_number`.`office_number`,`contact_number`.`mobile_number`,`email`.`general_email`
+		$query = $this->db->query("SELECT `admin_company`.`admin_contact_number_id`,`admin_company`.`admin_email_id`,  `states`.`name` AS `state_name`,`company_details`.`company_id`,`company_details`.`company_name`,`company_details`.`abn`,`company_details`.`acn`,`company_details`.`bank_account_id`,`company_details`.`address_id`,`company_details`.`postal_address_id`,`admin_company`.`logo`,`admin_company`.`admin_jurisdiction_state_ids`,`bank_account`.*,`contact_number`.`contact_number_id`,`contact_number`.`area_code`,`contact_number`.`office_number`,`contact_number`.`mobile_number`,`email`.`general_email`
 			FROM `company_details`			
 			LEFT JOIN  `admin_company` ON  `admin_company`.`admin_company_details_id` =  `company_details`.`company_id`
 			LEFT JOIN  `bank_account` ON  `bank_account`.`bank_account_id` =  `company_details`.`bank_account_id`
 			LEFT JOIN  `contact_number` ON  `contact_number`.`contact_number_id` =  `admin_company`.`admin_contact_number_id`
 			LEFT JOIN   `email` ON  `email`.`email_id` = `admin_company`.`admin_email_id`
+			LEFT JOIN  `address_detail` ON  `address_detail`.`address_detail_id` =  `company_details`.`address_id` 
+			LEFT JOIN  `address_general` ON  `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
+			LEFT JOIN  `states` ON  `states`.`id` =  `address_general`.`state_id`
 			WHERE `company_details`.`company_id` = '$id'");
 		return $query;
 	}
