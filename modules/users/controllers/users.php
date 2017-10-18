@@ -36,7 +36,7 @@ class Users extends MY_Controller{
 			echo '<div class="col-lg-offset-4 col-lg-4 col-md-6 col-md-offset-3 col-xs-12 box-widget" >
 				<div class="box wid-type-'.$data['admin_company_details_id'].'_comp_group" style="    border-radius: 22px !important;">
 					<div class="widg-head box-widg-head pad-5">'.$data['state_name'].'<span class="sub-h pull-right"></span></div>							
-					<div class="box-area pad-5 text-center m-bottom-10">';
+					<div class=" pad-5 text-center m-bottom-10">';
 
 					if($this->session->userdata('is_admin') ==  1){
 						echo '<a href="'.base_url().'admin/admin_company/'.$data['admin_company_details_id'].'" class="" id=""><h3>'.$data['company_name'].'</h3></a>';
@@ -84,7 +84,7 @@ echo '<div id="" class="col-lg-2"><p>&nbsp;</p></div>';
 				echo '<div class=" col-lg-4 col-md-4 col-xs-12 box-widget" >
 				<div class="box wid-type-'.$comp->admin_company_details_id.'_comp_group" style="    border-radius: 22px !important;">
 					<div class="widg-head box-widg-head pad-5">'.$comp->state_name.'<span class="sub-h pull-right"></span></div>							
-					<div class="box-area pad-5 text-center m-bottom-10">';
+					<div class=" pad-5 text-center m-bottom-10">';
 
 
 
@@ -161,12 +161,18 @@ echo '<div id="" class="col-lg-2"><p>&nbsp;</p></div>';
  
  
  
-	public function loop_user_supervisor($supervisor_id = '',$ext=''){
+	public function loop_user_supervisor($supervisor_id = '',$ext='',$pm_ids=''){
+
+
+
+
+
 		$is_gray = '';
 
 		if($supervisor_id == ''){
 			$supervisor_id = 3;
-			$ext = '<div id="" class="block pad-10 m-10 pull-left" style="width:200px;"></div>';
+			//$pm_ids = 3;
+			$ext = '<div id="" class="default_blank blanks box-area  pad-10 m-10 pull-left" style="width:200px;"></div>';
 
 			$user_access_q = $this->user_model->fetch_user($supervisor_id);
 			$user = array_shift($user_access_q->result_array());
@@ -193,15 +199,33 @@ echo '<div id="" class="col-lg-2"><p>&nbsp;</p></div>';
 																	<hr style="margin: 20px 0 0;">
 															</div>';
 	//	echo $ext;
-		}
+		}	
 
 
 		$fetch_user_sups_q= $this->user_model->fetch_users_under_supervisor($supervisor_id);
 		$fetch_user_sups = $fetch_user_sups_q->result();
 
 
+
 		foreach($fetch_user_sups as $key => $value){
-		//	echo $value->user_id.$ext.$value->user_first_name.'<br />';
+ 
+	$div_tag = $pm_ids.'_'.$supervisor_id.'_'.$value->user_id;
+ 
+// var_dump($pm_ids);
+// var_dump($supervisor_id);
+
+
+//echo $value->user_id.$ext.$value->user_first_name.'**'.$div_tag.'<br />';
+
+$pm_group_arr = explode('_', $div_tag);
+//unset($pm_group_arr[0]);
+
+//array_filter($pm_group_arr);
+$group_pms = implode(' direp_', $pm_group_arr);
+
+
+
+
 
 			if($value->is_third_party == 1){
 				$is_gray = 'gray_color';
@@ -209,40 +233,39 @@ echo '<div id="" class="col-lg-2"><p>&nbsp;</p></div>';
 				$is_gray = '';
 			}
  
-
+//'.base_url('users/account/'.$value->user_id).'
 
 
 
 
 			echo $ext.'
-															<div class="box-area pad-5 text-left">
+															<div class="box-area pad-5 text-left direp_'.$group_pms.' diruser_'.$value->user_id.'">
 																<div id="" class="user_'.$value->user_focus_company_id.'_comp_group '.$is_gray.'" style="border-radius: 60px !important;     margin: 0px 10px 0px 0px;    width: 60px;    height: 60px;    float: left;    overflow: hidden; "><div style="float: left; overflow: hidden; height: 60px; ">
-																															<a class="text-center" href="'.base_url('users/account/'.$value->user_id).'">		';
+																															<div class="text-center user_dir pointer" id="user_'.$value->user_id.'"  >		';
 
 
-	if($value->user_profile_photo == ''):
-
-	 	echo '	<i class="m-left-10 fa fa-user fa-4x "></i>';
-															
-
-	 else: 
-
+if($value->user_profile_photo == ''):
+	 	echo '	<i class="m-left-10 fa fa-user fa-4x "></i>';								
+else: 
 	 	echo '<img src="'.base_url().'uploads/users/'.$value->user_profile_photo.'" style="width: 60px;     margin-top: -3px;">';
-			endif;
+endif;
 																																	
 																															
 
-																																echo '</a></div></div>
+																																echo '</div></div></div>
 																							
 																<p><strong>'.$value->role_types.'</strong></p>
 																<p>'.$value->user_first_name.' '.$value->user_last_name.'</p>
-																<hr style="margin: 20px 0 0;">
-															</div>';
+																<hr style="margin: 20px 0 0;">';
 
 
 
 
-			$this->users->loop_user_supervisor($value->user_id,$ext.'<div id="" class="block pad-10 m-10 pull-left" style="width:200px;"></div>');
+
+															echo '</div>';
+
+
+			$this->users->loop_user_supervisor($value->user_id,$ext.'<div id="" class="blanks box-area  pad-10 m-10 pull-left direp_'.$group_pms.'" style="width:200px;"></div>',$supervisor_id.'_'.$pm_ids);
 
 
 
