@@ -10,8 +10,6 @@ function get_wip_cost_total(){
   ajax_data(project_ids_wip,'wip/sum_total_wip_cost','.totals_wip');
 }
 
-
-
 function remove_elam_email(obj){
   var elm_val = obj.value;
 
@@ -44,7 +42,7 @@ function remove_last(po_trans_id,work_id,joinery_id){
 
   setTimeout(function(){ $('#invoice_po_modal').modal('hide'); }, 2000);
   setTimeout(function(){ $('#reconciliated_po_modal').modal('hide'); }, 2000);
-  setTimeout(function(){ window.location.assign(baseurl+"purchase_order?reload=1"); }, 1000);
+  setTimeout(function(){ window.location.assign(baseurl+"purchase_order?reload=1"); }, 2000);
 }
 
 function is_alphabet(strValue) {
@@ -1721,7 +1719,7 @@ $('.submit_ave').click(function(){
     $.post(baseurl+"projects/add_project_comment",{ 
       'ajax_var': dataString
     },function(result){
-      $('.notes_side_content').prepend('<div class="notes_line"><p class="" style="white-space: pre !important;">'+notes_comment_text+'</p><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small></div>');
+      $('.notes_side_content').prepend('<div class="notes_line"><p class="" style="">'+notes_comment_text+'</p><br /><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small></div>');
       $('.recent_prj_comment').empty().append('<p>'+notes_comment_text+'</p><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small>');
     });
   }
@@ -2990,7 +2988,7 @@ $('#filter_wip_table').click(function(){
 
 
 
-
+/*
     $("select.find_contact_person").on("change", function(e) {
       
           var myVal = $(this).val();
@@ -3004,7 +3002,7 @@ $('#filter_wip_table').click(function(){
       //load_data_ajax($(this).val());
     }); //this is working select callbak!
 
-
+*/
 
 
 
@@ -4096,8 +4094,8 @@ $('.print-wip').on("click", function(event) {
 
   var date_created_start = $('#date_created_start').val();
   var date_created = $('#date_created').val();
- 
-
+  
+  
   var un_acepted_start_date = $('#un_acepted_start_date').val();
   var un_acepted_end_date = $('#un_acepted_end_date').val();
 
