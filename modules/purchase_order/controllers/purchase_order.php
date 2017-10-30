@@ -55,6 +55,109 @@ class Purchase_order extends MY_Controller{
 		$this->load->view('page', $data);
 	}
 
+	public function check_contractor_insurance($company_id){
+
+
+		$company_detail_q = $this->company_m->fetch_all_company($company_id);			
+		$row = array_shift($company_detail_q->result_array());
+
+		if($row['company_type_id'] != 2){
+			return null;
+		}
+
+//var_dump($row);
+
+
+	if($row['public_liability_expiration'] !== ""){
+		$ple_raw_data = $row['public_liability_expiration'];
+		$ple_arr =  explode('/',$ple_raw_data);
+		$ple_day = $ple_arr[0];
+		$ple_month = $ple_arr[1];
+		$ple_year = $ple_arr[2];
+		$ple_date = $ple_year.'-'.$ple_month.'-'.$ple_day;
+	}
+
+	if($row['workers_compensation_expiration'] !== ""){
+		$wce_raw_data = $row['workers_compensation_expiration'];
+		$wce_arr =  explode('/',$wce_raw_data);
+		$wce_day = $wce_arr[0];
+		$wce_month = $wce_arr[1];
+		$wce_year = $wce_arr[2];
+		$wce_date = $wce_year.'-'.$wce_month.'-'.$wce_day;
+	}
+
+	if($row['income_protection_expiration'] !== ""){
+		$ipe_raw_data = $row['income_protection_expiration'];
+		$ipe_arr =  explode('/',$ipe_raw_data);
+		$ipe_day = $ipe_arr[0];
+		$ipe_month = $ipe_arr[1];
+		$ipe_year = $ipe_arr[2];
+		$ipe_date = $ipe_year.'-'.$ipe_month.'-'.$ipe_day;
+	}
+	$today = date('Y-m-d');
+	
+	$complete = 0;
+	$incomplete = 0;
+	
+	if($row['company_type_id'] == '2'){
+		if($row['has_insurance_public_liability'] == 1){
+			if($row['public_liability_expiration'] !== ""){
+				if($ple_date <= $today){
+					$incomplete = 1;
+				}else{
+					if($row['has_insurance_workers_compensation'] == 1){
+						if($row['workers_compensation_expiration'] !== ""){
+							if($wce_date <= $today){
+								$incomplete = 1;
+							}else{
+								$complete = 1;
+							}
+						}else{
+							$incomplete = 1;
+						}
+					}else{
+						if($row['has_insurance_income_protection'] == 1){
+							if($row['income_protection_expiration'] !== ""){
+								if($ipe_date <= $today){
+									$incomplete = 1;
+								}else{
+									$complete = 1;
+								}
+							}else{
+								$incomplete = 1;
+							}
+						}else{
+							$incomplete = 1;
+						}
+					}
+				}
+			}else{
+				$incomplete = 1;
+			}
+			
+		}else{
+			$incomplete = 1;
+		}
+	}
+
+	$font_color = "";
+	if($row['company_type_id'] == '2'){
+		if($complete == 1){
+			$font_color = "blue_ok";
+		}else{
+			if($incomplete == 1){
+				$font_color = "red_bad";
+			}
+		}
+	}
+
+
+// var_dump($font_color);
+
+	return $font_color;
+
+	}
+
 
 
 

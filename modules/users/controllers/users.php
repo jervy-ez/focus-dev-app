@@ -172,7 +172,7 @@ echo '<div id="" class="col-lg-2"><p>&nbsp;</p></div>';
 		if($supervisor_id == ''){
 			$supervisor_id = 3;
 			//$pm_ids = 3;
-			$ext = '<div id="" class="default_blank blanks box-area  pad-10 m-10 pull-left" style="width:200px;"></div>';
+			$ext = '<div id="" class="default_blank blanks box-area  pad-10 m-10 pull-left" style=""></div>';
 
 			$user_access_q = $this->user_model->fetch_user($supervisor_id);
 			$user = array_shift($user_access_q->result_array());
@@ -189,13 +189,13 @@ echo '<div id="" class="col-lg-2"><p>&nbsp;</p></div>';
 
 	 else: 
 
-	 	echo '<img src="'.base_url().'uploads/users/'.$user['user_profile_photo'].'" style="width: 60px;     margin-top: -3px;">';
+	 	echo '<img src="'.base_url().'uploads/users/'.$user['user_profile_photo'].'" style="width: 60px;   ">';
 			endif;
 
 			echo'</a></div></div>
 																							
 																<p><strong>'.$user['role_types'].'</strong></p>
-																<p>'.$user['user_first_name'].' '.$user['user_last_name'].'</p>
+																<p><a href="'.base_url().'users/account/'.$user['user_id'].'">'.$user['user_first_name'].' '.$user['user_last_name'].'</a></p>
 																	<hr style="margin: 20px 0 0;">
 															</div>';
 	//	echo $ext;
@@ -247,7 +247,7 @@ $group_pms = implode(' direp_', $pm_group_arr);
 if($value->user_profile_photo == ''):
 	 	echo '	<i class="m-left-10 fa fa-user fa-4x "></i>';								
 else: 
-	 	echo '<img src="'.base_url().'uploads/users/'.$value->user_profile_photo.'" style="width: 60px;     margin-top: -3px;">';
+	 	echo '<img src="'.base_url().'uploads/users/'.$value->user_profile_photo.'" style="width: 60px;  ">';
 endif;
 																																	
 																															
@@ -255,7 +255,7 @@ endif;
 																																echo '</div></div></div>
 																							
 																<p><strong>'.$value->role_types.'</strong></p>
-																<p>'.$value->user_first_name.' '.$value->user_last_name.'</p>
+																<p> <a href="'.base_url('users/account/'.$value->user_id).'" class="m-left-5">'.$value->user_first_name.' '.$value->user_last_name.'</a></p>
 																<hr style="margin: 20px 0 0;">';
 
 
@@ -265,7 +265,7 @@ endif;
 															echo '</div>';
 
 
-			$this->users->loop_user_supervisor($value->user_id,$ext.'<div id="" class="blanks box-area  pad-10 m-10 pull-left direp_'.$group_pms.'" style="width:200px;"></div>',$supervisor_id.'_'.$pm_ids);
+			$this->users->loop_user_supervisor($value->user_id,$ext.'<div id="" class="blanks box-area  pad-10 m-10 pull-left direp_'.$group_pms.'" style=""></div>',$supervisor_id.'_'.$pm_ids);
 
 
 
@@ -3192,18 +3192,18 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		$timestamp_return = strtotime($date_return);
 
 		$leave_details = $insert_data[4];
-		$total_of_days = $insert_data[5];
-		
-		$with_halfday = $insert_data[6];
-		$halfday_part = $insert_data[7];
+		$total_hrs_leave = $insert_data[5];
+		$partial_day = $insert_data[6];
+		$partial_part = $insert_data[7];
+		$partial_time = $insert_data[8];
 
-		$applied_by = $insert_data[8];
+		$applied_by = $insert_data[9];
 
 		$fetch_user = $this->user_model->fetch_user($user_id);
 		$qArr = array_shift($fetch_user->result_array());
 		$user_supervisor_id = $qArr['supervisor_id'];
 
-		$this->user_model->insert_leave_req($current_date, $user_id, $leave_type, $timestamp_start, $timestamp_end, $timestamp_return, $leave_details, $total_of_days, $user_supervisor_id, $with_halfday, $halfday_part, $applied_by); 
+		$this->user_model->insert_leave_req($current_date, $user_id, $leave_type, $timestamp_start, $timestamp_end, $timestamp_return, $leave_details, $total_hrs_leave, $user_supervisor_id, $partial_day, $partial_part, $partial_time, $applied_by); 
 	}
 
 	public function approve_leave($supervisor_id){
@@ -3326,38 +3326,38 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 			}
 
 
-$fetch_leave_req_by_id_q = $this->user_model->fetch_leave_req_by_id($leave_req_id);
-$leave_req_data = array_shift($fetch_leave_req_by_id_q->result_array());
+// $fetch_leave_req_by_id_q = $this->user_model->fetch_leave_req_by_id($leave_req_id);
+// $leave_req_data = array_shift($fetch_leave_req_by_id_q->result_array());
 
-if($leave_req_data['with_halfday'] == 1 && $leave_req_data['halfday_part'] == 1){
-	$time_a = '07:00 AM';
-	$time_b = '11:59 AM';
-}else{
-	$time_a = '07:00 AM';
-	$time_b = '05:00 PM';
-}
+// if($leave_req_data['with_halfday'] == 1 && $leave_req_data['halfday_part'] == 1){
+// 	$time_a = '07:00 AM';
+// 	$time_b = '11:59 AM';
+// }else{
+// 	$time_a = '07:00 AM';
+// 	$time_b = '05:00 PM';
+// }
 
-$date_a = date('d/m/Y', $leave_req_data['start_day_of_leave']).' '.$time_a;
-$date_b = date('d/m/Y', $leave_req_data['date_return']).' '.$time_b;
-$detail = $leave_req_data['details'];
-$user_id = $leave_req_data['user_id'];
-$pathname = 'leave_details';
+// $date_a = date('d/m/Y', $leave_req_data['start_day_of_leave']).' '.$time_a;
+// $date_b = date('d/m/Y', $leave_req_data['date_return']).' '.$time_b;
+// $detail = $leave_req_data['details'];
+// $user_id = $leave_req_data['user_id'];
+// $pathname = 'leave_details';
 
-if($leave_req_data['leave_type_id'] == 2){
-	$type = 'Sick';
-}else{
-	$type = 'Leave';
-}
+// if($leave_req_data['leave_type_id'] == 2){
+// 	$type = 'Sick';
+// }else{
+// 	$type = 'Leave';
+// }
 
-$availability_init = ''; 
-$availability_init .= $date_a.'`';
-$availability_init .= $date_b.'`';
-$availability_init .= $detail.'`';
-$availability_init .= $user_id.'`';
-$availability_init .= $pathname.'`';
-$availability_init .= $type;
+// $availability_init = ''; 
+// $availability_init .= $date_a.'`';
+// $availability_init .= $date_b.'`';
+// $availability_init .= $detail.'`';
+// $availability_init .= $user_id.'`';
+// $availability_init .= $pathname.'`';
+// $availability_init .= $type;
 
-$this->set_availability($availability_init);
+// $this->set_availability($availability_init);
 
 		}
 	}
@@ -3395,7 +3395,7 @@ $this->set_availability($availability_init);
 		$data['leave_req_by_id'] = $fetch_leave_req_by_id->result();
 
 		foreach ($data['leave_req_by_id'] as $row) {
-			echo $row->leave_request_id.'|'.$row->leave_type_id.'|'.$row->leave_type.'|'.date('d/m/Y', $row->start_day_of_leave).'|'.date('d/m/Y', $row->end_day_of_leave).'|'.date('d/m/Y', $row->date_return).'|'.str_replace('&apos;', '\'', $row->details).'|'.$row->total_days_away.'|'.$row->with_halfday.'|'.$row->halfday_part;
+			echo $row->leave_request_id.'|'.$row->leave_type_id.'|'.$row->leave_type.'|'.date('d/m/Y', $row->start_day_of_leave).'|'.date('d/m/Y', $row->end_day_of_leave).'|'.date('d/m/Y', $row->date_return).'|'.str_replace('&apos;', '\'', $row->details).'|'.$row->total_days_away.'|'.$row->partial_day.'|'.$row->partial_part.'|'.$row->partial_time;
 		
 		}
 	}
@@ -3421,10 +3421,13 @@ $this->set_availability($availability_init);
 		$leave_details = $update_data[5];
 		$total_of_days = $update_data[6];
 
-		$with_halfday = $update_data[7];
-		$halfday_part = $update_data[8];
+		$partial_day = $update_data[7];
+		$partial_part = $update_data[8];
+		$partial_time = $update_data[9];
 
-		$this->user_model->update_leave_req($leave_req_id, $leave_type_id, $timestamp_start, $timestamp_end, $timestamp_return, $leave_details, $total_of_days, $with_halfday, $halfday_part);
+		$edited_by = $update_data[10];		
+
+		$this->user_model->update_leave_req($leave_req_id, $leave_type_id, $timestamp_start, $timestamp_end, $timestamp_return, $leave_details, $total_of_days, $partial_day, $partial_part, $partial_time, $edited_by);
 		$this->user_model->remove_leave_action($leave_req_id);		
 	}
 
@@ -3442,6 +3445,7 @@ $this->set_availability($availability_init);
 		$annual_manual_entry = $this->input->post('annual_manual_entry', true);
 		$personal_manual_entry = $this->input->post('personal_manual_entry', true);
 		$checked_sched = $this->input->post('sched');
+		$no_hrs_of_work = $this->input->post('no_hrs_of_work');
 
 		if (isset($checked_sched)){
 			$checked_sched = implode(',', $checked_sched);
@@ -3459,7 +3463,7 @@ $this->set_availability($availability_init);
 		$num_rows = $leave_alloc->num_rows();
 
 		if ($num_rows == 0){
-			$result = $this->user_model->add_leave_alloc($timestamp_current, $user_id_page, $annual_manual_entry, $personal_manual_entry, $checked_sched, $timestamp_current);	
+			$result = $this->user_model->add_leave_alloc($timestamp_current, $user_id_page, $annual_manual_entry, $personal_manual_entry, $checked_sched, $no_hrs_of_work, $timestamp_current);	
 
 			$update_success = 'User account is now updated.';
 			$this->session->set_flashdata('total_leave', $update_success);
@@ -3477,6 +3481,7 @@ $this->set_availability($availability_init);
 		$annual_manual_entry = $this->input->post('annual_manual_entry', true);
 		$personal_manual_entry = $this->input->post('personal_manual_entry', true);
 		$checked_sched = $this->input->post('sched');
+		$no_hrs_of_work = $this->input->post('no_hrs_of_work');
 
 		$leave_alloc = $this->user_model->fetch_leave_alloc($user_id_page);
 		$row = $leave_alloc->row();
@@ -3500,9 +3505,9 @@ $this->set_availability($availability_init);
 			$last_annual_accumulated = $annual_accumulated + $last_annual_accumulated;
 			$last_personal_accumulated = $personal_accumulated + $last_personal_accumulated;
 
-			$result = $this->user_model->update_leave_alloc_sched($user_id_page, $annual_manual_entry, $personal_manual_entry, $checked_sched, $timestamp_current, $last_annual_accumulated, $last_personal_accumulated);
+			$result = $this->user_model->update_leave_alloc_sched($user_id_page, $annual_manual_entry, $personal_manual_entry, $checked_sched, $no_hrs_of_work, $timestamp_current, $last_annual_accumulated, $last_personal_accumulated);
 		} else {
-			$result = $this->user_model->update_leave_alloc($user_id_page, $annual_manual_entry, $personal_manual_entry);
+			$result = $this->user_model->update_leave_alloc($user_id_page, $annual_manual_entry, $personal_manual_entry, $no_hrs_of_work);
 		}
 
 		$update_success = 'User account is now updated.';
@@ -3607,14 +3612,16 @@ $this->set_availability($availability_init);
 		$leave_type = $row->leave_type;
 		$details = $row->details;
 		$total_days_away = $row->total_days_away;
-		$with_halfday = $row->with_halfday;
-		$halfday_part = $row->halfday_part;
+		$partial_day = $row->partial_day;
+		$partial_part = $row->partial_part;
+		$partial_time = $row->partial_time;
 		$superv_first_name = $row->superv_first_name;
 		$superv_last_name = $row->superv_last_name;
 		$total_annual = $row->total_annual;
 		$total_personal = $row->total_personal;
+		$no_hrs_of_work = $row->no_hrs_of_work;
 		$direct_report_comments = $row->action_comments;	
-		$md_comments = $row2->action_comments;	
+		$md_comments = $row2->action_comments;
 
 		if ($leave_type_id == '1'){
 			$total_leave = $data['leave_alloc'][0]->total_annual;
@@ -3622,14 +3629,40 @@ $this->set_availability($availability_init);
 			$total_leave = $data['leave_alloc'][0]->total_personal;
 		}
 
-		if ($with_halfday == '1'){
-			if ($halfday_part == '1'){
-				$part_of_day = '(morning)';
-			} else if ($halfday_part == '2') {
-				$part_of_day = '(afternoon)';
+		if ($partial_day == 1){
+			if ($partial_part == 1){
+				$part_of_day = 'Arrived Late';
+			} else if ($partial_part == 2) {
+				$part_of_day = 'Depart Early';
 			}
 		} else {
 			$part_of_day = '';
+		}
+
+		if ($partial_day == 1){
+
+			$get_hrs = substr($total_days_away, 0, 1);
+			$get_mins = substr($total_days_away, 1, 3);
+
+			switch ($get_mins) {
+				case '.25':
+					$total_days_away = $get_hrs.' hrs & 15 mins';
+					break;
+				case '.50':
+					$total_days_away = $get_hrs.' hrs & 30 mins';
+					break;
+				case '.75':
+					$total_days_away = $get_hrs.' hrs & 45 mins';
+					break;
+				default:
+					$total_days_away = $get_hrs.' hrs';
+					break;
+			}
+
+
+			$total_leave_pdf = $total_days_away.' ('.$part_of_day.', '.$partial_time.')';
+		} else {
+			$total_leave_pdf = $total_days_away / $no_hrs_of_work.' day(s)';
 		}
 
 		$approved_by = ucfirst($this->session->userdata('user_first_name')).' '.ucfirst($this->session->userdata('user_last_name'));
@@ -3639,13 +3672,13 @@ $this->set_availability($availability_init);
 		$content .= '<div class="body1">';
 			$content .= '<h1>APPLICATION INFORMATION:</h1><br><br>';
 			$content .= '<span class="leave-info">Date Applied: </span><span class="leave-info-data" style="position: absolute; left: 150px;">'.$date_applied.'</span>';
-			$content .= '<span class="leave-info" style="position: absolute; left: 388px;">Start Date of Leave: </span><span class="leave-info-data" style="position: absolute; left: 583px;">'.$start_day.'</span><br><br>';
+			$content .= '<span class="leave-info" style="position: absolute; left: 370px;">Start Date of Leave: </span><span class="leave-info-data" style="position: absolute; left: 560px;">'.$start_day.'</span><br><br>';
 			
 			$content .= '<span class="leave-info">Name: </span><span class="leave-info-data" style="position: absolute; left: 150px;">'.$first_name.' '.$last_name.'</span>';
-			$content .= '<span class="leave-info" style="position: absolute; left: 388px;">End Date of Leave: </span><span class="leave-info-data" style="position: absolute; left: 583px;">'.$end_day.'</span><br><br>';
+			$content .= '<span class="leave-info" style="position: absolute; left: 370px;">End Date of Leave: </span><span class="leave-info-data" style="position: absolute; left: 560px;">'.$end_day.'</span><br><br>';
 
 			$content .= '<span class="leave-info">Position: </span><span class="leave-info-data" style="position: absolute; left: 150px;">'.$role.'</span>';
-			$content .= '<span class="leave-info" style="position: absolute; left: 388px;">Date Returning to Work: </span><span class="leave-info-data" style="position: absolute; left: 583px;">'.$date_return.'</span><br><br>';
+			$content .= '<span class="leave-info" style="position: absolute; left: 370px;">Date Return: </span><span class="leave-info-data" style="position: absolute; left: 560px;">'.$date_return.'</span><br><br>';
 
 		$content .= '</div>';
 		$content .= '<div class="body2">';
@@ -3654,11 +3687,12 @@ $this->set_availability($availability_init);
 			$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.$leave_type.'</span><br><br>';
 
 			$content .= '<span class="leave-info">No. of Days Leave: </span>';
-			$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.$total_days_away.' day/s '.$part_of_day.'</span><br><br>';
+			$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.$total_leave_pdf.'</span><br><br>';
 
+		if ($leave_type_id != '5'){
 			$content .= '<span class="leave-info">'.$leave_type.' Remaining: </span>';
-
-			$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.$total_leave.' day/s</span><br><br>';
+			$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.round($total_leave / $no_hrs_of_work, 2).' days ('.$total_leave.' hrs)</span><br><br>';
+		}
 
 			$content .= '<span class="leave-info">Purpose:</span><br>';
 			$content .= '<span class="leave-info-data"> &nbsp;&nbsp;&nbsp;&nbsp; '.$details.'</span><br><br>';
@@ -3770,6 +3804,7 @@ $this->set_availability($availability_init);
 			$last_annual_accumulated = $row->annual_accumulated;			
 			$last_personal_accumulated = $row->personal_accumulated;
 			$sched_work = $row->sched_of_work;
+			$no_hrs_of_work = $row->no_hrs_of_work;
 			$date_log = date('Y-m-d', $row->date_log);
 			$today = date('Y-m-d');
 			$day_yesterday = date('Y-m-d',strtotime("-1 days"));
@@ -3812,15 +3847,25 @@ $this->set_availability($availability_init);
 				
 				$annual_accumulated = $counted_days * $annual_default_points;
 				$annual_day_earned = $annual_accumulated / 8;
+
 				$total_annual_points = $annual_manual_entry + floor($annual_day_earned);
-				$total_annual = $total_annual_points - $annual_consumed->used_annual;
+				$total_annual_hrs = $total_annual_points * $no_hrs_of_work;
+
+				$total_annual = round($total_annual_hrs, 2) - number_format($annual_consumed->used_annual, 2, '.', '');
+				// $total_annual_days = round($total_annual, 2) / $no_hrs_of_work;
 
 				$personal_accumulated = $counted_days * $personal_default_points;
 				$personal_day_earned = $personal_accumulated / 8;
-				$total_personal_points = $personal_manual_entry + floor($personal_day_earned);
-				$total_personal = $total_personal_points - $personal_consumed->used_personal;
 
-				$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
+				$total_personal_points = $personal_manual_entry + floor($personal_day_earned);
+				$total_personal_hrs = $total_personal_points * $no_hrs_of_work;
+
+				$total_personal = round($total_personal_hrs, 2) - number_format($personal_consumed->used_personal, 2, '.', '');
+				// $total_personal_days = round($total_personal, 2) / $no_hrs_of_work;
+
+				// echo $user_id.' - '.$total_personal_days.'<br>';
+
+				$this->user_model->update_total_leave(round($total_annual, 2), round($total_personal, 2), $user_id);
 
 				if ($annual_accumulated <> $last_annual_accumulated && $personal_accumulated <> $last_personal_accumulated){
 					$this->user_model->update_earned_points($annual_accumulated, $personal_accumulated, $user_id);
@@ -3833,34 +3878,46 @@ $this->set_availability($availability_init);
 				$annual_earned_offshore = $row->annual_earned_offshore;			
 				$personal_earned_offshore = $row->personal_earned_offshore;
 
-				// $date_today = date('2017-11-01');
+				// $date_today = date('2017-10-01');
 				$date_today = date('Y-m-d');
 				$date = date_create($date_today);
 				date_modify($date, '-1 day');
-				
 				$last_month = date_format($date,"m");
+
 				$current_month = date('m');
-				// $current_month = '11';
+				// $current_month = '10';
 
 				if ($current_month != $last_month_update_offshore){
 					if ($last_month < $current_month){
-						$annual_earned_offshore = $annual_earned_offshore + 1;
-						$personal_earned_offshore = $personal_earned_offshore + 0.58;
+						$annual_earned_offshore = $annual_earned_offshore + $no_hrs_of_work;
+						$personal_earned_offshore = $personal_earned_offshore + $no_hrs_of_work * 0.58;
 
-						$total_annual_points = $annual_manual_entry + $annual_earned_offshore;
+						$total_annual_points = ($annual_manual_entry * $no_hrs_of_work) + $annual_earned_offshore;
 						$total_annual = $total_annual_points - $annual_consumed->used_annual;
-						$total_personal_points = $personal_manual_entry + $personal_earned_offshore;
+
+						$total_personal_points = ($personal_manual_entry * $no_hrs_of_work) + $personal_earned_offshore;
 						$total_personal = $total_personal_points - $personal_consumed->used_personal;
 
 						$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
 						$this->user_model->update_earned_offshore($annual_earned_offshore, $personal_earned_offshore, $current_month, $user_id);
 					} else {
-						$total_annual_points = $annual_manual_entry + $annual_earned_offshore;
+						$total_annual_points = ($annual_manual_entry * $no_hrs_of_work) + $annual_earned_offshore;
 						$total_annual = $total_annual_points - $annual_consumed->used_annual;
-						$total_personal_points = $personal_manual_entry + $personal_earned_offshore;
+
+						$total_personal_points = ($personal_manual_entry * $no_hrs_of_work) + $personal_earned_offshore;
 						$total_personal = $total_personal_points - $personal_consumed->used_personal;
+
 						$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
 					}
+				} else {
+						
+					$total_annual_points = ($annual_manual_entry * $no_hrs_of_work) + $annual_earned_offshore;
+					$total_annual = $total_annual_points - $annual_consumed->used_annual;
+
+					$total_personal_points = ($personal_manual_entry * $no_hrs_of_work) + $personal_earned_offshore;
+					$total_personal = $total_personal_points - $personal_consumed->used_personal;
+
+					$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
 				}
 			}
 		}

@@ -713,6 +713,15 @@
 														endif; 
 													 	
 													?>
+
+														<div class="form-group m-left-10">
+														    &nbsp;&nbsp;<label for="no_hrs_of_work">No. Hrs of Work:</label><br>
+														    <div class="input-group ">
+																<span class="input-group-addon"><i class="fa fa-clock-o fa-lg"></i></span>
+																<input type="text" id="no_hrs_of_work" class="form-control text-center" name="no_hrs_of_work" value="<?php echo (!empty($leave_alloc->no_hrs_of_work) ? $leave_alloc->no_hrs_of_work : '8' ); ?>">
+															</div>
+														</div>
+
 														<div class="checkbox">
 														    <label>
 														      <input type="checkbox" name="sched[]" value="0" <?php if (!empty($get_sched_of_work)){echo (in_array("0", $get_sched_val) ? 'checked="checked"' : '');} echo ($this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1) ? '' : 'disabled="TRUE"'; ?>>&nbsp;&nbsp;Sunday
@@ -756,15 +765,15 @@
 													<div class="pad-10 col-sm-5">
 
 														<label for="annual_manual_entry" class="col-sm-6 control-label">Starting Annual Leave*:</label>
-														<div class="col-sm-5">								
+														<div class="col-sm-6">								
 																<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
 																	<div class="input-group ">
 																		<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
-																		<input type="text" class="form-control text-center" id="annual_manual_entry" name="annual_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
+																		<input type="text" class="form-control text-center" id="annual_manual_entry" name="annual_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
 																	</div>
 																<?php else: ?>
 																	<input type="hidden" name="annual_manual_entry" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?>">
-																	<label name="annual_manual_entry" id="annual_manual_entry" class="control-label" style="color: #555; font-weight: bold;"><?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?></label>
+																	<label name="annual_manual_entry" id="annual_manual_entry" class="control-label" style="color: #555; font-weight: bold;"><?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry.' days' : '0' ); ?></label>
 																<?php endif; ?>
 														</div>
 
@@ -787,41 +796,41 @@
 														?>
 
 														<label for="annual_day_earned" class="col-sm-6 control-label">Earned Annual Leave:</label>
-														<div class="col-sm-5">
+														<div class="col-sm-6">
 														<?php if ($user->is_offshore == 1) {?>
-															<label name="annual_day_earned" id="annual_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? $earned_annual_points : '0' ); ?></label>
+															<label name="annual_day_earned" id="annual_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? round($earned_annual_points / $leave_alloc->no_hrs_of_work, 2).' days ('.$earned_annual_points.' hrs)' : '0 days' ); ?></label>
 														<?php } else { ?>
-															<label name="annual_day_earned" id="annual_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? floor($earned_annual_points) : '0' ); ?></label>
+															<label name="annual_day_earned" id="annual_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? floor($earned_annual_points).' days' : '0 days' ); ?></label>
 														<?php } ?>
 														</div>
 
 														<div class="clearfix"></div><br>
 
 														<label for="used_annual" class="col-sm-6 control-label">Used Annual Leave:</label>
-														<div class="col-sm-5">
-															<label name="used_annual" id="used_annual" class="control-label" style="color: red; font-weight: bold;"><?php echo (!empty($used_annual_total->used_annual) ? $used_annual_total->used_annual : '0' ); ?></label>
+														<div class="col-sm-6">
+															<label name="used_annual" id="used_annual" class="control-label" style="color: red; font-weight: bold;"><?php echo (!empty($used_annual_total->used_annual) ? number_format($used_annual_total->used_annual / $leave_alloc->no_hrs_of_work, '2', '.', ''). ' days ('.$used_annual_total->used_annual.' hrs)' : '0 days' ); ?></label>
 														</div>
 
 														<div class="clearfix"></div><br>
 
 														<label for="total_annual" class="col-sm-6 control-label">Total Annual Leave:</label>
-														<div class="col-sm-5">
-															<label name="total_annual" id="total_annual" class="control-label" style="color: green; font-weight: bold;"><?php echo (!empty($leave_alloc->total_annual) ? $leave_alloc->total_annual : '0' ); ?></label>
+														<div class="col-sm-6">
+															<label name="total_annual" id="total_annual" class="control-label" style="color: green; font-weight: bold;"><?php echo (!empty($leave_alloc->total_annual) ? round($leave_alloc->total_annual / $leave_alloc->no_hrs_of_work, 2).' days ('.$leave_alloc->total_annual.' hrs)' : '0 days' ); ?></label>
 														</div>
 													</div>
 
 													<div class="pad-10 col-sm-5">
 
 														<label for="personal_manual_entry" class="col-sm-6 control-label">Starting Personal Leave*:</label>
-														<div class="col-sm-5">
+														<div class="col-sm-6">
 															<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
 																<div class="input-group ">
 																	<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
-																	<input type="text" class="form-control text-center" id="personal_manual_entry" name="personal_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
+																	<input type="text" class="form-control text-center" id="personal_manual_entry" name="personal_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
 																</div>
 															<?php else: ?>
 																<input type="hidden" name="personal_manual_entry" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?>">
-																<label name="personal_manual_entry" id="personal_manual_entry" class="control-label" style="color: #555; font-weight: bold;"><?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?></label>
+																<label name="personal_manual_entry" id="personal_manual_entry" class="control-label" style="color: #555; font-weight: bold;"><?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry.' days' : '0' ); ?></label>
 															<?php endif; ?>
 														</div>
 
@@ -844,26 +853,26 @@
 														?>
 
 														<label for="personal_day_earned" class="col-sm-6 control-label">Earned Personal Leave:</label>
-														<div class="col-sm-5">
+														<div class="col-sm-6">
 														<?php if ($user->is_offshore == 1) {?>
-															<label name="personal_day_earned" id="personal_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_personal_points) ? $earned_personal_points : '0' ); ?></label>
+															<label name="personal_day_earned" id="personal_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? round($earned_personal_points / $leave_alloc->no_hrs_of_work, 2).' days ('.$earned_personal_points.' hrs)' : '0 days' ); ?></label>
 														<?php } else { ?>
-															<label name="personal_day_earned" id="personal_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_personal_points) ? floor($earned_personal_points) : '0' ); ?></label>
+															<label name="personal_day_earned" id="personal_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_personal_points) ? floor($earned_personal_points).' days' : '0 days' ); ?></label>
 														<?php } ?>
 														</div>
 
 														<div class="clearfix"></div><br>
 
 														<label for="used_personal" class="col-sm-6 control-label">Used Personal Leave:</label>
-														<div class="col-sm-5">
-															<label name="used_personal" id="used_personal" class="control-label" style="color: red; font-weight: bold;"><?php echo (!empty($used_personal_total->used_personal) ? $used_personal_total->used_personal : '0' ); ?></label>
+														<div class="col-sm-6">
+															<label name="used_personal" id="used_personal" class="control-label" style="color: red; font-weight: bold;"><?php echo (!empty($used_personal_total->used_personal) ? number_format($used_personal_total->used_personal / $leave_alloc->no_hrs_of_work, '2', '.', ''). ' days ('.$used_personal_total->used_personal.' hrs)' : '0 days' ); ?></label>
 														</div>
 
 														<div class="clearfix"></div><br>
 														
 														<label for="total_personal" class="col-sm-6 control-label">Total Personal Leave:</label>
-														<div class="col-sm-5">
-															<label name="total_personal" id="total_personal" class="control-label" style="color: green; font-weight: bold;"><?php echo (!empty($leave_alloc->total_personal) ? $leave_alloc->total_personal : '0' ); ?></label>
+														<div class="col-sm-6">
+															<label name="total_personal" id="total_personal" class="control-label" style="color: green; font-weight: bold;"><?php echo (!empty($leave_alloc->total_personal) ? round($leave_alloc->total_personal / $leave_alloc->no_hrs_of_work, 2).' days ('.$leave_alloc->total_personal.' hrs)' : '0 days' ); ?></label>
 														</div>
 
 													</div>

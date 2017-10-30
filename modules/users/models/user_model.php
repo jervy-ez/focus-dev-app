@@ -398,13 +398,13 @@ class User_model extends CI_Model{
 		return $query;
 	}
 	
-	public function insert_leave_req($current_date, $user_id, $leave_type, $timestamp_start, $timestamp_end, $timestamp_return, $leave_details, $total_days_away, $user_supervisor_id, $with_halfday, $halfday_part, $applied_by) {
-		$query = $this->db->query("INSERT INTO `leave_request`(`date`, `user_id`, `leave_type_id`, `start_day_of_leave`, `end_day_of_leave`, `date_return`, `details`, `total_days_away`, `is_approve_supervisor_id`, `with_halfday`, `halfday_part`, `applied_by`) VALUES ('$current_date', '$user_id', '$leave_type', '$timestamp_start', '$timestamp_end', '$timestamp_return', '$leave_details', '$total_days_away', '$user_supervisor_id', $with_halfday, $halfday_part, '$applied_by')");
+	public function insert_leave_req($current_date, $user_id, $leave_type, $timestamp_start, $timestamp_end, $timestamp_return, $leave_details, $total_days_away, $user_supervisor_id, $partial_day, $partial_part, $partial_time, $applied_by) {
+		$query = $this->db->query("INSERT INTO `leave_request`(`date`, `user_id`, `leave_type_id`, `start_day_of_leave`, `end_day_of_leave`, `date_return`, `details`, `total_days_away`, `is_approve_supervisor_id`, `partial_day`, `partial_part`, `partial_time`, `applied_by`) VALUES ('$current_date', '$user_id', '$leave_type', '$timestamp_start', '$timestamp_end', '$timestamp_return', '$leave_details', '$total_days_away', '$user_supervisor_id', $partial_day, $partial_part, '$partial_time', '$applied_by')");
 		 return $query; //$this->db->insert_id(); no use
 	}
 
 	public function fetch_pending_leaves($user_id){
-		$query = $this->db->query("SELECT t1.`leave_request_id`, t1.`date`, t3.`leave_type`, t1.`start_day_of_leave`, t1.`end_day_of_leave`, t1.`date_return`, t1.`details`, t1.`total_days_away`, t1.`is_approve`, t1.`is_disapproved`, t2.`supervisor_id`, t1.`with_halfday`, t1.`halfday_part`
+		$query = $this->db->query("SELECT t1.`leave_request_id`, t1.`user_id`, t1.`date`, t3.`leave_type`, t1.`start_day_of_leave`, t1.`end_day_of_leave`, t1.`date_return`, t1.`details`, t1.`total_days_away`, t1.`is_approve`, t1.`is_disapproved`, t2.`supervisor_id`, t1.`partial_day`, t1.`partial_part`, t1.`partial_time`
 			FROM `leave_request` AS t1
 			LEFT JOIN `users` AS t2
 			ON t1.`user_id` = t2.`user_id` 
@@ -416,7 +416,7 @@ class User_model extends CI_Model{
 	}
 
 	public function fetch_approved_leaves($user_id){
-		$query = $this->db->query("SELECT t1.`leave_actions_id`, t1.`leave_request_id`, t1.`supervisor_id`, t1.`action`, t1.`date` AS 'date_approved', t2.`date` AS 'date_applied', t2.`user_id`, t3.`leave_type`, t2.`start_day_of_leave`, t2.`end_day_of_leave`, t2.`date_return`, t2.`total_days_away`, t2.`details`, t4.`user_first_name` AS 'approved_fname', t4.`user_last_name` AS 'approved_lname', t2.`is_approve`, t2.`with_halfday`, t2.`halfday_part`
+		$query = $this->db->query("SELECT t1.`leave_actions_id`, t1.`leave_request_id`, t1.`supervisor_id`, t1.`action`, t1.`date` AS 'date_approved', t2.`date` AS 'date_applied', t2.`user_id`, t3.`leave_type`, t2.`start_day_of_leave`, t2.`end_day_of_leave`, t2.`date_return`, t2.`total_days_away`, t2.`details`, t4.`user_first_name` AS 'approved_fname', t4.`user_last_name` AS 'approved_lname', t2.`is_approve`, t2.`partial_day`, t2.`partial_part`, t2.`partial_time`
 			FROM `leave_actions` AS t1
 			LEFT JOIN `leave_request` AS t2
 			ON t1.`leave_request_id` = t2.`leave_request_id`
@@ -430,7 +430,7 @@ class User_model extends CI_Model{
 	}
 
 	public function fetch_approved_leaves_by_md($user_id){
-		$query = $this->db->query("SELECT t1.`leave_actions_id`, t1.`leave_request_id`, t1.`supervisor_id`, t1.`action`, t1.`date` AS 'date_approved', t2.`date` AS 'date_applied', t2.`user_id`, t3.`leave_type`, t2.`start_day_of_leave`, t2.`end_day_of_leave`, t2.`date_return`, t2.`total_days_away`, t2.`details`, t4.`user_first_name` AS 'md_fname', t4.`user_last_name` AS 'md_lname', t2.`with_halfday`, t2.`halfday_part`
+		$query = $this->db->query("SELECT t1.`leave_actions_id`, t1.`leave_request_id`, t1.`supervisor_id`, t1.`action`, t1.`date` AS 'date_approved', t2.`date` AS 'date_applied', t2.`user_id`, t3.`leave_type`, t2.`start_day_of_leave`, t2.`end_day_of_leave`, t2.`date_return`, t2.`total_days_away`, t2.`details`, t4.`user_first_name` AS 'md_fname', t4.`user_last_name` AS 'md_lname', t2.`partial_day`, t2.`partial_part`, t2.`partial_time`
 			FROM `leave_actions` AS t1
 			LEFT JOIN `leave_request` AS t2
 			ON t1.`leave_request_id` = t2.`leave_request_id`
@@ -444,7 +444,7 @@ class User_model extends CI_Model{
 	}
 
 	public function fetch_unapproved_leaves($user_id){
-		$query = $this->db->query("SELECT t1.`leave_actions_id`, t1.`leave_request_id`, t1.`supervisor_id`, t1.`action`, t1.`date` AS 'date_approved', t1.`action_comments`, t2.`date` AS 'date_applied', t2.`user_id`, t3.`leave_type`, t2.`start_day_of_leave`, t2.`end_day_of_leave`, t2.`date_return`, t2.`total_days_away`, t2.`details`, t4.`user_first_name` AS 'approved_fname', t4.`user_last_name` AS 'approved_lname', t2.`with_halfday`, t2.`halfday_part`
+		$query = $this->db->query("SELECT t1.`leave_actions_id`, t1.`leave_request_id`, t1.`supervisor_id`, t1.`action`, t1.`date` AS 'date_approved', t1.`action_comments`, t2.`date` AS 'date_applied', t2.`user_id`, t3.`leave_type`, t2.`start_day_of_leave`, t2.`end_day_of_leave`, t2.`date_return`, t2.`total_days_away`, t2.`details`, t4.`user_first_name` AS 'approved_fname', t4.`user_last_name` AS 'approved_lname', t2.`partial_day`, t2.`partial_part`, t2.`partial_time`
 			FROM `leave_actions` AS t1
 			LEFT JOIN `leave_request` AS t2
 			ON t1.`leave_request_id` = t2.`leave_request_id`
@@ -461,7 +461,7 @@ class User_model extends CI_Model{
 		$query = $this->db->query("SELECT t1.`leave_request_id`, t1.`user_id` as 'leave_user_id', t1.`date`, t2.`user_first_name` AS 'first_name', 
 			t2.`user_last_name` AS 'last_name', t3.`leave_type`, t1.`start_day_of_leave`, t1.`end_day_of_leave`, t1.`date_return`, 
 			t1.`details`, t1.`total_days_away`, t1.`is_approve`, t1.`is_disapproved`, t2.`supervisor_id`, t4.`user_first_name`, 
-			t4.`user_last_name`, t5.`action`, t6.`user_first_name` AS 'superv_first_name', t6.`user_last_name` AS 'superv_last_name', t5.`action_comments`, t1.`with_halfday`, t1.`halfday_part`
+			t4.`user_last_name`, t5.`action`, t6.`user_first_name` AS 'superv_first_name', t6.`user_last_name` AS 'superv_last_name', t5.`action_comments`, t1.`partial_day`, t1.`partial_part`, t1.`partial_time`
 			FROM `leave_request` AS t1
 			LEFT JOIN `users` AS t2
 			ON t1.`user_id` = t2.`user_id` 
@@ -479,7 +479,7 @@ class User_model extends CI_Model{
 	}
 
 	public function fetch_leave_req_by_id($leave_req_id){
-		$query = $this->db->query("SELECT t1.`leave_request_id`, t1.`leave_type_id`, t1.`user_id`, t2.`leave_type`, t1.`start_day_of_leave`, t1.`end_day_of_leave`, t1.`date_return`, t1.`details`, t1.`total_days_away`, t1.`with_halfday`, t1.`halfday_part` 
+		$query = $this->db->query("SELECT t1.`leave_request_id`, t1.`leave_type_id`, t1.`user_id`, t2.`leave_type`, t1.`start_day_of_leave`, t1.`end_day_of_leave`, t1.`date_return`, t1.`details`, t1.`total_days_away`, t1.`partial_day`, t1.`partial_part`, t1.`partial_time`
 			FROM `leave_request` AS t1
 			LEFT JOIN `leave_type` AS t2
 			ON t1.`leave_type_id` = t2.`leave_type_id`
@@ -525,7 +525,7 @@ class User_model extends CI_Model{
 
 	public function fetch_approved_and_disapproved(){
 		$query = $this->db->query("SELECT t1.`leave_actions_id`, t1.`leave_request_id`, t2.`user_id`, t1.`supervisor_id`, t1.`action_comments`, t2.`date`, t3.`user_first_name`, t3.`user_last_name`, t4.`leave_type`, t2.`start_day_of_leave`, t2.`end_day_of_leave`, t2.`date_return`,
-			t2.`details`, t2.`total_days_away`, t5.`user_first_name` AS 'superv_first_name', t5.`user_last_name` AS 'superv_last_name', t1.`action`, t2.`is_approve`, t2.`is_disapproved`, t7.`supervisor_id` AS 'user_supervisor_id', t2.`with_halfday`, t2.`halfday_part`
+			t2.`details`, t2.`total_days_away`, t5.`user_first_name` AS 'superv_first_name', t5.`user_last_name` AS 'superv_last_name', t1.`action`, t2.`is_approve`, t2.`is_disapproved`, t7.`supervisor_id` AS 'user_supervisor_id', t2.`partial_day`, t2.`partial_part`, t2.`partial_time`
 			FROM `leave_actions` AS t1
 			LEFT JOIN `leave_request` AS t2
 			ON t1.`leave_request_id` = t2.`leave_request_id`
@@ -545,7 +545,7 @@ class User_model extends CI_Model{
 
 	public function fetch_approved_and_disapproved_by_md(){
 		$query = $this->db->query("SELECT t1.`leave_actions_id`, t1.`leave_request_id`, t2.`user_id`, t1.`supervisor_id`, t1.`leave_request_id`, t1.`action_comments`, t2.`date`, t3.`user_first_name`, t3.`user_last_name`, t4.`leave_type`, t2.`start_day_of_leave`, t2.`end_day_of_leave`, t2.`date_return`,
-			t2.`details`, t2.`total_days_away`, t5.`user_first_name` AS 'md_fname', t5.`user_last_name` AS 'md_lname', t1.`action`, t2.`with_halfday`, t2.`halfday_part`
+			t2.`details`, t2.`total_days_away`, t5.`user_first_name` AS 'md_fname', t5.`user_last_name` AS 'md_lname', t1.`action`, t2.`partial_day`, t2.`partial_part`, t2.`partial_time`
 			FROM `leave_actions` AS t1
 			LEFT JOIN `leave_request` AS t2
 			ON t1.`leave_request_id` = t2.`leave_request_id`
@@ -559,8 +559,8 @@ class User_model extends CI_Model{
 		return $query;
 	}
 
-	public function update_leave_req($leave_request_id, $leave_type_id, $start_day_of_leave, $end_day_of_leave, $date_return, $details, $total_days_away, $with_halfday, $halfday_part){
-		$query = $this->db->query("UPDATE `leave_request` SET `leave_type_id` = '$leave_type_id', `start_day_of_leave` = '$start_day_of_leave', `end_day_of_leave` = '$end_day_of_leave', `date_return` = '$date_return', `details` = '$details', `total_days_away` = '$total_days_away', `is_disapproved` = '0', `with_halfday` = '$with_halfday', `halfday_part` = '$halfday_part' WHERE `leave_request_id` = '$leave_request_id'");
+	public function update_leave_req($leave_request_id, $leave_type_id, $start_day_of_leave, $end_day_of_leave, $date_return, $details, $total_days_away, $partial_day, $partial_part, $partial_time, $edited_by){
+		$query = $this->db->query("UPDATE `leave_request` SET `leave_type_id` = '$leave_type_id', `start_day_of_leave` = '$start_day_of_leave', `end_day_of_leave` = '$end_day_of_leave', `date_return` = '$date_return', `details` = '$details', `total_days_away` = '$total_days_away', `is_disapproved` = '0', `partial_day` = '$partial_day', `partial_part` = '$partial_part', `partial_time` = '$partial_time', `edited_by` = '$edited_by' WHERE `leave_request_id` = '$leave_request_id'");
 		return $query;
 	}
 
@@ -584,8 +584,8 @@ class User_model extends CI_Model{
 		if ($user_supervisor_id == 3){
 
 			$query = $this->db->query("SELECT t1.`leave_request_id`, t1.`date`, t2.`user_first_name`, t2.`user_last_name`, t3.`role_types`, t1.`start_day_of_leave`, t1.`end_day_of_leave`, t1.`date_return`,
-				t1.`leave_type_id`, t4.`leave_type`, t1.`details`, t1.`total_days_away`, t1.`with_halfday`, t1.`halfday_part`, t5.`user_first_name` AS 'superv_first_name', t5.`user_last_name` AS 'superv_last_name', 
-				t6.`total_annual`, t6.`total_personal`
+				t1.`leave_type_id`, t4.`leave_type`, t1.`details`, t1.`total_days_away`, t1.`partial_day`, t1.`partial_part`, t1.`partial_time`, t5.`user_first_name` AS 'superv_first_name', t5.`user_last_name` AS 'superv_last_name', 
+				t6.`total_annual`, t6.`total_personal`, t6.`no_hrs_of_work`
 				FROM `leave_request` AS t1
 				LEFT JOIN `users` AS t2
 				ON t1.`user_id` = t2.`user_id`
@@ -601,8 +601,8 @@ class User_model extends CI_Model{
 			return $query;
 		} else {
 			$query = $this->db->query("SELECT t1.`leave_request_id`, t1.`date`, t2.`user_first_name`, t2.`user_last_name`, t3.`role_types`, t1.`start_day_of_leave`, t1.`end_day_of_leave`, t1.`date_return`,
-				t1.`leave_type_id`, t4.`leave_type`, t1.`details`, t1.`total_days_away`, t1.`with_halfday`, t1.`halfday_part`, t6.`user_first_name` AS 'superv_first_name', t6.`user_last_name` AS 'superv_last_name', 
-				t7.`total_annual`, t7.`total_personal`, t5.`action_comments`
+				t1.`leave_type_id`, t4.`leave_type`, t1.`details`, t1.`total_days_away`, t1.`partial_day`, t1.`partial_part`, t1.`partial_time`, t6.`user_first_name` AS 'superv_first_name', t6.`user_last_name` AS 'superv_last_name', 
+				t7.`total_annual`, t7.`total_personal`, t7.`no_hrs_of_work`, t5.`action_comments`
 				FROM `leave_request` AS t1
 				LEFT JOIN `users` AS t2
 				ON t1.`user_id` = t2.`user_id`
@@ -625,7 +625,7 @@ class User_model extends CI_Model{
 	public function for_pdf_content_md($leave_request_id){
 		$query = $this->db->query("SELECT t1.`leave_request_id`, t1.`date`, t2.`user_first_name`, t2.`user_last_name`, t3.`role_types`, t1.`start_day_of_leave`, t1.`end_day_of_leave`, t1.`date_return`,
 			t1.`leave_type_id`, t4.`leave_type`, t1.`details`, t1.`total_days_away`, t6.`user_first_name` AS 'superv_first_name', t6.`user_last_name` AS 'superv_last_name', 
-			t7.`total_annual`, t7.`total_personal`, t5.`action_comments`
+			t7.`total_annual`, t7.`total_personal`, t7.`no_hrs_of_work`, t5.`action_comments`
 			FROM `leave_request` AS t1
 			LEFT JOIN `users` AS t2
 			ON t1.`user_id` = t2.`user_id`
@@ -648,18 +648,18 @@ class User_model extends CI_Model{
 		return $query;	
 	}
 
-	public function add_leave_alloc($current_date, $user_id, $annual_manual_entry, $personal_manual_entry, $checked_sched, $current_date){
-		$query = $this->db->query("INSERT INTO `leave_allocation` (`year`, `start_date_log`, `user_id`, `annual_manual_entry`, `personal_manual_entry`, `sched_of_work`, `date_log`) VALUES ('".date('Y')."', '$current_date', '$user_id', '$annual_manual_entry', '$personal_manual_entry', '$checked_sched', '$current_date')");
+	public function add_leave_alloc($current_date, $user_id, $annual_manual_entry, $personal_manual_entry, $checked_sched, $no_hrs_of_work, $current_date){
+		$query = $this->db->query("INSERT INTO `leave_allocation` (`year`, `start_date_log`, `user_id`, `annual_manual_entry`, `personal_manual_entry`, `sched_of_work`, `no_hrs_of_work`, `date_log`) VALUES ('".date('Y')."', '$current_date', '$user_id', '$annual_manual_entry', '$personal_manual_entry', '$checked_sched', '$no_hrs_of_work', '$current_date')");
 		return $query;
 	}
 
-	public function update_leave_alloc_sched($user_id, $annual_manual_entry, $personal_manual_entry, $checked_sched, $current_date, $last_annual_accumulated, $last_personal_accumulated){
-		$query = $this->db->query("UPDATE `leave_allocation` SET `annual_manual_entry`='$annual_manual_entry', `personal_manual_entry`='$personal_manual_entry', `sched_of_work`='$checked_sched', `date_log`='$current_date', `last_annual_accumulated`='$last_annual_accumulated', `last_personal_accumulated`='$last_personal_accumulated' WHERE `user_id` = '$user_id'");
+	public function update_leave_alloc_sched($user_id, $annual_manual_entry, $personal_manual_entry, $checked_sched, $no_hrs_of_work, $current_date, $last_annual_accumulated, $last_personal_accumulated){
+		$query = $this->db->query("UPDATE `leave_allocation` SET `annual_manual_entry`='$annual_manual_entry', `personal_manual_entry`='$personal_manual_entry', `sched_of_work`='$checked_sched', `no_hrs_of_work`='$no_hrs_of_work', `date_log`='$current_date', `last_annual_accumulated`='$last_annual_accumulated', `last_personal_accumulated`='$last_personal_accumulated' WHERE `user_id` = '$user_id'");
 		return $query;
 	}
 
-	public function update_leave_alloc($user_id, $annual_manual_entry, $personal_manual_entry){
-		$query = $this->db->query("UPDATE `leave_allocation` SET `annual_manual_entry`='$annual_manual_entry', `personal_manual_entry`='$personal_manual_entry' WHERE `user_id` = '$user_id'");
+	public function update_leave_alloc($user_id, $annual_manual_entry, $personal_manual_entry, $no_hrs_of_work){
+		$query = $this->db->query("UPDATE `leave_allocation` SET `annual_manual_entry`='$annual_manual_entry', `personal_manual_entry`='$personal_manual_entry', `no_hrs_of_work`='$no_hrs_of_work' WHERE `user_id` = '$user_id'");
 		return $query;
 	}
 

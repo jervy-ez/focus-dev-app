@@ -863,13 +863,23 @@ function validate_progress_dates(date_id){
 
   function select_po_item(obj_id){
     var po_item_row = [];
+    var counter = 0;
+    var item_id = '';
+
+    $('.po_set_values').show();
+
     var gst = $('a#'+obj_id).parent().parent().attr('id')/100;
     $('a#'+obj_id).parent().parent().find('td').each(function(){
       var item = $(this).text();
       po_item_row.push(item);
 
-    //alert(item);
-  });
+      if(counter == 4){
+        item_id = $(this).attr('id');
+      }
+
+      counter++;
+
+    }); 
 
     $('#po_is_reconciled_value').prop('checked', true);
 
@@ -878,6 +888,11 @@ function validate_progress_dates(date_id){
     $('.po_balance_mod').text('$0.00');
     $('.po_number_item').val(po_item_row[0]);
     $('input.po_project_id').val(po_item_row[1]);
+ 
+
+    if(item_id == 'red_bad'){
+      $('.po_set_values').hide();
+    } 
 
 
     var po_actual_balance_arr = po_item_row[9].split('-');
@@ -4034,11 +4049,6 @@ $('.no_end_occur').click(function(){
   }
 
 });
-
-
-
-
-
 
 
 

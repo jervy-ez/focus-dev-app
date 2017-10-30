@@ -138,6 +138,8 @@
 
 																	foreach ($po_list->result_array() as $row){
 
+																		$comp_insurance_status = $this->purchase_order->check_contractor_insurance($row['company_client_id']);
+
 																		$balance_a = $this->purchase_order->check_balance_po($row['works_id']);
 
                                     $prj_defaults = $this->projects->display_project_applied_defaults($row['project_id']);
@@ -167,7 +169,7 @@
 
 																		$total_price_incgst = $inc_gst_price + $total_price_incgst;
 
-																		echo '</a></td><td>'.$row['contractor_name'].'</td><td>'.$row['project_name'].'</td><td>'.$row['job_date'].'</td><td>'.$row['client_name'].'</td><td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td><td><span class="ex-gst">'.number_format($row['price'],2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($inc_gst_price,2).'</span></td>';
+																		echo '</a></td><td id="'.$comp_insurance_status.'"><span class="'.$comp_insurance_status.'">'.$row['contractor_name'].'</span></td><td>'.$row['project_name'].'</td><td>'.$row['job_date'].'</td><td>'.$row['client_name'].'</td><td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td><td><span class="ex-gst">'.number_format($row['price'],2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($inc_gst_price,2).'</span></td>';
                                     echo '<td><span class="ex-gst">'.number_format($balance_a,2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($this->purchase_order->ext_to_inc_gst($balance_a,$prj_defaults['admin_gst_rate']),2).'</span></td>';
                                     echo '<td>'.$row['cpo_tmpstp_date'].'</td>';
                                     echo '</tr>';
@@ -178,6 +180,7 @@
                                   foreach ($work_joinery_list->result_array() as $row_j){
 
 
+																		$comp_insurance_status = $this->purchase_order->check_contractor_insurance($row_j['company_client_id']);
 
                                   	$total_price_exgst = $row_j['price'] + $total_price_exgst;
                                     $j_prj_defaults = $this->projects->display_project_applied_defaults($row_j['project_id']);
@@ -192,7 +195,7 @@
 
                                     echo '<tr id="'.$j_prj_defaults['admin_gst_rate'].'"><td><a href="#" data-toggle="modal" data-target="#invoice_po_modal" data-backdrop="static" onclick="select_po_item(\''.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'-'.$row_j['project_id'].'\');" id="'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'-'.$row_j['project_id'].'" class="select_po_item">'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'</a></td><td><a href="'.base_url().'projects/view/'.$row_j['project_id'].'" >'.$row_j['project_id'].'</a></td><td>'.$row_j['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row_j['project_id'].'/'.$row_j['works_id'].'">';
                                     echo $row_j['joinery_name'];
-                                    echo '</a></td><td>'.$row_j['contractor_name'].'</td><td>'.$row_j['project_name'].'</td><td>'.$row_j['job_date'].'</td><td>'.$row_j['client_name'].'</td><td>'.$row_j['user_first_name'].' '.$row_j['user_last_name'].'</td><td><span class="ex-gst">'.number_format($row_j['price'],2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($inc_gst_price_j,2).'</span></td>';
+                                    echo '</a></td><td id="'.$comp_insurance_status.'"><span class="'.$comp_insurance_status.'">'.$row_j['contractor_name'].'</span></td><td>'.$row_j['project_name'].'</td><td>'.$row_j['job_date'].'</td><td>'.$row_j['client_name'].'</td><td>'.$row_j['user_first_name'].' '.$row_j['user_last_name'].'</td><td><span class="ex-gst">'.number_format($row_j['price'],2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($inc_gst_price_j,2).'</span></td>';
                                     echo '<td><span class="ex-gst">'.number_format($balance_b,2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($this->purchase_order->ext_to_inc_gst($balance_b,$j_prj_defaults['admin_gst_rate']),2).'</span></td>';
                                     echo '<td>'.$row_j['cpo_tmpstp_date'].'</td>';
                                     echo '</tr>';
@@ -230,6 +233,18 @@
 
 
 </div></div></div>
+
+<style type="text/css">
+	.red_bad{
+		color: red;
+		font-weight: bold;
+	}
+
+	.blue_ok{
+		/*color: blue;
+		font-weight: bold;*/
+	}
+</style>
 
 
 
@@ -432,6 +447,8 @@
               <tbody class="po_history">                
               </tbody>
             </table>
+
+            <p><span class="po_note_msg red_bad"></span></p>
       			</div>
  
       		</div>

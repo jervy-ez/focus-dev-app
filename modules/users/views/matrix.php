@@ -73,7 +73,7 @@
 								<label><?php echo $screen; ?></label><span> (<a href="#" data-placement="right" class="popover-test" title="" data-content="Hello there mate! This is the new Focus organizational chart and resposibility matrix screen." data-original-title="Welcome">?</a>)</span>
 								<p class="hide"><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> should have tooltips on hover.</p>								
 							</div>
-							<div class="box-area clearfix">
+							<div class="  clearfix">
 
 
 								<?php if(@$this->session->flashdata('new_focus_company')): ?>
@@ -89,18 +89,18 @@
 									<div class="row clearfix pad-left-15  pad-right-15 pad-bottom-10">
  
 <p><br /></p>
-										 <h4>Company Chart</h4>
+										 <h4><strong>Organizational Chart</strong></h4>
 										 <hr style="margin: 5px 0;">
 
 
 										 <style type="text/css">
 
-										 	.box-area a,.box-area h3{
+										 	.box a,.box h3{
 										 		color: #fff !important;
 
 										 	}
 
-										 	.box-area a:hover{
+										 	.box a:hover{
 										 		text-transform:none !important;
 										 		text-decoration: none !important;
 										 	}
@@ -129,15 +129,15 @@
 
 
 
-<div class="box-area clearfix">
+<div class="  clearfix">
 
 <?php echo $this->users->loop_compamy_group(4); ?>
 
+												<style type="text/css">
 
 										<?php foreach ($all_focus_company as $key => $value): ?>
 											
 										
-												<style type="text/css">
 
 												.user_<?php echo $value->company_id; ?>_comp_group{
 													border: 3px solid #<?php echo $color_group[$value->company_id]; ?>;
@@ -151,7 +151,7 @@
 												}
 
 
-												.user_<?php echo $value->company_id; ?>_comp_group + p + p{
+												.user_<?php echo $value->company_id; ?>_comp_group + p + p, .user_<?php echo $value->company_id; ?>_comp_group + p + p a{
 													color: #<?php echo $color_group[$value->company_id]; ?>;
 													font-weight: bold;
 													    margin-top: -5px;
@@ -176,12 +176,17 @@
  
 
 
+										<?php endforeach; ?>
+
+ 
 
 
+.blanks{
+		width: 200px;
+	}
 
 												</style>
 
-										<?php endforeach; ?>
 
 										</div>
 									
@@ -190,11 +195,95 @@
 
 									<p><br /></p>
 
-										 <h4>Responsibility Matrix</h4>
+										<span class="pull-right print_matrix pointer"><strong>Print <i class="fa fa-print" aria-hidden="true"></i></strong></span>
+										<h4 id="responsibility_matrix"><strong>Responsibility Matrix</strong></h4><span><em><strong>Click the user profile photo to toggle the Direct Reports</strong></em></span>
 										<hr style="margin: 5px 0;">
+<div id="" class="matrix_area_pos">
+
+<style type="text/css">
+	
+@media print { 
+	.blanks{
+		width: 75px;
+	}
+
+	.box-area{
+		margin:5px 0px;
+	}
+
+	.info_btn_lnk{
+		display: none;
+	}
+
+	hr{
+		background-color: #fff;
+		border-color: #fff;
+	}
+
+
+
+
+<?php foreach ($all_focus_company as $key => $value): ?>
+											
+										
+
+												.user_<?php echo $value->company_id; ?>_comp_group{
+													border: 3px solid #<?php echo $color_group[$value->company_id]; ?>;
+												}
+
+												.user_<?php echo $value->company_id; ?>_comp_group + p strong{
+													background: #<?php echo $color_group[$value->company_id]; ?>;
+													color: #fff;
+													padding: 3px 6px;
+													border-radius: 6px;
+												}
+
+
+												.user_<?php echo $value->company_id; ?>_comp_group + p + p, .user_<?php echo $value->company_id; ?>_comp_group + p + p a{
+													color: #<?php echo $color_group[$value->company_id]; ?>;
+													font-weight: bold;
+													    margin-top: -5px;
+												}
+
+
+
+ 
+
+			.wid-type-<?php echo $value->company_id; ?>_comp_group .widg-head{
+				opacity: 0.5;
+				background: #fff !important;
+
+				color: #<?php echo $color_group[$value->company_id]; ?> !important;
+				padding-left: 20px;
+			}
+
+			.wid-type-<?php echo $value->company_id; ?>_comp_group{
+																	background: #<?php echo $color_group[$value->company_id]; ?> !important;
+ 
+			}
+ 
+
+
+										<?php endforeach; ?>
+
+
+
+
+
+
+
+
+
+
+
+}
+</style>
+
+
+
 
 										 <?php $this->users->loop_user_supervisor(); ?>
-
+</div>
 									</div>
 					
 
@@ -216,66 +305,93 @@
 						</div>
 					</div>-->
 					
-					<div class="col-md-3 hide">						
-						<div class="box">
-							<div class="box-head pad-10">
-								<label><i class="fa fa-history fa-lg"></i> History</label>
-							</div>
-							<div class="box-area pattern-sandstone pad-5">
-								<div class="box-content box-list collapse in">
-									<ul>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">You added a new company</a>
-												<p class="news-item-preview">May 25, 2014</p>
-											</div>
-										</li>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Updated the company details and contact information for James Tiling Co.</a>
-												<p class="news-item-preview">May 20, 2014</p>
-											</div>
-										</li>
-									</ul>
-									<div class="box-collapse">
-										<a style="cursor: pointer;" data-toggle="collapse" data-target=".more-list"> Show More </a>
-									</div>
-									<ul class="more-list collapse out">
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
-												<p class="news-item-preview">
-													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
-												</p>
-											</div>
-										</li>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
-												<p class="news-item-preview">
-													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
-												</p>
-											</div>
-										</li>
-										<li>
-											<div>
-												<a href="#" class="news-item-title">Duis aute irure dolor in reprehenderit</a>
-												<p class="news-item-preview">
-													Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore.
-												</p>
-											</div>
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
 					
 				</div>				
 			</div>
 		</div>
 	</div>
 </div>
+
+
+<div id="" class="print_out"></div>
+
+<script type="text/javascript">
+
+var btn_click_counter = 0;
+
+	$('.user_dir').click(function(){
+		var id_box = $(this).attr('id');
+		var id_arr = id_box.split('_');
+		var pm_set_id = id_arr[1];
+
+
+
+		if(btn_click_counter%2 == 0){
+
+
+
+			$('.box-area').hide();
+
+
+			//	$('.default_blank').hide();
+	 
+
+			setTimeout(function(){
+
+			$('#'+id_box).parent().parent().parent().show(); 
+
+			$('#'+id_box).parent().parent().parent().children().show(); 
+			// 	$('#'+id_box).prev().hide();
+				$('.direp_'+pm_set_id).show();   
+			//	$('.blanks.direp_3').show();
+
+				//$('#'+id_box).children().show(); 
+
+			}, 100);
+
+
+
+		}else{
+
+			$('.box-area').show();
+		}
+
+		btn_click_counter++;
+	});
+
+
+
+	$('.print_matrix').click(function(){
+
+
+		var contents = $(".matrix_area_pos").html();
+		var frame1 = $('<iframe />');
+		frame1[0].name = "frame1";
+		frame1.css({ "position": "absolute", "top": "-1000000px" });
+		$("body").append(frame1);
+		var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
+		frameDoc.document.open();
+        //Create a new HTML document.
+        frameDoc.document.write('<html><head><title>Responsibility Matrix</title>');
+        frameDoc.document.write('</head><body>');
+        //Append the external CSS file.
+        frameDoc.document.write('<link href="<?php echo base_url(); ?>css/print.css" rel="stylesheet" type="text/css" />');
+        //Append the DIV contents.
+        frameDoc.document.write('<h1 style="font-size:20px;">Responsibility Matrix</h1><hr style="background-color: #000; border-color: #000; "/><br />');
+        frameDoc.document.write(contents);
+        frameDoc.document.write('</body></html>');
+        frameDoc.document.close();
+        setTimeout(function () {
+        	window.frames["frame1"].focus();
+        	window.frames["frame1"].print();
+        	frame1.remove();
+        }, 500);
+
+
+	});
+	
+</script>
+ 
 
 <?php $this->bulletin_board->list_latest_post(); ?>
 <?php $this->load->view('assets/logout-modal'); ?>

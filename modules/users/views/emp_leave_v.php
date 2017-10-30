@@ -4,7 +4,7 @@
  	$this->load->module('bulletin_board'); 
 
  	$user_id = $this->uri->segment(3);
-
+ 	
  	$user_access_arr = explode(',',  $this->users->get_user_access($this->session->userdata('user_id')) );
  	$leave_requests = $user_access_arr['19'];
 
@@ -122,18 +122,19 @@
 														  	<thead>
 														  		<th>Date Applied</th>
 														  		<th>Leave Type</th>
-														  		<th>Start Date</th>
-														  		<th>End Date</th>
-														  		<th>Halfday</th>
+														  		<th>Start Date - End Date</th>
+														  		<th>Partial Day (Time In/Out)*</th>
 														  		<th>Date Return</th>
 														  		<th>Purpose</th>
-														  		<th>Total Days Away</th>
+														  		<th>Total Leave</th>
 														  		<th>Status</th>
 														  	</thead>
 														  	<tbody>
 														  	<?php  
 																foreach ($pending_leaves as $row):
 																
+																	$leave_alloc = $this->users->leave_remaining($row->user_id);
+
 																	$approval = '';
 
 																	if($row->is_approve=="1"){
@@ -152,25 +153,46 @@
 																	    $details = substr($stringCut, 0, strrpos($stringCut, ' ')).'... '; 
 																	}
 
-																	$part_halfday = '';
+																	$partial_part = '';
 
-																	if ($row->halfday_part == 1){
-																		$part_halfday = 'morning';
-																	} elseif ($row->halfday_part == 2){
-																		$part_halfday = 'afternoon';
+																	if ($row->partial_part == 1){
+																		$partial_part = 'Arrived Late ('.$row->partial_time.')';
+																	} elseif ($row->partial_part == 2){
+																		$partial_part = 'Depart Early ('.$row->partial_time.')';
 																	} else {
-																		$part_halfday = 'N/A';
+																		$partial_part = 'N/A';
+																	}
+
+																	if (strpos($row->total_days_away, '.') == TRUE && $row->partial_day == 1){
+																		$get_hrs = substr($row->total_days_away, 0, 1);
+																		$get_mins = substr($row->total_days_away, 2, 2);
+
+																		switch ($get_mins) {
+																		    case '25':
+																		        $get_mins = ' & 15 mins';
+																		        break;
+																		    case '50':
+																		        $get_mins = ' & 30 mins';
+																		        break;
+																		    case '75':
+																		        $get_mins = ' & 45 mins';
+																		        break;
+																		    default:
+																		    	$get_mins = ' ';
+																		    	break;
+																		}
+																	} else {
+																		$total_days = $row->total_days_away / $leave_alloc->no_hrs_of_work;
 																	}
 
 																	echo '<tr>';
-																	echo '<td><a id="update_leave_req" onclick="editLeaveRequestbyID('.$row->leave_request_id.');" title="Edit this Leave Application" class="pull-left"><span class="badge btn btn-success"><i class="fa fa-edit"></i></span></a> &nbsp;&nbsp;&nbsp;'.date('d/m/Y', $row->date).'</td>';
-																	echo '<td width="250">'.$row->leave_type.'</td>';
-																	echo '<td>'.date('d/m/Y', $row->start_day_of_leave).'</td>';
-																	echo '<td>'.date('d/m/Y', $row->end_day_of_leave).'</td>';
-																	echo ($row->with_halfday == 1) ? '<td>Yes, '.$part_halfday.'</td>' : '<td>No</td>';
-																	echo '<td>'.date('d/m/Y', $row->date_return).'</td>';
-																	echo '<td width="400"><a class="tooltip-test" data-placement="bottom" title="'.$row->details.'" style="cursor:pointer">'.$details.'</a></td>';
-																	echo '<td>'.$row->total_days_away.'</td>';
+																	echo '<td><a id="update_leave_req" onclick="editLeaveRequestbyID('.$row->leave_request_id.');" title="Edit" class="pull-left"><span class="badge btn btn-success"><i class="fa fa-edit"></i></span></a> &nbsp;&nbsp;&nbsp;'.date('d/m/Y', $row->date).'</td>';
+																	echo '<td>'.$row->leave_type.'</td>';
+																	echo '<td width="180">'.date('d/m/Y', $row->start_day_of_leave).' - '.date('d/m/Y', $row->end_day_of_leave).'</td>';
+																	echo ($row->partial_day == 1) ? '<td>Yes, '.$partial_part.'</td>' : '<td>No</td>';
+																	echo '<td width="180">'.date('d/m/Y', $row->date_return).'</td>';
+																	echo '<td width="250"><a class="tooltip-test" data-placement="bottom" title="'.$row->details.'" style="cursor:pointer">'.$details.'</a></td>';
+																	echo ($row->partial_day == 1) ? '<td> '.$get_hrs.' hr(s)'.$get_mins.'</td>' : '<td> '.$total_days .' day(s)</td>';
 																	echo '<td>'.$approval.'</td>';
 																	echo "</tr>";
 
@@ -188,12 +210,11 @@
 														  	<thead>
 														  		<th>Date Applied</th>														  		
 														  		<th>Leave Type</th> 		
-														  		<th>Start Date</th>
-														  		<th>End Date</th>
-														  		<th>Halfday</th>
+														  		<th>Start Date - End Date</th>
+														  		<th>Partial Day (Time In/Out)*</th>
 														  		<th>Date Return</th>														  		
 														  		<th>Purpose</th>
-														  		<th>Total Days</th>
+														  		<th>Total Leave</th>
 														  		<th>Approved by</th>
 														  		<th>Approved Date</th>
 														  	</thead>
@@ -203,6 +224,8 @@
 																if ($user->supervisor_id == 3) {
 																	foreach ($approved_leaves_by_md as $row):
 																
+																		$leave_alloc = $this->users->leave_remaining($row->user_id);
+
 																		$details = strip_tags($row->details);
 
 																		if (strlen($details) > 45) {
@@ -210,31 +233,54 @@
 																		    $details = substr($stringCut, 0, strrpos($stringCut, ' ')).'... '; 
 																		}
 
-																		$part_halfday = '';
+																		$partial_part = '';
 
-																		if ($row->halfday_part == 1){
-																			$part_halfday = 'morning';
-																		} elseif ($row->halfday_part == 2){
-																			$part_halfday = 'afternoon';
+																		if ($row->partial_part == 1){
+																			$partial_part = 'Arrived Late ('.$row->partial_time.')';
+																		} elseif ($row->partial_part == 2){
+																			$partial_part = 'Depart Early ('.$row->partial_time.')';
 																		} else {
-																			$part_halfday = 'N/A';
+																			$partial_part = 'N/A';
+																		}
+
+																		if (strpos($row->total_days_away, '.') == TRUE && $row->partial_day == 1){
+																			$get_hrs = substr($row->total_days_away, 0, 1);
+																			$get_mins = substr($row->total_days_away, 2, 2);
+
+																			switch ($get_mins) {
+																			    case '25':
+																			        $get_mins = ' & 15 mins';
+																			        break;
+																			    case '50':
+																			        $get_mins = ' & 30 mins';
+																			        break;
+																			    case '75':
+																			        $get_mins = ' & 45 mins';
+																			        break;
+																			    default:
+																			    	$get_mins = '';
+																			    	break;
+																			}
+																		} else {
+																			$total_days = $row->total_days_away / $leave_alloc->no_hrs_of_work;
 																		}
 
 																		echo '<tr>';
 																		echo '<td>'.date('d/m/Y', $row->date_applied).'</td>';
 																		echo '<td>'.$row->leave_type.'</td>';
-																		echo '<td>'.date('d/m/Y', $row->start_day_of_leave).'</td>';
-																		echo '<td>'.date('d/m/Y', $row->end_day_of_leave).'</td>';
-																		echo ($row->with_halfday == 1) ? '<td>Yes, '.$part_halfday.'</td>' : '<td>No</td>';
+																		echo '<td width="100">'.date('d/m/Y', $row->start_day_of_leave).' - '.date('d/m/Y', $row->end_day_of_leave).'</td>';
+																		echo ($row->partial_day == 1) ? '<td width="100">Yes, '.$partial_part.'</td>' : '<td width="100">No</td>';
 																		echo '<td>'.date('d/m/Y', $row->date_return).'</td>';
-																		echo '<td><a class="tooltip-test" data-placement="bottom" title="'.$row->details.'" style="cursor:pointer">'.$details.'</a></td>';
-																		echo '<td>'.$row->total_days_away.'</td>';
+																		echo '<td width="120"><a class="tooltip-test" data-placement="bottom" title="'.$row->details.'" style="cursor:pointer">'.$details.'</a></td>';
+																		echo ($row->partial_day == 1) ? '<td> '.$get_hrs.' hr(s)'.$get_mins.'</td>' : '<td> '.$total_days .' day(s)</td>';
 																		echo '<td>'.$row->md_fname." ".$row->md_lname.'</td>';
 																		echo '<td>'.date('d/m/Y', $row->date_approved).'</td>';
 																		echo "</tr>";
 																	endforeach;
 																} else {
 																	foreach ($approved_leaves as $row):
+
+																		$leave_alloc = $this->users->leave_remaining($row->user_id);
 																
 																		$details = strip_tags($row->details);
 
@@ -243,25 +289,46 @@
 																		    $details = substr($stringCut, 0, strrpos($stringCut, ' ')).'... '; 
 																		}
 
-																		$part_halfday = '';
+																		$partial_part = '';
 
-																		if ($row->halfday_part == 1){
-																			$part_halfday = 'morning';
-																		} elseif ($row->halfday_part == 2){
-																			$part_halfday = 'afternoon';
+																		if ($row->partial_part == 1){
+																			$partial_part = 'Arrived Late ('.$row->partial_time.')';
+																		} elseif ($row->partial_part == 2){
+																			$partial_part = 'Depart Early ('.$row->partial_time.')';
 																		} else {
-																			$part_halfday = 'N/A';
+																			$partial_part = 'N/A';
+																		}
+
+																		if (strpos($row->total_days_away, '.') == TRUE && $row->partial_day == 1){
+																			$get_hrs = substr($row->total_days_away, 0, 1);
+																			$get_mins = substr($row->total_days_away, 2, 2);
+
+																			switch ($get_mins) {
+																			    case '25':
+																			        $get_mins = ' & 15 mins';
+																			        break;
+																			    case '50':
+																			        $get_mins = ' & 30 mins';
+																			        break;
+																			    case '75':
+																			        $get_mins = ' & 45 mins';
+																			        break;
+																			    default:
+																			    	$get_mins = '';
+																			    	break;
+																			}
+																		} else {
+																			$total_days = $row->total_days_away / $leave_alloc->no_hrs_of_work;
 																		}
 
 																		echo '<tr>';
 																		echo '<td>'.date('d/m/Y', $row->date_applied).'</td>';
 																		echo '<td>'.$row->leave_type.'</td>';
-																		echo '<td>'.date('d/m/Y', $row->start_day_of_leave).'</td>';
-																		echo '<td>'.date('d/m/Y', $row->end_day_of_leave).'</td>';
-																		echo ($row->with_halfday == 1) ? '<td>Yes, '.$part_halfday.'</td>' : '<td>No</td>';
+																		echo '<td width="100">'.date('d/m/Y', $row->start_day_of_leave).' - '.date('d/m/Y', $row->end_day_of_leave).'</td>';
+																		echo ($row->partial_day == 1) ? '<td width="150">Yes, '.$partial_part.'</td>' : '<td width="150">No</td>';
 																		echo '<td>'.date('d/m/Y', $row->date_return).'</td>';
-																		echo '<td><a class="tooltip-test" data-placement="bottom" title="'.$row->details.'" style="cursor:pointer">'.$details.'</a></td>';
-																		echo '<td>'.$row->total_days_away.'</td>';
+																		echo '<td width="120"><a class="tooltip-test" data-placement="bottom" title="'.$row->details.'" style="cursor:pointer">'.$details.'</a></td>';
+																		echo ($row->partial_day == 1) ? '<td> '.$get_hrs.' hrs'.$get_mins.'</td>' : '<td> '.$total_days .' days</td>';
 
 																		foreach ($approved_leaves_by_md as $row2):
 																			if ($row->leave_request_id == $row2->leave_request_id){
@@ -290,18 +357,19 @@
 														  	<thead>
 														  		<th>Date Applied</th>														  		
 														  		<th>Leave Type</th> 		
-														  		<th>Start Date</th>
-														  		<th>End Date</th>
-														  		<th>Halfday</th>
+														  		<th>Start Date - End Date</th>
+														  		<th>Partial Day (Time In/Out)*</th>
 														  		<th>Date Return</th>														  		
 														  		<th>Purpose</th>
-														  		<th>Total Days</th>
+														  		<th>Total Leave</th>
 														  		<th>Unapproved by</th>
 														  		<th>Unapproved Date</th>
 														  	</thead>
 														  	<tbody>
 															<?php  
 																foreach ($unapproved_leaves as $row):
+
+																	$leave_alloc = $this->users->leave_remaining($row->user_id);
 																
 																	$details = strip_tags($row->details);
 
@@ -310,31 +378,52 @@
 																	    $details = substr($stringCut, 0, strrpos($stringCut, ' ')).'... '; 
 																	}
 
-																	$part_halfday = '';
+																	$partial_part = '';
 
-																	if ($row->halfday_part == 1){
-																		$part_halfday = 'morning';
-																	} elseif ($row->halfday_part == 2){
-																		$part_halfday = 'afternoon';
+																	if ($row->partial_part == 1){
+																		$partial_part = 'Arrived Late ('.$row->partial_time.')';
+																	} elseif ($row->partial_part == 2){
+																		$partial_part = 'Depart Early ('.$row->partial_time.')';
 																	} else {
-																		$part_halfday = 'N/A';
+																		$partial_part = 'N/A';
+																	}
+
+																	if (strpos($row->total_days_away, '.') == TRUE && $row->partial_day == 1){
+																		$get_hrs = substr($row->total_days_away, 0, 1);
+																		$get_mins = substr($row->total_days_away, 2, 2);
+
+																		switch ($get_mins) {
+																		    case '25':
+																		        $get_mins = ' & 15 mins';
+																		        break;
+																		    case '50':
+																		        $get_mins = ' & 30 mins';
+																		        break;
+																		    case '75':
+																		        $get_mins = ' & 45 mins';
+																		        break;
+																		    default:
+																		    	$get_mins = '';
+																		    	break;
+																		}
+																	} else {
+																		$total_days = $row->total_days_away / $leave_alloc->no_hrs_of_work;
 																	}
 
 																	echo '<tr>';
 																	echo '<td>';
 
 																	if ($row->supervisor_id != 3){
-																		echo '<a id="update_leave_req" onclick="editLeaveRequestbyID('.$row->leave_request_id.');" title="Edit this Leave Application" class="pull-left"><span class="badge btn btn-success"><i class="fa fa-edit"></i></span></a> &nbsp;&nbsp;&nbsp;';
+																		echo '<a id="update_leave_req" onclick="editLeaveRequestbyID('.$row->leave_request_id.');" title="Edit" class="pull-left"><span class="badge btn btn-success"><i class="fa fa-edit"></i></span></a> &nbsp;&nbsp;&nbsp;';
 																	}
 																	
 																	echo date('d/m/Y', $row->date_applied).'</td>';
 																	echo '<td>'.$row->leave_type.'</td>';
-																	echo '<td>'.date('d/m/Y', $row->start_day_of_leave).'</td>';
-																	echo '<td>'.date('d/m/Y', $row->end_day_of_leave).'</td>';
-																	echo ($row->with_halfday == 1) ? '<td>Yes, '.$part_halfday.'</td>' : '<td>No</td>';
+																	echo '<td width="100">'.date('d/m/Y', $row->start_day_of_leave).' - '.date('d/m/Y', $row->end_day_of_leave).'</td>';
+																	echo ($row->partial_day == 1) ? '<td width="150">Yes, '.$partial_part.'</td>' : '<td width="150">No</td>';
 																	echo '<td>'.date('d/m/Y', $row->date_return).'</td>';
-																	echo '<td><a class="tooltip-test" data-placement="bottom" title="'.$row->details.'" style="cursor:pointer">'.$details.'</a></td>';
-																	echo '<td>'.$row->total_days_away.'</td>';
+																	echo '<td width="120"><a class="tooltip-test" data-placement="bottom" title="'.$row->details.'" style="cursor:pointer">'.$details.'</a></td>';
+																	echo ($row->partial_day == 1) ? '<td> '.$get_hrs.' hr(s)'.$get_mins.'</td>' : '<td> '.$total_days .' day(s)</td>';
 																	echo '<td>'.$row->approved_fname." ".$row->approved_lname.'&nbsp;&nbsp;<a class="tooltip-test" data-placement="bottom" title="'.$row->action_comments.'"><span class="badge btn btn-danger"><i class="fa fa-comment"></i></span></a></td>';
 																	echo '<td>'.date('d/m/Y', $row->date_approved).'</td>';
 																	echo "</tr>";

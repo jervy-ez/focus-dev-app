@@ -19,7 +19,7 @@
 						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
 					</li>
 					<li>
-						<a href="<?php echo base_url(); ?>users/company_matrix"><i class="fa fa-university"></i> Company Chart</a>
+						<a href="<?php echo base_url(); ?>users/company_matrix"><i class="fa fa-university"></i> Org. Chart</a>
 					</li>
 
 

@@ -4,7 +4,7 @@ class Purchase_order_m extends CI_Model{
 
 	public function get_po_list(){
 
-		$query = $this->db->query("SELECT `job_sub_category`.`job_sub_cat`,`supplier_cat`.`supplier_cat_name`,`works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`cd`.`company_name` as `client_name`,`cn`.`company_name` as `contractor_name`,`users`.`user_first_name`,`users`.`user_last_name`,`works`.`price`,`works`.`other_work_desc`,`works`.`contractor_type`,`works`.`work_cpo_date`, `project`.`focus_company_id`,`project`.`project_manager_id`,UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) AS `cpo_tmpstp_date`
+		$query = $this->db->query("SELECT `job_sub_category`.`job_sub_cat`,`supplier_cat`.`supplier_cat_name`,`works`.`company_client_id`,`works`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`cd`.`company_name` as `client_name`,`cn`.`company_name` as `contractor_name`,`users`.`user_first_name`,`users`.`user_last_name`,`works`.`price`,`works`.`other_work_desc`,`works`.`contractor_type`,`works`.`work_cpo_date`, `project`.`focus_company_id`,`project`.`project_manager_id`,UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) AS `cpo_tmpstp_date`
 			FROM `works`
 			LEFT JOIN `project` ON `project`.`project_id` = `works`.`project_id`
 			LEFT JOIN `job_sub_category` ON `job_sub_category`.`job_sub_cat_id` = `works`.`work_con_sup_id`
@@ -113,7 +113,7 @@ class Purchase_order_m extends CI_Model{
 	}
 
 	public function get_work_joinery_list(){
-		$query = $this->db->query("SELECT `work_joinery`.`work_joinery_id`,`work_joinery`.`joinery_id`,`joinery`.`joinery_name`,`work_joinery`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`cd`.`company_name` as `client_name`,`cn`.`company_name` as `contractor_name`,`users`.`user_first_name`,`users`.`user_last_name`,`work_joinery`.`price`,`work_joinery`.`work_cpo_date`,`project`.`project_manager_id`,UNIX_TIMESTAMP( STR_TO_DATE(`work_joinery`.`work_cpo_date`, '%d/%m/%Y') ) AS `cpo_tmpstp_date`
+		$query = $this->db->query("SELECT `work_joinery`.`work_joinery_id`,`work_joinery`.`joinery_id`,`work_joinery`.`company_client_id`,`joinery`.`joinery_name`,`work_joinery`.`works_id`,`project`.`project_id`,`project`.`job_date`,`project`.`project_name`,`cd`.`company_name` as `client_name`,`cn`.`company_name` as `contractor_name`,`users`.`user_first_name`,`users`.`user_last_name`,`work_joinery`.`price`,`work_joinery`.`work_cpo_date`,`project`.`project_manager_id`,UNIX_TIMESTAMP( STR_TO_DATE(`work_joinery`.`work_cpo_date`, '%d/%m/%Y') ) AS `cpo_tmpstp_date`
 			FROM `work_joinery` 
 			LEFT JOIN `works` ON `works`.`works_id` = `work_joinery`.`works_id`
 			LEFT JOIN `joinery` ON `joinery`.`joinery_id` = `work_joinery`.`joinery_id`
