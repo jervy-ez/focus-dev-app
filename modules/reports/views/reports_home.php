@@ -2,7 +2,6 @@
 <?php $this->load->module('company'); ?>
 <?php $this->load->module('projects'); ?>
 <?php $this->load->module('purchase_order'); ?>
-<?php $this->load->module('bulletin_board'); ?>
 <!-- title bar -->
 <div class="container-fluid head-control">
 	<div class="container-fluid">
@@ -23,9 +22,9 @@
 					</li>
 					<li>
 						<a href="<?php echo base_url(); ?>projects" class="btn-small">Projects</a>
-					</li>		
+					</li>
 					<li>
-						<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
+						<a href="" class="btn-small"><i class="fa fa-magic"></i> Tour</a>
 					</li>
 				</ul>
 			</div>
@@ -45,7 +44,7 @@
 						<div class="col-md-12">
 							<div class="left-section-box po">
 
-								<?php if(isset($error)): ?>
+								<?php if(@$error): ?>
 									<div class="pad-10 no-pad-t">
 										<div class="border-less-box alert alert-danger fade in">
 											<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -91,27 +90,17 @@
 										</div>
 										
 										<div class="col-lg-8 col-md-12">
-											<div class="pad-left-15 pad-right-10 clearfix box-tabs">
-												<div class="pull-right">
-													<div class="input-group  pull-right" style="width:350px;margin-right: -5px;">
-														<span class="input-group-addon">PO Number</span>
-
-														<input type="text" class="form-control" placeholder="Search PO Number" id="po_number_srch_rec">
-														<span class="input-group-addon btn btn-info srch_btn_po_rec" id="">Search</span>
-													</div>
-												</div>
-
-
+											<div class="pad-left-15 pad-right-10 clearfix box-tabs">	
 												<ul id="myTab" class="nav nav-tabs pull-right">
 													<li class="active">
 														<a href="#outstanding" data-toggle="tab"><i class="fa fa-level-up fa-lg"></i> Outstanding</a>
 													</li>
-													<li class="" >
-														<a href="#reconciled" data-toggle="tab" id="search_reconciled_btn_tab"><i class="fa fa-check-square-o fa-lg"></i> Search Reconciled</a>
-													</li>
 													<li class="">
-														<a href="" data-toggle="modal" data-target="#po_date_filter_modal"><i class="fa fa-filter fa-lg"></i> Filter by Date</a>
+														<a href="#reconciled" data-toggle="tab"><i class="fa fa-check-square-o fa-lg"></i> Reconciled</a>
 													</li>
+                          <li class="">
+                            <a href="" data-toggle="modal" data-target="#po_date_filter_modal"><i class="fa fa-filter fa-lg"></i> Filter by Date</a>
+                          </li>
 												</ul>
 											</div>
 										</div>
@@ -128,19 +117,11 @@
 
 													<div class="box-area po-area">
 														<table id="po_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-															<thead><tr><th>PO Number</th><th>Project Number</th><th>CPO Date</th><th>Job Description</th><th>Contractor</th><th>Project Name</th><th>Job Date</th><th>Client</th><th>Project Manager</th><th>Price</th><th>Balance</th><th>cpo_tmpstp_date</th></tr></thead>
+															<thead><tr><th>PO Number</th><th>Project Number</th><th>CPO Date</th><th>Job Description</th><th>Contractor</th><th>Project Name</th><th>Job Date</th><th>Client</th><th>Project Manager</th><th>Price</th><th>Balance</th></tr></thead>
 															<tbody>
 
 																<?php
-
-																$total_price_exgst = 0;
-																$total_price_incgst = 0;
-
 																	foreach ($po_list->result_array() as $row){
-
-																		$comp_insurance_status = $this->purchase_order->check_contractor_insurance($row['company_client_id']);
-
-																		$balance_a = $this->purchase_order->check_balance_po($row['works_id']);
 
                                     $prj_defaults = $this->projects->display_project_applied_defaults($row['project_id']);
 
@@ -162,45 +143,24 @@
 																			}
 																		}else{ }
 
-
-																		$total_price_exgst = $row['price'] + $total_price_exgst;
-
-																		$inc_gst_price = $this->purchase_order->ext_to_inc_gst($row['price'],$prj_defaults['admin_gst_rate']);
-
-																		$total_price_incgst = $inc_gst_price + $total_price_incgst;
-
-																		echo '</a></td><td id="'.$comp_insurance_status.'"><span class="'.$comp_insurance_status.'">'.$row['contractor_name'].'</span></td><td>'.$row['project_name'].'</td><td>'.$row['job_date'].'</td><td>'.$row['client_name'].'</td><td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td><td><span class="ex-gst">'.number_format($row['price'],2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($inc_gst_price,2).'</span></td>';
-                                    echo '<td><span class="ex-gst">'.number_format($balance_a,2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($this->purchase_order->ext_to_inc_gst($balance_a,$prj_defaults['admin_gst_rate']),2).'</span></td>';
-                                    echo '<td>'.$row['cpo_tmpstp_date'].'</td>';
+																		echo '</a></td><td>'.$row['contractor_name'].'</td><td>'.$row['project_name'].'</td><td>'.$row['job_date'].'</td><td>'.$row['client_name'].'</td><td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td><td>'.number_format($row['price'],2).'</td>';
+                                    echo '<td>'.number_format($this->purchase_order->check_balance_po($row['works_id']),2).'</td>';
                                     echo '</tr>';
 																  }
 																?>
 
-                                <?php  
+                                <?php 
                                   foreach ($work_joinery_list->result_array() as $row_j){
 
-
-																		$comp_insurance_status = $this->purchase_order->check_contractor_insurance($row_j['company_client_id']);
-
-                                  	$total_price_exgst = $row_j['price'] + $total_price_exgst;
                                     $j_prj_defaults = $this->projects->display_project_applied_defaults($row_j['project_id']);
-
-
-                                  	$inc_gst_price_j = $this->purchase_order->ext_to_inc_gst($row_j['price'],$j_prj_defaults['admin_gst_rate']);
-
-                                  	$total_price_incgst = $inc_gst_price_j + $total_price_incgst;
-
-
-									$balance_b = $this->purchase_order->check_balance_po($row_j['works_id'],$row_j['work_joinery_id']);
 
                                     echo '<tr id="'.$j_prj_defaults['admin_gst_rate'].'"><td><a href="#" data-toggle="modal" data-target="#invoice_po_modal" data-backdrop="static" onclick="select_po_item(\''.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'-'.$row_j['project_id'].'\');" id="'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'-'.$row_j['project_id'].'" class="select_po_item">'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'</a></td><td><a href="'.base_url().'projects/view/'.$row_j['project_id'].'" >'.$row_j['project_id'].'</a></td><td>'.$row_j['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row_j['project_id'].'/'.$row_j['works_id'].'">';
                                     echo $row_j['joinery_name'];
-                                    echo '</a></td><td id="'.$comp_insurance_status.'"><span class="'.$comp_insurance_status.'">'.$row_j['contractor_name'].'</span></td><td>'.$row_j['project_name'].'</td><td>'.$row_j['job_date'].'</td><td>'.$row_j['client_name'].'</td><td>'.$row_j['user_first_name'].' '.$row_j['user_last_name'].'</td><td><span class="ex-gst">'.number_format($row_j['price'],2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($inc_gst_price_j,2).'</span></td>';
-                                    echo '<td><span class="ex-gst">'.number_format($balance_b,2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($this->purchase_order->ext_to_inc_gst($balance_b,$j_prj_defaults['admin_gst_rate']),2).'</span></td>';
-                                    echo '<td>'.$row_j['cpo_tmpstp_date'].'</td>';
+                                    echo '</a></td><td>'.$row_j['contractor_name'].'</td><td>'.$row_j['project_name'].'</td><td>'.$row_j['job_date'].'</td><td>'.$row_j['client_name'].'</td><td>'.$row_j['user_first_name'].' '.$row_j['user_last_name'].'</td><td>'.number_format($row_j['price'],2).'</td>';
+                                    echo '<td>'.number_format($this->purchase_order->check_balance_po($row_j['works_id'],$row_j['work_joinery_id']),2).'</td>';
                                     echo '</tr>';
                                   } 
-                               ?>
+                                ?>
 
 															</tbody>
 														</table>
@@ -215,48 +175,51 @@
 												<div class="m-bottom-15 clearfix">
 
 												<div class="box-area po-area">
-
-														<div id="" class="">
-														</div>
-
-														<div class="row m-3 m-bottom-10"><div class="col-xs-6"><div class="" id="">
-	
-															<p>The reconciled PO list is moved, You can click <a class="btn btn-xs btn-info"  href="<?php echo base_url(); ?>purchase_order/reconciled">Here</a> to view full reconciled list.</p>
-</div></div>
-
-
-
-<div class="col-xs-6"><div id="" class="">
-
-
-
-
-
-</div></div></div>
-
-<style type="text/css">
-	.red_bad{
-		color: red;
-		font-weight: bold;
-	}
-
-	.blue_ok{
-		/*color: blue;
-		font-weight: bold;*/
-	}
-</style>
-
-
-
-
-
-														<table class="table table-striped table-bordered" cellspacing="0" width="100%">
+														<table id="reconciled_list_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
 															<thead><tr><th>PO Number</th><th>Project Number</th><th>CPO Date</th><th>Job Description</th><th>Contractor</th><th>Project Name</th><th>Reconciled Date</th><th>Client</th><th>Project Manager</th><th>Price</th><th>Balance</th></tr></thead>
-															<tbody class="dynamic_search_result_reconciled_list">
-																<tr><td colspan="11">Please input your PO number in the search field.</td></tr>
-															</tbody>
-														</table> 
+                              <tbody>
 
+                              <?php
+                                  foreach ($reconciled_list->result_array() as $row){
+
+                                    echo '<tr><td><a href="#" data-toggle="modal" data-target="#reconciliated_po_modal" data-backdrop="static" id="'.$row['works_id'].'-'.$row['project_id'].'" onclick="return_outstanding_po_item(\''.$row['works_id'].'-'.$row['project_id'].'\');" class="return_outstanding_po_item">'.$row['works_id'].'</a></td><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row['project_id'].'/'.$row['works_id'].'">';
+
+                                    if($row['contractor_type']==2){
+
+                                      if($row['job_sub_cat']=='Other'){
+                                        echo $row['other_work_desc'];
+                                      }else{ 
+                                        echo $row['job_sub_cat'];
+                                      }
+
+                                    }elseif($row['contractor_type']==3){
+                                      if($row['supplier_cat_name']=='Other'){
+                                        echo $row['other_work_desc'];
+                                      }else{
+                                        echo $row['supplier_cat_name'];
+                                      }
+                                    }else{ }
+
+                                    echo '</a></td><td>'.$row['contractor_name'].'</td><td>'.$row['project_name'].'</td><td>'.$row['reconciled_date'].'</td><td>'.$row['client_name'].'</td><td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td><td>'.number_format($row['price'],2).'</td>';
+                                    echo '<td>'.number_format($this->purchase_order->check_balance_po($row['works_id']),2).'</td>';
+                                    echo '</tr>';
+                                  }
+                                ?>
+
+
+
+																<?php 
+                                  foreach ($reconciled_list_joinery->result_array() as $row_j){
+                                    echo '<tr><td><a href="#" data-toggle="modal" data-target="#reconciliated_po_modal" data-backdrop="static" id="'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'/'.$row_j['project_id'].'" onclick="return_outstanding_po_item(\''.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'/'.$row_j['project_id'].'\');" class="select_po_item">'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'</a></td><td><a href="'.base_url().'projects/view/'.$row_j['project_id'].'" >'.$row_j['project_id'].'</a></td><td>'.$row_j['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row_j['project_id'].'/'.$row_j['works_id'].'">';
+                                    echo $row_j['joinery_name'];
+                                    echo '</a></td><td>'.$row_j['contractor_name'].'</td><td>'.$row_j['project_name'].'</td><td>'.$row_j['reconciled_date'].'</td><td>'.$row_j['client_name'].'</td><td>'.$row_j['user_first_name'].' '.$row_j['user_last_name'].'</td><td>'.number_format($row_j['price'],2).'</td>';
+                                    echo '<td>'.number_format($this->purchase_order->check_balance_po($row_j['works_id'],$row_j['work_joinery_id']),2).'</td>';
+                                    echo '</tr>';
+                                  } 
+                                ?>
+
+															</tbody>
+														</table>
 													</div>
 												</div>
 											</div>
@@ -273,68 +236,9 @@
 	</div>
 </div>
 
-
-<script type="text/javascript">
-
- 
-	
-
-
-  $('input#po_number_srch_rec').on("keyup", function(e) { //number_only number only
-    var po_number_srch_rec = $(this).val();
-    po_number_srch_rec = po_number_srch_rec.replace(/[^\d]/g,'');
-    $(this).val(po_number_srch_rec);
-
-    if($(this).val().length < 1 ){
-    	var companyTable = $('#po_table').dataTable();
-        companyTable.fnFilter('','0'); 
-
-        $('.dynamic_search_result_reconciled_list').html('<tr><td colspan="11">Please input your PO number in the search field.</td></tr>');
-    }
-
-
-  });
-
-  $('.srch_btn_po_rec').click(function() {
-    $('select#rec_outstading_pm').val('');
-    var po_number_srch_rec = $('input#po_number_srch_rec').val();
-    if(po_number_srch_rec == ''){
-      $('input#po_number_srch_rec').addClass('has-error');
-    }else{
-      $('input#po_number_srch_rec').removeClass('has-error');
-
-      $('#loading_modal').modal({"backdrop": "static", "show" : true} );
-      setTimeout(function(){
-        $('#loading_modal').modal('hide');
-      },1000);
-
-		$('input#po_number_srch_rec').focus();
-
-      ajax_data(po_number_srch_rec,'purchase_order/get_reconciled_result','.dynamic_search_result_reconciled_list');
-
-
-
- 
-    var companyTable = $('#po_table').dataTable();
-    //alert($(this).val());   
-        companyTable.fnFilter(po_number_srch_rec,'0'); 
-
-
-
-
-    }
-  });
-
- 
-
-
-
-</script>
-
 <!-- Modal -->
 <div class="modal fade" id="invoice_po_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-  <form method="post" action="<?php base_url(); ?>purchase_order/insert_work_invoice">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title" id="myModalLabel">Purchase Order</h4>
@@ -345,16 +249,16 @@
 
       			<div class="col-sm-12 border-bottom">
       				<div class="clearfix col-sm-6">
-      					<p>PO Number: <strong class="po_number_mod">00/00</strong></p>
+      					<p>PO Number: <strong class="po_number_mod">0000/0000</strong></p>
       				</div>
       				<div class="clearfix col-sm-6">
       					<p>Description: <strong class="po_desc_mod">Xxxx</strong></p>
       				</div>
       				<div class="clearfix col-sm-6">
-      					<p>Total: <strong class="po_total_mod">$00.00</strong> ex-gst</p>
+      					<p>Total: <strong class="po_total_mod">$00000</strong> ex-gst</p>
       				</div>
       				<div class="clearfix col-sm-6">
-      					<p>Balance Ext GST: <strong class="po_balance_mod">$0.00</strong></p>
+      					<p>Balance: <strong class="po_balance_mod">$0.00</strong></p>
       				</div>  				
       			</div>
 
@@ -377,8 +281,6 @@
             <input type="hidden" name="po_number_item" id="po_number_item" class="po_number_item">
             <input type="hidden" name="po_actual_balance" id="po_actual_balance" class="po_actual_balance">
             <input type="hidden" name="po_gst" id="po_gst" class="po_gst">
-            <input type="hidden" name="po_project_id" id="po_project_id" class="po_project_id">
-
 
       			<div class="col-sm-6">
       				<div class="clearfix m-top-15">
@@ -439,16 +341,13 @@
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Amount ext-gst</th>
+                  <th>Amount</th>
                   <th>Invoice Number</th>
-                  <th>Notes</th>
                 </tr>
               </thead>
               <tbody class="po_history">                
               </tbody>
             </table>
-
-            <p><span class="po_note_msg red_bad"></span></p>
       			</div>
  
       		</div>
@@ -456,11 +355,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default po_cancel_values" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-success po_set_values pull-right"><i class="fa fa-floppy-o"></i> Save</button>
-        <input type="submit" class="hide submit_po_screen" name="submit_po">
+        <button type="button" class="btn btn-success po_set_values"><i class="fa fa-floppy-o"></i> Save</button>
       </div>
     </div>
-    </form>
   </div>
 </div>
 
@@ -488,21 +385,18 @@
               </div>
               <div class="clearfix col-sm-6">
                 <p>Balance: <strong class="po_balance_mod">$0.00</strong></p>
-              </div>  
-
+              </div>          
             </div>
 
             
 
             <div class="col-sm-12 m-top-15">
-                <p>Note: <strong class="">Negative Value for Balance means "Over Paid"</strong></p>
               <table class="table table-bordered">
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Amount ext-gst</th>
+                  <th>Amount</th>
                   <th>Invoice Number</th>
-                  <th>Notes</th>
                 </tr>
               </thead>
               <tbody class="po_history return_outstanding">                
@@ -532,16 +426,6 @@
 			endif;
 		}
 		?>
-	</select>
-</div>
-
-
-
-<div id="" style="display:none;" class="cpo_date_filter">
-	<select id="cpo_date_filter" class="form-control  pull-right input-sm m-left-10"  style="width:200px;">
-		<option value="">Sort CPO Date</option>
-		<option value="asc">Ascending</option>
-		<option value="desc">Descending</option>
 	</select>
 </div>
 
@@ -576,25 +460,14 @@
   </div>
 </div>
 
-<div class="po_legend_o hide">
-	<p class="pad-top-5 m-left-10"> &nbsp;  &nbsp; <span class="ex-gst">$<?php echo number_format($total_price_exgst,2); ?>Ex GST</span> &nbsp;  &nbsp; <span class="inc-gst">$<?php echo number_format($total_price_incgst,2); ?> Inc GST</span></p>
-</div>
 
 <style type="text/css">
 	/*.po-area #companyTable_length, .po-area #companyTable_filter{
 		display: none;
 		visibility: hidden;
 	}*/
-	.ex-gst{
-		color: rgb(219, 0, 255);  font-weight: bold;
-	}
-
-	.inc-gst{
-		color: rgb(31, 121, 52);  font-weight: bold;
-	}
 </style>
-<?php $this->bulletin_board->list_latest_post(); ?>
 <?php $this->load->view('assets/logout-modal'); ?>
-
-
-<?php if($this->session->userdata('purchase_order') == 1 ): ?> <style type="text/css"> button.po_set_values{ display: block !important; }</style> <?php endif; ?>
+<script type="text/javascript">
+	
+</script>

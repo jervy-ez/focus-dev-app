@@ -59,7 +59,7 @@
 
 <div class="container-fluid">
 	<!-- Example row of columns -->
-	<div class="row">				
+	<div class="row">
 		<?php $this->load->view('assets/sidebar'); ?>
 		<div class="section col-sm-12 col-md-11 col-lg-11">
 			<div class="container-fluid">
@@ -1537,12 +1537,27 @@
 							<?php $job_date_access = $user_access_arr['20'];  ?> 
 							
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Job Date</label>											 
+								<label class="col-sm-4 control-label m-top-5">Job Date</label>											 
 								<div class="col-sm-8">										
 									<div class="job_date_access">
 										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Control" <?php echo ($job_date_access == 1 ? 'checked="true"' : ''); ?>>
 									</div>
 									<input type="hidden" class="" id="job_date_access" name="job_date_access" value="<?php echo $job_date_access; ?>">
+								</div>
+							</div>
+
+
+
+
+							<?php $purchase_order_access = $user_access_arr['21'];  ?> 
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-4 control-label m-top-5">Purchase Order</label>											 
+								<div class="col-sm-8  tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="Enables user to Reconcile a PO to a Contractor with incomplete insurance.">										
+									<div class="purchase_order_access">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Control" <?php echo ($purchase_order_access == 1 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="purchase_order_access" name="purchase_order_access" value="<?php echo $purchase_order_access; ?>">
 								</div>
 							</div>
 							

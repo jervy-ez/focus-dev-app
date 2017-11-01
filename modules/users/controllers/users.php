@@ -372,6 +372,7 @@ endif;
 		$quote_deadline = $_POST['quote_deadline'];
 		$leave_requests = $_POST['leave_requests'];
 		$job_date_access = $_POST['job_date_access'];
+		$purchase_order_access = $_POST['purchase_order_access'];
 
 		$role_raw = $_POST['role'];
 		$role_arr = explode('|',$role_raw);
@@ -379,7 +380,7 @@ endif;
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access);
+		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access,$purchase_order_access);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
 
