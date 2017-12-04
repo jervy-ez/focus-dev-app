@@ -563,7 +563,19 @@ foreach ($table_q->result() as $row){
 					//$project_total_percent = $project_total_values['variation_total'];
 					$project_total_percent = $row->variation_total;
 				}else{
-					$project_total_percent = $row->project_total * ($row->progress_percent/100);
+
+					if($row->is_paid == 1 ){
+
+						$project_total_percent = $row->invoiced_amount;
+
+					}else{
+
+						$project_total_percent = $row->project_total * ($row->progress_percent/100);
+
+					}
+
+
+
 				}
 
 
