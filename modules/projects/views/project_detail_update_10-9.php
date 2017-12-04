@@ -187,7 +187,7 @@
 												</script>
 
 
-<?php /*
+
 
 												<div class="col-sm-6 m-bottom-10 clearfix hide <?php if(form_error('sub_client_id')){ echo 'has-error has-feedback';} ?>">
 													<label for="sub_client_id" class="col-sm-3 control-label">Sub-Client</label>
@@ -231,7 +231,7 @@
 
 
 
-*/ ?>
+
 
 
 
@@ -276,9 +276,9 @@
 															</div>
 														<?php   else: ?>
 															<?php if($job_date == '' ): ?>
-																<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control text-right" name="job_date" value="<?php echo $job_date; ?>">
+																<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control datepicker text-right" name="job_date" value="<?php echo $job_date; ?>">
 															<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('job_date') == 1 || ( $this->session->userdata('user_role_id') == 7 && $job_category == 'Maintenance' )  ): ?>
-																<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
+																<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 															<?php else: ?>
 																<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled job-date-set text-right" ><?php echo $job_date; ?></p>
 																
@@ -964,7 +964,7 @@
 											<div class="box-area pad-5 clearfix">
 												<div class="clearfix <?php if(form_error('generalEmail')){ echo 'has-error has-feedback';} ?>">
 													<div class="">
-														<textarea class="form-control" id="project_notes" rows="20"  tabindex="30" name="comments" placeholder="Project Notes" style="resize: vertical;"><?php echo ($this->input->post('comments') ?  $this->input->post('comments') : $project_comments ); ?></textarea>														
+														<textarea class="form-control" id="project_notes" rows="5"  tabindex="30" name="comments" placeholder="Project Notes" style="resize: vertical;"><?php echo ($this->input->post('comments') ?  $this->input->post('comments') : $project_comments ); ?></textarea>														
 													</div>
 												</div>
 											</div>
@@ -1254,12 +1254,6 @@ $('#site_start').data("DateTimePicker").maxDate(e.date);
 $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 });
 
-
-
-$('.job-date-set').datetimepicker({
-   format: 'DD/MM/YYYY',maxDate: new Date
-});
-$('.job-date-set').val('<?php echo $job_date; ?>');
 
 
 </script>

@@ -539,7 +539,7 @@ class User_model extends CI_Model{
 			ON t1.`leave_actions_id` = t6.`leave_actions_id`
 			LEFT JOIN `users` AS t7
 			ON t2.`user_id` = t7.`user_id`
-			WHERE t1.`supervisor_id` <> '3' OR t7.`supervisor_id` = '3'");
+			WHERE t2.`is_active` = '1' AND t1.`supervisor_id` <> '3' OR t7.`supervisor_id` = '3'");
 		return $query;
 	}
 
@@ -658,8 +658,8 @@ class User_model extends CI_Model{
 		return $query;
 	}
 
-	public function update_leave_alloc($user_id, $annual_manual_entry, $personal_manual_entry, $no_hrs_of_work){
-		$query = $this->db->query("UPDATE `leave_allocation` SET `annual_manual_entry`='$annual_manual_entry', `personal_manual_entry`='$personal_manual_entry', `no_hrs_of_work`='$no_hrs_of_work' WHERE `user_id` = '$user_id'");
+	public function update_leave_alloc($user_id, $annual_manual_entry, $personal_manual_entry, $no_hrs_of_work, $current_date){
+		$query = $this->db->query("UPDATE `leave_allocation` SET `annual_manual_entry`='$annual_manual_entry', `personal_manual_entry`='$personal_manual_entry', `no_hrs_of_work`='$no_hrs_of_work', `date_log`='$current_date' WHERE `user_id` = '$user_id'");
 		return $query;
 	}
 
@@ -699,12 +699,12 @@ class User_model extends CI_Model{
 	}
 	
 	public function get_total_leave_annual($user_id) {
-		$query = $this->db->query("SELECT SUM(total_days_away) AS 'used_annual' FROM `leave_request` WHERE `is_approve` = '1' AND `leave_type_id` = '1' AND `user_id` = '$user_id'");
+		$query = $this->db->query("SELECT SUM(total_days_away) AS 'used_annual' FROM `leave_request` WHERE `is_approve` = '1' AND `leave_type_id` = '1'  AND `is_active` = '1' AND `user_id` = '$user_id'");
 		return $query;
 	}
 
 	public function get_total_leave_personal($user_id) {
-		$query = $this->db->query("SELECT SUM(total_days_away) AS 'used_personal' FROM `leave_request` WHERE `is_approve` = '1' AND `user_id` = '$user_id' AND `leave_type_id` IN('2','3','4')");
+		$query = $this->db->query("SELECT SUM(total_days_away) AS 'used_personal' FROM `leave_request` WHERE `is_approve` = '1' AND `user_id` = '$user_id'  AND `is_active` = '1' AND `leave_type_id` IN('2','3','4')");
 		return $query;
 	}
 }

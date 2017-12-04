@@ -22,6 +22,23 @@
 @media all {
 
 
+  .mr_comp_name{
+    width: 70% !important;
+    float: left;
+    
+    padding: 4px;
+    border-top: 1px solid #eee;
+  }
+
+
+  .mr_comp_val{
+    width: 15% !important;
+    float: left;
+    padding: 4px;
+        border-top: 1px solid #eee;
+  }
+
+
 
   body,html{
     margin-top: 0 !important;

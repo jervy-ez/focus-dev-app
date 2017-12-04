@@ -768,8 +768,8 @@
 														<div class="col-sm-6">								
 																<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
 																	<div class="input-group ">
-																		<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
 																		<input type="text" class="form-control text-center" id="annual_manual_entry" name="annual_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
+																		<span class="input-group-addon">days</span>
 																	</div>
 																<?php else: ?>
 																	<input type="hidden" name="annual_manual_entry" value="<?php echo (!empty($leave_alloc->annual_manual_entry) ? $leave_alloc->annual_manual_entry : '0' ); ?>">
@@ -788,9 +788,6 @@
 																	$annual_accumulated = $leave_alloc->annual_accumulated;
 																	$last_annual_accumulated = $leave_alloc->last_annual_accumulated;
 																	$total_annual_points = $annual_accumulated + $last_annual_accumulated;
-																	$earned_annual_points = $total_annual_points / 8;
-
-																	//echo $total_annual_points;
 																}
 															}
 														?>
@@ -800,7 +797,7 @@
 														<?php if ($user->is_offshore == 1) {?>
 															<label name="annual_day_earned" id="annual_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? round($earned_annual_points / $leave_alloc->no_hrs_of_work, 2).' days ('.$earned_annual_points.' hrs)' : '0 days' ); ?></label>
 														<?php } else { ?>
-															<label name="annual_day_earned" id="annual_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? floor($earned_annual_points).' days' : '0 days' ); ?></label>
+															<label name="annual_day_earned" id="annual_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($leave_alloc->total_annual) ? round($total_annual_points / $leave_alloc->no_hrs_of_work, 2).' days ('.$total_annual_points.' hrs)' : '0 days' ); ?></label>
 														<?php } ?>
 														</div>
 
@@ -825,8 +822,8 @@
 														<div class="col-sm-6">
 															<?php if( $this->session->userdata('users') > 1 || $this->session->userdata('is_admin') ==  1  ): ?>
 																<div class="input-group ">
-																	<span class="input-group-addon"><i class="fa fa-calendar-plus-o fa-lg"></i></span>
 																	<input type="text" class="form-control text-center" id="personal_manual_entry" name="personal_manual_entry" placeholder="Days" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?>" onkeypress="return isNumberKey(event)" onkeyup="startingAnnualCheck();">
+																	<span class="input-group-addon">days</span>
 																</div>
 															<?php else: ?>
 																<input type="hidden" name="personal_manual_entry" value="<?php echo (!empty($leave_alloc->personal_manual_entry) ? $leave_alloc->personal_manual_entry : '0' ); ?>">
@@ -845,9 +842,6 @@
 																	$personal_accumulated = $leave_alloc->personal_accumulated;
 																	$last_personal_accumulated = $leave_alloc->last_personal_accumulated;
 																	$total_personal_points = $personal_accumulated + $last_personal_accumulated;
-																	$earned_personal_points = $total_personal_points / 8;
-
-																	//echo $total_personal_points;
 																}
 															}
 														?>
@@ -857,7 +851,7 @@
 														<?php if ($user->is_offshore == 1) {?>
 															<label name="personal_day_earned" id="personal_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_annual_points) ? round($earned_personal_points / $leave_alloc->no_hrs_of_work, 2).' days ('.$earned_personal_points.' hrs)' : '0 days' ); ?></label>
 														<?php } else { ?>
-															<label name="personal_day_earned" id="personal_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($earned_personal_points) ? floor($earned_personal_points).' days' : '0 days' ); ?></label>
+															<label name="personal_day_earned" id="personal_day_earned" class="control-label" style="color: #F7901E; font-weight: bold;"><?php echo (!empty($leave_alloc->total_annual) ? round($total_personal_points / $leave_alloc->no_hrs_of_work, 2).' days ('.$total_personal_points.' hrs)' : '0 days' ); ?></label>
 														<?php } ?>
 														</div>
 

@@ -3508,7 +3508,7 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 
 			$result = $this->user_model->update_leave_alloc_sched($user_id_page, $annual_manual_entry, $personal_manual_entry, $checked_sched, $no_hrs_of_work, $timestamp_current, $last_annual_accumulated, $last_personal_accumulated);
 		} else {
-			$result = $this->user_model->update_leave_alloc($user_id_page, $annual_manual_entry, $personal_manual_entry, $no_hrs_of_work);
+			$result = $this->user_model->update_leave_alloc($user_id_page, $annual_manual_entry, $personal_manual_entry, $no_hrs_of_work, $timestamp_current);
 		}
 
 		$update_success = 'User account is now updated.';
@@ -3845,32 +3845,18 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 
 			if( $data['user'][0]->is_offshore == 0){		
 				//echo '<script>alert("local");</script>';
-				
+
+				$starting_annual_hrs = $annual_manual_entry * $no_hrs_of_work;
+				$starting_personal_hrs = $personal_manual_entry * $no_hrs_of_work;
+
 				$annual_accumulated = $counted_days * $annual_default_points;
-				$annual_day_earned = $annual_accumulated / 8;
-
-				$total_annual_points = $annual_manual_entry + floor($annual_day_earned);
-				$total_annual_hrs = $total_annual_points * $no_hrs_of_work;
-
-				$total_annual = round($total_annual_hrs, 2) - number_format($annual_consumed->used_annual, 2, '.', '');
-				// $total_annual_days = round($total_annual, 2) / $no_hrs_of_work;
-
 				$personal_accumulated = $counted_days * $personal_default_points;
-				$personal_day_earned = $personal_accumulated / 8;
+				
+				$total_annual = $annual_accumulated + $starting_annual_hrs;
+				$total_personal = $personal_accumulated + $starting_personal_hrs;
 
-				$total_personal_points = $personal_manual_entry + floor($personal_day_earned);
-				$total_personal_hrs = $total_personal_points * $no_hrs_of_work;
-
-				$total_personal = round($total_personal_hrs, 2) - number_format($personal_consumed->used_personal, 2, '.', '');
-				// $total_personal_days = round($total_personal, 2) / $no_hrs_of_work;
-
-				// echo $user_id.' - '.$total_personal_days.'<br>';
-
+				$this->user_model->update_earned_points($annual_accumulated, $personal_accumulated, $user_id);
 				$this->user_model->update_total_leave(round($total_annual, 2), round($total_personal, 2), $user_id);
-
-				if ($annual_accumulated <> $last_annual_accumulated && $personal_accumulated <> $last_personal_accumulated){
-					$this->user_model->update_earned_points($annual_accumulated, $personal_accumulated, $user_id);
-				}
 
 			} else {
 				// echo '<script>alert("offshore");</script>';

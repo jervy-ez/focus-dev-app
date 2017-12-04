@@ -1,5 +1,28 @@
-﻿﻿<div class="sign_in_bg" style="">
-<?php /* background-image:url('<?php echo base_url(); ?>img/SOJOURN_SEASONS_Aus_rules_football_2017.jpg') !important; */ ?>
+<div class="sign_in_bg" style=" background-image:url('<?php echo base_url(); ?>img/SOJOURN-CHRISTMAS-SEASONS-2017-2.jpg') !important; height: 99.9%; margin-top: 0px !important;">
+    
+<script src="<?php echo base_url(); ?>js/snow-it.min.js"></script>
+
+	<script type="text/javascript">
+	$.fn.snowit({
+
+  // min size of snowflake
+  minSize : 10,
+
+  // max size of snowflake
+  maxSize : 50,
+
+  // the number of flakes generated
+  total : 100,
+
+  // speed of flakes when fall down
+  speed: 75,
+
+  // color of snowflake
+  flakeColor : "#FFFFFF"
+  
+});
+	</script>
+
 	<?php if(@$error): ?>
 	<div class="container">
 		<div class="row">
@@ -47,7 +70,7 @@
 		<div class="row">
 			<div class="col-xs-12 col-md-6 col-md-offset-3 sign_form">
 				<h1 class="text-center">Sign in</h1>
-				<div class="well">
+				<div class="well"  style="border: 2px solid #b5b5b5; border-radius: 8px;">
 					<form class="form-horizontal" method="post" action="">					
 						
 						<div class="form-group">
@@ -92,4 +115,17 @@
 		margin-top: 0 !important;
 		padding-top: 0 !important;
 	}
+	
+	.lis-flake {
+	    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+    z-index: 30;
+    border: 0 !important;
+    
+}
 </style>

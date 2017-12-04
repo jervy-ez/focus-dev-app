@@ -1432,6 +1432,10 @@ $gp = 0;
 			$final_total_quoted = $final_total_quoted - 0.2;
 		}
 
+		if($project_id == 37770){
+			$final_total_quoted = $final_total_quoted - 0.41;
+		}
+
 		if($project_details['project_total'] != $final_total_quoted){
 			$this->projects_m->update_project_total($project_id,$final_total_quoted);
 		}
@@ -2176,6 +2180,16 @@ $gp = 0;
 				$job_date = $prev_project_details['job_date'];
 				$attempt = 1;
 			}
+		}
+
+
+		if($_POST['project_markup'] != $prev_project_details['markup']){
+			$person_did = $this->session->userdata('user_id');
+			$type = 'Project Markup';
+			$date = date("d/m/Y");
+			$time = date("H:i:s");
+			$actions = 'Changed the project markup from '.$prev_project_details['markup'].'% to '.$_POST['project_markup'].'%';
+			$this->user_model->insert_user_log($person_did,$date,$time,$actions,$project_id,$type);
 		}
 
 		$unaccepted_date = "";

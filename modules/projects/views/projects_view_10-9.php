@@ -410,13 +410,13 @@ estimate-->
 																			</div>
 																		<?php   else: ?>
 																			<?php if($job_date == '' ): ?>
-																				<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control  text-right"  id="job_date" name="job_date" value="<?php echo $job_date; ?>">
+																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control datepicker text-right"  id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('job_date') == 1 || ( $this->session->userdata('user_role_id') == 7 && $job_category == 'Maintenance' )  ): ?>
-																				<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
+																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php elseif( $this->session->userdata('company_project') == 1 && $job_category == 'Company' ): ?>
-																				<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
+																				<input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control datepicker text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>">
 																			<?php else: ?>
-																				<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled text-right" ><?php echo $job_date; ?></p>
+																				<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled job-date-set text-right" ><?php echo $job_date; ?></p>
 																				
 																			<?php endif; ?>
 																		<?php  endif; ?>
@@ -519,7 +519,7 @@ estimate-->
 																		<div class="col-sm-12 m-bottom-10 clearfix">
 																			<label for="quote_deadline" class="col-sm-4 control-label m-top-5 text-left">Client Quote Deadline</label>
 																			<div class="col-sm-8  col-xs-12 tooltip-enabled" data-original-title="Estimator deadline is set at one (1) working day prior to this by default">
-																				<input tabindex="8" type="text" placeholder="DD/MM/YYYY" class=" quote_deadline form-control text-right" id="quote_deadline" name="quote_deadline" value="<?php echo $quote_deadline_date; ?>">
+																				<input tabindex="8" type="text" placeholder="DD/MM/YYYY" class="form-control text-right" id="quote_deadline" name="quote_deadline" value="<?php echo $quote_deadline_date; ?>">
 																			</div>
 																		</div>
 																	<?php endif;  ?>
@@ -535,33 +535,11 @@ estimate-->
 
 
 <script type="text/javascript">
-
-
-
- $('.quote_deadline').val('<?php echo $quote_deadline_date; ?>');
- $('#job_date').val('<?php echo $job_date; ?>');
-
 $('#quote_deadline').datetimepicker({
-    daysOfWeekDisabled: [0,6],format: 'DD/MM/YYYY',
-useCurrent: false, //Important! See issue #1075
+    daysOfWeekDisabled: [0,6],format: 'DD/MM/YYYY'
 });
 
- 
-/*
-$('.job-date-set').datetimepicker({
-   format: 'DD/MM/YYYY',maxDate: new Date,
-useCurrent: true, //Important! See issue #1075
-});
-*/
-
-
-$("input.job-date-set").datetimepicker({
-  useCurrent: false,  format: 'DD/MM/YYYY',maxDate: moment().startOf('day').add(1, 'days').subtract(1, 'seconds')
-}).on('dp.show', function() {
-  return $(this).data('DateTimePicker').defaultDate('<?php echo $job_date; ?>');
-});
-
-
+$('#quote_deadline').val('<?php echo $quote_deadline_date; ?>');
 
 
 $('#site_start').datetimepicker({ format: 'DD/MM/YYYY' ,useCurrent: false});
@@ -780,9 +758,7 @@ $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 																			<div class="pad-15 no-pad-t">
 																				<hr />
 																				<h4><i class="fa fa-book"></i> Project Notes</h4>
-																			
-									<?php //echo nl2br($project_comments); ?>
-									<pre><?php echo $project_comments; ?></pre>
+																				<?php echo nl2br($project_comments); ?>
 																			</div>
 																		</div>
 

@@ -4597,7 +4597,7 @@ if($focus_copm_total != ''){
 
 
 			if($is_pie == ''){
-				echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+				echo '<div class="mr_comp_name col-sm-6 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 			}
 
 			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$raw_id,$comp_q);
@@ -4623,7 +4623,7 @@ if($focus_copm_total != ''){
 			if($is_pie != ''){
 				echo "['". str_replace("'","&apos;",$company_name)."', ".$compute_amount."],";
 			}else{
-				echo ' </div><div class="col-md-2 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+				echo ' </div><div class="mr_comp_val col-sm-4 col-md-2"><strong>'.number_format($percent,1).'%</strong></div>  <div class="mr_comp_val col-sm-4 col-md-3 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
 			}
 
 
@@ -8281,12 +8281,8 @@ $comp_total = array();
 		arsort($comp_total);
 
 		foreach ($comp_total as $raw_id => $compute_amount) {
-			if($report_sheet == ''){
-				echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
-			}
-
-			if($report_sheet == 'list'){
-				echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			if($report_sheet == '' || $report_sheet == 'list'){
+				echo '<div class="mr_comp_name col-sm-4 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 			}
 
 			$percent = round(100/($list_total/$compute_amount),1);
@@ -8319,12 +8315,12 @@ $comp_total = array();
 
 			if($report_sheet == 'list'){
 
-				echo ' </div><div class="col-md-2 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div><div class="col-md-3 col-sm-4"><i class="fa fa-usd"></i><strong>$ '.number_format($compute_amount).'</strong></div>';
+				echo ' </div><div class="mr_comp_val col-sm-4 col-md-2"><strong>'.number_format($percent,1).'%</strong></div><div class="mr_comp_val col-sm-4 col-md-3"><i class="fa fa-usd"></i><strong>$ '.number_format($compute_amount).'</strong></div>';
 
 			}elseif($report_sheet == 'pie'){
 				echo " ['".str_replace("'","&apos;",$comp_name[$raw_id] )."', ".$compute_amount."], ";
 			}else{
-				echo ' </div><div class="col-md-2 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+				echo ' </div><div class="col-sm-4 col-md-2"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-sm-4 col-md-3 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
 			}
 
 

@@ -184,7 +184,7 @@
 																		    	break;
 																		}
 																	} else {
-																		$total_days = $row->total_days_away / $leave_alloc->no_hrs_of_work;
+																		$total_days = floor($row->total_days_away / $leave_alloc->no_hrs_of_work);
 																	}
 
 																	echo '<tr>';
@@ -288,7 +288,7 @@
 																		    	break;
 																		}
 																	} else {
-																		$total_days = $row->total_days_away / $leave_alloc->no_hrs_of_work;
+																		$total_days = floor($row->total_days_away / $leave_alloc->no_hrs_of_work);
 																	}
 
 																	echo '<tr>';
