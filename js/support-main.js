@@ -867,6 +867,7 @@ function validate_progress_dates(date_id){
     var item_id = '';
 
     $('.po_set_values').show();
+     $('.po_note_msg').text('');
 
     var gst = $('a#'+obj_id).parent().parent().attr('id')/100;
     $('a#'+obj_id).parent().parent().find('td').each(function(){
@@ -891,7 +892,8 @@ function validate_progress_dates(date_id){
  
 
     if(item_id == 'red_bad'){
-      $('.po_set_values').hide();
+      $('.po_note_msg').text('Note: This contractor has incomplete insurance.');
+     $('.po_set_values').hide();   // toggle for admin access
     } 
 
 
