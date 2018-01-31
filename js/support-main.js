@@ -234,12 +234,15 @@ function invoice_payment_modal(element_obj){
   $('.po_balance_mod').text('0.00');
 
 
-  $('.amount_ext_gst').val(outstanding);
   outstanding = removeCommas(outstanding);
+  $('.amount_ext_gst').val(outstanding);
   var inc_gst_amount = parseFloat(outstanding) + parseFloat(outstanding*gst);
 
+  inc_gst_amount = parseFloat(Number(inc_gst_amount).toFixed(2));
 
-  $('.amount_inc_gst').val(numberWithCommas(inc_gst_amount));
+
+  inc_gst_amount = removeCommas( numberWithCommas(inc_gst_amount) );
+  $('.amount_inc_gst').val(inc_gst_amount);
 
   $('.invoice_current_value').val(outstanding);
   $('.invoice_current_value_inc_gst').val(inc_gst_amount);
@@ -1902,6 +1905,8 @@ $('#is_invoice_paid_check').click(function(){
   var invoice_current_value = $('.invoice_current_value').val();
   var invoice_current_value_inc_gst = $('.invoice_current_value_inc_gst').val();
 
+    invoice_current_value_inc_gst = parseFloat(Number(invoice_current_value_inc_gst).toFixed(2));
+
   if(this.checked) {
     $('.amount_ext_gst').val(invoice_current_value);
     $('.amount_inc_gst').val(invoice_current_value_inc_gst);
@@ -1935,11 +1940,15 @@ $('input.amount_ext_gst').on("keyup", function(e) {
   }
   var invoice_outstanding_value_input = Math.abs(invoice_outstanding_value_input);
 
-  var amount_ext_gst = Math.abs(amount_ext_gst);
+  var amount_ext_gst =  parseFloat( Math.abs(amount_ext_gst) );
 
 
   var invoice_outstanding_value = parseFloat(amount_ext_gst) + parseFloat(amount_ext_gst*gst);
-  invoice_outstanding_value = numberWithCommas(invoice_outstanding_value);
+
+    invoice_outstanding_value = parseFloat(Number(invoice_outstanding_value).toFixed(2));
+
+
+  //invoice_outstanding_value = numberWithCommas(invoice_outstanding_value);
 
   $('.amount_inc_gst').val(sign+invoice_outstanding_value);
 
@@ -1960,7 +1969,9 @@ $('input.amount_ext_gst').on("keyup", function(e) {
 
  po_balance_mod = po_balance_mod || '0.00';
  var po_balance_mod_final = po_balance_mod.toFixed('2');
- $('.po_balance_mod').text(sign+po_balance_mod_final);
+
+
+ $('.po_balance_mod').text( numberWithCommas( sign+po_balance_mod_final) );
 
 });
 
@@ -2139,6 +2150,9 @@ $('.vr_paid').click(function(){
   project_gst_amount = total_cost_progress * (project_gst_percent/100);
   var inc_gst_cost = parseFloat(total_cost_progress) + parseFloat(project_gst_amount);
 
+
+  inc_gst_cost = parseFloat(Number(inc_gst_cost).toFixed(2));
+
   $('.po_desc_mod').text(progres_text);
   $('#is_paid_check').prop('checked', true);
   //total_cost_progress = removeCommas(total_cost_progress);
@@ -2175,7 +2189,7 @@ $('.progress_paid').click(function(){
   
   var project_gst_percent = $('.project_gst_percent').text();
   project_gst_percent = parseFloat(project_gst_percent);
-  project_gst_amount = total_cost_progress * (project_gst_percent/100);
+  var project_gst_amount = total_cost_progress * (project_gst_percent/100);
   var inc_gst_cost = parseFloat(total_cost_progress) + parseFloat(project_gst_amount);
 
 
@@ -2201,7 +2215,9 @@ $('.progress_paid').click(function(){
     inc_gst_cost = parseFloat(total_cost_progress) + project_gst_amount;
   }
 
-  inc_gst_cost = inc_gst_cost.toFixed('2');
+  inc_gst_cost = parseFloat(Number(inc_gst_cost).toFixed(2));
+
+  inc_gst_cost = numberWithCommas(inc_gst_cost);
 
 
   $('.po_total_mod').text(total_cost_progress);
@@ -2364,8 +2380,9 @@ $('#progress_payment_amount_value').on("keyup", function(e) {
   var inc_gst_cost = parseFloat(payment_value) + project_gst_amount;
 
   var inc_gst_cost_x = inc_gst_cost || '0.00';
+ 
 
-  inc_gst_cost_x = inc_gst_cost_x.toFixed(2);
+  inc_gst_cost_x = parseFloat(Number(inc_gst_cost_x).toFixed(2));
 
   $('input#progress_payment_amount_value_inc_gst').val(inc_gst_cost_x);
 
@@ -2400,10 +2417,12 @@ $('#is_paid_check').click(function(){
 
     //inc_gst_cost = parseFloat(total) + parseFloat(inc_gst_cost);
 
-    var inc_gst_cost_x = inc_gst_cost || '';
+
+  inc_gst_cost = parseFloat(Number(inc_gst_cost).toFixed(2));
+
+    var inc_gst_cost_x = inc_gst_cost || '';   // the use of || mean if value is null assgin to another means OR
 
 
-    //inc_gst_cost_x = inc_gst_cost_x.toFixed(2);
 
     $('input#progress_payment_amount_value_inc_gst').val(inc_gst_cost_x);
 
@@ -3307,7 +3326,7 @@ $('.payment_set_values').on("click", function(event) {
     $("#po_date_value").parent().parent().parent().removeClass('has-error');
   }
 
-  if(progress_payment_amount_value == '' || progress_payment_amount_value == 0){
+  if(progress_payment_amount_value == '' ){
     $("input#progress_payment_amount_value").parent().parent().parent().addClass('has-error');
     error = 1;
   }else{
