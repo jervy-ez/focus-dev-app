@@ -267,8 +267,7 @@
 												</div>
 											</div>
 
-<div id="" class="col-md-6 col-sm-6 col-xs-12  m-bottom-10   ">
-											<div class="clearfix  m-bottom-10  <?php if(form_error('super_visor')){ echo 'has-error has-feedback';} ?>">
+											<div class="col-md-6 col-sm-4 col-xs-12 clearfix m-bottom-10  <?php if(form_error('super_visor')){ echo 'has-error has-feedback';} ?>">
 												<label for="super_visor" class="col-sm-4 control-label">Direct Reports*</label>
 												<div class="col-sm-8">
 													<select name="super_visor" class="form-control super_visor" id="super_visor" >
@@ -280,14 +279,23 @@
 
 													<?php $super_visor = ($this->input->post('super_visor') != '' ? $this->input->post('super_visor') : ''); ?>
 													<script type="text/javascript">$('.super_visor').val('<?php echo $super_visor; ?>');</script>
-												</div> 
-
+												</div>
 											</div>
 
+											<div class="col-md-6 col-sm-4 col-xs-12 m-bottom-10 clearfix <?php if(form_error('is_offshore')){ echo 'has-error has-feedback';} ?>">
+												<label for="is_offshore" class="col-sm-4 control-label">Offshore Employee*</label>
+												<div class="col-sm-8">
+													<select name="is_offshore" class="form-control is_offshore" tabindex="3" id="is_offshore">
+														<option value="">Select</option>
+														<option value="0">No</option>
+														<option value="1">Yes</option>
+														
+													</select>
+													<script type="text/javascript">$('.is_offshore').val('<?php echo $user->is_offshore; ?>');</script>
+												</div>
+											</div>
 
-											<div id="" class=" m-bottom-10">
-												
-
+											<div id="" class="col-md-6 col-sm-4 col-xs-12 m-bottom-10 clearfix <?php if(form_error('contractor_employee')){ echo 'has-error has-feedback';} ?>">
 												<label for="contractor_employee" class="col-sm-4 control-label">Contractor Employee*</label>
 												<div class="col-sm-8">
 													<select name="contractor_employee" class="form-control contractor_employee" id="contractor_employee" >
@@ -299,15 +307,7 @@
 													<?php $contractor_employee = ($this->input->post('contractor_employee') != '' ? $this->input->post('contractor_employee') : ''); ?>
 													<script type="text/javascript">$('.contractor_employee').val('<?php echo $contractor_employee; ?>');</script>
 												</div> 
-
-
 											</div>
-
-
-
-
-</div>
-
 
 											<div class="div_pm_for_pa col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('pm_for_pa')){ echo 'has-error has-feedback';} ?>" style="display:none;">
 												<label for="pm_for_pa" class="col-sm-3 control-label">Primary PM*</label>
@@ -350,31 +350,50 @@
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('direct_landline')){ echo 'has-error has-feedback';} ?>">
 												<label for="direct_landline" class="col-sm-4 control-label">Direct Landline*</label>
 												<div class="col-sm-8">
-													<input type="text" class="form-control direct_landline" id="direct_landline" name="direct_landline" onchange="contact_number_assign('direct_landline')" tabindex="11" placeholder="Direct Landline"  value="<?php echo $this->input->post('direct_landline'); ?>">																										
+													<input type="text" class="form-control direct_landline" id="direct_landline" name="direct_landline" onchange="contact_number_assign2('direct_landline')" tabindex="11" placeholder="Direct Landline"  value="<?php echo $this->input->post('direct_landline'); ?>">																										
 												</div>
 											</div>
 
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('after_hours')){ echo 'has-error has-feedback';} ?>">
 												<label for="after_hours" class="col-sm-3 control-label">After Hours</label>
 												<div class="col-sm-9">
-													<input type="text" class="form-control after_hours" id="after_hours" name="after_hours" onchange="contact_number_assign('after_hours')" tabindex="12" placeholder="After Hours"  value="<?php echo $this->input->post('after_hours'); ?>">																										
+													<input type="text" class="form-control after_hours" id="after_hours" name="after_hours" onchange="contact_number_assign2('after_hours')" tabindex="12" placeholder="After Hours"  value="<?php echo $this->input->post('after_hours'); ?>">																										
 												</div>
 											</div>
 											
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
 												<label for="mobile_number" class="col-sm-4 control-label">Mobile Number</label>
 												<div class="col-sm-8">
-													<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign_user('mobile_number')"  tabindex="13" value="<?php echo $this->input->post('mobile_number'); ?>">
+													<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign_user2('mobile_number')"  tabindex="13" value="<?php echo $this->input->post('mobile_number'); ?>">
 												</div>
 											</div>
-											
+
+											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+												<label for="personal_mobile_number" class="col-sm-5 control-label">Personal Mobile Number</label>
+												<div class="col-sm-7">
+
+													<div class="input-group ">
+														<span class="input-group-addon">+</span>
+														<input type="text" class="form-control personal_mobile_number" id="personal_mobile_number" name="personal_mobile_number" placeholder="Personal Mobile Number" onchange="//mobile_number_assign('mobile_number')"  tabindex="13" value="<?php echo $this->input->post('personal_mobile_number'); ?>">
+													</div>
+												</div>
+											</div>
+
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email')){ echo 'has-error has-feedback';} ?>">
 												<label for="email" class="col-sm-3 control-label">Email*</label>
 												<div class="col-sm-9">
 													<input type="email" class="form-control" id="email" name="email"  tabindex="14" placeholder="Email"  value="<?php echo $this->input->post('email'); ?>">
 												</div>
 											</div>
-											
+
+											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+												<label for="personal_email" class="col-sm-4 control-label">Personal Email</label>
+												<div class="col-sm-8">
+													<input type="email" class="form-control" id="personal_email" name="personal_email" placeholder="personal email" tabindex="14" placeholder=""  value="<?php echo $this->input->post('personal_email'); ?>">
+												</div>
+												<!-- <input type="hidden" name="email_id" value="<?php //echo $user->email_id; ?>"> -->
+											</div>
+
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('skype_id')){ echo 'has-error has-feedback';} ?>">
 												<label for="skype_id" class="col-sm-3 control-label">Skype ID*</label>
 												<div class="col-sm-9">
@@ -607,7 +626,17 @@
 								</div>
 							</div>
 
-
+							<?php $leave_requests = (isset($_POST['leave_requests']) ? $_POST['leave_requests'] : 0);  ?>
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Leave Requests</label>											 
+								<div class="col-sm-8">										
+									<div class="leave_requests">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($leave_requests == 1 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="leave_requests" name="leave_requests" value="<?php echo $leave_requests; ?>">
+								</div>
+							</div>
 
 							<?php $job_date_access = (isset($_POST['job_date_access']) ? $_POST['job_date_access'] : 0);  ?>
 							
@@ -621,7 +650,17 @@
 								</div>
 							</div>
 
-
+							<?php $progress_report_set = (isset($_POST['progress_report_set']) ? $_POST['progress_report_set'] : 0);  ?>
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Progress Report</label>											 
+								<div class="col-sm-8">										
+									<div class="progress_report_set">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($progress_report_set == 1 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="progress_report_set" name="progress_report_set" value="<?php echo $progress_report_set; ?>">
+								</div>
+							</div>
 
 							<div class="clearfix"></div><br />
 						</div>

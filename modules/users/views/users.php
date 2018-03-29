@@ -30,12 +30,6 @@
 					<?php endif; ?>
 					<?php if($this->session->userdata('is_admin') == 1 ): ?>
 						<li>
-							<a href="<?php echo base_url(); ?>admin" class="btn-small">Defaults</a>
-						</li>
-						<li>
-							<a href="<?php echo base_url(); ?>admin/company" class="btn-small">Company</a>
-						</li>
-						<li>
 							<a href="<?php echo base_url(); ?>users/user_logs">User Logs</a>
 						</li>
 					<?php endif; ?>

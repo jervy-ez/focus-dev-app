@@ -1,4 +1,4 @@
-<div class="sign_in_bg" style="background-image:url('<?php echo base_url(); ?>img/Valentines_day_2018.jpg') !important; height: 99.9%; margin-top: 0px !important;">
+<div class="sign_in_bg" style="background-image:url('<?php echo $bg_file; ?>') !important; height: 99.9%; margin-top: 0px !important;">
     <?php /*
 <script src="<?php echo base_url(); ?>js/snow-it.min.js"></script>
 */ ?>
@@ -68,7 +68,7 @@
 			
 	<div class="container pad-20">
 		<div class="row">
-			<div class="col-xs-12 col-md-6 col-md-offset-3 sign_form" style="    background: rgba(255, 255, 255, 0.5)">
+			<div class="col-xs-12 col-md-6 col-md-offset-3 sign_form" style="    background: rgba(255, 255, 255, 0.7)">
 				<h1 class="text-center">Sign in</h1>
 				<div class="well"  style="border: 2px solid #b5b5b5; border-radius: 8px;">
 					<form class="form-horizontal" method="post" action="">					

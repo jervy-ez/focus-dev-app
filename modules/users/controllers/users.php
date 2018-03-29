@@ -373,6 +373,7 @@ endif;
 		$leave_requests = $_POST['leave_requests'];
 		$job_date_access = $_POST['job_date_access'];
 		$purchase_order_access = $_POST['purchase_order_access'];
+		$progress_report_set = $_POST['progress_report_set'];
 
 		$role_raw = $_POST['role'];
 		$role_arr = explode('|',$role_raw);
@@ -380,7 +381,7 @@ endif;
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access,$purchase_order_access);
+		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access,$purchase_order_access, $progress_report_set);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
 
@@ -397,6 +398,18 @@ endif;
 
 		//var_dump($companies);
 		$this->session->set_flashdata('user_access', 'Default projects landing page is updated.');
+		redirect('/users/account/'.$user_id);
+	}
+
+	public function update_projects_pv(){
+		$this->clear_apost();
+		$user_id = $_POST['user_id'];
+		$projects_load_view_personal = $_POST['projects_load_view_personal'];
+
+		$this->user_model->update_projects_pv($user_id,$projects_load_view_personal);
+
+		//var_dump($companies);
+		$this->session->set_flashdata('user_access', 'Default projects view personal projects is updated.');
 		redirect('/users/account/'.$user_id);
 	}
 
@@ -651,10 +664,10 @@ endif;
 			$direct_landline = $this->company->if_set($this->input->post('direct_landline', true));
 			$after_hours = $this->company->if_set($this->input->post('after_hours', true));
 			$mobile_number = $this->company->if_set($this->input->post('mobile_number', true));
+			$personal_mobile_number = $this->company->if_set($this->input->post('personal_mobile_number', true));
 			$email = $this->company->if_set($this->input->post('email', true));
-
+			$personal_email = $this->company->if_set($this->input->post('personal_email', true));
 			$comments = $this->company->cap_first_word_sentence($this->company->if_set($this->input->post('comments', true)));
-
 			$contact_number_id = $this->input->post('contact_number_id', true);
 			$email_id = $this->input->post('email_id', true);
 			$user_comments_id = $this->input->post('user_comments_id', true);
@@ -721,7 +734,7 @@ endif;
 
 			$this->user_model->update_user_details($user_id,$login_name,$first_name,$last_name,$skype_id,$skype_password,$gender,$dob,$department_id,$is_offshore,$focus_id,$user_comments_id,$profile,$supervisor_id,$contractor_employee);
 
-			$this->user_model->update_contact_email($email_id,$email,$contact_number_id,$direct_landline,$mobile_number,$after_hours);
+			$this->user_model->update_contact_email($email_id,$email,$contact_number_id,$direct_landline,$mobile_number,$after_hours,$personal_mobile_number,$personal_email);
 
 			redirect($this->uri->uri_string(),'refresh');
 
@@ -791,17 +804,17 @@ endif;
 
 
 
-	function _upload_primary_photo($fileToUpload,$dir){
+	function _upload_primary_photo($fileToUpload,$dir,$name_pref='user_'){
 		$data['upload_error'] = '';
 
 		$config['upload_path'] = './uploads/'.$dir.'/';
-		$config['allowed_types'] = 'gif|jpg|png|jpeg';
+		$config['allowed_types'] = 'png|gif|jpg|jpeg|pjpeg|x-png';
 		$config['max_size']	= '0';
 		$config['max_width']  = '0';
 		$config['max_height']  = '0';
 
 		$time = mdate("%h%i%s%m%d%Y", time());
-		$config['file_name']  = 'user_'.$time;
+		$config['file_name']  = $name_pref.$time;
 
 		$this->upload->initialize($config);
 
@@ -883,10 +896,13 @@ endif;
 		$this->form_validation->set_rules('direct_landline', 'Direct Landline','trim|required|xss_clean');
 		$this->form_validation->set_rules('after_hours', 'After Hours','trim|xss_clean');
 		$this->form_validation->set_rules('mobile_number', 'Mobile Number','trim|xss_clean');
+		$this->form_validation->set_rules('personal_mobile_number', 'Personal Mobile Number','trim|xss_clean');
 		$this->form_validation->set_rules('email', 'Email','trim|required|xss_clean');
+		$this->form_validation->set_rules('personal_email', 'Personal Email','trim|xss_clean');
 		$this->form_validation->set_rules('skype_id', 'Skype ID','trim|required|xss_clean');
 		$this->form_validation->set_rules('comments', 'Comments','trim|xss_clean');
 		$this->form_validation->set_rules('super_visor', 'Direct Reports','trim|required|xss_clean');
+		$this->form_validation->set_rules('is_offshore', 'Offshore Employee','trim|required|xss_clean');
 		$this->form_validation->set_rules('contractor_employee', 'Contractor Employee','trim|required|xss_clean');
 
 
@@ -956,6 +972,7 @@ endif;
 			$confirm_password = $this->company->if_set($this->input->post('confirm_password', true));
 
 			$supervisor_id = $this->company->if_set($this->input->post('super_visor', true));
+			$is_offshore = $this->company->if_set($this->input->post('is_offshore', true));
 
 			$password = $this->company->if_set($this->input->post('password', true));
 			$password = md5($password);
@@ -975,7 +992,9 @@ endif;
 			$direct_landline = $this->company->if_set($this->input->post('direct_landline', true));
 			$after_hours = $this->company->if_set($this->input->post('after_hours', true));
 			$mobile_number = $this->company->if_set($this->input->post('mobile_number', true));
+			$personal_mobile_number = $this->company->if_set($this->input->post('personal_mobile_number', true));
 			$email = $this->company->if_set($this->input->post('email', true));
+			$personal_email = $this->company->if_set($this->input->post('personal_email', true));
 
 			$days_exp = $this->company->if_set($this->input->post('days_exp', true));
 
@@ -988,9 +1007,9 @@ endif;
 				$user_notes_id = 0;
 			}
 
-			$contact_number_id = $this->company_m->insert_contact_number('','',$direct_landline,$mobile_number,$after_hours);
+			$contact_number_id = $this->company_m->insert_contact_number('','',$direct_landline,$mobile_number,$after_hours,$personal_mobile_number);
 			
-			$email_id = $this->company_m->insert_email($email);
+			$email_id = $this->company_m->insert_email($email,$personal_email);
 
 			$dashboard_access = $this->input->post('dashboard_access', true);
 			$company_access = $this->input->post('company_access', true);
@@ -1002,7 +1021,9 @@ endif;
 			$bulletin_board = $this->input->post('bulletin_board', true);
 			$project_schedule = $this->input->post('project_schedule', true);
 			$labour_schedule = $this->input->post('labour_schedule', true);
+			$leave_requests = $this->input->post('leave_requests', true);
 			$job_date_access = $this->input->post('job_date_access', true);
+			$progress_report_set = $this->input->post('progress_report_set', true);
 			$contractor_employee = $this->input->post('contractor_employee', true);
 
 
@@ -1017,9 +1038,9 @@ endif;
 				$admin = 0;
 			}			
 
-			$add_new_user_id = $this->user_model->add_new_user($login_name,$password,$first_name,$last_name,$gender,$department_id,$profile_photo,$user_timestamp_registered,$role_id,$email_id,$skype_id,$skype_password,$contact_number_id,$focus_id,$dob,$user_notes_id,$admin,$site_select,$contractor_employee);
+			$add_new_user_id = $this->user_model->add_new_user($login_name,$password,$first_name,$last_name,$gender,$department_id,$profile_photo,$user_timestamp_registered,$role_id,$email_id,$skype_id,$skype_password,$contact_number_id,$focus_id,$dob,$user_notes_id,$admin,$site_select,$contractor_employee,$is_offshore);
 
-			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access,$bulletin_board,$project_schedule,$labour_schedule,$job_date_access);
+			$this->user_model->insert_user_access($add_new_user_id,$dashboard_access,$company_access,$projects_access,$wip_access,$purchase_orders_access,$invoice_access,$users_access,$bulletin_board,$project_schedule,$labour_schedule,$leave_requests,$job_date_access,$progress_report_set);
 
 			$this->user_model->insert_user_password($confirm_password,$add_new_user_id);
 
@@ -1109,8 +1130,41 @@ endif;
 	}
 
 
+
+	public function display_login_bg(){
+
+		$today = date("d/m/Y");
+		$year = date("Y");
+
+		$q_bgfile = $this->user_model->get_latest_bg($today,$year);
+
+		if($q_bgfile->num_rows === 1){
+			$img_bg = array_shift($q_bgfile->result_array() );
+
+			return base_url()."uploads/login_bg/".$img_bg['file_name'];
+		}else{
+
+
+
+			$q_bgfile = $this->user_model->get_latest_bg($today,$year,1);
+			$img_bg = array_shift($q_bgfile->result_array() );
+
+			return base_url()."uploads/login_bg/".$img_bg['file_name'];
+
+			//return base_url()."img/sojourn_bg_signin.png";
+		}
+
+	}
+
+
 	function signin(){
 		$this->clear_apost();
+
+	 $bg_photo = $this->display_login_bg();
+
+	// echo $bg_photo;
+
+	 $data['bg_file'] = $bg_photo;   
 		//Redirect
 		if($this->_is_logged_in()){
 			$user_role_id = $this->session->userdata('user_role_id');
@@ -1271,6 +1325,7 @@ endif;
 
 
 					$this->session->set_userdata('default_projects_landing', $userdata->projects_load_view ); 
+					$this->session->set_userdata('default_projects_view_personal', $userdata->projects_load_view_personal ); 
 
 					//if($user_id!=''){
 
@@ -3392,11 +3447,13 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 				$body_content .= '<br><br>Notes:<br>'.$action_comments;
 			endif;*/
 
-			// for live
-			$body_content .= '<br><br><br><br><img src="'.base_url().'img/signatures/ian.png" /><a href="'.base_url().'email_referrals"><img src="'.base_url().'img/signatures/click_here.png" /></a>';
+			$body_content .= '<p style="font-family: "Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif !important"><br><br><br><br>Regards,<br><br><strong>'.$this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name').'</strong><br><br>'.$this->session->userdata('role_types').'<br>0413 053 500<br><span style="color: "#FF3399 !important";>ian@focusshopfit.com.au</span></p>';
+
+			// for live'
+			$body_content .= '<br><img src="'.base_url().'img/signatures/FSFGroup.png" />';
 
 			// for local
-			//$body_content .= '<br><br><br><br><img src="https://sojourn.focusshopfit.com.au/img/signatures/ian.png" /><a href="https://sojourn.focusshopfit.com.au/email_referrals"><img src="https://sojourn.focusshopfit.com.au/img/signatures/click_here.png" /></a>';
+			// $body_content .= '<br><img src="https://sojourn.focusshopfit.com.au/img/signatures/FSFGroup.png" />';
 
 			$user_mail->Subject = 'RE: Application of Leave';
 			$user_mail->Body    = '<span style="font-family: "Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif">'.$body_content."</span>";

@@ -301,6 +301,20 @@
                       ?>
 
                     </select>
+                    <script type="text/javascript">
+                      var select_personal = '';
+                      $('select.select-personal option').each(function(){
+                        value = this.value;
+                      });
+                      select_personal = value;
+
+                     // alert(select_personal);
+
+                     <?php if($this->session->userdata('default_projects_view_personal') == 1 ) : ?>
+                     $('select.select-personal').val(select_personal); 
+                   <?php endif; ?>
+
+                   </script>
 
                   <?php endif; ?>
 
@@ -415,16 +429,17 @@
 					</div>
 
 					<div class="col-md-3">
-						<div class="box">
-							<div class="box-head pad-5">
-								<label><i class="fa fa-info-circle fa-lg"></i> Color Codes: &nbsp; &nbsp;
-								<strong class="wip">WIP</strong> &nbsp; &nbsp;
-								<strong class="invoiced">Invoiced</strong> &nbsp; &nbsp;
-								<strong class="paid">Paid</strong></label>
-                <strong class="unset">Unaccepted Quotes</strong></label>
-							</div>
-						</div>
-					</div>
+            <div class="box">
+              <div class="box-head pad-5">
+                <label><i class="fa fa-info-circle fa-lg"></i> Color Codes: <br><br>
+                <strong class="wip">WIP</strong> &nbsp; &nbsp;
+                <strong class="invoiced">Invoiced</strong> &nbsp; &nbsp;
+                <strong class="paid">Paid</strong></label> &nbsp; &nbsp;
+                <strong class="unset">Unaccepted Quotes</strong></label> &nbsp; &nbsp;
+                <strong class="quotes">Quotes</strong></label> &nbsp; &nbsp;
+              </div>
+            </div>
+          </div>
 					
 					
 					

@@ -487,7 +487,7 @@
 
 													<div class="input-group ">
 														<span class="input-group-addon">+</span>
-													<input type="text" class="form-control direct_landline" id="direct_landline" name="direct_landline" onchange="contact_number_assign('direct_landline')" tabindex="11" placeholder="Direct Landline"  value="<?php echo $user->direct_number; ?>">																										
+													<input type="text" class="form-control direct_landline" id="direct_landline" name="direct_landline" onchange="contact_number_assign2('direct_landline')" tabindex="11" placeholder="Direct Landline"  value="<?php echo $user->direct_number; ?>">																										
 												</div>
 												</div>
 											</div>
@@ -498,7 +498,7 @@
 
 													<div class="input-group ">
 														<span class="input-group-addon">+</span>
-													<input type="text" class="form-control after_hours" id="after_hours" name="after_hours" onchange="contact_number_assign('after_hours')" tabindex="12" placeholder="After Hours"  value="<?php echo $user->after_hours; ?>">																										
+													<input type="text" class="form-control after_hours" id="after_hours" name="after_hours" onchange="contact_number_assign2('after_hours')" tabindex="12" placeholder="After Hours"  value="<?php echo $user->after_hours; ?>">																										
 												</div>
 												</div>
 											</div>
@@ -509,13 +509,20 @@
 
 													<div class="input-group ">
 														<span class="input-group-addon">+</span>
-														<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign('mobile_number')"  tabindex="13" value="<?php echo $user->mobile_number; ?>">
+														<input type="text" class="form-control mobile_number" id="mobile_number" name="mobile_number" placeholder="Mobile Number" onchange="mobile_number_assign_user2('mobile_number')"  tabindex="13" value="<?php echo $user->mobile_number; ?>">
 													</div>
-
-
 												</div>
+											</div>
 
+											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
+												<label for="personal_mobile_number" class="col-sm-5 control-label">Personal Mobile Number</label>
+												<div class="col-sm-7">
 
+													<div class="input-group ">
+														<span class="input-group-addon">+</span>
+														<input type="text" class="form-control personal_mobile_number" id="personal_mobile_number" name="personal_mobile_number" placeholder="Personal Mobile Number" onchange="//mobile_number_assign('mobile_number')"  tabindex="13" value="<?php echo $user->personal_mobile_number; ?>">
+													</div>
+												</div>
 											</div>
 
 											<?php if($this->session->userdata('is_admin') ==  1): ?>
@@ -525,6 +532,14 @@
 													<label for="email" class="col-sm-4 control-label">Email</label>
 													<div class="col-sm-8">
 														<input type="email" class="form-control" id="email" name="email"  tabindex="14" placeholder="Email"  value="<?php echo $user->general_email; ?>">
+													</div>
+													<input type="hidden" name="email_id" value="<?php echo $user->email_id; ?>">
+												</div>
+
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('personal_email')){ echo 'has-error has-feedback';} ?>">
+													<label for="personal_email" class="col-sm-4 control-label">Personal Email</label>
+													<div class="col-sm-8">
+														<input type="email" class="form-control" id="personal_email" name="personal_email"  tabindex="14" placeholder="Personal Email"  value="<?php echo $user->personal_email; ?>">
 													</div>
 													<input type="hidden" name="email_id" value="<?php echo $user->email_id; ?>">
 												</div>
@@ -550,8 +565,15 @@
 													</div>
 												<?php endif; ?>
 
-												<div class="clearfix"></div>
+												<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('personal_email')){ echo 'has-error has-feedback';} ?>">
+													<label for="personal_email" class="col-sm-4 control-label">Personal Email</label>
+													<div class="col-sm-8">
+														<input type="email" class="form-control" id="personal_email" name="personal_email"  tabindex="14" placeholder="personal email"  value="<?php echo $user->personal_email; ?>">
+													</div>
+													<input type="hidden" name="email_id" value="<?php echo $user->email_id; ?>">
+												</div>
 
+												<div class="clearfix"></div>
 
 												<?php if( trim($user->user_skype) != '' ): ?>											
 													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix">
@@ -1124,6 +1146,10 @@
 
 
 					<?php endif; ?>
+
+ 						<?php $user_access_arr = explode(',',  $this->users->get_user_access($user_id) ); ?>
+						<?php $company_project_set = $user_access_arr['15'];  ?>
+
 						
 						<?php if( ($this->session->userdata('users') > 1 ) || $this->session->userdata('is_admin') ==  1  ): ?>
 
@@ -1224,7 +1250,6 @@
 
 						<form method="post" action="../update_user_access">
 			
- 						<?php $user_access_arr = explode(',',  $this->users->get_user_access($user_id) ); ?>
 
  						<input type="hidden" name="user_id_access" value="<?php echo $user_id; ?>">
 
@@ -1556,8 +1581,18 @@
 									<input type="hidden" class="" id="purchase_order_access" name="purchase_order_access" value="<?php echo $purchase_order_access; ?>">
 								</div>
 							</div>
-							
-							
+
+							<?php $progress_report_set = $user_access_arr['22'];  ?> 
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-4 control-label m-top-5">Progress Report</label>											 
+								<div class="col-sm-8">										
+									<div class="progress_report_set">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($progress_report_set == 1? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="progress_report_set" name="progress_report_set" value="<?php echo $progress_report_set; ?>">
+								</div>
+							</div>
+
 							<div class="clearfix"></div>
 							<input type="submit" class="btn btn-success m-left-10  m-top-10 m-bottom-10" name="update_user_access" value="Update User Access">
 						</div>
@@ -1638,7 +1673,9 @@
 						<?php endif; ?>
 
 
-						
+
+						<?php endif; ?>
+
 
 
 						<div class="box m-bottom-15">
@@ -1663,15 +1700,34 @@
 
 							</div>
 						</div>
-
 						<?php echo '<script type="text/javascript">$("select.select_table_status").val("'.$user->projects_load_view.'"); </script>'; ?>
 
-						
 
 
+						<?php if($user->role_id == 8 || $user->role_id == 3 || $user->role_id == 2 || $user->role_id == 7 || $user->role_id ==  16 || $company_project_set ==  1 ): ?>
+						<div class="box m-bottom-15">
+							<div class="box-head pad-5"> 
+								<label style="margin: 10px 0 0 10px;"><i class="fa fa-map-marker fa-lg"></i> See Personal Project First</label>
+
+
+								<form method="post" action="../update_projects_pv" class="clearfix pull-right" style="margin: 0;">
+									
+									<input type="submit" value="Set"  class="m-left-5 pull-right btn btn-success">
+									<select name="projects_load_view_personal" class="form-control input-sx select_table_vpp"  style=" float: right;    width: 100px;    margin: 0;">                      
+										<option value="0">No</option>
+										<option value="1" >Yes</option>
+									</select>
+									<input type="hidden" name="user_id" class="user_data_id " value="<?php echo $user_id; ?>">
+
+								</form>
+
+							</div>
+						</div>
+
+						<?php echo '<script type="text/javascript">$("select.select_table_vpp").val("'.$user->projects_load_view_personal.'"); </script>'; ?>
+					<?php endif; ?>
 </div>
 
-						<?php endif; ?>
 						
 						
 					</div>

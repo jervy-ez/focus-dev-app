@@ -230,6 +230,9 @@ function invoice_payment_modal(element_obj){
 
   var inc_gst_amount = parseFloat(amount) + parseFloat(amount*gst);
 
+  
+   inc_gst_amount = parseFloat(Number(inc_gst_amount).toFixed(2));
+
   $('.po_total_mod_inc_gst').text(numberWithCommas(inc_gst_amount));
   $('.po_balance_mod').text('0.00');
 
@@ -2145,7 +2148,7 @@ $('.vr_paid').click(function(){
     total_cost_progress = progress_outstanding;
   }
 
-  var project_gst_percent = $('.project_gst_percent').text();
+  var project_gst_percent = $('.project_gst_percent_inv').text();
   project_gst_percent = parseFloat(project_gst_percent);
   project_gst_amount = total_cost_progress * (project_gst_percent/100);
   var inc_gst_cost = parseFloat(total_cost_progress) + parseFloat(project_gst_amount);
@@ -2183,16 +2186,15 @@ $('.progress_paid').click(function(){
 
   if($.trim($("selector").html())==''){}
 
-    var total_cost_progress = $(this).parent().parent().find('.total_cost_progress').text();
+  var total_cost_progress = $(this).parent().parent().find('.total_cost_progress').text();
   var progress_outstanding = $(this).parent().parent().find('.progress_outstanding').text();
   var invoice_id_progress = $(this).parent().parent().find('.progress-item').attr('id');
   
-  var project_gst_percent = $('.project_gst_percent').text();
-  project_gst_percent = parseFloat(project_gst_percent);
-  var project_gst_amount = total_cost_progress * (project_gst_percent/100);
+  var project_gst_percent = $('.project_gst_percent_inv').text();
+  //project_gst_percent = parseFloat(project_gst_percent);
+  var project_gst_amount = parseFloat(total_cost_progress) * (project_gst_percent/100);
   var inc_gst_cost = parseFloat(total_cost_progress) + parseFloat(project_gst_amount);
-
-
+ 
 
   var progress_id_arr = progress_id.split("_");
   var project_id = progress_id_arr['0'];
@@ -2217,7 +2219,9 @@ $('.progress_paid').click(function(){
 
   inc_gst_cost = parseFloat(Number(inc_gst_cost).toFixed(2));
 
-  inc_gst_cost = numberWithCommas(inc_gst_cost);
+
+
+  //inc_gst_cost = numberWithCommas(inc_gst_cost);
 
 
   $('.po_total_mod').text(total_cost_progress);
@@ -2268,7 +2272,7 @@ $('#progress_payment_amount_value_inc_gst').on("keyup", function(e) {
     var sign = '';    
   }
 
-  var project_gst_percent = parseInt($('.project_gst_percent').text());
+  var project_gst_percent = parseInt($('.project_gst_percent_inv').text());
 
   var inc_gst_cost = payment_value_inc_gst - (payment_value_inc_gst / ((project_gst_percent+100)/project_gst_percent));
 
@@ -2279,6 +2283,7 @@ $('#progress_payment_amount_value_inc_gst').on("keyup", function(e) {
   $('#progress_payment_amount_value').val(ex_gst_amount);
 
   
+
 
   var payment_value = ex_gst_amount;
   var amount_to_pay = $('.po_total_mod').text();
@@ -2374,7 +2379,7 @@ $('#progress_payment_amount_value').on("keyup", function(e) {
   }
 
 
-  var project_gst_percent = $('.project_gst_percent').text();
+  var project_gst_percent = $('.project_gst_percent_inv').text();
   project_gst_percent = parseFloat(project_gst_percent);
   project_gst_amount = payment_value * (project_gst_percent/100);
   var inc_gst_cost = parseFloat(payment_value) + project_gst_amount;
@@ -2407,21 +2412,25 @@ $('#is_paid_check').click(function(){
 
 
 
-    var project_gst_percent = $('.project_gst_percent').text();
+    var project_gst_percent = $('.project_gst_percent_inv').text();
 
-    project_gst_percent = project_gst_percent/100;
 
+    project_gst_percent = parseFloat(project_gst_percent)/100;
+
+
+
+   project_gst_percent = parseFloat(Number(project_gst_percent).toFixed(2));
 
     var project_gst_amount = total * project_gst_percent;
     var inc_gst_cost = parseFloat(project_gst_amount) + parseFloat(total);
 
+
     //inc_gst_cost = parseFloat(total) + parseFloat(inc_gst_cost);
 
 
-  inc_gst_cost = parseFloat(Number(inc_gst_cost).toFixed(2));
+   inc_gst_cost = parseFloat(Number(inc_gst_cost).toFixed(2));
 
     var inc_gst_cost_x = inc_gst_cost || '';   // the use of || mean if value is null assgin to another means OR
-
 
 
     $('input#progress_payment_amount_value_inc_gst').val(inc_gst_cost_x);
@@ -2649,11 +2658,23 @@ $('input.raw_invoice_notes').val(invoice_notes);
   
   $('#set_invoice_modal').modal('hide');
   $('#pdf_editor').modal('hide');
-  $('show_loading').trigger('click');
+  //$('show_loading').trigger('click');
+
+
+
+
 
   var canvas_area = $("iframe.frame_container").contents().find('.canvas_area').html();
   $('textarea#content').val(canvas_area);
-  $('input.submit_invoice_set').trigger('click');
+
+
+
+ $('#loading_modal').modal({"backdrop": "static", "show" : true} );
+
+
+  setTimeout(function(){
+   $('input.submit_invoice_set').trigger('click');
+  },500);
 
 
 
@@ -2876,6 +2897,7 @@ $('.edit_post').click(function(e){
     var invoice_status = $('select#invoice_status').val();
     var invoice_sort = $('select.invoice_sort').val();
     var project_manager = $('select.project_manager').val();
+    var output_file = $('select.output_file').val();
 
 
 
@@ -2907,27 +2929,40 @@ invoiced_date
      $('#loading_modal').modal('show');
    }
 
-   var data = project_number+'*'+progress_claim+'*'+clinet+'*'+invoice_date_a+'*'+invoice_date_b+'*'+invoice_status+'*'+invoice_sort+'*'+project_manager+'*'+invoiced_date_a+'*'+invoiced_date_b;
+   var data = project_number+'*'+progress_claim+'*'+clinet+'*'+invoice_date_a+'*'+invoice_date_b+'*'+invoice_status+'*'+invoice_sort+'*'+project_manager+'*'+invoiced_date_a+'*'+invoiced_date_b+'*'+output_file;
   //alert(data);
   $('.report_result').html('');
 
-
+  
   if(has_error == 0){
-    $.ajax({
-      'url' : base_url+'reports/invoice_report',
-      'type' : 'POST',
-      'data' : {'ajax_var' : data },
-      'success' : function(data){
-        if(data){
-          $('#loading_modal').modal('hide');
-          $('.report_result').html(data);
-          window.open(baseurl+'docs/temp/'+data+'.pdf', '', 'height=590,width=850,top=100,left=100,location=no,toolbar=no,resizable=yes,menubar=no,scrollbars=yes',true);
+    if(output_file == 'pdf'){
+
+      $.ajax({
+        'url' : base_url+'reports/invoice_report',
+        'type' : 'POST',
+        'data' : {'ajax_var' : data },
+        'success' : function(data){
+          if(data){
+            $('#loading_modal').modal('hide');
+            $('.report_result').html(data);
+            window.open(baseurl+'docs/temp/'+data+'.pdf', '', 'height=590,width=850,top=100,left=100,location=no,toolbar=no,resizable=yes,menubar=no,scrollbars=yes',true);
+          }
         }
-      }
-    });    
+      });   
+
+
+    }else{
+
+
+     $('#filter_invoice').modal('hide');
+     $('#loading_modal').modal('hide');
+            window.open(baseurl+'reports/invoice_report?ajax_var='+data, '_blank');
+
+
+    }
+
+
   }
-
-
 
 });
 
