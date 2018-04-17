@@ -795,7 +795,23 @@
 																	endif;
 																}?>
 																
+ 
+
+															<?php
+															
+																foreach ($account_manager as $row){
+																	if( $row->user_focus_company_id == $comp_id_selected){
+																		echo '<option class="pm_comp_option pm_comp_'.$row->user_focus_company_id.'" value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																	}else{
+																		echo '<option style="display:none"  class="pm_comp_option pm_comp_'.$row->user_focus_company_id.'" value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																	}
+																}
+															?>
+
+
 																<?php if($pm_user_id == 9){ echo '<option value="9">Trevor Gamble</option>'; } ?>
+
+
  
 
 
@@ -913,9 +929,16 @@
 															
 														<option value=''>Select Personnel</option>  
 															<?php
-															foreach ($project_manager as $row){																
-																echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																foreach ($project_manager as $row){																
+																	echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
 															}?>
+
+
+															<?php
+																foreach ($account_manager as $row){
+																	echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																}
+															?>
 																
 																<?php if($pm_user_id == 9){ echo '<option value="9">Trevor Gamble</option>'; } ?>
 

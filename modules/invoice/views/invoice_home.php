@@ -619,7 +619,7 @@
             <option value="">Select Project Manager</option>
             <?php
             foreach ($users->result_array() as $row){
-              if($row['user_role_id']==3):
+              if($row['user_role_id']==3 || $row['user_role_id']==20):
                 echo '<option value="'.$row['user_first_name'].' '.$row['user_last_name'].'|'.$row['user_id'].'" >'.$row['user_first_name'].' '.$row['user_last_name'].'</option>';
               endif;
             }

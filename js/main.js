@@ -1,4 +1,4 @@
-var segment_index = 5;  // 5 if live |||   6 is local
+var segment_index = 6;  // 5 if live |||   6 is local
 
     //dynamic_value_ajax
     function ajax_data(value,controller_method,classLocation){
@@ -6500,8 +6500,8 @@ window.toggleShoppingCenterDetails = function(id){
         var myVal = $(this).val();
 
         $('select#project_manager').val('');
-        $('option.pm_comp_option').hide();
-        $('option.pm_comp_'+myVal).show();
+        $('select#project_manager option.pm_comp_option').hide();
+        $('select#project_manager option.pm_comp_'+myVal).show();
 
         var controller_method = 'projects/set_jurisdiction';
         $('#s2id_state_a .select2-chosen').empty();
@@ -7836,17 +7836,6 @@ function contact_number_assign(here){
   $("#"+here).val(newString);
 }
 
-function contact_number_assign2(here){
-  //var curVal = $("#"+here).val().replace(/\s/g, '');
-
-  var curVal = $("#"+here).val().replace(/[^\d]/g, '');
-
-  var valhere = curVal.substring(0,2)+' '+curVal.substring(2,6)+' '+curVal.substring(6,10)+' '+curVal.substring(10,14)+' '+curVal.substring(14,18);
-
-  var newString = valhere.replace(/\s+/g,' ').trim();
-
-  $("#"+here).val(newString);
-}
 
 function mobile_number_assign(here){
 //  var curVal = $("#"+here).val().replace(/\s/g, '');
@@ -7870,15 +7859,6 @@ function mobile_number_assign_user(here){
 
 }
 
-function mobile_number_assign_user2(here){
-//  var curVal = $("#"+here).val().replace(/\s/g, '');
-
-  var curVal = $("#"+here).val().replace(/[^\d]/g, '');
-  var valhere = curVal.substring(0,4)+' '+curVal.substring(4,7)+' '+curVal.substring(7,11)+' '+curVal.substring(11,15)+' '+curVal.substring(15,19);
-  var newString = valhere.replace(/\s+/g,' ').trim();
-  $("#"+here).val(newString);
-
-}
 
 function toTitleCase(str){
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});

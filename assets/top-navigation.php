@@ -44,6 +44,9 @@
  	$project_manager_q = $this->user_model->fetch_user_by_role(3);
  	$project_manager = $project_manager_q->result();
 
+ 	$account_manager_q = $this->user_model->fetch_user_by_role(20);
+ 	$account_manager = $account_manager_q->result();
+
  	$estimator_q = $this->user_model->fetch_user_by_role(8);
  	$estimator = $estimator_q->result();
 
@@ -493,6 +496,10 @@
 									if($row->user_id != 29){ echo '<option value="'.$row->user_id.'-pm">'.$row->user_first_name.' '.$row->user_last_name.'</option>'; }
 							}?>
 
+							<?php foreach ($account_manager as $row){	
+									echo '<option value="'.$row->user_id.'-pm">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+							}?>							
+
 							<?php foreach ($estimator as $row){	
 									if($row->user_id != 26){ echo '<option value="'.$row->user_id.'-es">'.$row->user_first_name.' '.$row->user_last_name.'</option>'; }
 							}?>
@@ -547,6 +554,11 @@
 							<?php foreach ($project_manager as $row){							
 									echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
 							}?>
+							
+
+							<?php foreach ($account_manager as $row){	
+									echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+							}?>		
 						</select></div>
 
 					</div>

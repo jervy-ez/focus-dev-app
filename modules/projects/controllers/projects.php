@@ -226,6 +226,23 @@ class Projects extends MY_Controller{
 		}
 	}
 
+	public function list_users_pr_images(){
+		$fetch_project_manager_q = $this->user_model->fetch_user_by_role(3);
+		foreach ($fetch_project_manager_q->result() as $row){
+
+			if ($row->user_id != '29'){
+				echo '<option value="'.strtolower(str_replace(' ','_', $row->user_first_name.' '.$row->user_last_name)).'" >'.$row->user_first_name.'</option>';
+			}
+		}
+	}
+
+	public function list_recent_pr_images($limit=''){
+		$fetch_recent_pr_images_q = $this->projects_m->fetch_recent_pr_images($limit);
+		foreach ($fetch_recent_pr_images_q->result() as $row){
+			echo '<li class="list_pr_img_'.strtolower(str_replace(' ','_', $row->pm_name)).'" ><div><a href="'.base_url().'projects/progress_reports/'.$row->project_id.'" class="news-item-title"><strong>'.$row->project_id.'</strong></a> '.$row->project_name.'  <br /><i class="fa fa-user-circle"></i> '.$row->pm_name.'<br /> <i class="fa fa-users"></i>  '.$row->pa_name.'  </div><br/ ></li>';
+		}
+	}
+
 	public function fetch_shopping_center_state_sub($suburb='',$state='',$direct=0){
 
 		if($direct == 0){
@@ -822,6 +839,9 @@ class Projects extends MY_Controller{
 
 		$project_manager = $this->user_model->fetch_user_by_role(3);
 		$data['project_manager'] = $project_manager->result();
+
+		$account_manager = $this->user_model->fetch_user_by_role(20);
+		$data['account_manager'] = $account_manager->result();
 
 		$maintenance_administrator = $this->user_model->fetch_user_by_role(7);
 		$data['maintenance_administrator'] = $maintenance_administrator->result();
@@ -1939,6 +1959,9 @@ $gp = 0;
 
 			$project_manager = $this->user_model->fetch_user_by_role(3);
 			$data['project_manager'] = $project_manager->result();
+
+			$account_manager = $this->user_model->fetch_user_by_role(20);
+			$data['account_manager'] = $account_manager->result();
 
 			$project_administrator = $this->user_model->fetch_user_by_role(2);
 			$data['project_administrator'] = $project_administrator->result();
@@ -3478,5 +3501,18 @@ $gp = 0;
 	    $config['overwrite']     = FALSE;
 
 	    return $config;
+	}
+
+	public function set_pa(){
+
+		$selected_pm = $this->input->post('selected_pm');
+
+		$q_fetch_pa = $this->projects_m->fetch_pa($selected_pm);
+		$fetch_pa = array_shift($q_fetch_pa->result_array());
+
+		$set_proj_admin = $fetch_pa['project_administrator_id'];
+
+
+		echo $set_proj_admin;
 	}
 }

@@ -6,6 +6,8 @@
 
 <?php 
 
+  $user_access_arr = explode(',',  $this->users->get_user_access($this->session->userdata('user_id')) );
+  $progress_reports = $user_access_arr['22'];
 
   $get_table_status = $this->input->get('status');
 
@@ -280,7 +282,7 @@
 									
 
 
-                  <?php if($this->session->userdata('user_role_id') == 3 ||$this->session->userdata('user_role_id') == 16|| $this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 8 || $this->session->userdata('user_role_id') == 7 || $this->session->userdata('company_project') == 1 ): ?>
+                  <?php if($this->session->userdata('user_role_id') == 3 ||$this->session->userdata('user_role_id') == 16 ||$this->session->userdata('user_role_id') == 20 || $this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 8 || $this->session->userdata('user_role_id') == 7 || $this->session->userdata('company_project') == 1 ): ?>
 
                   
                     <select class="form-control m-top-10 select-personal right"  style="float: right; width: 120px; margin-right: 5px;">
@@ -288,6 +290,8 @@
                       <option value="ORD">View All</option>
 
                       <?php if($this->session->userdata('user_role_id') == 3 ){
+                          echo '<option value="PM">Personal</option>';
+                        }elseif($this->session->userdata('user_role_id') == 20 ){
                           echo '<option value="PM">Personal</option>';
                         }elseif($this->session->userdata('user_role_id') == 16 ){
                           echo '<option value="PM">Personal</option>';
@@ -440,15 +444,38 @@
               </div>
             </div>
           </div>
-					
-					
-					
-					
+
+					<?php //if($this->session->userdata('user_id') == 48):
+
+              if($progress_reports == 1): ?>
+            <div class="col-md-3">
+              <div class="box">
+                <div class="box-head pad-5">
+                  <label><i class="fa fa-file-image-o fa-lg"></i> Recently Uploaded PR Images</label> &nbsp;
+
+                  <div class="pull-right">
+                    <select class="form-control input-sm" id="list_users_pr_images" >
+                      <option value="all">View All</option><?php echo $this->projects->list_users_pr_images(); ?>
+                    </select>
+                  </div> 
+                </div>
+
+                <div class="box-area pattern-sandstone pad-10">
+                  <div class="box-content box-list collapse in">
+                    <ul id="list_recent_pr_images" style="overflow-y: scroll; height: 250px;">
+                      <?php echo $this->projects->list_recent_pr_images(25); ?>
+                    </ul>
+                  </div>
+              </div>
+            </div>
+          </div>
+        <?php endif; ?>
+
 
 
 
           <?php if($this->session->userdata('is_admin') == 1): ?>
-          <div class="col-md-3">
+          <div class="col-md-3 pull-right">
             <div class="box">
               <div class="box-head pad-5">
                 <label><i class="fa fa-history fa-lg"></i> Job Date Removed</label> &nbsp;
@@ -566,6 +593,16 @@
     }
   });
 
+  $('select#list_users_pr_images').on("change", function(e) {
+    var pm_selection = $(this).val();
+    if(pm_selection == 'all'){
+      $('ul#list_recent_pr_images li').show();
+    }else{
+      $('ul#list_recent_pr_images li').hide();
+      $('ul#list_recent_pr_images li.list_pr_img_'+pm_selection).show();
+    }
+  });
+
 $('.add_brand_btn').click(function(){
   var brnd_name = $('input#brand_name').val();
 
@@ -674,12 +711,20 @@ $('select.select_table_status').change(function(){
       		*/	?>
       		
       	 
-               <?php
-  $project_manager_q = $this->user_model->fetch_user_by_role(3);
-  $project_manager = $project_manager_q->result();     foreach ($project_manager as $row){    
-                 
-                  echo '<option value="'.$row->user_first_name.' '.$row->user_last_name.'|'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
-              }?>
+         <?php
+         $project_manager_q = $this->user_model->fetch_user_by_role(3);
+         $project_manager = $project_manager_q->result();     foreach ($project_manager as $row){    
+
+          echo '<option value="'.$row->user_first_name.' '.$row->user_last_name.'|'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+        }?>
+
+
+         <?php
+         $project_manager_q = $this->user_model->fetch_user_by_role(20);
+         $project_manager = $project_manager_q->result();     foreach ($project_manager as $row){    
+           
+          echo '<option value="'.$row->user_first_name.' '.$row->user_last_name.'|'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+        }?>
       		</select>
       	</div>
 
@@ -766,7 +811,7 @@ $('select.select_table_status').change(function(){
         <hr style="padding: 0;margin: 14px 0;">
         <div class="input-group m-bottom-10">
           <span class="input-group-addon" id="">
-            <i class="fa fa-calendar"></i> Un-Acepted Date A
+            <i class="fa fa-calendar"></i> Un-Acepted Date A*
           </span>
           <input type="text" data-date-format="dd/mm/yyyy" placeholder="From" class="form-control datepicker" id="un_acepted_start_date" name="un_acepted_start_date" value="" >
         </div>
@@ -775,7 +820,7 @@ $('select.select_table_status').change(function(){
 
         <div class="input-group m-bottom-10">
           <span class="input-group-addon" id="">
-            <i class="fa fa-calendar"></i> Un-Acepted Date B
+            <i class="fa fa-calendar"></i> Un-Acepted Date B*
           </span>
           <input type="text" data-date-format="dd/mm/yyyy" placeholder="To" class="form-control datepicker" id="un_acepted_end_date" name="un_acepted_end_date" value="" >
         </div>
@@ -855,12 +900,14 @@ $('select.select_table_status').change(function(){
       			<option value="fin_d_asc">Finish Date Ascending</option> 
       			<option value="fin_d_desc">Finish Date Descending</option>    
       			<option value="prj_num_asc" selected="selected" >Project Number Ascending</option>  
-      			<option value="prj_num_desc">Project Number Descending</option>                                     
+      			<option value="prj_num_desc">Project Number Descending</option>
+            <option value="qte_num_asc">Quote Deadline Ascending</option>
+            <option value="qte_num_desc">Quote Deadline Descending</option>
       		</select>       
       	</div>
 
       	<div class="clearfix">
-      		<button type="button" class="btn btn-primary print-wip pull-right" id="" data-dismiss="modal">Submit</button>
+      		<button type="button" class="btn btn-primary print-wip pull-right" id="">Submit</button> <!-- data-dismiss="modal" -->
       		<button type="button" class="btn btn-default pull-right m-right-10" data-dismiss="modal">Cancel</button> 
       	</div>
 
@@ -882,4 +929,14 @@ $('select.select_table_status').change(function(){
     max-width: 250px;
   }
 </style>
+
+<script type="text/javascript">
+    
+  $(window).bind("pageshow", function() {
+    // update hidden input field
+    $('select.select-client-tbl').val('');
+
+  });
+
+</script>
 <?php $this->bulletin_board->list_latest_post(); ?>

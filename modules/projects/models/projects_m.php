@@ -43,8 +43,21 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
-
-
+	public function fetch_recent_pr_images($limit=''){
+		$query = $this->db->query("SELECT t1.`project_id`, t2.`project_name`, t2.`project_manager_id`, CONCAT(t3.`user_first_name`, ' ', t3.`user_last_name`) AS pm_name, t2.`project_admin_id`, CONCAT(t4.`user_first_name`, ' ', t4.`user_last_name`) AS pa_name
+								FROM `progress_report_images` AS t1
+								LEFT JOIN `project` AS t2
+								ON t1.`project_id` = t2.`project_id`
+								LEFT JOIN `users` AS t3
+								ON t2.`project_manager_id` = t3.`user_id`
+								LEFT JOIN `users` AS t4
+								ON t2.`project_admin_id` = t4.`user_id`
+								WHERE t1.`is_active` = 1
+								GROUP BY t1.`project_id`
+								ORDER BY t1.`project_id` DESC
+								".($limit != '' ? " LIMIT 0,$limit " : "")." ");
+		return $query;
+	}
 
 	public function fetch_removed_jobdates_prj($limit=''){
 		$query = $this->db->query("SELECT `user_log`.*, CONCAT(  `users`.`user_first_name`,' ' ,`users`.`user_last_name`) AS `user_name_log` , `project`.`project_name` ,`company_details`.`company_name`,`project`.`date_site_commencement`,`project`.`date_site_finish`, `project`.`project_total`,`project_cost_total`.`variation_total`, CONCAT(  `pm_data`.`user_first_name`,' ' ,`pm_data`.`user_last_name`) AS `pm_name` 
@@ -639,5 +652,11 @@ class Projects_m extends CI_Model{
 	public function insert_pr_images($project_id,$image_path){
 		
 		$this->db->query("INSERT INTO `progress_report_images` (`project_id`, `image_path`) VALUES ('$project_id', '$image_path')");
+	}
+
+	public function fetch_pa($selected_pm){
+		$query = $this->db->query("SELECT t1.`project_administrator_id`, t2.`is_active` FROM `project_administrator_manager` AS t1 LEFT JOIN `users` AS t2 ON t1.`project_administrator_id` = t2.`user_id` WHERE t1.`project_manager_primary_id` = '$selected_pm' AND t2.`is_active` = 1");
+
+		return $query;
 	}
 }

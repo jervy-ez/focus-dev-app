@@ -609,20 +609,37 @@
 														<select name="project_manager" class="form-control presonel_add" id="project_manager" style="width: 100%;" tabindex="27">
 															<option value=''>Select Project Manager</option>
 															<?php
-															foreach ($project_manager as $row){
-																if( $row->user_id != 29){
-																	echo '<option style="display:none" class="pm_comp_option pm_comp_'.$row->user_focus_company_id.'" value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
-																}
+																foreach ($project_manager as $row){
+																	if( $row->user_id != 29){
 
-																if( $this->input->post('project_manager') == $row->user_id || $row->user_focus_company_id == $comp_id_selected){
-																	echo '<option class="pm_comp_option pm_comp_'.$row->user_focus_company_id.'" value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																		if( $this->input->post('project_manager') == $row->user_id || $row->user_focus_company_id == $comp_id_selected){
+																			echo '<option class="pm_comp_option pm_comp_'.$row->user_focus_company_id.'" value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																		}else{
+																			echo '<option style="display:none"  class="pm_comp_option pm_comp_'.$row->user_focus_company_id.'" value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																		}
+																	}
 																}
-															}?>
+															?>
+
+															<?php
+															
+																foreach ($account_manager as $row){
+																	if( $this->input->post('project_manager') == $row->user_id || $row->user_focus_company_id == $comp_id_selected){
+																		echo '<option class="pm_comp_option pm_comp_'.$row->user_focus_company_id.'" value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																	}else{
+																		echo '<option style="display:none"  class="pm_comp_option pm_comp_'.$row->user_focus_company_id.'" value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																	}
+																}
+															?>
+
+
+
+															
 
 															<option value="29">Maintenance Manager</option>
 															
 														</select>
-														<script type="text/javascript">//$('select#project_manager').val('<?php echo $this->input->post('project_manager'); ?>');</script>	
+														<script type="text/javascript"> $('select#project_manager').val('<?php echo $this->input->post('project_manager'); ?>');</script>	
 																							
 													</div>
 												</div>
@@ -683,6 +700,14 @@
 															foreach ($project_manager as $row){																
 																echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
 															}?>
+
+
+															<?php
+																foreach ($account_manager as $row){
+																	echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+																}
+															?>
+
 
 															
 														</select>
@@ -1158,7 +1183,20 @@ $('select#client_contact_project_manager').val('29');
 		$('select#client_contact_project_manager').val(selected_pm_of_project);
 	});
 
- 
+ 	$('select#project_manager').change(function(){
+		var selected_pm_of_project = $(this).val();
+
+		$.ajax({
+			'url' : '<?php echo base_url().'projects/set_pa'; ?>',
+			'type' : 'POST',
+			'data' : {'selected_pm' : selected_pm_of_project },
+			'success' : function(data){
+
+				$('select#project_administrator').val(data);
+			}
+		});
+
+	});
 
 
 
