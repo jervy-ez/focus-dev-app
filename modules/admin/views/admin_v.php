@@ -2218,13 +2218,41 @@
 
 <div class="tab-pane fade in <?php echo ($curr_tab == 'users' ? 'active' : '' ); ?>" id="users" aria-labelledby="users">
 	
-	<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/user_settings">
-
+	
 
 		<div class="box blue-border m-top-0">
 			<div class="box-head blue-bg pad-5">
 				<label class="blue-title"><i class="fa fa-user fa-lg"></i> User Default Settings</label>
+
+				<div id="" class="pull-right" style="    width: 250px;">
+					<span style="    font-size: 13px;    display: block;    clear: both;    float: left;    font-weight: bold;    margin: 5px 5px 0 0;">Project Review Day</span>					
+					<select class="form-control input-sm" id="days_wip_report" name="days_wip_report" style="    margin: -2px 0 -5px 0;    width: 120px;">
+						<option value="" disabled="" selected="">Select Day</option>
+						<option value="Monday">Monday</option>
+						<option value="Tuesday">Tuesday</option>
+						<option value="Wednesday">Wednesday</option>
+						<option value="Thursday">Thursday</option>
+						<option value="Friday">Friday</option>
+					</select>
+
+					<script type="text/javascript">
+
+
+					$('select#days_wip_report').val('<?php echo $static_defaults[0]->prj_review_day; ?>');
+
+					$('select#days_wip_report').on("change", function(e){
+
+						var day = $(this).val();
+
+						 $.post(baseurl+"admin/update_prj_review_day",{'ajax_var': day});
+
+					});
+
+					</script>
+				</div>
+
 			</div>
+<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/user_settings">
 
 			<div class="box-area clearfix pad-10">
 				<?php if(@$user_settings_error): ?>
@@ -2284,8 +2312,8 @@
 					<!-- </div> -->
 				</div>
 			</div>
-		</div>
 	</form>
+		</div>
 
 	<p><hr /></p>
 

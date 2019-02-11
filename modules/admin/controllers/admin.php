@@ -65,6 +65,7 @@ class Admin extends MY_Controller{
 
 		$data['warranty_months'] = $data_b['warranty_months'];
 		$data['warranty_years'] = $data_b['warranty_years'];
+		$data['prj_review_day'] = $data_b['prj_review_day'];
 
 		//default email message
 		$q_admin_default_email_message = $this->admin_m->fetch_admin_default_email_message();
@@ -232,6 +233,11 @@ class Admin extends MY_Controller{
 		$data['page_title'] = 'Admin Defaults';
 
 		$this->load->view('page', $data);
+	}
+
+	public function update_prj_review_day(){
+		$day = $this->security->xss_clean($this->input->post('ajax_var'));
+		$this->admin_m->update_prj_day_rev($day);		
 	}
 
 

@@ -26,6 +26,10 @@ class Reports_m extends CI_Model{
 			`project`.`project_name`,
 			`company_details`.`company_name`,
 			`project`.`project_id`,
+			`project`.`project_manager_id`,
+			`project`.`review_date`,
+
+			UNIX_TIMESTAMP( STR_TO_DATE(`project`.`review_date`, '%d/%m/%Y') ) AS `unix_review_date`,
 			`project`.`project_total`,
 			`project`.`date_site_finish`,
 			`project_cost_total`.`variation_total`,

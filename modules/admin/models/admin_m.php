@@ -182,27 +182,39 @@ class Admin_m extends CI_Model{
 		return $this->db->insert_id();
 	}
 
-	/* /////////////////////////////////////// HERE MARK  /////////////////////////////////////// */
-	public function update_insert_quote_deadline($days_deadline){
-
-
-
-		//$query = $this->db->query("INSERT INTO `admin_defaults` SELECT NULL, `gst_rate`, `installation_labour_mark_up`, `labor_split_standard`, `labor_split_time_and_half`, `labor_split_double_time`, `cqr_notes_w_insurance`, `cqr_notes_no_insurance`, `cpo_notes_w_insurance`, `cpo_notes_no_insurance`, `unaccepted_no_days`, `days_quote_deadline`, `unaccepted_date_categories`, `labour_sched_categories` FROM `admin_defaults` ORDER BY `admin_default_id` DESC LIMIT 1");
-		//$added_id = $this->db->insert_id();
-
+	public function update_insert_quote_deadline($days_deadline=''){
 
 
 		$q_admin_defaults = $this->fetch_admin_defaults();
 		$admin_defs = array_shift($q_admin_defaults->result_array());
 
 		array_shift( $admin_defs  );
+
+		//$admin_defs['admin_default_id'] = $admin_defs['admin_default_id'] + 1;
+
+		// var_dump($admin_defs);
+		//echo "<p><strong>------</strong></p>";
+
 		$admin_tbls = implode("`,`",array_keys($admin_defs) ) ;
 		$admin_vals = implode("','",$admin_defs) ;
+
+	//	echo "<p><strong>------</strong></p>";
+
+	//	echo "`$admin_tbls`";
+
+	//	echo "<p><strong>------</strong></p>";
+	//	echo "'$admin_vals'";
+
+
 		$query = $this->db->query("INSERT INTO `admin_defaults`(`$admin_tbls`)VALUES('$admin_vals') ");
 		$added_id = $this->db->insert_id();
 
 		$this->db->query("UPDATE `admin_defaults` SET `days_quote_deadline` = '$days_deadline' WHERE `admin_defaults`.`admin_default_id` = $added_id ");
 		return $added_id;
+	}
+
+	public function update_prj_day_rev($day){
+		$this->db->query(" UPDATE `static_defaults` SET `prj_review_day` = '$day'  ");
 	}
 
 	public function update_admin_defaults($val){
@@ -212,8 +224,6 @@ class Admin_m extends CI_Model{
 		$time_half = $val['time-half'];
 		$double_time = $val['double-time'];
 
-		//$query = $this->db->query("INSERT INTO `admin_defaults` SELECT NULL, `gst_rate`, `installation_labour_mark_up`, `labor_split_standard`, `labor_split_time_and_half`, `labor_split_double_time`, `cqr_notes_w_insurance`, `cqr_notes_no_insurance`, `cpo_notes_w_insurance`, `cpo_notes_no_insurance`, `unaccepted_no_days`, `days_quote_deadline`, `unaccepted_date_categories`, `labour_sched_categories` FROM `admin_defaults` ORDER BY `admin_default_id` DESC LIMIT 1");
-		//$added_id = $this->db->insert_id();
 
 
 		$q_admin_defaults = $this->fetch_admin_defaults();
@@ -223,7 +233,15 @@ class Admin_m extends CI_Model{
 		$admin_tbls = implode("`,`",array_keys($admin_defs) ) ;
 		$admin_vals = implode("','",$admin_defs) ;
 		$query = $this->db->query("INSERT INTO `admin_defaults`(`$admin_tbls`)VALUES('$admin_vals') ");
+
+
+	//	$query = $this->db->query("INSERT INTO `admin_defaults` SELECT `$admin_tbls` FROM `admin_defaults` ORDER BY `admin_default_id` DESC LIMIT 1");
+		
+
+
+
 		$added_id = $this->db->insert_id();
+
 
 
 
@@ -231,10 +249,22 @@ class Admin_m extends CI_Model{
 			WHERE `admin_defaults`.`admin_default_id` = $added_id ");
 		return $added_id;
 
+
+
+/*
+		$query = $this->db->query("SELECT * FROM  `admin_defaults` order by admin_default_id desc");
+		$qArr = array_shift($query->result_array());
+
+		$cqr_notes_w_insurance = $qArr['cqr_notes_w_insurance'];
+		$cqr_notes_no_insurance = $qArr['cqr_notes_no_insurance'];
+		$cpo_notes_w_insurance = $qArr['cpo_notes_w_insurance'];
+		$cpo_notes_no_insurance = $qArr['cpo_notes_no_insurance'];
+
+		$this->db->query("INSERT INTO `admin_defaults` (`gst_rate`, `installation_labour_mark_up`, `labor_split_standard`, `labor_split_time_and_half`,`labor_split_double_time`,`cqr_notes_w_insurance`,`cqr_notes_no_insurance`,`cpo_notes_w_insurance`,`cpo_notes_no_insurance`) VALUES ('$gst_rate', '$installation_labour','$standard_labour', '$time_half', '$double_time', '$cqr_notes_w_insurance', '$cqr_notes_no_insurance', '$cpo_notes_w_insurance', '$cpo_notes_no_insurance')");
+		return $this->db->insert_id();
+*/
+
 	}
-
-
-/* /////////////////////////////////////// HERE MARK  ///////////////////////////////////////*/
 
 
 	public function insert_latest_system_default($site_cost_id,$admin_default_id,$markup_id,$labour_cost_id){

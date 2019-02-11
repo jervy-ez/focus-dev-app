@@ -2,12 +2,18 @@
 
 class Projects_m extends CI_Model{
 	
-	public function display_all_projects($extra=''){
-		$query = $this->db->query("SELECT `project`.`project_id`, `project`.`project_total`,`project`.`project_name`, `project_cost_total`.`work_estimated_total`,`project_cost_total`.`variation_total`, `project`.`install_time_hrs`,`project`.`unaccepted_date`,`project`.`date_site_commencement`,`company_details`.`company_name`,`company_details`.`company_id`, `project`.`job_category`, `project`.`project_status_id`, `project`.`job_date`, `project`.`budget_estimate_total`,`project`.`project_manager_id`,`project`.`project_admin_id`,`project`.`project_estiamator_id`,`project`.`is_wip`, `project`.`is_paid`, `project`.date_site_finish, `project`.warranty_date
+	public function display_all_projects($extra='',$extra_order=''){
+		$query = $this->db->query("SELECT `project`.`project_id`, `project`.`project_total`,`project`.`project_name`,
+
+			UNIX_TIMESTAMP( STR_TO_DATE(`project`.`review_date`, '%d/%m/%Y') ) AS `unix_review_date`
+
+			, `project`.`quote_deadline_date`, `project_cost_total`.`work_estimated_total`,`project_cost_total`.`variation_total`, `project`.`install_time_hrs`,`project`.`unaccepted_date`,`project`.`date_site_commencement`,`company_details`.`company_name`,`company_details`.`company_id`, `project`.`job_category`, `project`.`project_status_id`, `project`.`job_date`, `project`.`budget_estimate_total`,`project`.`project_manager_id`,`project`.`project_admin_id`,`project`.`project_estiamator_id`,`project`.`is_wip`, `project`.`is_paid`, `project`.date_site_finish, `project`.warranty_date,
+			UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) AS `unix_date_site_finish`
 			FROM  `project`,`company_details`,`project_cost_total` 
 			WHERE `company_details`.`company_id` = `project`.`client_id` AND `project`.is_active = '1' AND `project_cost_total`.`project_id` = `project`.`project_id`
 			".($extra != '' ? " $extra " : "")." 
-			ORDER BY `project`.`project_id`  DESC ");
+
+			".($extra_order != '' ? " $extra_order " : " ORDER BY `project`.`project_id`  DESC ")." ");
 		return $query;
 	}
 
@@ -293,10 +299,15 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
+	public function set_project_date_review($project_id,$date){
+		$query = $this->db->query("UPDATE  `project` SET `project`.`review_date` = '$date' WHERE `project`.`project_id` = '$project_id' ");
+		return $query;		
+	}
+
 	public function insert_new_project($project_name, $project_date, $primary_contact_person_id, $budget_estimate_total, $job_date, $brand,$is_wip, $client_po, $date_site_commencement, $date_site_finish, $job_category, $job_type, $focus_user_id ,$focus_company_id, $project_manager_id, $project_admin_id, $project_estiamator_id, $address_id, $invoice_address_id, $notes_id, $markup,$project_status_id, $client_id, $install_time_hrs, $project_area, $is_double_time, $labour_hrs_estimate, $shop_tenancy_number,$defaults_id,$cc_pm,$quote_deadline_date,$proj_joinery_user){
 
-		$this->db->query("INSERT INTO `project` (`project_name`, `project_date`, `primary_contact_person_id`, `budget_estimate_total`, `job_date`, `brand_id`, `is_wip`, `client_po`, `date_site_commencement`, `date_site_finish`, `job_category`, `job_type`, `focus_user_id`,`focus_company_id`, `project_manager_id`, `project_admin_id`, `project_estiamator_id`, `address_id`, `invoice_address_id`, `notes_id`, `markup`,`project_status_id`, `client_id` , `install_time_hrs`, `project_area`, `is_double_time`, `labour_hrs_estimate`, `shop_tenancy_number` , `defaults_id`, `client_contact_person_id`, `quote_deadline_date`,`joinery_selected_sender`) 
-			VALUES ('$project_name', '$project_date', '$primary_contact_person_id', '$budget_estimate_total', '$job_date','$brand', '$is_wip', '$client_po', '$date_site_commencement', '$date_site_finish', '$job_category', '$job_type','$focus_user_id' ,'$focus_company_id', '$project_manager_id', '$project_admin_id', '$project_estiamator_id', '$address_id', '$invoice_address_id', '$notes_id', '$markup', '$project_status_id', '$client_id','$install_time_hrs', '$project_area', '$is_double_time', '$labour_hrs_estimate', '$shop_tenancy_number', '$defaults_id', '$cc_pm', '$quote_deadline_date', '$proj_joinery_user')");
+		$this->db->query("INSERT INTO `project` (`project_name`, `project_date`, `primary_contact_person_id`, `budget_estimate_total`, `job_date`, `brand_id`, `is_wip`, `client_po`, `date_site_commencement`, `date_site_finish`, `job_category`, `job_type`, `focus_user_id`,`focus_company_id`, `project_manager_id`, `project_admin_id`, `project_estiamator_id`, `address_id`, `invoice_address_id`, `notes_id`, `markup`,`project_status_id`, `client_id` , `install_time_hrs`, `project_area`, `is_double_time`, `labour_hrs_estimate`, `shop_tenancy_number` , `defaults_id`, `client_contact_person_id`, `quote_deadline_date`,`joinery_selected_sender`,`review_date`) 
+			VALUES ('$project_name', '$project_date', '$primary_contact_person_id', '$budget_estimate_total', '$job_date','$brand', '$is_wip', '$client_po', '$date_site_commencement', '$date_site_finish', '$job_category', '$job_type','$focus_user_id' ,'$focus_company_id', '$project_manager_id', '$project_admin_id', '$project_estiamator_id', '$address_id', '$invoice_address_id', '$notes_id', '$markup', '$project_status_id', '$client_id','$install_time_hrs', '$project_area', '$is_double_time', '$labour_hrs_estimate', '$shop_tenancy_number', '$defaults_id', '$cc_pm', '$quote_deadline_date', '$proj_joinery_user',' $project_date')");
 		return $this->db->insert_id();
 		#inserts a new project and returns a project_id		
 	}
@@ -336,7 +347,7 @@ class Projects_m extends CI_Model{
 	}
 
 
-	public function project_details_quick_update($project_id,$project_name,$budget_estimate_total,$job_date,$quote_deadline_date,$client_po,$install_time_hrs,$project_markup,$site_start,$site_finish,$unaccepted_date){
+	public function project_details_quick_update($project_id,$project_name,$budget_estimate_total,$job_date,$quote_deadline_date,$client_po,$install_time_hrs,$project_markup,$site_start,$site_finish,$unaccepted_date,$rev_date){
 		$query = $this->db->query("SELECT * from `project` where `project_id` = '$project_id'");
 		foreach ($query->result_array() as $row){
 			$site_hours = $row['install_time_hrs'];	
@@ -350,7 +361,7 @@ class Projects_m extends CI_Model{
 
 		$this->db->query("UPDATE project_schedule set site_start_date = '$site_start', site_finish_date = '$site_finish' where `project_id` = '$project_id'");
 
-		$this->db->query("UPDATE `project` SET `project_name` = '$project_name', `budget_estimate_total` = '$budget_estimate_total',`quote_deadline_date` = '$quote_deadline_date', `job_date` = '$job_date', `client_po` = '$client_po', `install_time_hrs` = '$install_time_hrs', `markup` = '$project_markup',`date_site_commencement`='$site_start',`date_site_finish`='$site_finish',`unaccepted_date` = '$unaccepted_date'
+		$this->db->query("UPDATE `project` SET `project_name` = '$project_name', `budget_estimate_total` = '$budget_estimate_total',`quote_deadline_date` = '$quote_deadline_date', `job_date` = '$job_date', `review_date` = '$rev_date', `client_po` = '$client_po', `install_time_hrs` = '$install_time_hrs', `markup` = '$project_markup',`date_site_commencement`='$site_start',`date_site_finish`='$site_finish',`unaccepted_date` = '$unaccepted_date'
 		 WHERE `project`.`project_id` = '$project_id' ");
 
 		
@@ -366,7 +377,7 @@ class Projects_m extends CI_Model{
 		$this->db->query("UPDATE `project` SET `is_active` = '0' WHERE `project`.`project_id` = '$project_id'");		
 	}
 
-	public function update_full_project_details($project_id,$project_name,$client_id,$contact_person_id,$client_po,$job_type,$brand,$job_category,$job_date,$site_start,$site_finish,$is_wip,$install_hrs,$is_double_time,$project_total,$labour_hrs_estimate,$project_markup,$project_area,$project_manager_id,$project_admin_id,$project_estiamator_id,$shop_tenancy_number,$site_address_id,$shop_tenancy_number,$site_address_id,$invoice_address_id,$focus_id,$cc_pm,$proj_joinery_user){
+	public function update_full_project_details($project_id,$project_name,$client_id,$contact_person_id,$client_po,$job_type,$brand,$job_category,$job_date,$site_start,$site_finish,$is_wip,$install_hrs,$is_double_time,$project_total,$labour_hrs_estimate,$project_markup,$project_area,$project_manager_id,$project_admin_id,$project_estiamator_id,$shop_tenancy_number,$site_address_id,$shop_tenancy_number,$site_address_id,$invoice_address_id,$focus_id,$cc_pm,$proj_joinery_user,$rev_date){
 		$query = $this->db->query("SELECT * from `project` where `project_id` = '$project_id'");
 		foreach ($query->result_array() as $row){
 			$site_hours = $row['install_time_hrs'];
@@ -380,24 +391,31 @@ class Projects_m extends CI_Model{
 
 		$this->db->query("UPDATE project_schedule set site_start_date = '$site_start', site_finish_date = '$site_finish' where `project_id` = '$project_id'");
 		
-		$this->db->query("UPDATE `project` SET `project_name` = '$project_name', `client_id` = '$client_id',  `primary_contact_person_id` = '$contact_person_id', `client_po` = '$client_po', `job_type` = '$job_type', `brand_id` = '$brand', `job_category` = '$job_category', `job_date` = '$job_date', `date_site_commencement` = '$site_start', `date_site_finish` = '$site_finish', `is_wip` = '$is_wip', `shop_tenancy_number` = '$shop_tenancy_number', `address_id` = '$site_address_id',`focus_company_id` = '$focus_id', `invoice_address_id` = '$invoice_address_id', `install_time_hrs` = '$install_hrs', `is_double_time` = '$is_double_time', `budget_estimate_total` = '$project_total', `labour_hrs_estimate` = '$labour_hrs_estimate', `markup` = '$project_markup', `project_area` = '$project_area', `project_manager_id` = '$project_manager_id', `project_admin_id` = '$project_admin_id', `project_estiamator_id` = '$project_estiamator_id', `client_contact_person_id` = '$cc_pm', `joinery_selected_sender` = '$proj_joinery_user'
+		$this->db->query("UPDATE `project` SET `project_name` = '$project_name', `client_id` = '$client_id',  `primary_contact_person_id` = '$contact_person_id', `client_po` = '$client_po', `job_type` = '$job_type', `brand_id` = '$brand', `job_category` = '$job_category', `job_date` = '$job_date', `date_site_commencement` = '$site_start', `date_site_finish` = '$site_finish', `is_wip` = '$is_wip', `shop_tenancy_number` = '$shop_tenancy_number', `address_id` = '$site_address_id', `review_date` = '$rev_date',`focus_company_id` = '$focus_id', `invoice_address_id` = '$invoice_address_id', `install_time_hrs` = '$install_hrs', `is_double_time` = '$is_double_time', `budget_estimate_total` = '$project_total', `labour_hrs_estimate` = '$labour_hrs_estimate', `markup` = '$project_markup', `project_area` = '$project_area', `project_manager_id` = '$project_manager_id', `project_admin_id` = '$project_admin_id', `project_estiamator_id` = '$project_estiamator_id', `client_contact_person_id` = '$cc_pm', `joinery_selected_sender` = '$proj_joinery_user'
 			WHERE `project`.`project_id` = '$project_id' ");
 
 	}
 
-	public function add_project_comment($project_id,$date_posted,$project_comments,$user_id){
-		$this->db->query("INSERT INTO `project_comments` (`project_id`, `date_posted`, `project_comments`, `user_id`) VALUES ('$project_id', '$date_posted', '$project_comments', '$user_id')");		
+	public function add_project_comment($project_id,$date_posted,$project_comments,$user_id,$is_project_comments=1){
+		$this->db->query("INSERT INTO `project_comments` (`project_id`, `date_posted`, `project_comments`, `user_id`, `is_project_comments` ) VALUES ('$project_id', '$date_posted', '$project_comments', '$user_id', '$is_project_comments')");		
 		$project_id = $this->db->insert_id();
 		return $project_id;
 	}
 
-	public function add_invoice_comment($project_id,$comment,$include_invoice_comments){
-		$this->db->query("UPDATE `project` SET `invoice_comments` = '$comment', `project`.`include_invoice_comments` = '$include_invoice_comments' WHERE `project`.`project_id` = '$project_id' ");
+	public function list_project_comments($project_id,$is_project_comments=1){
+		$query = $this->db->query("SELECT * FROM `project_comments` WHERE `project_comments`.`project_id` = '$project_id' AND `project_comments`.`is_project_comments`='$is_project_comments' ORDER BY `project_comments`.`project_comments_id` DESC");
+		return $query;
 	}
 
-	public function list_project_comments($project_id){
-		$query = $this->db->query("SELECT * FROM `project_comments` WHERE `project_comments`.`project_id` = '$project_id' ORDER BY `project_comments`.`project_comments_id` DESC");
-		return $query;
+
+
+
+
+
+
+
+	public function add_invoice_comment($project_id,$comment,$include_invoice_comments){
+		$this->db->query("UPDATE `project` SET `invoice_comments` = '$comment', `project`.`include_invoice_comments` = '$include_invoice_comments' WHERE `project`.`project_id` = '$project_id' ");
 	}
 
 	public function get_project_cost_total($project_id){

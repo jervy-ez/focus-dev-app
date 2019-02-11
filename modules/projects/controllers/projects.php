@@ -149,7 +149,73 @@ class Projects extends MY_Controller{
 		
 	}
 
-	public function display_all_projects($stat){
+	public function list_un_invoiced_rvw(){
+
+		$static_defaults_q = $this->user_model->select_static_defaults();
+		$static_defaults = array_shift($static_defaults_q->result() ) ;
+		$row_stat = '';
+		$day_revew_req = $static_defaults->prj_review_day;		
+		$timestamp_day_revuew_req =  strtotime("$day_revew_req this week");
+
+		$total_project_value = 0;
+		$total_outstading_value = 0;
+		$content = '';
+		$inv_date_type = '';
+		$records_num = '';	
+		$current_day = date('d/m/Y');
+		$order_q = " ORDER BY UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) ASC ";
+		$has_where = " WHERE  `invoice`.`is_invoiced` = '0' AND `invoice`.`is_paid` = '0'     AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$current_day', '%d/%m/%Y') ) 				";
+		$table_q = $this->reports_m->select_list_invoice($has_where,'','','','','',$order_q);
+
+		foreach ($table_q->result() as $row){
+
+			if($row->label == 'VR'){
+				$progress_order = 'Variation';
+			}elseif($row->label != 'VR' && $row->label != ''){
+				$progress_order = $row->label;
+			}else{
+				$progress_order = $row->invoice_project_id.'P'.$row->order_invoice;				
+			}
+
+			if($progress_order == 'Variation'){ 
+				$project_total_percent = $row->variation_total;
+			}else{
+
+				if($row->is_paid == 1 ){
+					$project_total_percent = $row->invoiced_amount;
+				}else{
+					$project_total_percent = $row->project_total * ($row->progress_percent/100);
+				}
+			}
+
+			$project_total_percent = number_format($project_total_percent,2);
+
+
+			if( $timestamp_day_revuew_req > $row->unix_review_date  || $row->unix_review_date  == '' ){
+				$row_stat = 'needed_rev';
+			}else{
+				$row_stat = 'posted_rev';
+			}
+
+			
+			echo '<tr class="prj_rvw_rw '.$row_stat.'" id="'.$row->invoice_project_id.'-uninvoiced_prj_view" >';
+			echo '<td><strong>'.$row->date_site_finish.'</strong></td>';
+			echo '<td><strong>'.$row->company_name.'</strong></td>';
+
+			//echo '<td><strong class="prj_id_rvw">'.$row->invoice_project_id.'</strong> - '.$row->project_name.'</td>';
+
+			echo '<td>
+				<div class=" btn btn-sm btn-success view_notes_prjrvw" style="padding: 4px;"><i class="fa fa-book"></i></div>
+				<a href="'.base_url().'projects/update_project_details/'.$row->invoice_project_id.'?status_rvwprj=uninvoiced" ><strong class="prj_id_rvw">'.$row->invoice_project_id.'</strong> - '.$row->project_name.'</a>
+			</td>';
+
+
+			echo '<td><strong class="unset">'.$row->invoice_date_req.'</strong></td>';
+			echo '<td>'.$progress_order.'</td><td>'.number_format($row->progress_percent,2).'</td><td>'.$project_total_percent.'</td><td class="rw_pm_slct hide">pm_'.$row->project_manager_id.'</td></tr>';
+		}	
+	}
+
+	public function display_all_projects($stat,$is_wpev = 0){
 		$admin_defaults = $this->admin_m->fetch_admin_defaults(); //1
 		foreach ($admin_defaults->result() as $row){
 			$data['unaccepted_date_categories'] = $row->unaccepted_date_categories;
@@ -179,7 +245,21 @@ class Projects extends MY_Controller{
 			$extra_query = 'AND `project`.`job_date` != ""  AND `project`.`is_paid` = "0"   '; 
 		}
 
-		$data['proj_t'] = $this->projects_m->display_all_projects($extra_query);
+		$data['is_wpev'] = $is_wpev;
+			$extra_order = '';
+
+		if($is_wpev > 0){
+			$extra_order = ' ORDER BY `unix_date_site_finish`  ASC ';
+		}
+
+		if($is_wpev > 0 && $stat == 'quote'){
+			$extra_order = " ORDER BY    UNIX_TIMESTAMP( STR_TO_DATE(`project`.`quote_deadline_date`, '%d/%m/%Y') ) ASC ";
+		}
+
+
+
+
+		$data['proj_t'] = $this->projects_m->display_all_projects($extra_query,$extra_order);
 		$this->load->view('tables_projects',$data);
 	}
 
@@ -853,6 +933,13 @@ class Projects extends MY_Controller{
  
 
 
+	}
+
+
+	public function set_date_review(){
+		$project_id = $this->security->xss_clean($this->input->post('ajax_var'));
+		$date = date('d/m/Y');
+		$this->projects_m->set_project_date_review($project_id,$date);	
 	}
 
 	public function clear_apost(){
@@ -1809,7 +1896,13 @@ $gp = 0;
 			return false;
 		}
 
-		$project_comments = $this->projects_m->list_project_comments($project_id_set);
+		$is_prj_rvw = 1;
+
+		if(isset($_POST['is_prj_rvw']) && $_POST['is_prj_rvw'] != ''){
+			$is_prj_rvw = 0;
+		}
+
+		$project_comments = $this->projects_m->list_project_comments($project_id_set,$is_prj_rvw);
 
 		$project_details = $this->projects_m->fetch_project_details($project_id_set);
 
@@ -1868,8 +1961,14 @@ $gp = 0;
 		$project_comment = explode('`', $raw_project_comment);
 		$datestring = "%l, %d%S, %F %Y %g:%i:%s %A"; $time = time();  
 
+		$prj_rev = 1;
+
+		if(isset($project_comment[3]) && $project_comment[3] != ''){
+			$prj_rev = 0;
+		}
+
 		$date_posted = mdate($datestring, $time);
-		$supplier_category = $this->projects_m->add_project_comment($project_comment[1],$date_posted,$project_comment[2],$project_comment[0]);
+		$supplier_category = $this->projects_m->add_project_comment($project_comment[1],$date_posted,$project_comment[2],$project_comment[0],$prj_rev);
 		
 		echo $date_posted;
 	}
@@ -1881,6 +1980,7 @@ $gp = 0;
 
 		$project_id = $this->uri->segment(3);
 		$data['project_id'] = $project_id;
+
 
 
 
@@ -2360,8 +2460,8 @@ $gp = 0;
 			$date_quote_deadline =  date('d/m/Y', strtotime("$formated_start_date -$days_quote_deadline days"));
 */
 
-
-				$this->projects_m->update_full_project_details($project_id,$project_name,$client_id,$contact_person_id,$client_po,$job_type,$brand_name,$job_category,$job_date,$site_start,$site_finish,$is_wip,$install_hrs,$is_double_time,$project_total,$labour_hrs_estimate,$project_markup,$project_area,$project_manager_id,$project_admin_id,$project_estiamator_id,$shop_tenancy_number,$site_address_id,$shop_tenancy_number,$site_address_id,$invoice_address_id,$focus_id,$cc_pm,$proj_joinery_user);
+$rev_date  = date("d/m/Y");
+				$this->projects_m->update_full_project_details($project_id,$project_name,$client_id,$contact_person_id,$client_po,$job_type,$brand_name,$job_category,$job_date,$site_start,$site_finish,$is_wip,$install_hrs,$is_double_time,$project_total,$labour_hrs_estimate,$project_markup,$project_area,$project_manager_id,$project_admin_id,$project_estiamator_id,$shop_tenancy_number,$site_address_id,$shop_tenancy_number,$site_address_id,$invoice_address_id,$focus_id,$cc_pm,$proj_joinery_user,$rev_date);
 
 				if( strpos(implode(",",$data['warranty_categories']), $job_category) !== false ):
 					$this->projects->set_warranty_date_after_paid($project_id);
@@ -2462,11 +2562,21 @@ $gp = 0;
 				$this->user_model->insert_user_log($user_id,$date,$time,$actions,$project_id,$type);
 
 
+				if(isset($_GET['status_rvwprj']) && $_GET['status_rvwprj'] != '' ){
+					redirect(base_url().'projects/projects_wip_review?prj_ret_rev='.$project_id.'-'.$_GET['status_rvwprj'].'_prj_view');
+				}
+
+
 
 				redirect('/projects/view/'.$project_id);
 			}
 
 		}else{
+
+
+			if(isset($_GET['status_rvwprj']) && $_GET['status_rvwprj'] != '' ){
+				redirect(base_url().'projects/projects_wip_review?prj_ret_rev='.$project_id.'-'.$_GET['status_rvwprj'].'_prj_view');
+			}
 			redirect('/projects');
 		}
 	}
@@ -2605,7 +2715,11 @@ $gp = 0;
 		
 		$has_updated_wip = $this->projects_m->set_wip_project($project_id,$is_wip);
 
-		$this->projects_m->project_details_quick_update($project_id,$project_name,$budget_estimate_total,$job_date,$date_quote_deadline,$client_po,$install_time_hrs,$project_markup,$site_start,$site_finish,$unaccepted_date);
+
+$rev_date  = date("d/m/Y");
+
+
+		$this->projects_m->project_details_quick_update($project_id,$project_name,$budget_estimate_total,$job_date,$date_quote_deadline,$client_po,$install_time_hrs,$project_markup,$site_start,$site_finish,$unaccepted_date,$rev_date);
 		
 		$this->update_install_cost_total($project_id,$prj_install_hrs,$is_double_time);
 
@@ -2684,6 +2798,30 @@ $gp = 0;
 		}
 //		
 	}
+
+
+	public function projects_wip_review(){
+
+
+    if(
+    	$this->session->userdata('user_role_id') != 3  &&
+    	$this->session->userdata('user_role_id') != 20 && 
+    	$this->session->userdata('user_role_id') != 2  && 
+    	$this->session->userdata('user_role_id') != 16 && 
+    	$this->session->userdata('is_admin') != 1 && 
+    	$this->session->userdata('user_id') != 6 ){
+		redirect('/projects');
+    }     
+
+  
+		$data['main_content'] = 'projects_wip_review';
+		$data['screen'] = 'Projects WIP Review';
+		$data['users'] = $this->user_model->fetch_user();
+		$data['page_title'] = 'Projects WIP Review';
+		$this->load->view('page', $data);
+
+	}
+
 
 	public function progress_reports() {
 

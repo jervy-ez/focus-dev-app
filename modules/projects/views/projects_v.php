@@ -1,7 +1,3 @@
-<script src="<?php echo base_url(); ?>js/vue.js"></script>
-<script src="<?php echo base_url(); ?>js/moment.min.js"></script>
-<script src="<?php echo base_url(); ?>js/jmespath.js"></script>
-
 <?php date_default_timezone_set("Australia/Perth");  // date is set to perth and important setting for diff timezone acounts ?>
 <?php $this->load->module('company'); ?>
 <?php $this->load->module('projects'); ?>
@@ -145,33 +141,6 @@
   </div>
 </div>
 
-<div class="modal fade" id="brand_logo_view" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style = "z-index: 1100 !important;">
-  <div class="modal-dialog  modal-sm">
-    <div class="modal-content" style = "width:400px" id = "brand_app">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="BrandLabel"></h4>
-      </div>
-      <div class="modal-body" style = "height: 300px">
-        <form action="<?php echo base_url(); ?>induction_health_safety/upload_brand_logo" method="post" enctype="multipart/form-data">
-          <span><b style = "color: red">Note: Only jpg file are allowed to be uploaded</b></span>
-          <span class="btn btn-primary btn-sm btn-block btn-file">
-            <i class = "fa fa-plus-circle"></i> Upload Logo<input type="file" name="userfile[]" multiple="multiple" accept="image/*" onchange="form.submit()">
-          </span>
-          <input type="hidden" id = "brand_id" name = "brand_id">
-        </form>
-        <div class="col-sm-12" style = "height: 200px; overflow:auto; border: 1px solid #888">
-          <img id = "brandLogo" src="" alt="" style = "width: 100%">
-        </div>
-        
-      </div>
-      <div class="modal-footer">
-        <button type = "button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div class="modal fade" id="list_of_contractors" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog  modal-sm">
     <div class="modal-content" style = "width:400px">
@@ -218,6 +187,14 @@
 					<li>
 						<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
 					</li>
+
+
+
+          <?php if($this->session->userdata('user_role_id') == 3 ||$this->session->userdata('user_role_id') == 20 || $this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 16  || $this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6 ): ?>
+             <li>
+              <a href="<?php echo base_url(); ?>projects/projects_wip_review" class="btn-small btn-primary" ><i class="fa fa-file-text-o"></i> WIP Review</a>
+            </li>
+          <?php endif; ?>
          
           <?php if($this->session->userdata('quick_quote') == 1): ?>
           <li class="">
@@ -970,51 +947,12 @@ $('select.select_table_status').change(function(){
 </style>
 
 <script type="text/javascript">
-  var baseurl = '<?php echo base_url(); ?>';
-  var brand_id = 0;  
+    
   $(window).bind("pageshow", function() {
     // update hidden input field
     $('select.select-client-tbl').val('');
 
   });
 
-  var app = new Vue({
-    el: '#brand_app',
-    data: {
-    },
-    mounted: function(){
-    },
-
-    methods: {
-      getImageLogo: function(){
-        $.post(baseurl+"induction_health_safety/get_brand_logo",
-        {
-          brand_id: brand_id
-        },
-        function(result){
-          if(result == 1){
-            $("#brandLogo").show();
-            $("#brandLogo").attr("src",baseurl+'uploads/brand_logo/'+brand_id+'.jpg');
-          }else{
-            $("#brandLogo").hide();
-            $("#brandLogo").attr("src","");
-          }
-          
-        });
-      },
-    },
-
-  });
-
-  function view_brand(obj){
-    var elm_id = obj.id.trim();
-    var elm_var = elm_id.split('_');
-    brand_id = elm_var[1];
-    $("#brand_id").val(brand_id);
-    var brand_name = $("#brnd_name_"+brand_id).text();
-    $("#BrandLabel").text(brand_name);
-    $("#brand_logo_view").modal('show');
-    app.getImageLogo();
-  }
 </script>
 <?php $this->bulletin_board->list_latest_post(); ?>

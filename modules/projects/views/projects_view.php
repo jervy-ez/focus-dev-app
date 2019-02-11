@@ -239,9 +239,6 @@ estimate-->
 					</li>
 					<?php if($this->session->userdata('is_admin') == 1 ): ?>
 					<li>
-						<a href="<?php echo base_url(); ?>induction_health_safety/project_induction_site_staff?project_id=<?php echo $project_id ?>" class="btn-small"> Induction</a>
-					</li>
-					<li>
 						<a href="#" class="btn-small view_applied_settings"><i class="fa fa-cog"></i> Applied Settings</a>
 					</li>
 					<?php endif; ?>							
@@ -522,59 +519,15 @@ estimate-->
 																			<p class="job-date-set form-control text-right" id="job_date" ><?php if($job_date == ''){echo "DD/MM/YYYY";}else{echo $job_date;}  ?></p>
 																			</div>
 																		<?php   else: ?>
-																			<?php if($this->session->userdata('is_admin') == 1): ?>
-																				<?php if($induction_exempted == 0): ?>
-																					<?php if($budget_estimate_total < $induction_project_value): ?>
-																						<script type="text/javascript">localStorage.setItem("jobdate_disabled", "0");</script>
-																						<?php if($job_date == '' ): ?>
-																							<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control  text-right"  id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																						<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('job_date') == 1 || ( $this->session->userdata('user_role_id') == 7 && $job_category == 'Maintenance' )  ): ?>
-																							<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																						<?php elseif( $this->session->userdata('company_project') == 1 && $job_category == 'Company' ): ?>
-																							<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																						<?php else: ?>
-																							<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled text-right" ><?php echo $job_date; ?></p>
-																						<?php endif; ?>	
-																					<?php else: ?>
-
-																						<?php if($video_generated==1): ?>
-																							<script type="text/javascript">localStorage.setItem("jobdate_disabled", "0");</script>
-																							<?php if($job_date == '' ): ?>
-																								<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control  text-right"  id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																							<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('job_date') == 1 || ( $this->session->userdata('user_role_id') == 7 && $job_category == 'Maintenance' )  ): ?>
-																								<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																							<?php elseif( $this->session->userdata('company_project') == 1 && $job_category == 'Company' ): ?>
-																								<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																							<?php else: ?>
-																								<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled text-right" ><?php echo $job_date; ?></p>
-																							<?php endif; ?>
-																						<?php else: ?>
-																							<script type="text/javascript">localStorage.setItem("jobdate_disabled", "1");</script>
-																							<input type="text" placeholder="DD/MM/YYYY" title="Induction Video is Required." class="pad-10 tooltip-enabled job-date-set form-control  text-right" autocomplete="off" disabled>
-																						<?php endif; ?>
-																					<?php endif; ?>
-																				<?php else: ?>
-																					<?php if($job_date == '' ): ?>
-																						<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control  text-right"  id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																					<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('job_date') == 1 || ( $this->session->userdata('user_role_id') == 7 && $job_category == 'Maintenance' )  ): ?>
-																						<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																					<?php elseif( $this->session->userdata('company_project') == 1 && $job_category == 'Company' ): ?>
-																						<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																					<?php else: ?>
-																						<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled text-right" ><?php echo $job_date; ?></p>
-																					<?php endif; ?>
-																				<?php endif; ?>
+																			<?php if($job_date == '' ): ?>
+																				<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control  text-right"  id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
+																			<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('job_date') == 1 || ( $this->session->userdata('user_role_id') == 7 && $job_category == 'Maintenance' )  ): ?>
+																				<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
+																			<?php elseif( $this->session->userdata('company_project') == 1 && $job_category == 'Company' ): ?>
+																				<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
 																			<?php else: ?>
-																				<script type="text/javascript">localStorage.setItem("jobdate_disabled", "0");</script>
-																				<?php if($job_date == '' ): ?>
-																					<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="tooltip-enabled job-date-set form-control  text-right"  id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																				<?php elseif($this->session->userdata('is_admin') == 1 || $this->session->userdata('job_date') == 1 || ( $this->session->userdata('user_role_id') == 7 && $job_category == 'Maintenance' )  ): ?>
-																					<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																				<?php elseif( $this->session->userdata('company_project') == 1 && $job_category == 'Company' ): ?>
-																					<input type="text" placeholder="DD/MM/YYYY" title="Warning: Changing a value in the the Job date affects the project in the WIP section." class="pad-10 tooltip-enabled job-date-set form-control  text-right" id="job_date" name="job_date" value="<?php echo $job_date; ?>" autocomplete="off">
-																				<?php else: ?>
-																					<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled text-right" ><?php echo $job_date; ?></p>
-																				<?php endif; ?>
+																				<p title="Warning: You need to request to the Project Manager to change the Job Date" class="form-control tooltip-enabled text-right" ><?php echo $job_date; ?></p>
+																				
 																			<?php endif; ?>
 																		<?php  endif; ?>
 																		</div>
@@ -718,7 +671,8 @@ $("input.job-date-set").datetimepicker({
   return $(this).data('DateTimePicker').defaultDate('<?php echo $job_date; ?>');
 });
 
-var current_site_start = $('#site_start').val();
+
+
 
 $('#site_start').datetimepicker({ format: 'DD/MM/YYYY' ,useCurrent: false});
 $('#site_finish').datetimepicker({
@@ -728,42 +682,18 @@ format: 'DD/MM/YYYY'
 $("#site_start").on("dp.change", function (e) {
 $('#site_finish').data("DateTimePicker").minDate(e.date);
 
-var site_finish_moment = moment($('#site_finish').val(), 'DD/MM/YYYY').toDate();
-
-if (e.date > site_finish_moment){
-
-	alert('selected Site Start is greater than Site Finish, please change Site Finish first.');
-
-	$('#site_start').val(current_site_start);
-
-} else {
-	$('#site_finish').datetimepicker({
-	useCurrent: false, //Important! See issue #1075
-	format: 'DD/MM/YYYY'
-	});
-
-	$('#summ_starting_date').text( e.date.format('DD/MM/YYYY') );
-}
-
+$('#site_finish').datetimepicker({
+useCurrent: false, //Important! See issue #1075
+format: 'DD/MM/YYYY'
 });
 
-var current_site_finish = $('#site_finish').val();
+$('#summ_starting_date').text( e.date.format('DD/MM/YYYY') );
 
+});
 $("#site_finish").on("dp.change", function (e) {
-
-	$(this).data("DateTimePicker").minDate(e.date);
-	$('#site_start').data("DateTimePicker").maxDate(e.date);
-	$('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
-
-	var site_start_moment = moment($('#site_start').val(), 'DD/MM/YYYY').toDate();
-
-	if (e.date < site_start_moment){
-
-		alert('selected Site Finish is less than Site Start, please change Site Start first.');
-
-		$('#site_finish').val(current_site_finish);
-
-	}
+$(this).data("DateTimePicker").minDate(e.date);
+$('#site_start').data("DateTimePicker").maxDate(e.date);
+$('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 });
 
  

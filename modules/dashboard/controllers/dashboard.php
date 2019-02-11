@@ -10504,11 +10504,19 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 			$focus_arr[$company->company_id] = $company->company_name;
 		}
 
+
+		
+
 		$q_maintenance = $this->dashboard_m->get_maitenance_dates($current_start_year,$date_b);
 		$maintenance_details  = $q_maintenance->result();
 
 		foreach ($maintenance_details as $maintenance) {
 			array_push($days_dif, $maintenance->total_days);
+
+
+			if($maintenance->total_days == 58){
+			//	var_dump($maintenance);
+			}
 		}
 
 		$size = count($days_dif);
