@@ -71,6 +71,8 @@ $user_details = array_shift($fetch_user->result_array());
 <?php $pm_name = $user_details['user_first_name'].' '.$user_details['user_last_name']; ?>
 
  <!-- maps api js -->
+<script src="<?php echo base_url(); ?>js/jquery.fn.gantt.js"></script>
+<link href="<?php echo base_url(); ?>css/gant-style.css" type="text/css" rel="stylesheet"> 
 
 <script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDs1g6kHxbVrkQe7e_CmR6MsfV_3LmLSlc"></script>
 
@@ -334,8 +336,9 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_m
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<div class="pad-10" id="">
+											<script type="text/javascript"> pre_load_module('#average_date_invoice_mn_area','dashboard/average_date_invoice_pm/<?php echo $assign_id; ?>',10000); </script>
 
-											<script type="text/javascript"> pre_load_module('#average_date_invoice_mn_area','dashboard/average_date_invoice_mn',10000); </script>
+										<?php /*	<script type="text/javascript"> // pre_load_module('#average_date_invoice_mn_area','dashboard/average_date_invoice_mn',10000);  </script> */ ?>
 											<div class="clearfix center knob_box pad-10 small-widget" id="average_date_invoice_mn_area">
 												<p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 												<?php //echo $this->dashboard->average_date_invoice_mn(); ?> 
@@ -451,6 +454,118 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_m
 						
 					 
 
+
+
+
+							<!-- ************************ -->
+						
+						<div class="clearfix"></div>
+
+						<?php
+							 
+ 
+
+						  $pm_list_query = " AND `users`.`user_id` = '29' ";
+ 
+ 
+						//	$focus_company_location = $user_details['user_focus_company_id'];
+							$project_manager = $this->dashboard_m->fetch_pms_year(date("Y"),0 ,$pm_list_query );
+							$project_manager_list = $project_manager->result();
+						?>
+ 
+
+
+ 
+
+
+						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
+							<div class="widget wid-type-0 widg-head-styled">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head box-widg-head pad-5 fill">
+									<strong>Project Completion Calendar</strong>
+
+ 
+
+									<div class="clearfix pull-right m-right-10">
+
+										<div class="maintenance" style=" background:#F7901E; font-size: 12px; padding: 1px 8px;    float: right;     border: 1px solid #864e11;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;">Maintenance</div>
+
+									</div>
+
+
+
+ 
+								</div>
+
+								<div class="box-area clearfix row pad-right-10 pad-left-10">									
+									<div class="widg-content col-md-12 col-xs-12 clearfix" style="    overflow: auto;    height: 457px;    overflow: hidden;">	
+										<?php //echo $this->estimators->load_calendar_planner(); ?>
+ 
+
+
+<div class="gantt_chart_grp" id="ongoingwip"></div>
+<script>
+        $(function() {
+            $("#ongoingwip").gantt({ 
+                source: [ <?php echo $this->dashboard->list_projects_progress(29); ?> ],
+                navigate: "buttons",
+                scale: "days",
+                maxScale: "days",
+                minScale: "days",
+                itemsPerPage: 14,
+                useCookie: true,
+                scrollToToday: true,
+                onRender: function() {
+                	//$('#est_deadline_all').hide();
+                    //$('[data-toggle="tooltip"]').tooltip(); 
+                }
+            }); 
+        });
+</script>
+  
+ 
+ 
+
+
+									</div> 
+								</div>
+
+							</div>
+						</div>
+
+
+
+
+						<!-- ************************ -->
+
+
+
+
+ 
+
+
+
+<style type="text/css">
+    .navigate,.nav-link.nav-zoomIn,.nav-link.nav-zoomOut,.page-number,.nav-link.nav-page-back,.nav-link.nav-page-next,.nav-link.nav-now,.nav-link.nav-prev-week,.nav-link.nav-prev-day,.nav-link.nav-next-day,.nav-link.nav-next-week{ display: none; visibility: hidden; width: 0; height: 0; }
+    .gantt .tooltip,.gantt .tooltip .tooltip-inner{ width: 350px !important; max-width: 350px !important;	}
+    .fn-gantt .leftPanel{width: 75px !important; overflow: visible !important;}
+    .bar.curr_date { background: #fff8da; border-top: 3px solid #fff8da; border-bottom: 2px solid #fff8da; height: 23px; margin-top: -3px; border-radius: 0; box-shadow: none; z-index: 9;}
+    .fn-gantt .rightPanel {overflow-x: scroll !important;    overflow-y: hidden !important; }
+    .fn-gantt .fn-content {background: #f1f1f1 !important;}
+
+
+	.fullfitout{ background:#D9534F !important; }
+	.refurbishment{ background:#5E2971 !important; }
+	.kiosk{ background:#4DAB4D !important; }
+	.bar.maintenance{ background:#F7901E !important; }
+</style>
+
+ 
+
+ 
+
+						<!-- ************************ -->
+
  
 
 
@@ -475,44 +590,121 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_m
 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 box-widget pie_display_dyn">
 											<div class="" id="donut_prj_bt" style="text-align: center;"></div>
 </div>
+										
+
 											<script type="text/javascript"> pre_load_module('#focus_projects_by_type_widget_mn_area','dashboard/focus_projects_by_type_widget_mn',16000); </script>
-<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 box-widget m-top-10 text_display_dyn" id="focus_projects_by_type_widget_mn_area">
-												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-											<?php //echo $this->dashboard->focus_projects_by_type_widget_mn(); ?>
-</div>
+									<div id="" class="text_display_dyn_tq" style="display:none; float:right;">
+																				<div class="col-xs-12 box-widget m-top-10 " id="focus_projects_by_type_widget_mn_area">
+																					<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
+																					<?php //echo $this->dashboard->focus_projects_by_type_widget(); ?>
+																				</div>
+									
+									</div>
+
+
 										</div>
 										<p class="m-top-10 pad-top-10"><button class="btn btn-xs btn-primary toggle_pie_text m-top-10 m-left-15" style="display:none;">Toggle Display</button></p>
 
 										<script type="text/javascript">
 
-											$(window).resize(function() {
-												if ($(window).width() >= 1200 && $(window).width() <= 1500) {
-													//alert('Less than 960');
-													$('.text_display_dyn').hide();	
-													$('.pie_display_dyn').show();	
-													$('.toggle_pie_text').show();	
-												}else {
-													//alert('More than 960');
-													$('.text_display_dyn').show();	
-													$('.pie_display_dyn').show();	
-													$('.toggle_pie_text').hide();	
-												}
-											});
+											//	alert( $(window).width() );
 
+										
+setTimeout(function () {
+
+	if (    $(window).width() >= 1180 && $(window).width() <= 1680    ){
+
+	$('.text_display_dyn_tq').removeAttr("style");
+	$('.pie_display_dyn').css('width','100%');
+ 	$('.text_display_dyn_tq').css('display','none');
+	$('.text_display_dyn_tq').css('width','100%');
+	$('.toggle_pie_text').show();
+
+												//		$('.text_display_dyn').hide();	
+												//		$('.pie_display_dyn').hide();	
+												//		$('.toggle_pie_text').show();	
+
+}else{
+	$('.text_display_dyn_tq').removeAttr("style");
+ 	$('.text_display_dyn_tq').show();	
+
+ 	
+
+
+	$('.pie_display_dyn').css('width','50%');
+	$('.text_display_dyn_tq').css('width','50%');
+	$('.text_display_dyn_tq').css('float','right');
+	$('.toggle_pie_text').hide();
+}
+
+
+}, 16005);
+
+
+
+											$(window).resize(function() {
+											//	alert( $(window).width() );
+
+
+
+if (    $(window).width() >= 1180 && $(window).width() <= 1680    ){
+
+	$('.text_display_dyn_tq').removeAttr("style");
+	$('.pie_display_dyn').css('width','100%');
+ 	$('.text_display_dyn_tq').css('display','none');
+	$('.text_display_dyn_tq').css('width','100%');
+	$('.toggle_pie_text').show();
+
+												//		$('.text_display_dyn').hide();	
+												//		$('.pie_display_dyn').hide();	
+												//		$('.toggle_pie_text').show();	
+
+}else{
+
+	$('.text_display_dyn_tq').removeAttr("style");
+ 	$('.text_display_dyn_tq').show();	
+	$('.pie_display_dyn').css('width','50%');
+	$('.text_display_dyn_tq').css('width','50%');
+	$('.text_display_dyn_tq').css('float','right');
+	$('.toggle_pie_text').hide();
+}
+
+/*
+
+if ($(window).width() >= 1400 && $(window).width() <= 1660) {
+														alert('Less than 960');
+														$('.text_display_dyn').show();	
+														$('.pie_display_dyn').show();	
+														$('.toggle_pie_text').show();	
+													}else {
+														alert('More than 960');
+														$('.text_display_dyn').hide();	
+														$('.pie_display_dyn').show();	
+														$('.toggle_pie_text').hide();	
+													}
+*/
+												});
+ 
 
 											$('.toggle_pie_text').click(function(){
-												$('.text_display_dyn').toggle();	
-												$('.pie_display_dyn').toggle();											
-											});
+												$('.text_display_dyn_tq').toggle();	
+												$('.pie_display_dyn').toggle();	
+
+
+										 	//  $('.text_display_dyn').css('width','100%');
+											//	$('.text_display_dyn').css('display','block');
+
+											}); 
+
+
 										</script>
 
 										<style type="text/css">
-											@media (min-width: 1200px) and (max-width: 1500px) {
-												.pie_display_dyn{ width: 100% !important; }
-												.text_display_dyn{ width: 100% !important; display: none; }
-												.toggle_pie_text{ display: block !important; }
 
+ 
 
+											@media (min-width: 1180px) and (max-width: 1680px) {
+ 
 												.pie_toggle_custom_a{
 													width: 25%;
 												}
@@ -521,7 +713,11 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_m
 												.pie_toggle_custom_b{
 													width: 75%;
 												}
+
 											}
+ 
+
+
 										</style>
 
 									</div>
@@ -622,11 +818,398 @@ var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations_m
 
 
 
+						<div class="clearfix"></div>
 
 
+						<!-- ************************ -->
+
+
+
+						<!-- ************************ -->
+
+
+
+<?php 
+
+		$maint_last_year = $this->dashboard->get_count_maint_per_week($current_year-1);
+		$maint_this_year = $this->dashboard->get_count_maint_per_week($current_year);
+		$maint_average = $this->dashboard->get_count_maint_per_week(2015,1);
+
+
+		$maint_last_year_arr = explode(',', $maint_last_year);
+		$ave_maint_last_year = (array_sum($maint_last_year_arr) / 52) ;
+
+
+		$maint_this_year_arr = explode(',', $maint_this_year);
+		$ave_maint_this_year = (array_sum($maint_this_year_arr) / count(array_filter($maint_this_year_arr)) );
+
+		$maint_average_arr = explode(',', $maint_average);
+		$ave_maint_average = (array_sum($maint_average_arr) / 52) ;
+
+
+
+
+ ?>
+
+						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
+							<div class="widget wid-type-0 widg-head-styled">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head box-widg-head fill  pad-5">
+									<strong>Maintenance Projects : Average Per Day - <?php echo date('Y'); ?></strong>
+
+
+									<span style="float: right;    font-weight: bold;">
+										<span class=" tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Average Last Year: <?php echo $current_year-1; ?>">Avg Last Year: <?php echo round($ave_maint_last_year,2); ?></span> &nbsp;  &nbsp;  &nbsp; 
+										<span class=" tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Average This Year: <?php echo $current_year; ?>">Avg This Year: <?php echo round($ave_maint_this_year,2); ?></span> &nbsp;  &nbsp;  &nbsp; 
+										<span class=" tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Average Overall">Over All Avg: <?php echo round($ave_maint_average,2); ?></span>
+
+									</span>
+							
+								</div>
+
+								<div class="box-area clearfix row pad-right-10 pad-left-10">									
+									<div class="widg-content col-md-12 col-xs-12 clearfix">
+										<div class="loading_chart" style="height: 457px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
+										<div class id="job_book_area">
+											<div id="chart_main"></div>
+											<div id="" class="" style="margin: -6px -26px 17px 53px;    display: block;    clear: both;    font-size: 10px;">
+												<?php foreach ($months as $key => $value): ?>
+													<div id="" class="mos"><?php echo $value; ?></div>
+												<?php endforeach; ?>
+											</div>
+											<style type="text/css">.mos {    float: left;    width: 8.1%;    text-align: center;}</style>
+										</div> 	
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+
+						<script type="text/javascript">
+
+
+var chart = c3.generate({
+	size: {
+		height: 310
+	},data: {
+		x : 'x',
+		columns: [
+          ['x',  // months labels
+
+          <?php 
+
+          for($i=1; $i <53 ; $i++){
+          	echo "'".$i."',";
+          }
+
+
+          ?> ], // months labels
+
+
+
+// 	Overall Last Year Sales
+<?php
+echo "['Last Year',";
+echo $maint_last_year;
+echo "],";
+?>
+// 	Overall Last Year Sales
+
+
+// Overall Sales
+<?php
+echo "['Current',";
+echo $maint_this_year;
+echo "],";
+?>
+
+ 
+<?php
+echo "['Average',";
+echo $maint_average;
+echo "]";
+?>
+
+
+
+
+
+],
+selection: {enabled: true},
+type: 'bar',
+colors: {
+	'Average': '#FF7F0E',
+	'Current': '#2CA02C',
+	'Last Year': '#9467BD',
+
+        },
+        types: {   'Average' : 'line',  
+},
+
+order: null,
+},
+tooltip: {
+        grouped: true // false // Default true
+    },
+    bindto: "#chart_main",
+    bar:{ width:{ ratio: 0.5 }},
+    point:{ select:{ r: 6 }},
+   // onrendered: function () { $('.loading_chart').remove(); },
+//zoom: {enabled: true, rescale: true,extent: [1, 7]},
+legend: { show: false },
+
+
+axis: {x: {type: 'category', tick: {rotate: 0,multiline: false}, height: 0}, y: {        tick: {          format: d3.format('.2f')        }      } }, 
+tooltip: {
+	format: {
+     title: function (x) { return 'Week '+(x+1); },
+     value: function (value, ratio, id) {
+               // var format = id === 'data1' ? d3.format(',') : d3.format('$');
+               var format = d3.format('.2f');
+
+               var mod_value =  value.toFixed(2); //Math.ceil(value,2)  // need to get 2 decimal places
+
+           //    var mod_value_x = parseFloat(Math.round(mod_value * Math.pow(10, 2)) /Math.pow(10,2)).toFixed(2);
+
+            // var mod_value_y =   d3.format('.2f')
+
+            //   var mod_value = parseFloat(Math.round(value * 100) / 100).toFixed(2);
+               //return '$ '+format(mod_value);
+               return format(mod_value);
+           }//
+       } 
+
+   }
+});
+
+
+
+chart.select();
+
+</script>
+
+
+						<!-- ************************ -->
+
+
+
+
+
+ 
 						<div class="clearfix"></div>
 
 						<!-- ************************ -->
+
+
+
+						<!-- ************   LEAVE CHART   ************ -->
+
+
+
+						<div id="" class="hide hidden">
+							
+							<?php 
+
+							$q_leave_types = $this->user_model->fetch_leave_type();
+							$leave_types = $q_leave_types->result();
+
+							$added_data = new StdClass();
+							$added_data->{"leave_type_id"} = '0';
+							$added_data->{"leave_type"} = 'Philippines Public Holiday';
+							$added_data->{"remarks"} = '';
+
+
+							array_push($leave_types, $added_data);
+
+
+
+							$leave_totals =  $this->dashboard->get_count_per_week(2,'',8   );
+							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,8);
+
+							?>
+						</div>
+
+						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
+							<div class="widget wid-type-0 widg-head-styled">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head box-widg-head fill  pad-5">
+									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>
+
+							
+								</div>
+
+<?php $color_leave_type = array('#A7184B','#0092CE','#3D00A4','#FE2712','#FD5309','#0047FE','#8600AF');  ?>
+
+
+<?php 
+$leave_type_list = array();
+
+$leave_type_list[1] = 'Annual Leave';
+$leave_type_list[5] = 'Unpaid Leave';
+$leave_type_list[2] = 'Personal (Sick Leave)';
+$leave_type_list[6] = 'RDO (Rostered Day Off)';
+$leave_type_list[0] = 'Philippines Public Holiday';
+$leave_type_list[3] = 'Personal (Carers Leave)';
+$leave_type_list[4] = 'Personal (Comp. Leave)';
+
+?>
+
+
+
+								<div class="box-area clearfix row pad-right-10 pad-left-10 pad-bottom-10">									
+									<div class="widg-content col-md-12 col-xs-12 clearfix">
+										<div class="chart_main_leave_loading_chart" style="height: 457px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
+										<div class id=" pad-bottom-10 ">
+											
+											<div id="chart_main_leave"  ></div>
+
+											<div id="" class="" style="margin: -6px -26px 17px 53px;    display: block;    clear: both;    font-size: 10px;">
+												<?php foreach ($months as $key => $value): ?>
+													<div id="" class="mos"><?php echo $value; ?></div>
+												<?php endforeach; ?>
+											</div>
+
+											<script type="text/javascript"> var default_totals_c = ''; var default_totals_o = ''; </script>
+
+											<div id="" class="clearfix" style="margin: 20px 10px 0px;">
+												<?php $current_total_leaves = ''; $previou_total_leaves= ''; ?>
+
+
+												<?php foreach ($leave_type_list as $leave_data_id => $leave_name_value): ?>
+													<div class="" style="padding:2px; float:left; display:block; width: 14%;  background: <?php echo $color_leave_type[$leave_data_id];  ?>;">
+														<p class="pointer leave_type_selection tooltip-enabled type_label_<?php echo $leave_data_id; ?>" title="" data-html="true" data-placement="top" data-original-title="Total Applied: <?php echo $leave_totals[$leave_data_id]; ?><br />Last Year:  <?php echo $last_year_leave[$leave_data_id]; ?>" id="<?php echo $leave_name_value; ?>" style="color: #fff;   font-size: 12px;  text-align: center;"><?php echo $leave_name_value; ?></p>
+													</div>
+												<?php endforeach; ?>
+											</div>
+
+											<style type="text/css">.mos {    float: left;    width: 8.1%;    text-align: center;}</style>
+										</div> 	
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+
+						<script type="text/javascript">
+
+
+var chart_emply = c3.generate({
+	size: {
+		height: 340
+
+	},data: {
+		x : 'x',
+		columns: [
+          ['x',  // months labels
+
+          <?php 
+
+          for($i=1; $i <53 ; $i++){
+
+
+					if($i > 2){
+
+          				echo "'".$i."',";
+					}
+          }
+
+
+          ?> ], // months labels
+
+
+          <?php 
+
+          echo $this->dashboard->get_count_per_week(1,'', 8);
+
+           ?>
+
+
+
+
+],
+selection: {enabled: true},
+type: 'bar', 
+ 
+colors: {
+	/*'Average': '#FF7F0E',
+	'Current': '#2CA02C',
+	'Last Year': '#9467BD',*/
+
+	<?php foreach ($leave_types as $leave_data): ?>
+		'<?php echo "Nycel Geraga ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id];  ?>',
+	<?php endforeach; ?>
+
+
+        },
+
+groups: [
+
+
+
+[
+	<?php foreach ($leave_types as $leave_data): ?>
+		'<?php echo "Nycel Geraga ".$leave_data->leave_type; ?>',
+	<?php endforeach; ?>
+],
+
+
+],
+order: null,
+}, 
+    
+tooltip: {
+        grouped: true // false // Default true
+    },
+    bindto: "#chart_main_leave",
+    bar:{ width:{ ratio: 0.5 }},
+    point:{ select:{ r: 6 }},
+ onrendered: function () {
+
+  $('.chart_main_leave_loading_chart').remove();
+
+
+
+   },
+//zoom: {enabled: true, rescale: true,extent: [1, 7]},
+legend: { show: false },
+
+axis: {x: {type: 'category', tick: {rotate: 0,multiline: false}, height: 0}, y: {       tick: {          format: d3.format('.2f')        }      } }, 
+
+tooltip: {
+	format: {
+     title: function (x) { return 'Week '+(x+3); },
+     value: function (value, ratio, id) {
+               // var format = id === 'data1' ? d3.format(',') : d3.format('$');
+               var format = d3.format('.2f');
+
+               var mod_value =  value.toFixed(2); //Math.ceil(value,2)  // need to get 2 decimal places
+
+           //    var mod_value_x = parseFloat(Math.round(mod_value * Math.pow(10, 2)) /Math.pow(10,2)).toFixed(2);
+
+            // var mod_value_y =   d3.format('.2f')
+
+            //   var mod_value = parseFloat(Math.round(value * 100) / 100).toFixed(2);
+               //return '$ '+format(mod_value);
+               return format(mod_value);
+           }//
+       } 
+
+   }
+});
+
+chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
+
+</script>
+
+
+						<!-- ************************ -->
+
+						<!-- ************   LEAVE CHART   ************ -->
+
+
+
 
 
 
@@ -1062,6 +1645,9 @@ setTimeout(function () {
 //	chart.show(['Overall Sales','Forecast','Last Year Sales','Focus Overall WIP']);
 }, 1000);	
 
+
+chart.select();
+chart.show(['Current','Average','Last Year']);
 
 $('select.chart_data_selection').on("change", function(e) {
 	var data = $(this).val();

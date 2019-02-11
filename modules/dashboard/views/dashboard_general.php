@@ -1,13 +1,13 @@
 <?php date_default_timezone_set("Australia/Perth");  // date is set to perth ?>
 <?php $this->load->module('bulletin_board'); ?>
 <?php $this->load->module('dashboard'); ?>
-<?php $this->load->module('estimators'); ?>
 <?php $months = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"); ?>
+<?php $this->load->module('dashboard/estimators'); ?>
 <!-- title bar -->
 
 
 <?php
-date_default_timezone_set("Australia/Perth");
+
 
 $current_year = date("Y");
 $current_month = date("m");
@@ -21,10 +21,13 @@ $start_current_year = "01/01/$current_year";
 $current_date = date("d/m/Y");
 
 
+
 $set_colors = array('#D68244','#e08d73', '#57a59c', '#836396', '#B13873', '#D6AB44', '#92C53F', '#D6D544' );
 $estimator_colors = array();
 $counter = 0;
 
+$estimator = $this->dashboard_m->fetch_project_estimators();
+$estimator_list = $estimator->result();
 
 foreach ($estimator_list as $est ) {
 	if($est->user_first_name != ''){
@@ -34,61 +37,24 @@ foreach ($estimator_list as $est ) {
 	}
 }
 
+	if(isset($assign_id) && $assign_id != ''){
+		$user_id = $assign_id;
+	}
+
 $estimator_colors['Danikka'] = $set_colors[5];
 ?>
 
-
 <style type="text/css">
 	<?php 
-
 		foreach ($estimator_colors as $key => $value) {
-			echo '.'.strtolower($key).'{ background-color: '.$value.' !important;  }';
+			echo '.'.strtolower($key).'{ background-color: '.$value.' !important; }';
 		}
-
 		$base_url = base_url();
-
 	?>
-
 	.red_deadline{       background-image: url( <?php echo $base_url; ?>img/grid-end.png);   background-repeat:no-repeat; }
 </style>
 
-<!-- maps api js -->
 
-
-<?php 
-
-if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user_id') == 9 || $this->session->userdata('user_id') == 15  || $this->session->userdata('user_id') == 6 ){
-	$es_name = $es_setter;
-	$es_f_name = $es_setter_f_name;
-
-	echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$es_name.'");</script>';
-
-}else{
-	$es_name = $this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name'); 
-
-	$es_f_name = str_replace(' ','_',strtolower($this->session->userdata('user_first_name')) );
-}
-
-
-?>
-
-
-
-<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDs1g6kHxbVrkQe7e_CmR6MsfV_3LmLSlc"></script>
-
-<script type="text/javascript">
-	var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations(); ?>};	
-	var emp_data = { "locations": <?php echo $this->dashboard->emp_get_locations_points(); ?>};
-</script>
-
-<script type="text/javascript" src="<?php echo base_url(); ?>js/maps/markerclusterer_packed.js"></script>
-
-<!--[if IE]><script type="text/javascript" src="<?php echo base_url(); ?>js/excanvas.js"></script><![endif]-->
-<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.knob.min.js"></script>
-<script type="text/javascript"> $(function() {  $(".knob").knob(); });</script>
-<script type="text/javascript">$('knob').trigger('configure', {width:100}); </script>
-
-<!-- maps api js -->
 
 <style type="text/css">body{background: #ECF0F5 !important;}</style>
 
@@ -112,6 +78,15 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 					<li>
 						<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
 					</li>
+					<!-- 
+						<li>
+							<a href="<?php echo base_url(); ?>wip" class="btn btn-small btn-warning"><i class="fa fa-refresh fa-lg"></i> Reset Table</a>
+						</li>
+
+						<li>
+							<a href="" class="btn-small"><i class="fa fa-magic"></i> Tour</a>
+						</li>
+					-->
 				</ul>
 			</div>
 
@@ -120,29 +95,6 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 </div>
 <!-- title bar -->
 
-
-<script type="text/javascript">
-	var base_url = "<?php echo base_url(); ?>";
-	function pre_load_module(target,clsFnctn,timeDelay){
-		$(window).load(function() {
-			setTimeout(function() {
-				$.ajax({
-					'url' : base_url+clsFnctn,
-					'type' : 'GET',
-					'success' : function(data){
-
-						$(target).hide().html(data).fadeIn();
-
-						/*$(target).html(data)*/
-						$('.tooltip-enabled').tooltip(); 
-						$(".knob").knob();
-					}
-				});
-			}, timeDelay);
-		});
-	}
-</script>
-
 <div class="container-fluid adv"  style="background: #ECF0F5;">
 
 
@@ -150,76 +102,132 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 	<div class="row dash">				
 		<?php $this->load->view('assets/sidebar'); ?>
 		<div class="section col-sm-12 col-md-11 col-lg-11 pad-0-imp no-m-imp">
-			<div class="">
+			<div class="m-top-10">
+
+				<script type="text/javascript">
+					var base_url = "<?php echo base_url(); ?>";
+
+					function pre_load_module(target,clsFnctn,timeDelay){
+
+						$(window).load(function() {
+							setTimeout(function() {
+
+								$.ajax({
+									'url' : base_url+clsFnctn,
+									'type' : 'GET',
+									'success' : function(data){
+
+										$(target).hide().html(data).fadeIn();
+
+										/*$(target).html(data)*/
+										$('.tooltip-enabled').tooltip(); 
+										$(".knob").knob();
+									}
+								});
+  
+
+							}, timeDelay);
+						});
+					}
+
+				</script>
 
 
 
 
-				<div class="clearfix pad-10">
-					<div class="widget_area row pad-0-imp no-m-imp">
+						<!-- ************************ -->
 
-<?php /*
 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-e small-widget">
+							<div class="widget wid-type-b small-widget">
 								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3"><i class="fa fa-list-alt text-center fa-3x"></i></div>
+									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-cube  text-center fa-3x"></i></div></div>
 									<div class="widg-content fill col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>Invoiced <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<div class="pad-top-5" id="" >
-												<p style="padding: 5px 5px 6px; text-align: center;	"><i class="fa fa-spin fa-refresh fa-lg"></i></p>
-												<?php //$this->dashboard->sales_widget(); ?>
+										<div class="pad-3">
+											<div class="pad-left-5 pad-top-3" id="">
+											<p>
+												<span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many projects invoiced based from completion date starting of year to current date."></i></span>  Invoiced - WIP Count <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many current wip count."></i></span> 
+												<span class="pull-right"><?php echo date('Y'); ?></span>
+											</p>
+											</div>
+											<hr class="" style="margin: 5px 0px 2px;">
+											<script type="text/javascript"> pre_load_module('#focus_projects_count_widget_area','dashboard/focus_projects_count_widget',11000); </script>
+											<div class="pad-top-5" id="focus_projects_count_widget_area" >
+												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
+												<?php //$this->dashboard->focus_projects_count_widget(); ?>
 											</div>
 										</div>							
 									</div>
 								</div>
 							</div>
 						</div>
-*/ ?>
+						
 
 
 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-d small-widget">
 								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3 brown"><i class="fa fa-check-square-o text-center fa-3x"></i></div>
-									<div class="widg-content fill col-xs-9 clearfix brown">
+									<div class="widg-icon-inside col-xs-3 purple"><i class="fa fa-clock-o text-center fa-3x"></i></div>
+									<div class="widg-content fill col-xs-9 clearfix purple">
 										<div class="pad-5">
-											<div class=" " id=""><p>Quotes <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<div class=" " id=""><p>Site Labour Hours</p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#wid_quoted_area','dashboard/wid_quoted/<?php echo $es_id; ?>',7000); </script>
-											<div class="pad-top-5" id="wid_quoted_area" >
-												<!-- <p style="padding: 5px 5px 6px; text-align: center;	"><i class="fa fa-spin fa-refresh fa-lg"></i></p> -->
+											<script type="text/javascript"> pre_load_module('#wid_site_labour_hrs_area','dashboard/wid_site_labour_hrs',11500); </script>
+											<div class="pad-top-5" id="wid_site_labour_hrs_area" >
 												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php //$this->dashboard->wid_quoted($es_id); ?>
+												<?php //$this->dashboard->wid_site_labour_hrs(); ?>
 											</div>
 										</div>							
 									</div>
 								</div>
 							</div>
 						</div>
-
-<!-- estimators_wip($es_id='') -->
 
 
 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-0 small-widget">
+							<div class="widget wid-type-c small-widget">
 								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3 violet_b"><div id="" class=""><i class="fa  fa-indent text-center fa-3x"></i></div></div>
-									<div class="widg-content col-xs-9 clearfix fill violet_b">
+									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-calendar  text-center fa-3x"></i></div></div>
+									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Accepted WIP Projects</p></div>
+											<div class=" " id=""><p>Maintenance AVG Days <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many days spent (average) for a Maintenance Project."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#estimators_wip_area','dashboard/estimators/estimators_wip/<?php echo $es_id; ?>',2000); </script>
-											<div class="pad-top-5" id="estimators_wip_area">
+											<script type="text/javascript"> pre_load_module('#maintanance_average_area','dashboard/maintanance_average',12000); </script>
+											<div class="pad-top-5" id="maintanance_average_area" >
 												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php //$this->estimators->estimators_wip($es_id); ?>												
+												<?php //$this->dashboard->maintanance_average(); ?>
 											</div>
 										</div>							
 									</div>
 								</div>
 							</div>
 						</div>
+
+
+
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-d small-widget">
+								<div class="box-area clearfix">
+									<div class="widg-icon-inside col-xs-3"><i class="fa fa-list-alt text-center fa-3x"></i></div>
+									<div class="widg-content fill col-xs-9 clearfix">
+										<div class="pad-5">
+											<div class=" " id=""><p>Purchase Orders <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<hr class="" style="margin: 5px 0px 0px;">
+											<script type="text/javascript"> pre_load_module('#focus_get_po_widget_area','dashboard/focus_get_po_widget',12500); </script>
+											<div class="pad-top-5" id="focus_get_po_widget_area" >
+												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
+												<?php //$this->dashboard->focus_get_po_widget(); ?></div>
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- ************************ -->
+						
+						<div class="clearfix"></div>
+
+						<!-- ************************ -->
+
 
 
 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
@@ -230,17 +238,57 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 										<div class="pad-5">
 											<div class=" " id=""><p>Quotes Unaccepted <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#pm_estimates_widget_area','dashboard/pm_estimates_widget/<?php echo $es_id; ?>',8000); </script>
+											<script type="text/javascript"> pre_load_module('#pm_estimates_widget_area','dashboard/pm_estimates_widget',13000); </script>
 											<div class="pad-top-5" id="pm_estimates_widget_area" >
 												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<!-- <p style="padding: 5px 5px 6px; text-align: center;	"><i class="fa fa-spin fa-refresh fa-lg"></i></p>		 -->										
-												<?php //$this->dashboard->pm_estimates_widget($es_id); ?>
+												<?php //$this->dashboard->pm_estimates_widget(); ?>
 											</div>
 										</div>							
 									</div>
 								</div>
 							</div>
 						</div>
+
+						
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-d small-widget">
+								<div class="box-area clearfix">
+									<div class="widg-icon-inside col-xs-3 brown"><i class="fa fa-check-square-o text-center fa-3x"></i></div>
+									<div class="widg-content fill col-xs-9 clearfix brown">
+										<div class="pad-5">
+											<div class=" " id=""><p>Quotes</p></div>
+											<hr class="" style="margin: 5px 0px 0px;">
+											<script type="text/javascript"> pre_load_module('#wid_quoted_area','dashboard/wid_quoted',13500); </script>
+											<div class="pad-top-5" id="wid_quoted_area" >
+												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
+											<?php //$this->dashboard->wid_quoted(); ?></div>
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>
+						
+
+						
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-0 small-widget">
+								<div class="box-area clearfix">
+									<div class="widg-icon-inside col-xs-3 violet_b"><div id="" class=""><i class="fa  fa-indent text-center fa-3x"></i></div></div>
+									<div class="widg-content col-xs-9 clearfix fill violet_b">
+										<div class="pad-5">
+											<div class=" " id=""><p>Accepted WIP Projects</p></div>
+											<hr class="" style="margin: 5px 0px 0px;">
+											<script type="text/javascript"> pre_load_module('#estimators_wip_area','dashboard/estimators/estimators_wip',14000); </script>
+											<div class="pad-top-5" id="estimators_wip_area">
+												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
+												<?php //$this->estimators->estimators_wip(); ?>												
+											</div>
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>
+
 
 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-f small-widget">
@@ -251,248 +299,118 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 										<div class="pad-5">
 											<div class=" " id=""><p>Completed Projects  <span class="pull-right"><?php echo date('Y'); ?></span>  </p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#completed_prjs_area','dashboard/estimators/completed_prjs/<?php echo $es_id; ?>',8500); </script>
+											<script type="text/javascript"> pre_load_module('#completed_prjs_area','dashboard/estimators/completed_prjs',14500); </script>
 											<div class="pad-top-5" id="completed_prjs_area" >
 												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 												<!-- <p style="padding: 5px 5px 6px; text-align: center;	"><i class="fa fa-spin fa-refresh fa-lg"></i></p> -->
-												<?php // $this->estimators->completed_prjs($es_id); ?>
+												<?php //$this->estimators->completed_prjs(); ?>
 											</div>
 										</div>							
 									</div>
 								</div>
-							</div>
+							</div> 
 						</div>
 
-<!-- 
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-b small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3"><i class="fa fa-tasks  text-center fa-3x"></i></div>
-
-
-									<div class="widg-content fill col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>WIP</p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<div class="pad-top-5" id="" >
-												<p style="padding: 5px 5px 6px; text-align: center;	"><i class="fa fa-spin fa-refresh fa-lg"></i></p>
-												<?php //$this->dashboard->wip_widget(); ?>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
- -->
-						<div class=" col-xs-12 box-widget pad-10">
-							<div class="progress no-m progress-termometer">
-								<div class="progress-bar progress-bar-danger active progress-bar-striped full_p tooltip-enabled tooltip-pb" data-original-title=""  style="background-color: rgb(251, 25, 38); border-radius: 0px 10px 10px 0px;"></div> 
-							</div>
-						</div>	
-						<script type="text/javascript">
-							$(window).load(function() {
-								setTimeout(function() {
-									$.ajax({
-										'url' : base_url+'dashboard/pm_sales_widget/1',
-										'type' : 'GET',
-										'success' : function(result){
-											var raw_overall = result;
-											var overall_arr =  raw_overall.split('_');
-											var overall_progress = parseInt(overall_arr[0]);
-											var status_forecast = overall_arr[1];
-											$('.full_p').css('width',overall_progress+'%');
-											$('.full_p').html(overall_progress+'%');
-											$('.full_p').prop('title','$'+status_forecast+' - Overall Progress');
-											$('.tooltip-pb').tooltip();				 
-										}
-									});
-								}, 9000);
-							});
-						</script>
-
-						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-6 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head box-widg-head pad-5 fill">
-									<strong>Quote Deadline Calendar</strong>
-
-									<select class="pull-right input-control input-sm chart_data_selection_est" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 120px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
-										<option value="all">Overall</option>
-										<?php
-											foreach ($estimator_list as $est ) {
-												if($est->user_first_name != ''){
-													if($est->user_first_name != 'Nycel'){
-														$est_name_list =  str_replace(' ','_',strtolower($est->user_first_name) );
-														echo '<option value="'.$est_name_list.'">'.$est->user_first_name.'</option>';
-													}
-												}
-											}
-										?>
-									</select>
-								</div>
-
-								<div class="box-area clearfix row pad-right-10 pad-left-10">									
-									<div class="widg-content col-md-12 col-xs-12 clearfix" style="    overflow: auto;    height: 465px;    overflow: hidden;">	
-
-										<p class="qdc_loading_text" ><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-										<?php //echo $this->estimators->load_calendar_planner(); ?>
-<script src="<?php echo base_url(); ?>js/jquery.fn.gantt.js"></script>
-<link href="<?php echo base_url(); ?>css/gant-style.css" type="text/css" rel="stylesheet"> 
-
-<div class="gantt" id="est_deadline_all"></div>
-<script>
-        $(function() {
-            $("#est_deadline_all").gantt({
-                source: [ <?php echo $this->estimators->list_deadlines(); ?> ],
-                navigate: "buttons",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 14,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	$('#est_deadline_all').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-
-<?php foreach ($estimator_list as $est ): ?>
-	<?php if($est->user_first_name != ''): ?>
-		<?php if($est->user_first_name != 'Nycel'): ?>
-
-<?php $est_name_list =  str_replace(' ','_',strtolower($est->user_first_name) );  ?>
-<?php $est_id_list = $est->project_estiamator_id;  ?>
-
-<div class="gantt" id="est_deadline_<?php echo $est_name_list; ?>"></div>
-<script>
-        $(function() {
-            $("#est_deadline_<?php echo $est_name_list; ?>").gantt({
-                source: [ <?php echo $this->estimators->list_deadlines($est_id_list); ?>{ values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 20 days')); ?>",  customClass: "hide"},{from: "<?php echo date('Y/m/d'); ?>", to: "<?php echo date('Y/m/d'); ?>" ,customClass: "curr_date"}]}, ],
-                navigate: "buttons",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 14,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-					$('#est_deadline_<?php echo $est_name_list; ?>').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-
-		<?php endif; ?>
-	<?php endif; ?>
-<?php endforeach; ?>
-
-
-<style type="text/css">
-    .navigate,.nav-link.nav-zoomIn,.nav-link.nav-zoomOut,.page-number,.nav-link.nav-page-back,.nav-link.nav-page-next,.nav-link.nav-now,.nav-link.nav-prev-week,.nav-link.nav-prev-day,.nav-link.nav-next-day,.nav-link.nav-next-week{ display: none; visibility: hidden; width: 0; height: 0; }
-    .gantt .tooltip,.gantt .tooltip .tooltip-inner{ width: 350px !important; max-width: 350px !important;	}
-    .fn-gantt .leftPanel{width: 75px !important; overflow: visible !important;}
-    .bar.curr_date { background: #fff8da; border-top: 3px solid #fff8da; border-bottom: 2px solid #fff8da; height: 23px; margin-top: -3px; border-radius: 0; box-shadow: none; z-index: 9;}
-    .fn-gantt .rightPanel {overflow-x: scroll !important;    overflow-y: hidden !important; }
-    .fn-gantt .fn-content {background: #f1f1f1 !important;}
-
-
-	.fullfitout{ background:#D9534F !important; }
-	.refurbishment{ background:#5E2971 !important; }
-	.kiosk{ background:#4DAB4D !important; }
-	.bar.maintenance{ background:#F7901E !important; }
-</style>
-
-
-<script type="text/javascript"> 
-
-	setTimeout(function () {
-		$('p.qdc_loading_text').hide();
-		$('select.chart_data_selection_est').val('<?php echo strtolower($es_f_name); ?>');
-		$('.gantt#est_deadline_<?php echo strtolower($es_f_name); ?>').fadeIn();
-	}, 5000);
-
-
-
-	$('select.chart_data_selection_est').on("change", function(e) {
-		var data = $(this).val();
-		$('.gantt').hide();
-		$('.gantt#est_deadline_'+data).show();
-	});
-</script>
-
-
-
-
-									</div> 
-								</div>
-
-							</div>
-						</div>
-
-
+ 
 						<!-- ************************ -->
 
 
 
+			<div class="clearfix pad-10">
+				<div class="widget_area row pad-0-imp no-m-imp">
+
+  	
+
+					
+
+						<div class=" col-xs-12 box-widget pad-10">
+							<div class="progress no-m progress-termometer">
+								<div class="progress-bar progress-bar-danger active progress-bar-striped full_p tooltip-pb" title="" style="background-color: rgb(251, 25, 38); border-radius: 0px 10px 10px 0px;"></div> 
+								<script type="text/javascript">
+									$(window).load(function() {
+										setTimeout(function() {
+											$.ajax({
+												'url' : base_url+'dashboard/pm_sales_widget/1',
+												'type' : 'GET',
+												'success' : function(result){
+													var raw_overall = result;
+													var overall_arr =  raw_overall.split('_');
+													var overall_progress = parseInt(overall_arr[0]);
+													var status_forecast = overall_arr[1];
+													$('.full_p').css('width',overall_progress+'%');
+													$('.full_p').html(overall_progress+'%');
+													$('.full_p').prop('title','$'+status_forecast+' - Overall Progress');
+													$('.tooltip-pb').tooltip();				 
+												}
+											});
+										}, 5000);
+									});
+								</script>
+							</div>
+						</div>	
+
+						<div class=" col-xs-12 box-widget pad-10">
+							<script type="text/javascript"> pre_load_module('#progressBar_standing_area','dashboard/progressBar',3000); </script>
+							<div class="progress no-m progress-termometer" id="progressBar_standing_area">
+								<?php //echo $this->dashboard->progressBar(); ?>
+							</div>
+						</div>	
 
 
 
-						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
-							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
-								<div class="box-area clearfix">
-									<div class="widg-content clearfix">
+
+
 
 
  
-										<div class="pad-10" id="">
-
-											<script type="text/javascript"> pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline/<?php echo $es_id; ?>',9500); </script>
-											<div class="clearfix center knob_box pad-10 small-widget" id="up_coming_deadline_area">
-												<p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php //echo $this->estimators->up_coming_deadline($es_id); ?>
-											</div>
-											<style type="text/css">.knob_box canvas{width: 100% !important;}.knob{font-size: 90px !important; }</style>
 
 
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-
-
-
+ 
 
 						<!-- ************************ -->
-
-
-						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Project Estimator Quotes</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
-								<div class="box-area clearfix">
-									<div class="widg-content clearfix">
-										<!-- <div class="loading_chart" style="height: 300px; text-align: center; padding: 100px 53px; color: #ccc; margin:0 auto;"><i class="fa fa-spin fa-refresh fa-4x"></i></div> -->											
-										<script type="text/javascript"> pre_load_module('#estimators_quotes_completed_area','dashboard/estimators/estimators_quotes_completed',10000); </script>
-										<div class="" id="estimators_quotes_completed_area">
-											<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-											<?php // $status_forecast = $this->estimators->estimators_quotes_completed(); ?>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
+ 
 
 						<!-- ************************ -->
-
 						
+				 
+
+<!-- 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10 hide">
+							<div class="widget wid-type-0 small-widget">
+								<div class="box-area clearfix">
+									<div class="widg-icon-inside col-xs-3 violet" ><div id="" class=""><i class="fa  fa-code text-center fa-3x"></i></div></div>
+									<div class="widg-content col-xs-9 clearfix fill violet">
+										<div class="pad-5">
+											<div class=" " id=""><p>Widget <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<hr class="" style="margin: 5px 0px 0px;">
+											<div class="pad-top-5" id="">
+												<p class="value"> <strong> &nbsp; </strong></p>
+											</div>
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div> -->
+
+						<!-- ************************ -->
+						
+						<div class="clearfix"></div>
+
+
+
+
+					 
+ 
+
+
+
+						<!-- ************************ -->
+
+ 
+
+						<!-- ************************ -->
+
+
+
 
 						<!-- ************************ -->
 						
@@ -640,12 +558,12 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 
 
 										</style>
-
 									</div>
 								</div>
 							</div>
 						</div>
-						
+
+
 						<style type="text/css">
 							@media (min-width: 1200px) and (max-width: 1500px) {
 								.knob {
@@ -660,10 +578,21 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 								}
 							}
 						</style>
+<!-- 
 
+						<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 box-widget pad-10 hide">
+							<div class="widget wid-type-b widg-head-styled">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Pie View </strong></div>
+								<div class="box-area clearfix" style="height:320px;">
+									<div class="widg-content clearfix">
 
+									</div>
+								</div>
+							</div>
+						</div>
+ -->
 
-						
 
 						<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 box-widget pad-10 pie_toggle_custom_b">
 							<div class="widget wid-type-e widg-head-styled">
@@ -692,13 +621,12 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 										
 										<div role="tabpanel" class="tab-pane active fade in" id="clients" >
 											<div id="" class="col-lg-5">
-												<div class="loading_chart hide" style="height: 300px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
+												<div class="loading_chart" style="height: 300px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
 												<div class="" id="donut_a" style="text-align: center;"></div>
 											</div>
 											<div id="" class="col-lg-7">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_clients_area','dashboard/focus_top_ten_clients',11000); </script>
-												<div id="focus_top_ten_clients_area" class="" style="height: 300px; overflow: auto;">
-													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
+												<script type="text/javascript"> pre_load_module('#focus_top_ten_clients_area','dashboard/focus_top_ten_clients',6500); </script>
+												<div id="focus_top_ten_clients_area" class="" style="height: 300px; overflow: auto;"> 
 													<?php //echo $this->dashboard->focus_top_ten_clients(); ?>
 												</div>
 											</div>
@@ -709,8 +637,8 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 												<div class="" id="donut_b" style="text-align: center;"></div>
 											</div>
 											<div id="" class="col-lg-7 clearfix">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_area_a','dashboard/focus_top_ten_con_sup/2',11500); </script>
-												<div id="focus_top_ten_con_sup_area_a" class="clearfix" style="height: 300px; overflow: auto;">
+												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_area_b','dashboard/focus_top_ten_con_sup/2',7000); </script>
+												<div id="focus_top_ten_con_sup_area_b" class="clearfix" style="height: 300px; overflow: auto;">
 													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 													<?php //echo $this->dashboard->focus_top_ten_con_sup('2'); ?>
 												</div>
@@ -722,8 +650,8 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 												<div class="" id="donut_c" style="text-align: center;"></div>
 											</div>
 											<div id="" class="col-lg-7 clearfix">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_area_b','dashboard/focus_top_ten_con_sup/3',12000); </script>
-												<div id="focus_top_ten_con_sup_area_b" class="clearfix" style="height: 300px; overflow: auto;">
+												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_area_c','dashboard/focus_top_ten_con_sup/3',7500); </script>
+												<div id="focus_top_ten_con_sup_area_c" class="clearfix" style="height: 300px; overflow: auto;">
 													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 													<?php //echo $this->dashboard->focus_top_ten_con_sup('3'); ?>
 												</div>
@@ -735,7 +663,7 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 												<div class="" id="donut_d" style="text-align: center;"></div>
 											</div>
 											<div id="" class="col-lg-7 clearfix">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_clients_mn_area','dashboard/focus_top_ten_clients_mn',12500); </script>
+												<script type="text/javascript"> pre_load_module('#focus_top_ten_clients_mn_area','dashboard/focus_top_ten_clients_mn',8000); </script>
 												<div id="focus_top_ten_clients_mn_area" class="clearfix" style="height: 300px; overflow: auto;">
 													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 													<?php //echo $this->dashboard->focus_top_ten_clients_mn(); ?>
@@ -748,8 +676,8 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 												<div class="" id="donut_e" style="text-align: center;"></div>
 											</div>
 											<div id="" class="col-lg-7 clearfix">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_mn_a','dashboard/focus_top_ten_con_sup_mn/2',13000); </script>
-												<div id="focus_top_ten_con_sup_mn_a" class="clearfix" style="height: 300px; overflow: auto;">
+												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_mn_area_b','dashboard/focus_top_ten_con_sup_mn/2',8500); </script>
+												<div id="focus_top_ten_con_sup_mn_area_b" class="clearfix" style="height: 300px; overflow: auto;">
 													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 													<?php //echo $this->dashboard->focus_top_ten_con_sup_mn('2'); ?>
 												</div>
@@ -761,8 +689,8 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 												<div class="" id="donut_f" style="text-align: center;"></div>
 											</div>
 											<div id="" class="col-lg-7 clearfix">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_mn_b','dashboard/focus_top_ten_con_sup_mn/3',13500); </script>
-												<div id="focus_top_ten_con_sup_mn_b" class="clearfix" style="height: 300px; overflow: auto;">
+												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_mn_area_c','dashboard/focus_top_ten_con_sup_mn/3',9000); </script>
+												<div id="focus_top_ten_con_sup_mn_area_c" class="clearfix" style="height: 300px; overflow: auto;">
 													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 													<?php //echo $this->dashboard->focus_top_ten_con_sup_mn('3'); ?>
 												</div>
@@ -773,7 +701,8 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 							</div>
 						</div>
 
-						
+
+
 
 						<div class="clearfix"></div>
 
@@ -825,8 +754,7 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 								</div>
 
 								<div class="box-area clearfix row pad-right-10 pad-left-10">									
-									<div class="widg-content col-md-12 col-xs-12 clearfix">
-									
+									<div class="widg-content col-md-12 col-xs-12 clearfix"> 
 										<div class id="job_book_area">
 											<div id="chart_main"></div>
 											<div id="" class="" style="margin: -6px -26px 17px 53px;    display: block;    clear: both;    font-size: 10px;">
@@ -952,12 +880,13 @@ chart.select();
 
 
 
+
+
+
 						<div class="clearfix"></div>
 
 
-
-
-
+						
 
 						<!-- ************   LEAVE CHART   ************ -->
 
@@ -980,8 +909,8 @@ chart.select();
 
 
 
-							$leave_totals =  $this->dashboard->get_count_per_week(2,'',$es_id);
-							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,$es_id);
+							$leave_totals =  $this->dashboard->get_count_per_week(2,'',$this->session->userdata('user_id'));
+							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,$this->session->userdata('user_id'));
 
 							?>
 						</div>
@@ -1077,7 +1006,7 @@ var chart_emply = c3.generate({
 
           <?php 
 
-          echo $this->dashboard->get_count_per_week(1,'', $es_id);
+          echo $this->dashboard->get_count_per_week(1,'', $this->session->userdata('user_id'));
 
            ?>
 
@@ -1094,7 +1023,7 @@ colors: {
 	'Last Year': '#9467BD',*/
 
 	<?php foreach ($leave_types as $leave_data): ?>
-		'<?php echo $es_name." ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id];  ?>',
+		'<?php echo $this->session->userdata("user_first_name")." ".$this->session->userdata("user_last_name")." ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id];  ?>',
 	<?php endforeach; ?>
 
 
@@ -1106,7 +1035,7 @@ groups: [
 
 [
 	<?php foreach ($leave_types as $leave_data): ?>
-		'<?php echo $es_name." ".$leave_data->leave_type; ?>',
+		'<?php echo $this->session->userdata("user_first_name")." ".$this->session->userdata("user_last_name")." ".$leave_data->leave_type; ?>',
 	<?php endforeach; ?>
 ],
 
@@ -1169,8 +1098,6 @@ chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overal
 						
 						<div class="clearfix"></div>
 
-
-
 						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-a widg-head-styled ">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
@@ -1223,217 +1150,302 @@ chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overal
 <?php $this->load->view('assets/logout-modal'); ?>
 <?php $this->bulletin_board->list_latest_post(); ?>
 
-<script type="text/javascript">
-	
+<script>
+	var bttn_click_mtc = 0;
+	$('.view_main_swtch').click(function(){
+		var text = $(this).text();
+		//$(this).parent().removeClass('active');
 
-	var donutg = c3.generate({
-		size: {
-			height: 250,
-			width: 250
-		},data: {
-			columns: [ <?php echo $this->dashboard->focus_projects_by_type_widget(1); ?> ],
-			type : 'pie',
-			onclick: function (d, i) { console.log("onclick", d, i); },
-			onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-			onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-		},
-		legend: {
-			show: false //hides label
-		},
-		bindto: "#donut_prj_bt",
-		tooltip: {
-			format: {
-				value: function (value, ratio, id) {
-					var format = d3.format(',');
-					var rounded_percent = Math.round( ratio * 1000 ) / 10;
-					var mod_value = Math.round(value);
-					return '$ '+format(mod_value)+' '+rounded_percent+'%';
-				}
-			} 
+		if(bttn_click_mtc > 0){
+
+			if(text == 'View Maintenance'){
+
+
+				$(this).attr("href",'#clients_mtnc');
+				$(this).attr("id",'#clients-tab_b');
+
+				$(this).text('Return');
+
+				$('a.tab_btn_dhb').hide();
+				$('a.tab_btn_dhb_mntnc').show();
+				$('#clients-tab_b').parent().addClass('active');
+
+			}else{
+				
+
+				$(this).attr("href",'#clients');
+				$(this).attr("id",'#clients-tab_a');
+
+				$(this).text('View Maintenance');
+
+				$('a.tab_btn_dhb').show();
+				$('a.tab_btn_dhb_mntnc').hide();
+				$('#clients-tab_a').parent().addClass('active');
+
+			}
+
+
+		}else{
+
+				$(this).attr("href",'#clients_mtnc');
+				$(this).attr("id",'#clients-tab_b');
+
+				$(this).text('Return');
+
+				$('a.tab_btn_dhb').hide();
+				$('a.tab_btn_dhb_mntnc').show();
+				$('#clients-tab_b').parent().addClass('active');
 		}
-	});
+
+		bttn_click_mtc++;
+		//$(this).parent().removeClass('active');
+
+
+	//	alert(text);
+});	
+
+
+// dashboard->sales_widget()
+ 	
+    	
+
+
+
+// use this donut
+
+var donuta = c3.generate({
+	size: {
+		height: 300,
+		width: 300
+	},data: {
+		columns: [ <?php $this->dashboard->focus_top_ten_clients_donut(); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_a",
+	donut: {
+		title: '<?php echo date('Y'); ?> Projects by Type'
+	},tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
+
+
+var donutb = c3.generate({
+	size: {
+		height: 300,
+		width: 300
+	},data: {
+		columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_donut('2'); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_b",
+	tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
+
+
+var donutc= c3.generate({
+	size: {
+		height: 300,
+		width: 300
+	},data: {
+		columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_donut('3'); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_c",
+	tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
+
+var donutd= c3.generate({
+	size: {
+		height: 300,
+		width: 300
+	},data: {
+		columns: [ <?php echo $this->dashboard->focus_top_ten_clients_mn_donut(); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_d",
+	tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
+
+
+
+var donute= c3.generate({
+	size: {
+		height: 300,
+		width: 300
+	},data: {
+		columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_mn_donut(2); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_e",
+	tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
+
+
+
+var donutf= c3.generate({
+	size: {
+		height: 300,
+		width: 300
+	},data: {
+		columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_mn_donut(3); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_f",
+	tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
 
 
 
 
-	var donuta = c3.generate({
-		size: {
-			height: 300,
-			width: 300
-		},data: {
-			columns: [ <?php $this->dashboard->focus_top_ten_clients_donut(); ?> ],
-			type : 'pie',
-			onclick: function (d, i) { console.log("onclick", d, i); },
-			onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-			onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-		},
-		legend: {
-			show: false //hides label
-		},
-		bindto: "#donut_a",
-		donut: {
-			title: '<?php echo date('Y'); ?> Projects by Type'
-		},tooltip: {
-			format: {
-				value: function (value, ratio, id) {
-					var format = d3.format(',');
-					var rounded_percent = Math.round( ratio * 1000 ) / 10;
-					var mod_value = Math.round(value);
-				return '$ '+format(mod_value)+' '+rounded_percent+'%';
-			}
-		} 
-	}
-	});
-
-
-	var donutb = c3.generate({
-		size: {
-			height: 300,
-			width: 300
-		},data: {
-			columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_donut('2'); ?> ],
-			type : 'pie',
-			onclick: function (d, i) { console.log("onclick", d, i); },
-			onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-			onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-		},
-		legend: {
-			show: false //hides label
-		},
-		bindto: "#donut_b",
-		tooltip: {
-			format: {
-				value: function (value, ratio, id) {
-					var format = d3.format(',');
-					var rounded_percent = Math.round( ratio * 1000 ) / 10;
-					var mod_value = Math.round(value);
-				return '$ '+format(mod_value)+' '+rounded_percent+'%';
-			}
-		} 
-	}
-	});
-
-
-	var donutc= c3.generate({
-		size: {
-			height: 300,
-			width: 300
-		},data: {
-			columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_donut('3'); ?> ],
-			type : 'pie',
-			onclick: function (d, i) { console.log("onclick", d, i); },
-			onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-			onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-		},
-		legend: {
-			show: false //hides label
-		},
-		bindto: "#donut_c",
-		tooltip: {
-			format: {
-				value: function (value, ratio, id) {
-					var format = d3.format(',');
-					var rounded_percent = Math.round( ratio * 1000 ) / 10;
-					var mod_value = Math.round(value);
-				return '$ '+format(mod_value)+' '+rounded_percent+'%';
-			}
-		} 
-	}
-	});
-
-	var donutd= c3.generate({
-		size: {
-			height: 300,
-			width: 300
-		},data: {
-			columns: [ <?php echo $this->dashboard->focus_top_ten_clients_mn_donut(); ?> ],
-			type : 'pie',
-			onclick: function (d, i) { console.log("onclick", d, i); },
-			onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-			onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-		},
-		legend: {
-			show: false //hides label
-		},
-		bindto: "#donut_d",
-		tooltip: {
-			format: {
-				value: function (value, ratio, id) {
-					var format = d3.format(',');
-					var rounded_percent = Math.round( ratio * 1000 ) / 10;
-					var mod_value = Math.round(value);
-				return '$ '+format(mod_value)+' '+rounded_percent+'%';
-			}
-		} 
-	}
-	});
 
 
 
-	var donute= c3.generate({
-		size: {
-			height: 300,
-			width: 300
-		},data: {
-			columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_mn_donut(2); ?> ],
-			type : 'pie',
-			onclick: function (d, i) { console.log("onclick", d, i); },
-			onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-			onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-		},
-		legend: {
-			show: false //hides label
-		},
-		bindto: "#donut_e",
-		tooltip: {
-			format: {
-				value: function (value, ratio, id) {
-					var format = d3.format(',');
-					var rounded_percent = Math.round( ratio * 1000 ) / 10;
-					var mod_value = Math.round(value);
-				return '$ '+format(mod_value)+' '+rounded_percent+'%';
-			}
-		} 
-	}
-	});
 
 
-
-	var donutf= c3.generate({
-		size: {
-			height: 300,
-			width: 300
-		},data: {
-			columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_mn_donut(3); ?> ],
-			type : 'pie',
-			onclick: function (d, i) { console.log("onclick", d, i); },
-			onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-			onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-		},
-		legend: {
-			show: false //hides label
-		},
-		bindto: "#donut_f",
-		tooltip: {
-			format: {
-				value: function (value, ratio, id) {
-					var format = d3.format(',');
-					var rounded_percent = Math.round( ratio * 1000 ) / 10;
-					var mod_value = Math.round(value);
-				return '$ '+format(mod_value)+' '+rounded_percent+'%';
-			}
-		} 
-	}
-	});
-
-
-
+var donutg = c3.generate({
+	size: {
+		height: 250,
+		width: 250
+	},data: {
+		columns: [ <?php echo $this->dashboard->focus_projects_by_type_widget(1); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_prj_bt",
+	tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
 
 
 
 
 
 </script>
+ 
+
+
+
+<!-- maps api js -->
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyDs1g6kHxbVrkQe7e_CmR6MsfV_3LmLSlc"></script>
+
+<script type="text/javascript">
+	var data = { "locations": <?php echo $this->dashboard->focus_get_map_locations(); ?>};	
+	var emp_data = { "locations": <?php echo $this->dashboard->emp_get_locations_points(); ?>};
+</script>
+
+<script type="text/javascript" src="<?php echo base_url(); ?>js/maps/markerclusterer_packed.js"></script>
+
+<!--[if IE]><script type="text/javascript" src="<?php echo base_url(); ?>js/excanvas.js"></script><![endif]-->
+<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.knob.min.js"></script>
+<script type="text/javascript">$('knob').trigger('configure', {width:100}); </script>
+
+<!-- maps api js -->
+
+
 
 <script type="text/javascript" src="<?php echo base_url(); ?>js/maps/maps.js"></script>
 <script type="text/javascript" src="<?php echo base_url(); ?>js/maps/employee_map.js"></script>
+

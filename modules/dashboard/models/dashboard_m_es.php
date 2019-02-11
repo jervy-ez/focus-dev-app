@@ -52,7 +52,7 @@ AND `project`.`unaccepted_date` = ''
 			".($estiamator_id != '' ? " AND  `project`.`project_estiamator_id` = '$estiamator_id' " : "")."
 
 			
-			ORDER BY `deadline_unix` ASC LIMIT 15");
+			ORDER BY `deadline_unix` ASC LIMIT 14");
 		return $query;
 	}
 

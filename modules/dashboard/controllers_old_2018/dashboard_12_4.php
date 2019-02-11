@@ -32,18 +32,15 @@ class Dashboard extends MY_Controller{
 			redirect('', 'refresh');
 		endif;
 
-
 		$this->load->library('session');
 
 
 // temporary restriction for dashboaed dev
-/*
 		$user_role_id = $this->session->userdata('user_role_id');
 		if($this->session->userdata('is_admin') == 1 || $user_role_id == 16 || $user_role_id == 20 || $user_role_id == 3 || $user_role_id == 2 || $user_role_id == 7 || $user_role_id == 6 || $user_role_id == 8  || $this->session->userdata('user_id') == 6):
 		else:		
 			redirect('projects', 'refresh');
 		endif;
-*/
 // temporary restriction for dashboaed devf
    
 
@@ -97,7 +94,6 @@ class Dashboard extends MY_Controller{
 		$data['assign_id'] = 0;
 		$data['screen'] = 'Dashboard';
 		$user_role_id = $this->session->userdata('user_role_id');
-		$user_department_id = $this->session->userdata('user_department_id');
 		//Grant acess to Operations Manager
 		$data['pm_setter'] = '';
 
@@ -111,7 +107,6 @@ class Dashboard extends MY_Controller{
 				$fetch_user = $this->user_model->fetch_user($dash_details[0]);
 				$user_details = array_shift($fetch_user->result_array());
  				$data['pm_setter'] = $user_details['user_first_name'].' '.$user_details['user_last_name']; 
-
  				
  				if($dash_details[1] == 'pm'){
 					$data['main_content'] = 'dashboard_pm';
@@ -121,12 +116,6 @@ class Dashboard extends MY_Controller{
 					redirect('/dashboard/estimators?dash_view='.$dash_details[0].'-es');
  				}elseif($dash_details[1] == 'ad'){
 						$data['main_content'] = 'dashboard_home';
-				}elseif($dash_details[1] == 'ch'){
-					$data['main_content'] = 'dashboard_general_hammond';
-				}elseif($dash_details[1] == 'jp'){
-					$data['main_content'] = 'dashboard_joinery_procurement';
-				}elseif($dash_details[1] == 'acnt'){
-					$data['main_content'] = 'dashboard_accnt';
 				}else{
 					$data['main_content'] = 'dashboard_home';
  				}
@@ -146,7 +135,6 @@ class Dashboard extends MY_Controller{
 					$dash_details = explode('-', $dash_type);
 					$data['assign_id'] = $dash_details[0];
 
-
 					$fetch_user = $this->user_model->fetch_user($dash_details[0]);
 					$user_details = array_shift($fetch_user->result_array());
 					$data['pm_setter'] = $user_details['user_first_name'].' '.$user_details['user_last_name']; 
@@ -157,12 +145,6 @@ class Dashboard extends MY_Controller{
 						$data['main_content'] = 'dashboard_mn';
 					}elseif($dash_details[1] == 'ad'){
 						$data['main_content'] = 'dashboard_home';
-					}elseif($dash_details[1] == 'ch'){
-						$data['main_content'] = 'dashboard_general_hammond';
-					}elseif($dash_details[1] == 'jp'){
-						$data['main_content'] = 'dashboard_joinery_procurement';
-					}elseif($dash_details[1] == 'acnt'){
-						$data['main_content'] = 'dashboard_accnt';
 					}elseif($dash_details[1] == 'es'){
 						redirect('/dashboard/estimators?dash_view='.$dash_details[0].'-es');
 					}else{
@@ -180,26 +162,18 @@ class Dashboard extends MY_Controller{
 
 
 
-		elseif($this->session->userdata('user_id') == 32):
+
+		elseif($user_role_id == 2):
+			$data['main_content'] = 'dashboard_pa';
+		elseif($user_role_id == 6):
 			$fetch_user= $this->user_model->list_user_short();
 			$data['users'] = $fetch_user->result();
 			$data['screen'] = 'User Availability';
 			$data['main_content'] = 'users/availability';
-		elseif($user_role_id == 8):
-			redirect('/dashboard/estimators');
-
-		elseif($user_role_id == 2):
-			$data['main_content'] = 'dashboard_pa';
 		elseif($user_role_id == 7):
 			$data['main_content'] = 'dashboard_mn';
-		elseif($user_role_id == 9):
-			$data['main_content'] = 'dashboard_joinery_procurement';
-		elseif($user_department_id == 3):
-			$data['main_content'] = 'dashboard_accnt';
-		elseif( $this->session->userdata('user_id') == 72 ):
-			$data['main_content'] = 'dashboard_general_hammond';
-		elseif( $this->session->userdata('dashboard') == 1 ):
-			$data['main_content'] = 'dashboard_general';
+		elseif($user_role_id == 8):
+			redirect('/dashboard/estimators');
 		else:		
 			redirect('projects', 'refresh');
 		endif;
@@ -423,517 +397,7 @@ class Dashboard extends MY_Controller{
 
 		$data['focus_data_forecast_p'] = $forecast_per_comp;
 
-		$data['page_title'] = 'Dashboard';
-
 		$this->load->view('page', $data);
-	}
-
-
-
-
-
-	public function get_count_per_week($return_total = 0, $set_year = '', $set_emp_id = '' ){
- 
-
-		$q_leave_types = $this->user_model->fetch_leave_type();
-		$leave_types = $q_leave_types->result();
-		$this_year = date("Y");
-
-		if(isset($set_year) && $set_year != ''){
-			$this_year = $set_year;
-		}
-$custom_q = '';
-
-$added_data = new StdClass();
-$added_data->{"leave_type_id"} = '0';
-$added_data->{"leave_type"} = 'Philippines Public Holiday';
-$added_data->{"remarks"} = '';
-
-
-		array_push($leave_types, $added_data);
-
- 
- 
-		$leave_typess_arr = array('');
-
-		$user_id_logger = '';
-
-
-
-						$leave_typess_arr[] = array();
-
-
-						if(isset($set_emp_id) && $set_emp_id != '' ){
-
-							$list_user_short_q = $this->user_model->fetch_user($set_emp_id);
-							$user_list = $list_user_short_q->result();
-							$user_id_logger = $set_emp_id;
-
-						}else{
-
-							$list_user_short_q = $this->user_model->list_user_short();
-							$user_list = $list_user_short_q->result();
-						}
-
-
-					
-						if(isset($user_id_logger) && $user_id_logger != '' ){
-							$set_emp_id = '';
-
-							if($user_id_logger == 72){
-								$custom_q = " AND `users`.`user_department_id` = '10' ";
-							}
-
-							if($user_id_logger == 16){
-								$custom_q = " AND `users`.`user_focus_company_id` = '6' ";
-							}
-
-							if($user_id_logger == 15){
-								$custom_q = " AND `users`.`user_focus_company_id` = '5' ";
-							}
-
-							if($user_id_logger == 72 || $user_id_logger == 16 || $user_id_logger == 15){
-								$list_user_short_q = $this->user_model->list_user_short($custom_q);
-								$user_list = $list_user_short_q->result();
-							}
-
-							if($user_id_logger == 21){
-								$custom_q = " AND `users`.`user_department_id` = '3' ";
-								$list_user_short_q = $this->user_model->list_user_short($custom_q);
-								$user_list = $list_user_short_q->result();
-							}
-
-							if($return_total == 2){
-								$list_user_short_q = $this->user_model->fetch_user($user_id_logger);
-								$user_list = $list_user_short_q->result();
-
-							}
-
-							if($return_total == 3){
-
-								if($user_id_logger == 72){
-									$custom_q = " AND `users`.`user_department_id` = '10' ";
-								}
-
-								if($user_id_logger == 16){
-									$custom_q = " AND `users`.`user_focus_company_id` = '6' ";
-								}
-
-								if($user_id_logger == 15){
-									$custom_q = " AND `users`.`user_focus_company_id` = '5' ";
-								}
-
-								if($user_id_logger == 72 || $user_id_logger == 16 || $user_id_logger == 15){
-									$list_user_short_q = $this->user_model->list_user_short($custom_q);
-									$user_list = $list_user_short_q->result();
-								}
-
-								if($user_id_logger == 21){
-									$custom_q = " AND `users`.`user_department_id` = '3' ";
-									$list_user_short_q = $this->user_model->list_user_short($custom_q);
-									$user_list = $list_user_short_q->result();
-								}
-
-							}
-
-
-						}
-
-
-
-
-						foreach ($user_list as $users_data){
-
-							$user_name = $users_data->user_first_name.' '.$users_data->user_last_name;
-
-							foreach ($leave_types as $leave_data) {
-
-								$leave_type_id = $leave_data->leave_type_id;
-
-
-
-
-if($return_total == 1){
-
-		 	echo "['$user_name $leave_data->leave_type',";
-}
-
-
-					$total_days_away = 0;
-					$days_numbr = 0;
-			for($x=1;$x<=52;$x++){
-
-				$year = $this_year;
-				$week_no = $x;
-
-				$date = new DateTime();
-				$date->setISODate($year,$week_no);
-
-
-
-				$dateParam =  $date->format('Y-m-d');
-				$date_a =  $date->format('d/m/Y');
-
-
-				$week = date('w', strtotime($dateParam));
-				$date_mod = new DateTime($dateParam);
-
-				$date_a_x = $date_mod->modify("-".$week." day")->format("d/m/Y");
-				$date_b = $date_mod->modify("+5 day")->format("d/m/Y");
-
-				$stamp_a = strtotime($date->format('Y-m-d') );
-				$stamp_b = strtotime($date_mod->format('Y-m-d') );
-
-
-
-	//	echo "<p> $date_a,$date_b,$users_data->primary_user_id,****$leave_type_id**$x**</p>";
-
-					$get_weekly_leaves_q = $this->dashboard_m->get_weekly_leaves($date_a,$date_b,$users_data->primary_user_id,$leave_type_id );
-				//	$leave_data = $get_weekly_leaves_q->result();
-
-					$days_count = 'null';
-
-
- 
-if($get_weekly_leaves_q->num_rows() ){
-
-
-
-					//foreach ($leave_data as $leave_numbers){
-
-					foreach ($get_weekly_leaves_q->result() as $leave_numbers){
-						
-						if($leave_numbers->partial_day == 1){
-
-							$days_numbr =  number_format( ($leave_numbers->total_days_away / 8) , 2 );
-
-						}else{
-
-							if($leave_numbers->total_days_away == 8){
-								$days_numbr = 1;
-							}else{
-
-								$start_day_of_leave =   new DateTime (date("Y-m-d", $leave_numbers->start_day_of_leave) );
-								$end_day_of_leave =   new DateTime (date("Y-m-d", $leave_numbers->end_day_of_leave) );
-
-								$data_stamp_a =  new DateTime (date("Y-m-d", $stamp_a) );
-								$data_stamp_b =  new DateTime (date("Y-m-d", $stamp_b) );
-								$total_days_away = $leave_numbers->total_days_away;
-
-
-								if($total_days_away > 80){
-									
-
-
-
-									if($stamp_b <=  $leave_numbers->start_day_of_leave ){
-										$days_numbr = abs($start_day_of_leave->diff($data_stamp_b)->format("%a")) + 1;
-										
-									}elseif($stamp_a <=  $leave_numbers->end_day_of_leave ){
-										$days_numbr = abs($end_day_of_leave->diff($data_stamp_a)->format("%a")) + 1;
-										$total_days_away = 0;
-										//$days_numbr = $days_numbr + 
-									}else{
-										$days_numbr = 5;
-									}
-
-
-
-
-								}else{
-									if($stamp_a <=  $leave_numbers->start_day_of_leave && $stamp_b >=  $leave_numbers->end_day_of_leave ){
-										$days_numbr = abs($start_day_of_leave->diff($end_day_of_leave)->format("%a"))+1;
-									}
-
-
-									elseif($stamp_a <=  $leave_numbers->start_day_of_leave){
-										$days_numbr =  (abs( $stamp_b - $leave_numbers->start_day_of_leave) / 86400) + 1;
-									}else{
-										$days_numbr = (abs($leave_numbers->end_day_of_leave - $stamp_a ) / 86400) + 1;
-									}
-
-
-
-/*
-									elseif($stamp_a <=  $leave_numbers->end_day_of_leave){
-
-										$days_numbr = abs($end_day_of_leave->diff($data_stamp_a)->format("%a"))+50;
-									//$days_numbr = $days_numbr + 
-									}
-
-									elseif($stamp_b >=  $leave_numbers->start_day_of_leave){
-										$days_numbr = abs($start_day_of_leave->diff($data_stamp_b)->format("%a")) + 1;
-									//$days_numbr = $days_numbr + 
-									}*/
-
-
-								}
-
-						
-
-
-
-							}
-
-						}
-
-
-						$days_count = $days_count + $days_numbr;
-						$days_count = floatval($days_count);
-					}
-
-				}else{
-
-					if($total_days_away > 80){
-						$days_count = 5;
-						$total_days_away = 0;
-					//	echo "<p>TEST</p>";
-
-					}
-
-				}
-
-					// if($total_days_away > 80){
-					// 	$days_count = 5;
-					// }
-
-				if($x > 2){
-
-					if($return_total == 1){
-						echo $days_count.",";
-					}
-				} 
-
-
-
-
-
-
-
-						$key_loop = $x-1;
-
-						// if (   	isset($leave_typess_arr[$key_loop]) && array_key_exists($leave_type_id,$leave_typess_arr[$key_loop])) {
-						
-						 if(isset($leave_typess_arr[$key_loop][$leave_type_id])){
-
-							$leave_typess_arr[$key_loop][$leave_type_id] = $leave_typess_arr[$key_loop][$leave_type_id] + floatval($days_count);
-						}else{
-
-							$leave_typess_arr[$key_loop][$leave_type_id] = floatval($days_count);
-						}
-
-
-					$days_count = 'null';
-
-
-				}
-
-
-
-				if($return_total == 1){
-
-					echo "],";
-				}
-			}
-
-
-
-
-
-
-
-
-		} 
-	//	echo "<p>----------------</p>";
-
-	//	$test_looper=1;
-
-		$return_arr = array('');
-		$iteam_leave_total = 0;
-		$last_value_arr = '';
-
-
-		foreach ($leave_types as $leave_data ) {
-
-
-
-			$ounter_loop = 0;
-
-
-			if($return_total == 1){
-				echo "['Overall $leave_data->leave_type',";
-			}
-
-			foreach ($leave_typess_arr as $row => $value) {
-
-		 	//var_dump($value);
-				$ounter_loop++;
-
-				//	echo "<p>".$leave_data->leave_type_id."</p>";
-
-					if($return_total == 1){
-
-						if($ounter_loop > 2){
-							echo  ($value[$leave_data->leave_type_id] == 0 ? 'null,' : $value[$leave_data->leave_type_id]."," );
-						}
-					}
-
-					if($return_total == 2 || $return_total == 3){
-							//echo ($value[$leave_data->leave_type_id] == 0 ? 0 : $value[$leave_data->leave_type_id]."," );
-							$iteam_leave_total = $iteam_leave_total +  ($value[$leave_data->leave_type_id] == 0 ? 0 : $value[$leave_data->leave_type_id] );
-					}
-
-					/*if($set_emp_id != ''){
-							$iteam_leave_total = $iteam_leave_total +  ($value[$leave_data->leave_type_id] == 0 ? 0 : $value[$leave_data->leave_type_id] );
-					}*/
-
-		 	}
-				
-
-
-		 	if($return_total == 1){
-		 		echo "],";
-		 	}
-
-
-		 	if($return_total == 2 || $return_total == 3){
-//echo "<p> $leave_data->leave_type -  $iteam_leave_total</p>";
-
-		 		$return_arr[$leave_data->leave_type_id] = $iteam_leave_total;
-				$last_value_arr .= $leave_data->leave_type_id.'-'.$iteam_leave_total.'|';
-				$iteam_leave_total = 0;
-		 	}
-
-		}
-
-	
-
-
-		if( isset($set_year) ){
-			echo substr($last_value_arr, 0, -1);
-		}
-
-					if($return_total == 2 || $return_total == 3){
-			return $return_arr;
-		}
-
-		
-
-
-	}
-
-
-	
-
-	public function get_count_maint_per_week($this_year,$is_ave=0){
-
-		$counter_loop = 0;
-
-		$ave_year = 0;
-
-		if($is_ave == 1){
-			$counter_loop = date("Y") - $this_year; 
-			$ave_year = $counter_loop;
-			// $counter_loop--;
-		}
-
-
-
-
-
-
-//echo "***$counter_loop<br /><br />";
-
-
-
-		$list_data = array(0);
-
-		while($counter_loop >= 0){
-
-//echo "<br />$counter_loop<br /><br />";
-
-			for($x=1;$x<=52;$x++){
-		//	echo "<br/>";
-
-
-
-				$year = $this_year;
-				$week_no = $x;
-
-				$date = new DateTime();
-				$date->setISODate($year,$week_no);
-	//echo $date->format('d-M-Y');
-
-
-				$dateParam =  $date->format('Y-m-d');
-				$date_a =  $date->format('d/m/Y');
-
-
-				$week = date('w', strtotime($dateParam));
-				$date_mod = new DateTime($dateParam);
-
-				$date_a_x = $date_mod->modify("-".$week." day")->format("d/m/Y");
-				$date_b = $date_mod->modify("+5 day")->format("d/m/Y");
-
-
-			//	$date_gg = $date_mod->modify("+6 day")->format("d/m/Y");
-
-
-				$query = $this->dashboard_m->get_maintenance_counts($date_a,$date_b);
-				$result_q = $query->result();
-
-//echo "<p>$testD ----- $date_b  ******</p>";
-
-
-				if(array_key_exists( $x-1, $list_data )){
-					$list_data[$x-1] =  $list_data[$x-1] + $result_q[0]->num_projects;
-
-				}else{
-					$list_data[$x-1] =   $result_q[0]->num_projects ;
-
-				}
-
-
-
-			//	 echo "<p>$date_a ______ $date_b ____ ".$result_q[0]->num_projects." </p>";
-
-				 //array_push($list_data, $result_q[0]->num_projects);
-
-
-			}
-
-//var_dump($list_data);
-
-
-			$counter_loop--;
-			$this_year++;
-		}
-
-
-
-
-
-
-			for($x=0;$x<52;$x++){
-
-				if($is_ave == 1){
-
-					$list_data[$x] =    ( ($list_data[$x]  / $ave_year )   ) /5 ;
-
-				} else{
-
-
-					$list_data[$x] =     ($list_data[$x]  )  / 5;
-
-				}
-
-		}
-
-//var_dump($list_data);
-
-		return implode(',', $list_data);
-
-
 	}
 
 
@@ -1212,244 +676,6 @@ if($get_weekly_leaves_q->num_rows() ){
 		}
 	}
 
-	public function po_joinery_list($return_val=0){
-
-
-
-		$q_get_joinery_list = $this->dashboard_m->get_joinery_list();
-		$get_joinery_list = $q_get_joinery_list->result();
-
-		$val_amount = 0;
-
-		if($return_val == 0){
-
-		foreach ($get_joinery_list as $joinery){
-
- 
-	//		echo "<tr><td> -------- $joinery->project_id --------- $joinery->work_cpo_date ------------ $joinery->price</tr>"; //$joinery->company_name 
-
-			// echo '  <div class="row"  style="border-bottom: 1px solid #ccc;    padding: 4px;">
-			// <div class="col-sm-5"><strong><a href="'.base_url().'projects/view/'.$joinery->project_id.'" target="_blank">'.$joinery->project_id.' &nbsp; '.$joinery->project_name.'</a></strong></div>
-			// <div class="col-sm-3"><span>'.$joinery->works_id.'  &nbsp;  '.$joinery->company_name.'</span></div>
-			// 	<div class="col-sm-1">'.$joinery->goods_deliver_by_date.'</div>
-			// <div class="col-sm-1">'.$joinery->work_cpo_date.'</div>
-			// <div class="col-sm-2 text-right"><strong>$ '. number_format($joinery->price,2).'</strong></div>
-
-
-			// </div>';
-
-
-
-echo '<tr role="row">
-<td><a href="'.base_url().'projects/view/'.$joinery->project_id.'" target="_blank">'.$joinery->project_id.' &nbsp; '.$joinery->project_name.'</a></strong></td>
-<td class="">'.$joinery->works_id.'  &nbsp;  '.$joinery->company_name.'</td>
-<td class="">'.$joinery->goods_deliver_by_date.'</td>
-<td class="">'.$joinery->work_cpo_date.'</td>
-<td class=""><strong>$ '. number_format($joinery->price,2).'</strong></td>
-
-<td class="hide">'.$joinery->unix_goods_deliver_by_date.'</td>
-<td class="hide">'.$joinery->unix_cpo_date.'</td></tr>';
-
-
-
-
-
-
-		} 
-	}else{
-
-		foreach ($get_joinery_list as $joinery){
-
-			$val_amount = $val_amount + $joinery->price;
-
- 
-
-
-
-	} 
-
-
-	return number_format($val_amount,2);
-
-
-	}
-
-
-
-	}
- 
-
-
-
-	function list_projects_progress($pm_id='',$custom='',$is_joinery=0){
-
-		//$this_year = date("d/m/Y");
-
-		$this_year =  date("d/m/Y", strtotime("- 5 days"));
-
- 
-
-		if($is_joinery == 1){
-
- 
-/*
-echo '<tr role="row">
-<td><a href="'.base_url().'projects/view/'.$joinery->project_id.'" target="_blank">'.$joinery->project_id.' &nbsp; '.$joinery->project_name.'</a></strong></td>
-<td class="">'.$joinery->works_id.'  &nbsp;  '.$joinery->company_name.'</td>
-<td class="">'.$joinery->goods_deliver_by_date.'</td>
-<td class="">'.$joinery->work_cpo_date.'</td>
-<td class=""><strong>$ '. number_format($joinery->price,2).'</strong></td>
-
-<td class="hide">'.$joinery->unix_goods_deliver_by_date.'</td>
-<td class="hide">'.$joinery->unix_cpo_date.'</td></tr>';
-
-*/
-
-
-
-			$q_get_project_progress_list = $this->dashboard_m->get_joinery_list(1);
-
-
-
-		}else{
-
-			$q_get_project_progress_list = $this->dashboard_m->get_project_progress_list($this_year,$pm_id,$custom);
-			
-		}
-
-
-		$num_result = $q_get_project_progress_list->num_rows();
-		$progress_list = $q_get_project_progress_list->result();
-
-		$use_date_stamp = 0;
-
-		$current_day_line = date('Y/m/d');
-		$date_allowance = strtotime(date("Y-m-d", strtotime("- 5 days")) ) * 1000 ;
-
-		foreach ($progress_list as $prj ) {
-
-			$quote_deadline_date_replaced = str_replace('/', '-', $prj->date_site_finish);
-			$quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_replaced "));
-
-			$quote_start_date_replaced = str_replace('/', '-', $prj->date_site_commencement);
-			$quote_start_date_reformated = strtotime("$quote_start_date_replaced ");
-
-			$quote_start_date_reformated = $quote_start_date_reformated."000";
-
-
-			if($date_allowance <= $quote_start_date_reformated){
-				$use_date_stamp = $quote_start_date_reformated;
-			}else{
-				$use_date_stamp = $date_allowance;
-			}
-
-			$date_deadline_check_val = date('N',$prj->project_unix_end_date);
-
-			echo '{
-				name: "<a href=\"'.base_url().'projects/view/'.$prj->project_id.'\" target=\"_blank\">'.$prj->project_id.'</a>", 
-				dataObj: "'.$prj->pm_name.' : '.$prj->project_name.'",
-				values: [
-				{from: "/Date('.$use_date_stamp.')/", to: "'.$quote_deadline_date_reformated.'", "desc": "<strong>'.$prj->pm_name.'</strong> : '.$prj->project_name.'<br /><strong>'.$prj->client_name.'</strong>&nbsp;  &nbsp;  &nbsp;   &nbsp;  Brand : '.$prj->brand_name.'",customClass: "'.strtolower(str_replace(' ','',$prj->job_category)).'"},
-				{from: "'.$current_day_line.'", to: "'.$current_day_line.'", "desc": "<strong>'.$prj->pm_name.'</strong> : '.$prj->project_name.'<br /><strong>'.$prj->client_name.'</strong>&nbsp;  &nbsp;  &nbsp;   &nbsp;  Brand : '.$prj->brand_name.'",customClass: "curr_date"}
-				]
-			},';
-		}
-
-
-
-		for($looper = $num_result; $looper < 16 ; $looper ++ ){
-
-		//echo "<p><strong>$looper</strong></p>";
-			
-
-			echo '
-
-			{ values: [
-					{from: "'.date('Y/m/d', strtotime('- 5 days')).'", to: "'.date('Y/m/d', strtotime('+ 5 days')).'",  customClass: "hide"},
-					{from: "'.date('Y/m/d').'", to: "'.date('Y/m/d').'" ,customClass: "curr_date"},
-					{from: "'.date('Y/m/d', strtotime('+ 5 days')).'", to: "'.date('Y/m/d', strtotime('+ 65 days')).'",  customClass: "hide"}
-				]
-			}, 
-
-
-			';
-
-		}
-
-
-	}
-
-
-
-
-	public function top_joinery_list($year='',$is_pie=''){
-
-
-		if($year != ''){
-			$c_year = $year;
-		}else{
-			$c_year = date("Y");
-		}
-
-		$total_pie = 0;
-
-
-
-
-		$q_get_top_joinery_list = $this->dashboard_m->get_top_joinery_list($c_year);
-		$get_top_joinery_list = $q_get_top_joinery_list->result();
-
-
-		foreach ($get_top_joinery_list as $joinery){
-			$total_pie = $total_pie + round($joinery->total_price,1);
-		} 
-
-
-		foreach ($get_top_joinery_list as $joinery){
-
-
-			if($is_pie != ''){
-
-				echo "['".$joinery->company_name."',".round($joinery->total_price,2)."  ],";
-
-			}else{
-
-				$join_percent_val  = round( 100 / ($total_pie / round($joinery->total_price,1) ) ,1);
-
-				echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
-
-				$comp_name = $joinery->company_name;
-				if(strlen($comp_name) > 30){
-					echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="right" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
-				}else{
-					echo $comp_name;
-				}
-
-				echo ' </div><div class="col-md-2 col-sm-4"><strong>'.$join_percent_val.'%</strong></div>  <div class="col-md-3 col-sm-4 " ><i class="fa fa-usd"></i> '.number_format($joinery->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-
-
-			}
-
-
-
-
-//['Ultimate Interiors', 393826.10],
-
-
-
-	 	//	echo "<p><td> -------- $joinery->company_name --------- $join_percent_val --------- ".number_format($joinery->total_price)."</p>"; 
-
-
-
-
-		} 
-
-
-
-
-
-	}
-
 
 
 	function _check_sales($c_year,$c_month){
@@ -1653,12 +879,9 @@ if($focus_copm_total != ''){
 		$init_c_total = 0;
 		
 
-		if(isset($assign_id) && $assign_id != '' && $assign_id != 0){
+		if(isset($assign_id) && $assign_id != ''){
 			$user_id = $assign_id;
 			$type = 1;
-		}else{
-			$user_id = '';
-			$type = '';
 		}
 
 		$c_year = date("Y");
@@ -1672,12 +895,8 @@ if($focus_copm_total != ''){
 
 		$focus_wip_overall = $this->get_wip_value_permonth($date_a,$date_c,$user_id,$type);   //--------------------
 
-
 		$q_current_invoiced_amount = $this->dashboard_m->fetch_current_total_invoices($c_year,$user_id);   //--------------------
 		$current_invoiced_amount =  array_shift($q_current_invoiced_amount->result_array());
-
- 	//	var_dump($current_invoiced_amount);
-		//var_dump($q_current_invoiced_amount );
 
 
 		$q_forecast = $this->dashboard_m->fetch_forecast($c_year,'1');   //--------------------
@@ -1696,14 +915,11 @@ if($focus_copm_total != ''){
 			}
 		}
 
- //	var_dump($focus_wip_overall);
-
+	//	var_dump($percent_total);
 
 		$current_standing = floatval($focus_wip_overall)+floatval($current_invoiced_amount['current_sales']);
 
-	//	echo "<p>$current_standing</p>";
-
-		if(isset($assign_id) && $assign_id != '' && $assign_id != 0){
+		if(isset($assign_id) && $assign_id != ''){
 			$q_pm_forecast = $this->dashboard_m->fetch_pm_forecast_details($c_year,$forecast['revenue_forecast_id'],$user_id);
 			$pm_forecast = $q_pm_forecast->result();
 
@@ -1775,7 +991,7 @@ if($focus_copm_total != ''){
 
 
 
-			echo '<div class="x progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).'"  style="position: absolute; width: 97.2%; background-color: #1c61a7; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">'.number_format($current_amnt_progress).'%</div>
+			echo '<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).'"  style="position: absolute; width: 97.2%; background-color: #1c61a7; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">'.number_format($current_amnt_progress).'%</div>
 			<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-original-title="Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'<br /><br />Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at '.number_format($current_amnt_progress).'%" style="z-index: 1; position: absolute; width: '.($less_amount_percent-2).'%; background-color: #002C8F; border-radius: 0px 10px 10px 0px; height: 30px;">Cumulative Forecast YTD</div> ';
 	
 
@@ -1787,7 +1003,7 @@ if($focus_copm_total != ''){
 
 
 
-			echo '<div class="y progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at 100%"  style="left: 30px; position: absolute; width: 97.9%; background-color: #1c61a7; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">100%</div>';
+			echo '<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at 100%"  style="left: 30px; position: absolute; width: 97.9%; background-color: #1c61a7; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">100%</div>';
 	
 
 
@@ -1813,7 +1029,7 @@ if($focus_copm_total != ''){
 			}
 
 
-			echo '<div class="z progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at '.number_format($current_amnt_progress).'%<br /><br />Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'"  style="z-index: 1; position: absolute; width: '.($current_progress-2).'%; background-color: #1c61a7; border-radius: 0px 10px 10px 0px; height: 30px;">'.number_format($current_amnt_progress).'%</div>
+			echo '<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at '.number_format($current_amnt_progress).'%<br /><br />Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'"  style="z-index: 1; position: absolute; width: '.($current_progress-2).'%; background-color: #1c61a7; border-radius: 0px 10px 10px 0px; height: 30px;">'.number_format($current_amnt_progress).'%</div>
 			<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'" style="position: absolute; width: 97.2%; background-color: #002C8F; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">Cumulative Forecast YTD</div> ';
 		}
 
@@ -2072,7 +1288,7 @@ if($focus_copm_total != ''){
 
 					$grand_total_sales = $grand_total_sales + $sales_total;
 
-					if( in_array($sales->project_manager_id, $pm_data) ){
+					if( in_array($sales->project_manager_id, $group_pm) ){
 						$pm_data[$sales->project_manager_id] = $pm_data[$sales->project_manager_id] + $sales_total;
 					}
 
@@ -2292,13 +1508,7 @@ if($focus_copm_total != ''){
 
 				$total_paid =  $oustanding->amount_exgst;
 				$display_each_value = $invoice_amount - $total_paid;
-
-
-
-				if ( array_key_exists($oustanding->project_manager_id, $pm_outstanding) ) {
-					$pm_outstanding[$oustanding->project_manager_id] = $pm_outstanding[$oustanding->project_manager_id] + $display_each_value;
-				}
- 
+				$pm_outstanding[$oustanding->project_manager_id] = $pm_outstanding[$oustanding->project_manager_id] + $display_each_value;
 
 
 				if ( array_key_exists($prime_pm, $pm_outstanding) ) {
@@ -2571,9 +1781,7 @@ if($focus_copm_total != ''){
 				if($this->invoice->if_invoiced_all($result['project_id'])  && $this->invoice->if_has_invoice($result['project_id']) > 0 ){
 					$invoiced++;
 
-
-
-					if( in_array($result['project_manager_id'], $pm_data_a) ){
+					if( in_array($result['project_manager_id'], $group_pm) ){
 						$pm_data_a[ $result['project_manager_id'] ]++;
 					}
 				}
@@ -2895,10 +2103,7 @@ if($focus_copm_total != ''){
 						}
 					}
  
-
-
-						
-					if( in_array($un_accepted->project_manager_id, $pm_data) ){
+					if( in_array($un_accepted->project_manager_id, $group_pm) ){
 						$pm_data[$un_accepted->project_manager_id] = $pm_data[$un_accepted->project_manager_id] + $amnt;
 					}
 
@@ -3207,8 +2412,6 @@ if($focus_copm_total != ''){
 
 
 	public function wid_quoted($es_id = ''){
-		//var_dump($es_id);
-
 		$total_string = '';
 		$all_focus_company = $this->admin_m->fetch_all_company_focus();
 		$focus_company = $all_focus_company->result();
@@ -3231,14 +2434,6 @@ if($focus_copm_total != ''){
 			$cost_estimator[$est->project_estiamator_id] = 0;
 			$quoted_estimator_name[$est->project_estiamator_id] = $est->user_first_name;
 		}
-
-
-		if($es_id != ''){
-			$quoted_estimator[$es_id] = 0;
-			$cost_estimator[$es_id] = 0;
-		}
-
-
 		$quoted_estimator_name[0] = '';
 
 		$project_manager = $this->dashboard_m->fetch_pms_year(date("Y")); // ****--___--***
@@ -3307,11 +2502,7 @@ if($focus_copm_total != ''){
 			}
 
 			if($status == 'quote'){
-
-
-				if (array_key_exists($row['project_estiamator_id'], $quoted_estimator)) {
-					$quoted_estimator[$row['project_estiamator_id']]++;
-				}
+				$quoted_estimator[$row['project_estiamator_id']]++;
 
 				if (array_key_exists($row['project_manager_id'], $quoted_pm)) {
 					$quoted_pm[$row['project_manager_id']]++;
@@ -3326,12 +2517,7 @@ if($focus_copm_total != ''){
 				}
 
 				$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-
-
-				if (array_key_exists($row['project_estiamator_id'], $cost_estimator)) {
-					$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-				}
-
+				$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
 			
 
 				if (array_key_exists($row['project_manager_id'], $cost_pm)) {
@@ -3451,11 +2637,7 @@ if($focus_copm_total != ''){
 			//var_dump($row['project_id']);
 
 			//if($status == 'quote'){
-
-
-				if ( array_key_exists($row['project_estiamator_id'], $quoted_estimator) ) {
-					$quoted_estimator[$row['project_estiamator_id']]++;
-				}
+				$quoted_estimator[$row['project_estiamator_id']]++;
 
 
 				if (array_key_exists($row['project_manager_id'], $quoted_pm)) {
@@ -3478,12 +2660,9 @@ if($focus_copm_total != ''){
 				}
 
 				$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-
-
-				if ( array_key_exists($row['project_estiamator_id'], $cost_estimator) ) {
-					$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-				}
+				$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
 				 
+
 
 				if (array_key_exists($row['project_manager_id'], $cost_pm)) {
 					$cost_pm[$row['project_manager_id']] = $cost_pm[$row['project_manager_id']] + $project_cost;
@@ -3967,7 +3146,7 @@ if($focus_copm_total != ''){
 
 
 
-	public function pm_sales_widget_pa($is_term=''){
+	public function pm_sales_widget_pa(){
 
 		$assignment = $this->pa_assignment();
 		$prime_pm = $assignment['project_manager_primary_id'];
@@ -4111,10 +3290,7 @@ if($focus_copm_total != ''){
 		$total_wip = array_sum($wip_pm_total);
 
 		$total_invoiced = array_sum($set_invoiced_amount);
-		
-		if($is_term == ''){
-			echo "<div style=\"overflow-y: auto; padding-right: 5px; height: 400px;\">";
-		}
+		echo "<div style=\"overflow-y: auto; padding-right: 5px; height: 400px;\">";
 
 		foreach ($sales_result as $pm_id => $sales){
 
@@ -4149,16 +3325,14 @@ if($focus_copm_total != ''){
 					}
 
 
-					if($is_term == ''){
-						echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$focus_pm_pic[$pm_id].'"" /></div>';
-						echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
-						echo '<p><i class="fa fa-usd"></i> '.number_format($pm_sales_value).'</p>';
+					echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$focus_pm_pic[$pm_id].'"" /></div>';
+					echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
+					echo '<p><i class="fa fa-usd"></i> '.number_format($pm_sales_value).'</p>';
 
-						echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($pm_sales_value).' / $'.number_format($total_forecast).'   " style="height: 7px;">
-						<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
+					echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($pm_sales_value).' / $'.number_format($total_forecast).'   " style="height: 7px;">
+					<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
 
-						echo "<div class='clearfix'></div>";
-					}
+					echo "<div class='clearfix'></div>";
 					$forecast_focus_total = $forecast_focus_total + $total_forecast;
 
 
@@ -4168,9 +3342,9 @@ if($focus_copm_total != ''){
 				//}
 			}
 		}
-		if($is_term == ''){
-			echo "</div>";
-		}
+
+		echo "</div>";
+ 
 		$fetch_user = $this->user_model->fetch_user($prime_pm);
 		$user_details = array_shift($fetch_user->result_array());
 
@@ -4211,19 +3385,19 @@ if($focus_copm_total != ''){
 
 		//$status_forecast = round(100/($forecast_focus_total/ ($total_wip + $total_invoiced) ));
 
-		if($is_term == ''){
-			echo '<div class="clearfix" style="padding-top: 6px;    border-top: 1px solid #eee;"><i class="fa fa-briefcase" style="font-size: 42px;float: left;margin-left: 7px;margin-right: 10px;"></i>';
-		
-			if ( array_key_exists($prime_pm, $set_invoiced_amount)   &&    array_key_exists($prime_pm, $wip_pm_total) ) {
+		echo '<div class="clearfix" style="padding-top: 6px;    border-top: 1px solid #eee;"><i class="fa fa-briefcase" style="font-size: 42px;float: left;margin-left: 7px;margin-right: 10px;"></i>';
+	
+		if ( array_key_exists($prime_pm, $set_invoiced_amount)   &&    array_key_exists($prime_pm, $wip_pm_total) ) {
 
 
-				echo '<div class="" id=""><p><strong>Primary Overall</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$prime_pm]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format( $wip_pm_total[$prime_pm]).'</span></span></p>';
-		
-			}else{
-				
-				echo '<div class="" id=""><p><strong>Primary Overall</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> 0.00</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> 0.00</span></span></p>';
-		
-			}
+		echo '<div class="" id=""><p><strong>Primary Overall</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$prime_pm]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format( $wip_pm_total[$prime_pm]).'</span></span></p>';
+	
+}else{
+			
+		echo '<div class="" id=""><p><strong>Primary Overall</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> 0.00</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> 0.00</span></span></p>';
+	
+		}
+
 
 
 		echo '<p><i class="fa fa-usd"></i> '.number_format( $pm_sales_value ).' <strong class="pull-right m-right-10"></strong></p> </p>';
@@ -4231,8 +3405,6 @@ if($focus_copm_total != ''){
 		echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format( $pm_sales_value ).' / $'.number_format($total_forecast).'   " style="height: 7px;">';
 		echo '<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
 		echo "<div class='clearfix'></div>";
-		
-	}
 		//return $return_total;
 
 
@@ -4248,14 +3420,8 @@ if($focus_copm_total != ''){
 		}
 
 
-		if($is_term == ''){
 
 		return $return_total.'_'.number_format( $pm_overall_display );
-			}else{
-
-		echo $return_total.'_'.number_format( $pm_overall_display );
-			}
-
 
 	}
 
@@ -4433,7 +3599,7 @@ if($focus_copm_total != ''){
 
 
 
-	public function pm_sales_widget_mn($is_term=''){
+	public function pm_sales_widget_mn(){
 		$grand_total_sales_cmp = 0;
 		$grand_total_uninv_cmp = 0;
 		$grand_total_over_cmp = 0;
@@ -4562,10 +3728,7 @@ if($focus_copm_total != ''){
 		$total_wip = array_sum($wip_pm_total);
 
 		$total_invoiced = array_sum($set_invoiced_amount);
-
-		if($is_term == ''){
-			echo "<div style=\"overflow-y: auto; padding-right: 5px; height: 400px;\">";
-		}
+		echo "<div style=\"overflow-y: auto; padding-right: 5px; height: 400px;\">";
 
 		foreach ($sales_result as $pm_id => $sales){
 
@@ -4593,7 +3756,7 @@ if($focus_copm_total != ''){
 					$status_forecast = 0;
 				}
 
-if($is_term == ''){
+
 				echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$focus_pm_pic[$pm_id].'"" /></div>';
 				echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
 				echo '<p><i class="fa fa-usd"></i> '.number_format($pm_sales_value).'</p>';
@@ -4602,7 +3765,6 @@ if($is_term == ''){
 				<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
 
 				echo "<div class='clearfix'></div>";
-			}
 				$forecast_focus_total = $forecast_focus_total + $total_forecast;
 
 				if('29' == $pm_id){
@@ -4612,18 +3774,13 @@ if($is_term == ''){
 			}
 		}
 
-if($is_term == ''){
 		echo "</div>";
-}
+
 
 		$status_forecast = round(100/($forecast_focus_total/ ($total_wip + $total_invoiced) ));
  
- if($is_term == ''){
 		return $return_total.'_'.number_format( $return_other );
-}else{
 
-		echo $return_total.'_'.number_format( $return_other );
-}
 	//	return $return_total;
 
 	}
@@ -6076,7 +5233,7 @@ if($year_set != ''){
 		$pm_q = array_shift($pm_data->result_array());
 		$not_pm_arr = explode(',',$pm_q['user_id'] );
 
-		if(isset($assign_id) && $assign_id != '' && $assign_id > 0){
+		if(isset($assign_id) && $assign_id != ''){
 			$user_id = $assign_id;
 		}else{
 			$user_id = $this->session->userdata('user_id');
@@ -6094,8 +5251,6 @@ if($year_set != ''){
 		if($pm_type == 2){ // for pm only
 			$direct_company = explode(',',$user_details['user_focus_company_id'] );
 		}
-
-	//	var_dump($direct_company);
 
 
 		$c_year = date("Y");
@@ -6181,8 +5336,12 @@ if($year_set != ''){
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
 	}
 
+
+
+
+
 	public function pm_estimates_widget_pm($assign_id=''){
-		if(isset($assign_id) && $assign_id != '' && $assign_id != 0){
+		if(isset($assign_id) && $assign_id != ''){
 			$user_id = $assign_id;
 		}else{
 			$user_id = $this->session->userdata('user_id');
@@ -6446,6 +5605,8 @@ if($year_set != ''){
 				 	}
 
 					}
+
+
 				}
 			}
 		}
@@ -6462,13 +5623,19 @@ if($year_set != ''){
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
 
 
+
+
+
 		foreach ($estimator_list as $est ) {
 			$display_total_cmp = $unaccepted_amount[$est->project_estiamator_id];
 			$pm_name = $est->user_first_name;
 			if($display_total_cmp > 0){
 				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.$pm_name.'</span> <span class=\'col-xs-6\'>$ '.number_format($display_total_cmp,2).'</span></div>';
 			} 
-		}
+		} 
+
+
+ 
 
 
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
@@ -6477,7 +5644,7 @@ if($year_set != ''){
 
 	public function focus_get_po_widget_pm($assign_id=''){
 		
-		if(isset($assign_id) && $assign_id != '' && $assign_id != 0){
+		if(isset($assign_id) && $assign_id != ''){
 			$user_id = $assign_id;
 		}else{
 			$user_id = $this->session->userdata('user_id');
@@ -6551,6 +5718,11 @@ if($year_set != ''){
 			}
 		}
 
+		//$display_total = array_sum($set_cpo);
+
+
+
+
 		$last_year = intval(date("Y"))-1;
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
 
@@ -6559,6 +5731,7 @@ if($year_set != ''){
 		$date_last_year_today = "$n_day/$n_month/$last_year";
 		$set_date_b = '01/01/'.$last_year;
 	 
+
 
 		$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($set_date_b,$date_last_year_today);
 		foreach ($po_list_ordered->result_array() as $row){
@@ -6585,11 +5758,19 @@ if($year_set != ''){
 			}
 		}
 
+
+
+
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
 	}
 
+
+
+
+
+
 	public function focus_projects_count_widget_pm($assign_id=''){
-		if(isset($assign_id) && $assign_id != ''  && $assign_id != 0){
+		if(isset($assign_id) && $assign_id != ''){
 			$user_id = $assign_id;
 		}else{
 			$user_id = $this->session->userdata('user_id');
@@ -6847,7 +6028,7 @@ if($year_set != ''){
 		$this_day = date("d");
 
 		$date_a_last = "01/01/$last_year";
-		$date_b_last = "31/12/$last_year";
+		$date_b_last = "$this_day/$this_month/$last_year";
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
 
 
@@ -6930,7 +6111,7 @@ if($year_set != ''){
 
 	public function average_date_invoice_pm($pm_data_id='',$report_year=''){
 
-		$user_id = ($pm_data_id == '' ||  $pm_data_id == 0 ? $this->session->userdata('user_id') : $pm_data_id);
+		$user_id = ($pm_data_id == '' ? $this->session->userdata('user_id') : $pm_data_id);
 		$fetch_user = $this->user_model->fetch_user($user_id);
 		$user_details = array_shift($fetch_user->result_array());
 		$pm_name_solo = $user_details['user_first_name'];
@@ -6975,22 +6156,14 @@ if($year_set != ''){
 		if($report_year != ''){
 			$c_year = $report_year;
 
-
-			if($c_year < date("Y")){
-				$date_a = "01/01/$c_year";
-				$date_b = "31/12/$c_year";
-
-			}else{
-
-				$date_a = "01/01/$c_year";
-				$date_b = date("d/m/").$c_year;
-			}
-
-
+			$date_a = "01/01/$c_year";
+			$date_b = date("d/m/").$c_year;
 		}else{
 			$c_year = date("Y");
+
 			$date_a = "01/01/$c_year";
 			$date_b = date("d/m/Y");
+
 		}
 
 
@@ -7135,7 +6308,7 @@ if($year_set != ''){
 		}
 
 		$date_a_last = "01/01/$last_year";
-		$date_b_last = "31/12/$last_year";
+		$date_b_last = "$this_day/$this_month/$last_year";
 
 
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
@@ -7228,13 +6401,31 @@ if($year_set != ''){
 	}
 
 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		echo '<div id="" class="tooltip-enabled" title="" data-placement="bottom" data-html="true" data-original-title="'.$total_string .'">
 				<input class="knob" data-width="100%" data-step=".1"  data-thickness=".13" value="'.number_format($average,1).'" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="'.$long_day.'">
 				<div id="" class="clearfix m-top-10">
 					<div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div>
 					<div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div>
 				</div>';
-				if($pm_data_id == ''){
+				if($pm_data_id != ''){
 					 echo "<center style='margin-top:-20px;'><span><strong>$comp_custom_msge</strong></span></center>";
 				}
 
@@ -7245,7 +6436,7 @@ if($year_set != ''){
 
 	public function uninvoiced_widget_pm($assign_id=''){
 
-		if(isset($assign_id) && $assign_id != '' && $assign_id > 0){
+		if(isset($assign_id) && $assign_id != ''){
 			$user_id = $assign_id;
 		}else{
 			$user_id = $this->session->userdata('user_id');
@@ -7398,7 +6589,7 @@ if($year_set != ''){
 
 	public function wip_widget_pm($assign_id=''){
 		
-		if(isset($assign_id) && $assign_id != '' && $assign_id > 0){
+		if(isset($assign_id) && $assign_id != ''){
 			$user_id = $assign_id;
 		}else{
 			$user_id = $this->session->userdata('user_id');
@@ -7481,7 +6672,7 @@ if($year_set != ''){
 
 	public function outstanding_payments_widget_pm($assign_id=''){  
 		
-		if(isset($assign_id) && $assign_id != '' && $assign_id > 0){
+		if(isset($assign_id) && $assign_id != ''){
 			$user_id = $assign_id;
 		}else{
 			$user_id = $this->session->userdata('user_id');
@@ -7550,11 +6741,7 @@ if($year_set != ''){
 					}
 					$total_paid =  $oustanding->amount_exgst;
 					$display_each_value = $invoice_amount - $total_paid;
-
-					if (array_key_exists($oustanding->project_manager_id, $pm_outstanding)) {
-						$pm_outstanding[$oustanding->project_manager_id] = $pm_outstanding[$oustanding->project_manager_id] + $display_each_value;
-					}
-
+					$pm_outstanding[$oustanding->project_manager_id] = $pm_outstanding[$oustanding->project_manager_id] + $display_each_value;
 					$each_comp_total[$oustanding->focus_company_id] = $each_comp_total[$oustanding->focus_company_id] + $display_each_value;
 				}
 
@@ -7707,8 +6894,8 @@ if($year_set != ''){
 }
 
 
-	public function pm_sales_widget_pm($assign_id='',$is_thermo=''){
-		if(isset($assign_id) && $assign_id != '' &&  $assign_id > 0){
+	public function pm_sales_widget_pm($assign_id=''){
+		if(isset($assign_id) && $assign_id != ''){
 			$user_id = $assign_id;
 		}else{
 			$user_id = $this->session->userdata('user_id');
@@ -7860,11 +7047,7 @@ if($year_set != ''){
 		$total_wip = array_sum($wip_pm_total);
 
 		$total_invoiced = array_sum($set_invoiced_amount);
-
-		if($is_thermo == ''){
-			echo "<div style=\"overflow-y: auto; padding-right: 5px; height: 400px;\">";
-		}
-
+		echo "<div style=\"overflow-y: auto; padding-right: 5px; height: 400px;\">";
 		$pm_overall_display = 0;
 
 	//	foreach ($sales_result as $pm_id => $sales){
@@ -7907,18 +7090,15 @@ if($year_set != ''){
 				}
 
 				$pm_sales_value = ($pm_sales_value == 1 ? 0 : $pm_sales_value);
-				if($is_thermo == ''){
-					echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$focus_pm_pic[$pm_id].'"" /></div>';
-					echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
-					echo '<p><i class="fa fa-usd"></i> '.number_format($pm_sales_value).'</p>';
 
-					echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($pm_sales_value).' / $'.number_format($total_forecast).'   " style="height: 7px;">
-					<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
+				echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$focus_pm_pic[$pm_id].'"" /></div>';
+				echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
+				echo '<p><i class="fa fa-usd"></i> '.number_format($pm_sales_value).'</p>';
 
-					echo "<div class='clearfix'></div>";
-				}
+				echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($pm_sales_value).' / $'.number_format($total_forecast).'   " style="height: 7px;">
+				<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
 
-
+				echo "<div class='clearfix'></div>";
 				$forecast_focus_total = $forecast_focus_total + $total_forecast;
 
 				if($user_id == $pm_id){
@@ -7927,9 +7107,8 @@ if($year_set != ''){
 	 		}
 		}
 
-		if($is_thermo == ''){
-			echo "</div>";
-		}
+		echo "</div>";
+
 
 		$forecast_focus_total = ($forecast_focus_total <= 1 ? 1 : $forecast_focus_total);
 		//$total_wip = ($total_wip <= 1 ? 1 : $total_wip);
@@ -7952,26 +7131,22 @@ if($year_set != ''){
 			}
 		}
 
-		if($is_thermo == ''){
-			echo '<div class="clearfix" style="padding-top: 6px;    border-top: 1px solid #eee;"><i class="fa fa-briefcase" style="font-size: 42px;float: left;margin-left: 7px;margin-right: 10px;"></i>';
-			echo '<div class="" id=""><p><strong>Overall Focus '.$comp_code.'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($grand_total_sales_cmp).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($total_wip).'</span></span></p>';
-			echo '<p><i class="fa fa-usd"></i> '.number_format( ($total_wip + $total_invoiced) ).' <strong class="pull-right m-right-10"></strong></p> </p>';
+		echo '<div class="clearfix" style="padding-top: 6px;    border-top: 1px solid #eee;"><i class="fa fa-briefcase" style="font-size: 42px;float: left;margin-left: 7px;margin-right: 10px;"></i>';
+		echo '<div class="" id=""><p><strong>Overall Focus '.$comp_code.'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($grand_total_sales_cmp).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($total_wip).'</span></span></p>';
+		echo '<p><i class="fa fa-usd"></i> '.number_format( ($total_wip + $total_invoiced) ).' <strong class="pull-right m-right-10"></strong></p> </p>';
 
-			echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format( ($total_wip + $total_invoiced) ).' / $'.number_format($forecast_focus_total).'   " style="height: 7px;">
-			<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
-			echo "<div class='clearfix'></div>";
-		}
+		echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format( ($total_wip + $total_invoiced) ).' / $'.number_format($forecast_focus_total).'   " style="height: 7px;">
+		<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
+		echo "<div class='clearfix'></div>";
 	//	return $return_total;
 
 		if ( array_key_exists($user_id, $set_invoiced_amount)  &&  array_key_exists($user_id, $wip_pm_total) ) {
 			$pm_overall_display = $pm_sales_value = $set_invoiced_amount[$user_id] + $wip_pm_total[$user_id]; 
 		}
  
-		if($is_thermo != ''){
-			echo $return_total.'_'.number_format( $pm_overall_display );
-		}else{
-			return $return_total.'_'.number_format( $pm_overall_display );
-		}
+ 
+		return $return_total.'_'.number_format( $pm_overall_display );
+
 	}
 
 
@@ -8602,12 +7777,6 @@ $n_month = date("m");
 			$estimator_value_counter[$est->project_estiamator_id] = 0;
 		}
 
-		
-		if($es_id != ''){
-			$unaccepted_amount[$es_id] = 0;
-			$estimator_value_counter[$es_id] = 0;
-		}
-
 		$exemp_cat = explode(',', $unaccepted_date_categories);
 
 
@@ -9097,9 +8266,7 @@ $n_month = date("m");
 			$out_standing = $row['price'] - $invoiced;
 
 			$comp_id = $row['focus_company_id'];
-			if(isset($set_cpo[$comp_id])){
-				$set_cpo[$comp_id] = $set_cpo[$comp_id] + $out_standing;
-			}
+			$set_cpo[$comp_id] = $set_cpo[$comp_id] + $out_standing;
 		}
 
 		$display_total = array_sum($set_cpo);
@@ -10374,7 +9541,7 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 	public function maintanance_average_pm($assign_id=''){
 
 
-		if(isset($assign_id) && $assign_id != '' && $assign_id != 0){
+		if(isset($assign_id) && $assign_id != ''){
 			$user_id = $assign_id;
 		}else{
 			$user_id = $this->session->userdata('user_id');
@@ -10927,7 +10094,6 @@ $grand_total_sales_cmp = $get_sales_yearly['total_sales'];
 		$data['focus_indv_focu_month_sales'] = $this->dashboard_m->fetch_comp_month_sales($rev_month,$this_year);
 		$data['focus_indv_focu_month_outs'] = $this->dashboard_m->fetch_comp_month_outs($out_month,$this_year);
 
-		$data['page_title'] = 'Sales Forecast';
 
 		$this->load->view('page', $data);
 	}
@@ -11174,10 +10340,9 @@ $query = $this->db->query("SELECT `invoice`.`project_id`, `invoice`.`invoice_dat
 		
 
 
-/*
+
 AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('01/07/2016', '%d/%m/%Y') )
 AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('31/08/2017', '%d/%m/%Y') )
-*/
 
   ORDER BY `project`.`project_id` ASC ");
 
@@ -11196,9 +10361,7 @@ foreach ($dash_unvoiced as $unvoiced) {
  
 
 
-	echo "<p>$unvoiced->project_id".'_'."$unvoiced_total_init</p>";
-
-
+	echo "<p>ID $unvoiced->project_id*** $unvoiced_total_init</p>";
 
 //	$unvoiced_grand_total = $unvoiced_grand_total + $unvoiced_total;
 }
@@ -11226,10 +10389,10 @@ LEFT JOIN `users` ON `users`.`user_id` =  `project`.`project_manager_id`
 LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
 WHERE `project`.`is_active` = '1' 		
 
-/*
+
 AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('01/07/2016', '%d/%m/%Y') )
 AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('31/08/2017', '%d/%m/%Y') )
-*/
+
 
 
 			AND `project`.`is_active` = '1' 
@@ -11258,192 +10421,5 @@ foreach ($result_q as $data) {
 
 
 
-}
-
-
-public function test_send(){ 
-
-	$send_to = 'jervyezaballa@gmail.com';
-	$cc_mail = 'jean@ausconnect.net.au';
-	$from = 'userconf@sojourn.focusshopfit.com.au';
-	$another_email = 'jervy@focusshopfit.com.au';
-
-
-	$this->load->library('email');
-
-
-//$config['protocol'] = 'sendmail';
-$config['mailpath'] = '/usr/sbin/sendmail -t -i';
-$config['charset'] = 'iso-8859-1';
-$config['wordwrap'] = TRUE;
-$config['smtp_host'] = 'sojourn-focusshopfit-com-au.mail.protection.outlook.com';
-$config['smtp_user']     = '';
-$config['smtp_pass']     = '';
-$config['protocol']     = 'mail';
-$config['port'] = 587;
-
-$this->email->initialize($config);
-
-
-
-	$this->email->from('no-reply@focusshopfit.com.au');
-	$this->email->to($another_email);
-	$this->email->cc($cc_mail);
-	$this->email->bcc($send_to);
-
-	$this->email->subject('Email Test');
-	$this->email->message('Testing the email class.');
- 
-
-if ( ! $this->email->send())
-{
-      echo "error";
-}else{
-	echo "email sent";
-}
-
-
-
-$to = "jervy@focusshopfit.com.au, jervyezaballa@gmail.com";
-$subject = "HTML email";
-
-$message = "
-<html>
-<head>
-<title>HTML email</title>
-</head>
-<body>
-<p>This email contains HTML Tags!</p>
-<table>
-<tr>
-<th>Firstname</th>
-<th>Lastname</th>
-</tr>
-<tr>
-<td>John</td>
-<td>Doe</td>
-</tr>
-</table>
-</body>
-</html>
-";
-
-// Always set content-type when sending HTML email
-$headers = "MIME-Version: 1.0" . "\r\n";
-$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
-// More headers
-$headers .= 'From: <userconf@sojourn.focusshopfit.com.au>' . "\r\n";
-$headers .= 'Cc: jean@ausconnect.net.au' . "\r\n";
-
-mail($to,$subject,$message,$headers);
-
-
-
-
-require_once('PHPMailer/class.phpmailer.php');
-require_once('PHPMailer/PHPMailerAutoload.php');
-
-
-$mail = new phpmailer(true);
-$mail->host = "sojourn-focusshopfit-com-au.mail.protection.outlook.com";
-$mail->port = 587;
-$mail->setfrom('userconf@sojourn.focusshopfit.com.au', 'name');
-$mail->addreplyto('userconf@sojourn.focusshopfit.com.au', 'name');
-$mail->addaddress('jervy@focusshopfit.com.au', 'joe user');
-$mail->addcc('jean@ausconnect.net.au');
-$mail->smtpdebug = 2;
-$mail->ishtml(true);
-$mail->msghtml('this is a test');
-//$mail->send();
-
-
-
-if(!$mail->send()) {
-    echo 'message could not be sent.';
-    echo 'mailer error: ' . $mail->errorinfo;
-} else {
-    echo 'message has been sent';
-}
-
-
-
-
-
-/*
-
-
-
-
-require_once('PHPMailer/class.phpmailer.php');
-require_once('PHPMailer/PHPMailerAutoload.php');
-
-$mail = new PHPMailer;
-
-$mail->isSMTP();                                      
-$mail->Host = 'sojourn-focusshopfit-com-au.mail.protection.outlook.com';  
-//$mail->Username = '';                 						
-//$mail->Password = '';                          
-$mail->Port = 25;                                    
-$mail->SMTPDebug = 3;
-$mail->SMTPAuth = false;
-$mail->SMTPSecure = false;
-$mail->protocol = 'sendmail';
-$mail->mailpath = '/usr/sbin/sendmail -t -i';
-
-
-
-$mail->setFrom($from, 'Mailer');
-$mail->addAddress($another_email, 'Joe User');     // Add a recipient
-$mail->addAddress($send_to);               // Name is optional
-$mail->addReplyTo('no-reply@example.com', 'Information');
-$mail->addCC($cc_mail);
-//$mail->addBCC('bcc@example.com');
-/*
-$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
-*/
-/*
-$mail->isHTML(true);                                  // Set email format to HTML
-
-$mail->Subject = 'Here is the subject';
-$mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
-if(!$mail->send()) {
-    echo 'Message could not be sent.';
-    echo 'Mailer Error: ' . $mail->ErrorInfo;
-} else {
-    echo 'Message has been sent';
-}
-
-
-
-
-
-
-
-
-
-// another test email
-
-
-
-$to = $another_email;
-$subject = "My subject";
-$txt = "Hello world!";
-$headers = "From: webmaster@example.com" . "\r\n" .
-"CC: $cc_mail";
-
-mail($to,$subject,$txt,$headers);
-
-		
- 
-*/
-
-}
-
-
-
-
+	}
 }

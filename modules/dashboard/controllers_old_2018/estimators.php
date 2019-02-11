@@ -206,47 +206,45 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 
 		foreach ($estimator_dl as $est ) {
 
-			if(   array_key_exists($est->project_estiamator_id, $estimators_val) ){
-				if( $estimators_val[$est->project_estiamator_id] == 0  ){
+			if( $estimators_val[$est->project_estiamator_id] == 0 ){
 
-					$quote_deadline_date_replaced = str_replace('/', '-', $est->quote_deadline_date);
+				$quote_deadline_date_replaced = str_replace('/', '-', $est->quote_deadline_date);
 
-					$quote_deadline_date_checker = date('N', strtotime("$quote_deadline_date_replaced"));
+				$quote_deadline_date_checker = date('N', strtotime("$quote_deadline_date_replaced"));
+ 
+				if($quote_deadline_date_checker == 1){
+					$dEnd = new DateTime( date('Y-m-d', strtotime("$quote_deadline_date_replaced - 2 day")));
+				}else{
+					$dEnd = new DateTime( date('Y-m-d', strtotime("$quote_deadline_date_replaced")));
+				}
 
-					if($quote_deadline_date_checker == 1){
-						$dEnd = new DateTime( date('Y-m-d', strtotime("$quote_deadline_date_replaced - 2 day")));
-					}else{
-						$dEnd = new DateTime( date('Y-m-d', strtotime("$quote_deadline_date_replaced")));
-					}
+				$dDiff = $dStart->diff($dEnd);
 
-					$dDiff = $dStart->diff($dEnd);
+				$project_date_date_replaced = str_replace('/', '-', $est->project_date);
+				$pdEnd = new DateTime( date('Y-m-d', strtotime("$project_date_date_replaced")));
+				$pdDiff = $dEnd->diff($pdEnd);
 
-					$project_date_date_replaced = str_replace('/', '-', $est->project_date);
-					$pdEnd = new DateTime( date('Y-m-d', strtotime("$project_date_date_replaced")));
-					$pdDiff = $dEnd->diff($pdEnd);
+				if($est->project_estiamator_id == $estimator_id){
+			 		$diff_a = intval($dDiff->days) - 1;
+					$diff_b = $pdDiff->days;
+				}
 
-					if($est->project_estiamator_id == $estimator_id){
+				$days_remains = intval($dDiff->days) - 1;
+
+				if($days_remains > 0){	
+
+
+					if($estimator_id == '' && $no_selected == 0){
 						$diff_a = intval($dDiff->days) - 1;
 						$diff_b = $pdDiff->days;
-					}
+						$no_selected = 1;
+					}			
 
-					$days_remains = intval($dDiff->days) - 1;
-
-					if($days_remains > 0){	
-
-
-						if($estimator_id == '' && $no_selected == 0){
-							$diff_a = intval($dDiff->days) - 1;
-							$diff_b = $pdDiff->days;
-							$no_selected = 1;
-						}			
-
-
-						$estimators_val[$est->project_estiamator_id] = 1;
-						$total_string .= '<div class=\'row\'><span class=\'col-xs-4\'>'.$est->user_first_name.'</span><span class=\'col-xs-8\'>'.$days_remains.' day(s) before dealine.</span></div>';
-					}
-
+				
+					$estimators_val[$est->project_estiamator_id] = 1;
+					$total_string .= '<div class=\'row\'><span class=\'col-xs-4\'>'.$est->user_first_name.'</span><span class=\'col-xs-8\'>'.$days_remains.' day(s) before dealine.</span></div>';
 				}
+
 			}
 		}
 
@@ -356,22 +354,8 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 							$project_cost = $row['budget_estimate_total'];
 						}
 
-						//$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-						//$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-
-
-
-
-						if ( array_key_exists($row['focus_company_id'], $cost_focus) ) {
-							$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-						}
-
-						if ( array_key_exists($row['project_estiamator_id'], $cost_estimator) ) {
-							$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-						}
-
-
-
+						$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
+						$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
 					}
 				}
 			}
@@ -397,13 +381,7 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 
 
 
-		$date_last_year_today_exx = "01/01/$current_year";
-
-		$date_last_year_today_err = "$n_day/$n_month/$current_year";
-
-
-		//echo "<p>$date_last_year_today_exx,$date_last_year_today_err</p>";
-
+ 
 
 		foreach ($estimator_list as $est ) {
 
@@ -421,6 +399,10 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 
 
 
+
+		$date_last_year_today_exx = "01/01/$current_year";
+
+		$date_last_year_today_err = "$n_day/$n_month/$current_year";
 
 
 		$all_projects_q = $this->dashboard_m->get_all_active_projects($date_last_year_today_exx,$date_last_year_today_err,$est_q_cst);
@@ -510,15 +492,8 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 						}
 					}
 
-
-					if ( array_key_exists($row['project_estiamator_id'], $quoted_estimator) ) {
-						$quoted_estimator[$row['project_estiamator_id']]++;
-					}
-
-					if ( array_key_exists($row['focus_company_id'], $quoted_focus_company) ) {
-						$quoted_focus_company[$row['focus_company_id']]++;
-					}
-
+					$quoted_estimator[$row['project_estiamator_id']]++; 
+					$quoted_focus_company[$row['focus_company_id']]++;
 
 					if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
 						$project_cost = $row['project_total'] + $row['variation_total'];
@@ -527,13 +502,7 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 					}
 
 					$cost_focus_b[$row['focus_company_id']] = $cost_focus_b[$row['focus_company_id']] + $project_cost;
-
-
-					if ( array_key_exists($row['project_estiamator_id'], $cost_estimator_b) ) {
-						$cost_estimator_b[$row['project_estiamator_id']] = $cost_estimator_b[$row['project_estiamator_id']] + $project_cost; 
-					}
-
-
+					$cost_estimator_b[$row['project_estiamator_id']] = $cost_estimator_b[$row['project_estiamator_id']] + $project_cost; 
 				}
 			}
 		}
@@ -655,15 +624,9 @@ $total_past = 0;
 		$loop_counter = 0;
 
 		foreach ($all_estimators_wip as $es_wip){
-			
-				if ( array_key_exists($es_wip->project_estiamator_id, $estimators_cost) ) {		
-					$total_cost = $es_wip->project_total + $es_wip->variation_total + $estimators_cost[$es_wip->project_estiamator_id];
-					$estimators_cost[$es_wip->project_estiamator_id] = $total_cost;	
-				}
-
-				if ( array_key_exists($es_wip->project_estiamator_id, $estimator_counter) ) {		
-					$estimator_counter[$es_wip->project_estiamator_id]++;
-				}
+			$total_cost = $es_wip->project_total + $es_wip->variation_total + $estimators_cost[$es_wip->project_estiamator_id];
+			$estimators_cost[$es_wip->project_estiamator_id] = $total_cost;			
+			$estimator_counter[$es_wip->project_estiamator_id]++;
 		}
 
 		if($es_id != ''){

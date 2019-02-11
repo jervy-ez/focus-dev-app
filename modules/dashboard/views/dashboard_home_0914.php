@@ -22,7 +22,7 @@ $current_date = date("d/m/Y");
 
 
 
-$set_colors = array('#D68244','#e08d73', '#57a59c', '#836396', '#B13873', '#D6AB44', '#92C53F', '#D6D544', '#FF00FC' );
+$set_colors = array('#D68244','#e08d73', '#57a59c', '#836396', '#B13873', '#D6AB44', '#92C53F', '#D6D544' );
 $estimator_colors = array();
 $counter = 0;
 
@@ -36,8 +36,6 @@ foreach ($estimator_list as $est ) {
 		$counter++;
 	}
 }
-
-$estimator_colors['Danikka'] = $set_colors[5];
 
 	if(isset($assign_id) && $assign_id != ''){
 		$user_id = $assign_id;
@@ -55,8 +53,6 @@ $estimator_colors['Danikka'] = $set_colors[5];
 	.red_deadline{       background-image: url( <?php echo $base_url; ?>img/grid-end.png);   background-repeat:no-repeat; }
 </style>
 
-<script src="<?php echo base_url(); ?>js/jquery.fn.gantt.js"></script>
-<link href="<?php echo base_url(); ?>css/gant-style.css" type="text/css" rel="stylesheet"> 
 
 
 <style type="text/css">body{background: #ECF0F5 !important;}</style>
@@ -535,193 +531,6 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						</div> -->
 
 						<!-- ************************ -->
-
-
-
-							<!-- ************************ -->
-						
-						<div class="clearfix"></div>
-
-<?php 
-		$project_manager = $this->dashboard_m->fetch_pms_year(date("Y"));
-		$project_manager_list = $project_manager->result();
-	 ?>
- 
-
-						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head box-widg-head pad-5 fill">
-									<strong>Project Completion Calendar</strong>
-
-
-									<select class="pull-right input-control input-sm chart_data_selection_pmsgp" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 150px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
-										<option value="ongoingwip">Overall</option>
-										<option value="ongoingwip_wa">Focus WA</option>
-										<option value="ongoingwip_nsw">Focus NSW</option>
-										<?php  
-											foreach ($project_manager_list as $pmj ) {
-
-
-												$pm_name_sltc = 'ongoingwip_'.strtolower( str_replace(' ','_',  $pmj->user_first_name   )   ).'_'.strtolower( str_replace(' ','_',  $pmj->user_last_name   )   );  
-
-
-
-												echo '<option value="'.$pm_name_sltc.'">'.$pmj->user_first_name.' '.$pmj->user_last_name.'</option>';
-
-											} 
-										?>
-									</select>
-
-									<div class="clearfix pull-right m-right-10">
-
-										<div class="fullfitout" style="    padding: 1px 8px; font-size: 12px;   float: right;     border: 1px solid #a5302c;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;">Full Fitout</div>
-										<div class="refurbishment" style="   padding: 1px 8px;  font-size: 12px;  float: right;     border: 1px solid #3f1050;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;">Refurbishment</div>
-										<div class="kiosk" style="   padding: 1px 8px;    float: right;  font-size: 12px;   border: 1px solid #135613;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;">Kiosk</div>
-										<div class="maintenance" style=" background:#F7901E; font-size: 12px; padding: 1px 8px;    float: right;     border: 1px solid #864e11;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;">Maintenance</div>
-
-									</div>
-
-
-
-
-
-									<script type="text/javascript">
-
-										$('select.chart_data_selection_pmsgp').on("change", function(e) {
-											$('.gantt_chart_grp').hide();
-											var data = $(this).val(); 
-											$('#'+data).show();
-										});
-
-									</script>
-								</div>
-
-								<div class="box-area clearfix row pad-right-10 pad-left-10">									
-									<div class="widg-content col-md-12 col-xs-12 clearfix" style="    overflow: auto;    height: 457px;    overflow: hidden;">	
-										<?php //echo $this->estimators->load_calendar_planner(); ?>
- 
-
-
-<div class="gantt_chart_grp" id="ongoingwip"></div>
-<script>
-        $(function() {
-            $("#ongoingwip").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress(); ?> ],
-                navigate: "buttons",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 14,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	//$('#est_deadline_all').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-
-
-
-<div class="gantt_chart_grp" id="ongoingwip_wa"></div>
-<script>
-        $(function() {
-            $("#ongoingwip_wa").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress('',' AND `project`.`focus_company_id` = "5" '); ?> ],
-                navigate: "buttons",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 14,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	//$('#est_deadline_all').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-
-
-<div class="gantt_chart_grp" id="ongoingwip_nsw"></div>
-<script>
-        $(function() {
-            $("#ongoingwip_nsw").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress('',' AND `project`.`focus_company_id` = "6" '); ?> ],
-                navigate: "buttons",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 14,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	//$('#est_deadline_all').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-  
-
-<?php  foreach ($project_manager_list as $pm ): ?>
-			
-
-			<?php $pm_name_grp = strtolower( str_replace(' ','_',  $pm->user_first_name   )   ).'_'.strtolower( str_replace(' ','_',  $pm->user_last_name   )   ); ?>
-
-
-
-<div class="gantt_chart_grp" id="ongoingwip_<?php echo $pm_name_grp; ?>" ></div>
-<script>
-        $(function() {
-            $("#ongoingwip_<?php echo $pm_name_grp; ?>").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress($pm->project_manager_id); ?> { values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 60 days')); ?>",  customClass: "hide"},{from: "<?php echo date('Y/m/d'); ?>", to: "<?php echo date('Y/m/d'); ?>" ,customClass: "curr_date"}]},  ],
-                navigate: "buttons",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 14,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	//$('#est_deadline_all').hide();
-					$('#ongoingwip_<?php echo $pm_name_grp; ?>').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-
-
-
-
-<?php endforeach; ?>
-
-
- 
-
-
-
-  
-
-
-
-									</div> 
-								</div>
-
-							</div>
-						</div>
-
-
-
-
-						<!-- ************************ -->
-
-
-
 						
 						<div class="clearfix"></div>
 
@@ -734,7 +543,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 								<div class="widg-head box-widg-head pad-5 fill">
 									<strong>Quote Deadline Calendar</strong>
 
-									<select class="pull-right input-control input-sm chart_data_selection_est" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 120px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+									<select class="pull-right input-control input-sm chart_data_selection_est" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 100px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="all">Overall</option>
 										<?php
 											foreach ($estimator_list as $est ) {
@@ -752,7 +561,8 @@ $estimator_colors['Danikka'] = $set_colors[5];
 								<div class="box-area clearfix row pad-right-10 pad-left-10">									
 									<div class="widg-content col-md-12 col-xs-12 clearfix" style="    overflow: auto;    height: 465px;    overflow: hidden;">	
 										<?php //echo $this->estimators->load_calendar_planner(); ?>
-
+<script src="<?php echo base_url(); ?>js/jquery.fn.gantt.js"></script>
+<link href="<?php echo base_url(); ?>css/gant-style.css" type="text/css" rel="stylesheet"> 
 
 
 
@@ -760,12 +570,12 @@ $estimator_colors['Danikka'] = $set_colors[5];
 <script>
         $(function() {
             $("#est_deadline_all").gantt({
-                source: [ <?php echo $this->estimators->list_deadlines(); ?> ],
+                source: [ <?php echo $this->estimators->list_deadlines(); ?> {name: "",dataObj: "",values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 35 days')); ?>", "desc": " ",customClass: "curr_date"}]}, ],
                 navigate: "buttons",
                 scale: "days",
                 maxScale: "days",
                 minScale: "days",
-                itemsPerPage: 14,
+                itemsPerPage: 15,
                 useCookie: true,
                 scrollToToday: true,
                 onRender: function() {
@@ -787,12 +597,12 @@ $estimator_colors['Danikka'] = $set_colors[5];
 <script>
         $(function() {
             $("#est_deadline_<?php echo $est_name_list; ?>").gantt({
-                source: [ <?php echo $this->estimators->list_deadlines($est_id_list); ?>{ values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 20 days')); ?>",  customClass: "hide"},{from: "<?php echo date('Y/m/d'); ?>", to: "<?php echo date('Y/m/d'); ?>" ,customClass: "curr_date"}]}, ],
+                source: [ <?php echo $this->estimators->list_deadlines($est_id_list); ?> ],
                 navigate: "buttons",
                 scale: "days",
                 maxScale: "days",
                 minScale: "days",
-                itemsPerPage: 14,
+                itemsPerPage: 15,
                 useCookie: true,
                 scrollToToday: true,
                 onRender: function() {
@@ -818,14 +628,6 @@ $estimator_colors['Danikka'] = $set_colors[5];
     .gantt .tooltip,.gantt .tooltip .tooltip-inner{ width: 350px !important; max-width: 350px !important;	}
     .fn-gantt .leftPanel{width: 75px !important; overflow: visible !important;}
     .bar.curr_date { background: #fff8da; border-top: 3px solid #fff8da; border-bottom: 2px solid #fff8da; height: 23px; margin-top: -3px; border-radius: 0; box-shadow: none; z-index: 9;}
-    .fn-gantt .rightPanel {overflow-x: scroll !important;    overflow-y: hidden !important; }
-    .fn-gantt .fn-content {background: #f1f1f1 !important;}
-
-
-	.fullfitout{ background:#D9534F !important; }
-	.refurbishment{ background:#5E2971 !important; }
-	.kiosk{ background:#4DAB4D !important; }
-	.bar.maintenance{ background:#F7901E !important; }
 </style>
 
 <script type="text/javascript">
@@ -846,6 +648,10 @@ $estimator_colors['Danikka'] = $set_colors[5];
 
 
 						<!-- ************************ -->
+
+
+
+
 
 
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
@@ -907,9 +713,6 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						<div class="clearfix"></div>
 
 						<!-- ************************ -->
-
-
-
 
 
 						<!-- ************************ -->
@@ -1388,30 +1191,27 @@ chart.select();
 
 
 
+<?php 
+
+		$maint_last_year = $this->dashboard->get_count_maint_per_week($current_year-1);
+		$maint_this_year = $this->dashboard->get_count_maint_per_week($current_year);
+		$maint_average = $this->dashboard->get_count_maint_per_week(2015,1);
 
 
-						<div id="" class="hide hidden">
-							
-							<?php 
-
-							$q_leave_types = $this->user_model->fetch_leave_type();
-							$leave_types = $q_leave_types->result();
-
-							$added_data = new StdClass();
-							$added_data->{"leave_type_id"} = '0';
-							$added_data->{"leave_type"} = 'Philippines Public Holiday';
-							$added_data->{"remarks"} = '';
+		$maint_last_year_arr = explode(',', $maint_last_year);
+		$ave_maint_last_year = (array_sum($maint_last_year_arr) / 52) ;
 
 
-							array_push($leave_types, $added_data);
+		$maint_this_year_arr = explode(',', $maint_this_year);
+		$ave_maint_this_year = (array_sum($maint_this_year_arr) / count(array_filter($maint_this_year_arr)) );
+
+		$maint_average_arr = explode(',', $maint_average);
+		$ave_maint_average = (array_sum($maint_average_arr) / 52) ;
 
 
 
-							$leave_totals =  $this->dashboard->get_count_per_week(2);
-							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year);
 
-							?>
-						</div>
+ ?>
 
 						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled">
@@ -1420,8 +1220,8 @@ chart.select();
 									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>
 
 									<select class="pull-right input-control input-sm chart_data_selection_emps" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 100px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
-										<option value="all" selected="all">Overall</option>
-										<option value="grouped"  >Grouped</option>
+										<option value="all">View All</option>
+										<option value="hide">Hide All</option>
 
 										<?php 
 											$user_list_q = $this->user_model->list_user_short();
@@ -1429,71 +1229,23 @@ chart.select();
 										?>
 
 										<?php foreach ($user_list as $key => $value): ?> 
-												<option class="emp_opy_select"  value="<?php echo $value->user_first_name.' '.$value->user_last_name.'|'.$value->primary_user_id; ?>" ><?php echo $value->user_first_name.' '.$value->user_last_name; ?></option>
+												<option class="emp_opy_select"  value="<?php echo $value->user_first_name; ?>" ><?php echo $value->user_first_name; ?></option>
+										 
 										<?php endforeach; ?>
 									</select>
 							
 								</div>
 
-<?php $color_leave_type = array('#A7184B','#0092CE','#3D00A4','#FE2712','#FD5309','#0047FE','#8600AF');  ?>
-
-
-<?php 
-$leave_type_list = array();
-
-$leave_type_list[1] = 'Annual Leave';
-$leave_type_list[5] = 'Unpaid Leave';
-$leave_type_list[2] = 'Personal (Sick Leave)';
-$leave_type_list[6] = 'RDO (Rostered Day Off)';
-$leave_type_list[0] = 'Philippines Public Holiday';
-$leave_type_list[3] = 'Personal (Carers Leave)';
-$leave_type_list[4] = 'Personal (Comp. Leave)';
-
-?>
-
-
-
-
-								<div class="box-area clearfix row pad-right-10 pad-left-10 pad-bottom-10">									
+								<div class="box-area clearfix row pad-right-10 pad-left-10" style="padding-bottom:20px;">									
 									<div class="widg-content col-md-12 col-xs-12 clearfix">
 										<div class="chart_main_leave_loading_chart" style="height: 457px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
 										<div class id=" pad-bottom-10 ">
-											
-											<div id="chart_main_leave"  ></div>
-
-											<div id="" class="" style="margin: -6px -26px 17px 53px;    display: block;    clear: both;    font-size: 10px;">
+											<div id="" class="" style="margin: -3px -35px 6px 34px;display: block;clear: both;font-size: 10px; ">
 												<?php foreach ($months as $key => $value): ?>
-													<div id="" class="mos"><?php echo $value; ?></div>
+													<div id="" class="mos" style="margin-bottom: 5px;  padding-bottom: 5px; border-bottom: 1px solid #000;"><?php echo $value; ?></div>
 												<?php endforeach; ?>
 											</div>
-
-											<script type="text/javascript"> var default_totals_c = ''; var default_totals_o = ''; </script>
-
-											<div id="" class="clearfix" style="margin: 20px 10px 0px;">
-												<?php $current_total_leaves = ''; $previou_total_leaves= ''; ?>
-
-
-												<?php foreach ($leave_type_list as $leave_data_id => $leave_name_value): ?>
-													<div class="" style="padding:2px; float:left; display:block; width: 14%;  background: <?php echo $color_leave_type[$leave_data_id];  ?>;">
-														<p class="pointer leave_type_selection tooltip-enabled type_label_<?php echo $leave_data_id; ?>" title="" data-html="true" data-placement="top" data-original-title="Total Applied: <?php echo $leave_totals[$leave_data_id]; ?><br />Last Year:  <?php echo $last_year_leave[$leave_data_id]; ?>" id="<?php echo $leave_name_value; ?>" style="color: #fff;   font-size: 12px;  text-align: center;"><?php echo $leave_name_value; ?></p>
-													</div>
-
-													<?php 
-														$current_total_leaves .= $leave_data_id.'-'.$leave_totals[$leave_data_id].'|';
-														$previou_total_leaves .= $leave_data_id.'-'.$last_year_leave[$leave_data_id].'|';
-													 ?>
-												<?php endforeach; ?>	
-
-
-											</div>
-
-											<div id="" class="hide hidden">
-												<p class="current_total_leaves" ><?php echo "$current_total_leaves"; ?></p>
-												<p class="previou_total_leaves" ><?php echo "$previou_total_leaves"; ?></p>
-											</div>
-
-
-
+											<div id="chart_main_leave"  ></div>
 											<style type="text/css">.mos {    float: left;    width: 8.1%;    text-align: center;}</style>
 										</div> 	
 									</div>
@@ -1509,7 +1261,6 @@ $leave_type_list[4] = 'Personal (Comp. Leave)';
 var chart_emply = c3.generate({
 	size: {
 		height: 340
-
 	},data: {
 		x : 'x',
 		columns: [
@@ -1518,12 +1269,7 @@ var chart_emply = c3.generate({
           <?php 
 
           for($i=1; $i <53 ; $i++){
-
-
-					if($i > 2){
-
-          				echo "'".$i."',";
-					}
+          	echo "'".$i."',";
           }
 
 
@@ -1532,57 +1278,55 @@ var chart_emply = c3.generate({
 
           <?php 
 
-          echo $this->dashboard->get_count_per_week(1);
+          echo $this->dashboard->get_count_per_week();
 
            ?>
 
+/*
+
+// 	Overall Last Year Sales
+<?php
+echo "['Last Year',";
+echo $maint_last_year;
+echo "],";
+?>
+// 	Overall Last Year Sales
+
+
+// Overall Sales
+<?php
+echo "['Current',";
+echo $maint_this_year;
+echo "],";
+?>
+
+ 
+<?php
+echo "['Average',";
+echo $maint_average;
+echo "]";
+?>
+
+*/
 
 
 
 ],
 selection: {enabled: true},
-type: 'bar', 
+type: 'line',
+  line: {
+        connect_null: true
+    },
  
-colors: {
-	/*'Average': '#FF7F0E',
+/*colors: {
+	'Average': '#FF7F0E',
 	'Current': '#2CA02C',
-	'Last Year': '#9467BD',*/
+	'Last Year': '#9467BD',
 
+        },*/
 
-	<?php foreach ($leave_types as $leave_data): ?>
-		'<?php echo "Overall ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id];  ?>',
-	<?php endforeach; ?>
-
-<?php foreach ($user_list as $key => $value): ?> 
-	<?php foreach ($leave_types as $leave_data): ?>
-		'<?php echo $value->user_first_name.' '.$value->user_last_name." ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id]; ?>',
-	<?php endforeach; ?>
-<?php endforeach; ?>
-
-        },
-
-groups: [
-
-[
-<?php foreach ($user_list as $key => $value): ?> 
-	<?php foreach ($leave_types as $leave_data): ?>
-		'<?php echo $value->user_first_name.' '.$value->user_last_name.' '.$leave_data->leave_type; ?>',
-	<?php endforeach; ?>
-<?php endforeach; ?>
-],
-
-
-[
-	<?php foreach ($leave_types as $leave_data): ?>
-		'<?php echo "Overall ".$leave_data->leave_type; ?>',
-	<?php endforeach; ?>
-],
-
-
-],
 order: null,
 }, 
-    
 tooltip: {
         grouped: true // false // Default true
     },
@@ -1597,15 +1341,15 @@ tooltip: {
 
    },
 //zoom: {enabled: true, rescale: true,extent: [1, 7]},
-legend: { show: false },
+//legend: { show: false },
 
-axis: {x: {type: 'category', tick: {rotate: 0,multiline: false}, height: 0}, y: {       tick: {          format: d3.format('.2f')        }      } }, 
+axis: {x: {type: 'category', tick: {rotate: 0,multiline: false}, height: 0}, y: {   min: 0,   tick: {          format: d3.format('.2f')        }      } }, 
 
 
 
 tooltip: {
 	format: {
-     title: function (x) { return 'Week '+(x+3); },
+     title: function (x) { return 'Week '+(x+1); },
      value: function (value, ratio, id) {
                // var format = id === 'data1' ? d3.format(',') : d3.format('$');
                var format = d3.format('.2f');
@@ -1626,147 +1370,45 @@ tooltip: {
 });
 
 chart_emply.hide(); 
+			chart_emply.show();
+			chart_emply.select();
 
 
-chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
 
-/*
+
+
+$('select.chart_data_selection_emps').on("change", function(e) {
+		
+
+			var data = $(this).val();
+
+
+
+	chart_emply.hide(); 
+
+	if(data == 'all'){
+
 		setTimeout(function () { 
 			chart_emply.show();
 			chart_emply.unselect();
 		}, 500);
+	}else if(data == 'hide'){
 
-*/
-$('select.chart_data_selection_emps').on("change", function(e) {
-
-	$('#loading_modal').modal({"backdrop": "static", "show" : true} );
-
-	var data = $(this).val();
-
-	var current_total_leaves = $('p.current_total_leaves').text().split('|');
-	var previou_total_leaves = $('p.previou_total_leaves').text().split('|');
-
-
-
-	setTimeout(function(){
+		setTimeout(function () {
+			chart_emply.hide(); 
+		}, 500);
+	}else{
+		setTimeout(function () {
+			chart_emply.show([data]);
+			chart_emply.select();
+		}, 500);
 
 
-		chart_emply.hide(); 
-		chart_emply.unselect();
-
-		if(data == 'all'){
-			setTimeout(function () { 
-				chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
-			}, 500);
+	}
 
 
-
-			for (var i = 0; i < current_total_leaves.length; i++) {
-				var data_thisYear = current_total_leaves[i].split('-');
-				var data_lastYear = previou_total_leaves[i].split('-');
-				$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
-			}
-
-
-
-
-		}else if(data == 'grouped'){
-			setTimeout(function () {
-				chart_emply.show();
-				chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
-			}, 500);
-
-
-			for (var i = 0; i < current_total_leaves.length; i++) {
-				var data_thisYear = current_total_leaves[i].split('-');
-				var data_lastYear = previou_total_leaves[i].split('-');
-				$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
-			}
-
-
-
-		}else{
-
-			var user_data_selected = data.split('|');
-
-//alert(user_data_selected[1]);
-			setTimeout(function () {
-//get_count_per_week($return_total = 0, $set_year = '', $set_emp_id = '' )
-
-				$.ajax({
-					'url' : base_url+'dashboard/get_count_per_week/2/<?php echo $current_year; ?>/'+user_data_selected[1],
-					'type' : 'GET',
-					'success' : function(dataValCurr){
-						var data_arr_curr_dataVal = dataValCurr.split('|');
-						
-						$.ajax({
-							'url' : base_url+'dashboard/get_count_per_week/2/<?php echo $last_year; ?>/'+user_data_selected[1],
-							'type' : 'GET',
-							'success' : function(dataVal){
-
-								var data_arr_dataVal = dataVal.split('|');
-
-								for (var i = 0; i < data_arr_curr_dataVal.length; i++) {
-
-									var data_thisYear = data_arr_curr_dataVal[i].split('-');
-									var data_lastYear = data_arr_dataVal[i].split('-');
-
-									//alert(data_thisYear[0]+' **** '+data_thisYear[1]);
-									//alert(data_lastYear[0]+' **** '+data_lastYear[1]);
-
-									$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
-								}
-
-							}
-						});
-					}
-				});
-
-
-
-				chart_emply.show([user_data_selected[0]+' Annual Leave',user_data_selected[0]+' Personal (Sick Leave)',user_data_selected[0]+' Personal (Carers Leave)',user_data_selected[0]+' Personal (Compassionate Leave)',user_data_selected[0]+' Unpaid Leave',user_data_selected[0]+' Philippines Public Holiday',user_data_selected[0]+' RDO (Rostered Day Off)']);
-			}, 500);
-		}
-
-	//	chart_emply.select();
-
-	 
-	},500);	
-
-	setTimeout(function(){
-		$('#loading_modal').modal('hide');
-	},5000);	
 
 	});
-
-
-$('.leave_type_selection').click(function(){
-	$('#loading_modal').modal({"backdrop": "static", "show" : true} );
-	var leave_type = $(this).attr('id');
-
-	//$('select.chart_data_selection_emps').val('grouped');
-
-	setTimeout(function () {
-		chart_emply.hide(); 
-		chart_emply.unselect();
-	}, 500);
- 
-	setTimeout(function () {
-		chart_emply.show([
-
-			<?php foreach ($user_list as $key => $value): ?>  
-				'<?php echo $value->user_first_name.' '.$value->user_last_name.' '; ?>'+leave_type,
-			<?php endforeach; ?> 
-
-		]);
-	}, 1000);
-
-	setTimeout(function(){
-		//chart_emply.select();
-		$('#loading_modal').modal('hide');
-	},3000);
-
-});
 
 </script>
 
@@ -2595,8 +2237,6 @@ var donutg = c3.generate({
 
 </script>
  
-
-
 
 
 

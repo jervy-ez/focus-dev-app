@@ -2292,13 +2292,7 @@ if($focus_copm_total != ''){
 
 				$total_paid =  $oustanding->amount_exgst;
 				$display_each_value = $invoice_amount - $total_paid;
-
-
-
-				if ( array_key_exists($oustanding->project_manager_id, $pm_outstanding) ) {
-					$pm_outstanding[$oustanding->project_manager_id] = $pm_outstanding[$oustanding->project_manager_id] + $display_each_value;
-				}
- 
+				$pm_outstanding[$oustanding->project_manager_id] = $pm_outstanding[$oustanding->project_manager_id] + $display_each_value;
 
 
 				if ( array_key_exists($prime_pm, $pm_outstanding) ) {
@@ -3307,11 +3301,7 @@ if($focus_copm_total != ''){
 			}
 
 			if($status == 'quote'){
-
-
-				if (array_key_exists($row['project_estiamator_id'], $quoted_estimator)) {
-					$quoted_estimator[$row['project_estiamator_id']]++;
-				}
+				$quoted_estimator[$row['project_estiamator_id']]++;
 
 				if (array_key_exists($row['project_manager_id'], $quoted_pm)) {
 					$quoted_pm[$row['project_manager_id']]++;
@@ -3326,12 +3316,7 @@ if($focus_copm_total != ''){
 				}
 
 				$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-
-
-				if (array_key_exists($row['project_estiamator_id'], $cost_estimator)) {
-					$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-				}
-
+				$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
 			
 
 				if (array_key_exists($row['project_manager_id'], $cost_pm)) {
@@ -3451,11 +3436,7 @@ if($focus_copm_total != ''){
 			//var_dump($row['project_id']);
 
 			//if($status == 'quote'){
-
-
-				if ( array_key_exists($row['project_estiamator_id'], $quoted_estimator) ) {
-					$quoted_estimator[$row['project_estiamator_id']]++;
-				}
+				$quoted_estimator[$row['project_estiamator_id']]++;
 
 
 				if (array_key_exists($row['project_manager_id'], $quoted_pm)) {
@@ -3478,12 +3459,9 @@ if($focus_copm_total != ''){
 				}
 
 				$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-
-
-				if ( array_key_exists($row['project_estiamator_id'], $cost_estimator) ) {
-					$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-				}
+				$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
 				 
+
 
 				if (array_key_exists($row['project_manager_id'], $cost_pm)) {
 					$cost_pm[$row['project_manager_id']] = $cost_pm[$row['project_manager_id']] + $project_cost;
@@ -6847,7 +6825,7 @@ if($year_set != ''){
 		$this_day = date("d");
 
 		$date_a_last = "01/01/$last_year";
-		$date_b_last = "31/12/$last_year";
+		$date_b_last = "$this_day/$this_month/$last_year";
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
 
 
@@ -6975,22 +6953,14 @@ if($year_set != ''){
 		if($report_year != ''){
 			$c_year = $report_year;
 
-
-			if($c_year < date("Y")){
-				$date_a = "01/01/$c_year";
-				$date_b = "31/12/$c_year";
-
-			}else{
-
-				$date_a = "01/01/$c_year";
-				$date_b = date("d/m/").$c_year;
-			}
-
-
+			$date_a = "01/01/$c_year";
+			$date_b = date("d/m/").$c_year;
 		}else{
 			$c_year = date("Y");
+
 			$date_a = "01/01/$c_year";
 			$date_b = date("d/m/Y");
+
 		}
 
 
@@ -7135,7 +7105,7 @@ if($year_set != ''){
 		}
 
 		$date_a_last = "01/01/$last_year";
-		$date_b_last = "31/12/$last_year";
+		$date_b_last = "$this_day/$this_month/$last_year";
 
 
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
@@ -7234,7 +7204,7 @@ if($year_set != ''){
 					<div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div>
 					<div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div>
 				</div>';
-				if($pm_data_id == ''){
+				if($pm_data_id != ''){
 					 echo "<center style='margin-top:-20px;'><span><strong>$comp_custom_msge</strong></span></center>";
 				}
 
@@ -7550,11 +7520,7 @@ if($year_set != ''){
 					}
 					$total_paid =  $oustanding->amount_exgst;
 					$display_each_value = $invoice_amount - $total_paid;
-
-					if (array_key_exists($oustanding->project_manager_id, $pm_outstanding)) {
-						$pm_outstanding[$oustanding->project_manager_id] = $pm_outstanding[$oustanding->project_manager_id] + $display_each_value;
-					}
-
+					$pm_outstanding[$oustanding->project_manager_id] = $pm_outstanding[$oustanding->project_manager_id] + $display_each_value;
 					$each_comp_total[$oustanding->focus_company_id] = $each_comp_total[$oustanding->focus_company_id] + $display_each_value;
 				}
 

@@ -1809,7 +1809,7 @@ select
  a.job_category,
  a.job_date,
  invoice_table.set_invoice_date,
- datediff(date_format(str_to_date(invoice_table.set_invoice_date, '%d/%m/%Y'), '%Y-%m-%d'),date_format(str_to_date(a.date_site_commencement, '%d/%m/%Y'), '%Y-%m-%d')) as total_days 
+ datediff(date_format(str_to_date(invoice_table.set_invoice_date, '%d/%m/%Y'), '%Y-%m-%d'),date_format(str_to_date(a.job_date, '%d/%m/%Y'), '%Y-%m-%d')) as total_days 
  from project as a
   left join (select project_id, set_invoice_date from invoice where label <> '' and label <> 'VR' ) as invoice_table on invoice_table.project_id = a.project_id 
 

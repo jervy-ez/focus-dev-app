@@ -39,9 +39,27 @@ foreach ($estimator_list as $est ) {
 
 $estimator_colors['Danikka'] = $set_colors[5];
 
+
 	if(isset($assign_id) && $assign_id != ''){
 		$user_id = $assign_id;
+	}else{
+		$user_id = $this->session->userdata('user_id');
 	}
+
+
+
+	if($pm_setter != '' && isset($pm_setter)){
+		$pm_name = $pm_setter;
+
+		
+		echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_name.'");</script>';
+		
+	}else{
+		$pm_name = $this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name'); 
+	}
+
+
+
 
 ?>
 
@@ -53,10 +71,18 @@ $estimator_colors['Danikka'] = $set_colors[5];
 		$base_url = base_url();
 	?>
 	.red_deadline{       background-image: url( <?php echo $base_url; ?>img/grid-end.png);   background-repeat:no-repeat; }
+
+
+	.fullfitout{ background:#D9534F !important; }
+	.refurbishment{ background:#5E2971 !important; }
+	.kiosk{ background:#4DAB4D !important; }
 </style>
+
 
 <script src="<?php echo base_url(); ?>js/jquery.fn.gantt.js"></script>
 <link href="<?php echo base_url(); ?>css/gant-style.css" type="text/css" rel="stylesheet"> 
+
+
 
 
 <style type="text/css">body{background: #ECF0F5 !important;}</style>
@@ -140,84 +166,8 @@ $estimator_colors['Danikka'] = $set_colors[5];
 				<div class="widget_area row pad-0-imp no-m-imp">
 
 
-					<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-						<div class="widget wid-type-e small-widget">
-							<div class="box-area clearfix">
-								<div class="widg-icon-inside col-xs-3"><i class="fa fa-list-alt text-center fa-3x"></i></div>
-								<div class="widg-content fill col-xs-9 clearfix">
-									<div class="pad-5">
-										<div class=" " id=""><p>Invoiced <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-										<hr class="" style="margin: 5px 0px 0px;">
-										<script type="text/javascript"> pre_load_module('#sales_widget_area','dashboard/sales_widget',7000); </script>
-										<div class="pad-top-5" id="sales_widget_area" >
-											<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-											<?php //$this->dashboard->sales_widget(); ?></div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
 
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-a small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3"><i class="fa fa-list  text-center fa-3x"></i></div>
-
-									<div class="widg-content fill col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>Uninvoiced <!-- <span class="pull-right"><?php // echo date('Y'); ?></span> --></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#uninvoiced_widget_area','dashboard/uninvoiced_widget',7500); </script>
-											<div class="pad-top-5" id="uninvoiced_widget_area" >
-											<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-											<?php //$this->dashboard->uninvoiced_widget(); ?></div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>  
-
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-f small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3"><i class="fa fa-server text-center fa-3x"></i></div>
-
-									<div class="widg-content fill col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>Outstanding <!-- <span class="pull-right"><?php // echo date('Y'); ?></span> --></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#outstanding_payments_widget_area','dashboard/outstanding_payments_widget',8000); </script>
-											<div class="pad-top-5" id="outstanding_payments_widget_area" >
-											<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-											<?php //$this->dashboard->outstanding_payments_widget(); ?></div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-b small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3"><i class="fa fa-tasks  text-center fa-3x"></i></div>
-
-
-									<div class="widg-content fill col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>WIP</p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#wip_widget_area','dashboard/wip_widget',8500); </script>
-											<div class="pad-top-5" id="wip_widget_area" >
-											<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-											<?php //$this->dashboard->wip_widget(); ?></div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class=" col-xs-12 box-widget pad-10">
+<div class=" col-xs-12 box-widget pad-10">
 							<div class="progress no-m progress-termometer">
 								<div class="progress-bar progress-bar-danger active progress-bar-striped full_p tooltip-pb" title="" style="background-color: rgb(251, 25, 38); border-radius: 0px 10px 10px 0px;"></div> 
 								<script type="text/javascript">
@@ -243,196 +193,16 @@ $estimator_colors['Danikka'] = $set_colors[5];
 							</div>
 						</div>	
 
+						<div class="clearfix"></div>
+
 						<div class=" col-xs-12 box-widget pad-10">
 							<script type="text/javascript"> pre_load_module('#progressBar_standing_area','dashboard/progressBar',3000); </script>
 							<div class="progress no-m progress-termometer" id="progressBar_standing_area">
 								<?php //echo $this->dashboard->progressBar(); ?>
 							</div>
-						</div>	
-
-						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-6 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Sales Forecast - <?php echo date('Y'); ?></strong>
-									<select class="pull-right input-control input-sm chart_data_selection" style="background: #AAAAAA; padding: 0;margin: -8px 0 0 0;width: 175px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
-										<option value="Overall">Overall Sales Forecast</option>
-										<!-- <option value="Outstanding">Focus Outstanding</option> -->
-										<!-- <option value="Pm_Outstanding">PM Outstanding</option> -->
-										<option value="FWA">Focus WA</option>
-										<option value="FNSW">Focus NSW</option>
-
-										<?php 
-										$project_manager_q = $this->user_model->fetch_user_by_role(3);
-										$project_manager = $project_manager_q->result();    ?>
-										<?php foreach ($project_manager as $pm) {
-											echo '<option value="'.$pm->user_first_name.' '.$pm->user_last_name.'">'.$pm->user_first_name.' '.$pm->user_last_name.'</option>';
-										} ?>
-
-										<?php 
-										$project_manager_q = $this->user_model->fetch_user_by_role(20);
-										$project_manager = $project_manager_q->result();    ?>
-										<?php foreach ($project_manager as $pm) {
-											echo '<option value="'.$pm->user_first_name.' '.$pm->user_last_name.'">'.$pm->user_first_name.' '.$pm->user_last_name.'</option>';
-										} ?>
-									</select>
-								</div>
-
-								<div class="box-area clearfix row pad-right-10 pad-left-10">									
-									<div class="widg-content col-md-12 col-xs-12 clearfix">
-										<div class="loading_chart" style="height: 457px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
-										<div class id="job_book_area">
-											<div id="chart"></div></div> 	
-									</div> 
-
-
-								</div>
-
-
-
-							</div>
 						</div>
 
-
-						<!-- ************************ -->
-
-
-
-
-
-
-						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
-							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head  box-widg-head  fill pad-5"><strong>Average Final Invoice Days</strong> <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many days (average) a project been fully invoiced."></i></span>  <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
-								<div class="box-area clearfix">
-									<div class="widg-content clearfix">
-										<div class="pad-10" id="">
-											<script type="text/javascript"> pre_load_module('#average_date_invoice_area','dashboard/average_date_invoice',10000); </script>
-											<div class="clearfix center knob_box pad-10 small-widget" id="average_date_invoice_area">
-												<p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php  //echo $this->dashboard->average_date_invoice(); ?>
-											</div>
-											<style type="text/css">.knob_box canvas{width: 100% !important;}</style>											 
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-
-
-
-
-						<!-- ************************ -->
-
-
-						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Project Manager Sales</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
-								<div class="box-area clearfix">
-									<div class="widg-content clearfix">
-										<script type="text/javascript"> pre_load_module('#pm_sales_widget_area','dashboard/pm_sales_widget',10500); </script>
-										<div class="" id="pm_sales_widget_area">
-											<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-										</div>												
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<!-- ************************ -->
-
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-b small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-cube  text-center fa-3x"></i></div></div>
-									<div class="widg-content fill col-xs-9 clearfix">
-										<div class="pad-3">
-											<div class="pad-left-5 pad-top-3" id="">
-											<p>
-												<span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many projects invoiced based from completion date starting of year to current date."></i></span>  Invoiced - WIP Count <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many current wip count."></i></span> 
-												<span class="pull-right"><?php echo date('Y'); ?></span>
-											</p>
-											</div>
-											<hr class="" style="margin: 5px 0px 2px;">
-											<script type="text/javascript"> pre_load_module('#focus_projects_count_widget_area','dashboard/focus_projects_count_widget',11000); </script>
-											<div class="pad-top-5" id="focus_projects_count_widget_area" >
-												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php //$this->dashboard->focus_projects_count_widget(); ?>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-						
-
-
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-d small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3 purple"><i class="fa fa-clock-o text-center fa-3x"></i></div>
-									<div class="widg-content fill col-xs-9 clearfix purple">
-										<div class="pad-5">
-											<div class=" " id=""><p>Site Labour Hours</p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#wid_site_labour_hrs_area','dashboard/wid_site_labour_hrs',11500); </script>
-											<div class="pad-top-5" id="wid_site_labour_hrs_area" >
-												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php //$this->dashboard->wid_site_labour_hrs(); ?>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-c small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-calendar  text-center fa-3x"></i></div></div>
-									<div class="widg-content fill col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>Maintenance AVG Days <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many days spent (average) for a Maintenance Project."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#maintanance_average_area','dashboard/maintanance_average',12000); </script>
-											<div class="pad-top-5" id="maintanance_average_area" >
-												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php //$this->dashboard->maintanance_average(); ?></div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-
-
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-d small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3"><i class="fa fa-list-alt text-center fa-3x"></i></div>
-									<div class="widg-content fill col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>Purchase Orders <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#focus_get_po_widget_area','dashboard/focus_get_po_widget',12500); </script>
-											<div class="pad-top-5" id="focus_get_po_widget_area" >
-												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php //$this->dashboard->focus_get_po_widget(); ?></div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<!-- ************************ -->
-						
 						<div class="clearfix"></div>
-
-						<!-- ************************ -->
 
 
 
@@ -534,7 +304,118 @@ $estimator_colors['Danikka'] = $set_colors[5];
 							</div>
 						</div> -->
 
+					
+
+
 						<!-- ************************ -->
+
+
+
+
+
+											<script type="text/javascript"> //pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline',15000); </script>
+
+						<div class="col-md-9 col-sm-12 col-xs-12 col-lg-9 box-widget pad-10">
+							<div class="widget wid-type-b widg-head-styled" style="height: 501px;">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Joinery on WIP</strong>
+ 
+
+ <select class="pull-right input-control input-sm chart_data_join_tbl" onchange="setSortJoinTbl(this.value)" style="background: #62a762;padding: 2px 0 0 0;margin: -8px 0 0 30px; font-size: 15px;width: 130px;height: 35px;border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+    <option value=''>Sort Option</option>
+    <option value="6_asc">CPO Date Asc</option>
+    <option value="6_desc">CPO Date Desc</option> 
+</select>
+
+
+
+<span class="badges  "> <span class="pull-right">  Total Amount $  &nbsp; 
+							 <?php  echo $this->dashboard->po_joinery_list(1); ?></span> </span>
+
+								</div>
+								<div class="box-area clearfix">
+									<div class="widg-content clearfix">
+
+
+  
+
+
+<div id="" class="" style=" height: 452px;    padding: 0 5px 0;    overflow: scroll;    overflow-x: hidden; ">
+											<div class="clearfix center knob_box   small-widget" id="joinery_in_wip">
+												<!-- <p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p> -->
+											
+<table id="po_wip_join" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead><tr><!--<th>Brand/Shopping Centre Group</th>--><th style="border-right: none;">Project Number</th><th style="border-right: none;">PO Number</th><th style="border-right: none;">Delivery</th><th style="border-right: none;">CPO Date</th><th>Amount Ex-GST</th><th class="hide">unix_delivery</th><th class="hide">unix_cpo</th></tr></thead>
+										<tbody>
+											<?php echo $this->dashboard->po_joinery_list(); ?>
+										</tbody>
+									</table>
+
+									</div>
+
+
+ 
+
+
+
+ 
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<style type="text/css">
+#po_wip_join_filter,#po_wip_join_info{
+	display: none; visibility: hidden;
+}
+
+
+						</style>
+
+
+<script type="text/javascript">
+
+setTimeout(function() {
+
+	$('#po_wip_join_filter').parent().parent().remove();
+	$('#po_wip_join_info').parent().parent().remove();
+
+
+
+	}, 2000);
+
+ 
+
+
+</script>
+
+
+						<!-- ************************ -->
+
+
+						<div class="col-md-3 col-sm-3 col-xs-12 col-lg-3 box-widget pad-10">
+							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Sojourn</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="box-area clearfix">
+									<div class="widg-content clearfix">
+										<?php //<script type="text/javascript"> pre_load_module('#estimators_quotes_completed_area','dashboard/estimators/estimators_quotes_completed',15500); </script> ?>
+										<div class="" id="" style="background-image: url(<?php echo base_url(); ?>uploads/login_bg/bg_login_10521003262018.png) !important; height: 99.9%; margin-top: 0px !important; background-size: cover; }">
+											 
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- ************************ -->
+
+ 
+
+						<!-- ************************ -->
+
+
+
 
 
 
@@ -542,11 +423,10 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						
 						<div class="clearfix"></div>
 
-<?php 
-		$project_manager = $this->dashboard_m->fetch_pms_year(date("Y"));
-		$project_manager_list = $project_manager->result();
-	 ?>
+				 
+
  
+
 
 						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled">
@@ -555,46 +435,17 @@ $estimator_colors['Danikka'] = $set_colors[5];
 									<strong>Project Completion Calendar</strong>
 
 
-									<select class="pull-right input-control input-sm chart_data_selection_pmsgp" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 150px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
-										<option value="ongoingwip">Overall</option>
-										<option value="ongoingwip_wa">Focus WA</option>
-										<option value="ongoingwip_nsw">Focus NSW</option>
-										<?php  
-											foreach ($project_manager_list as $pmj ) {
-
-
-												$pm_name_sltc = 'ongoingwip_'.strtolower( str_replace(' ','_',  $pmj->user_first_name   )   ).'_'.strtolower( str_replace(' ','_',  $pmj->user_last_name   )   );  
-
-
-
-												echo '<option value="'.$pm_name_sltc.'">'.$pmj->user_first_name.' '.$pmj->user_last_name.'</option>';
-
-											} 
-										?>
-									</select>
-
 									<div class="clearfix pull-right m-right-10">
 
 										<div class="fullfitout" style="    padding: 1px 8px; font-size: 12px;   float: right;     border: 1px solid #a5302c;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;">Full Fitout</div>
 										<div class="refurbishment" style="   padding: 1px 8px;  font-size: 12px;  float: right;     border: 1px solid #3f1050;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;">Refurbishment</div>
 										<div class="kiosk" style="   padding: 1px 8px;    float: right;  font-size: 12px;   border: 1px solid #135613;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;">Kiosk</div>
-										<div class="maintenance" style=" background:#F7901E; font-size: 12px; padding: 1px 8px;    float: right;     border: 1px solid #864e11;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;">Maintenance</div>
-
+									 
 									</div>
 
 
 
-
-
-									<script type="text/javascript">
-
-										$('select.chart_data_selection_pmsgp').on("change", function(e) {
-											$('.gantt_chart_grp').hide();
-											var data = $(this).val(); 
-											$('#'+data).show();
-										});
-
-									</script>
+ 
 								</div>
 
 								<div class="box-area clearfix row pad-right-10 pad-left-10">									
@@ -606,51 +457,8 @@ $estimator_colors['Danikka'] = $set_colors[5];
 <div class="gantt_chart_grp" id="ongoingwip"></div>
 <script>
         $(function() {
-            $("#ongoingwip").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress(); ?> ],
-                navigate: "buttons",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 14,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	//$('#est_deadline_all').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-
-
-
-<div class="gantt_chart_grp" id="ongoingwip_wa"></div>
-<script>
-        $(function() {
-            $("#ongoingwip_wa").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress('',' AND `project`.`focus_company_id` = "5" '); ?> ],
-                navigate: "buttons",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 14,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	//$('#est_deadline_all').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-
-
-<div class="gantt_chart_grp" id="ongoingwip_nsw"></div>
-<script>
-        $(function() {
-            $("#ongoingwip_nsw").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress('',' AND `project`.`focus_company_id` = "6" '); ?> ],
+            $("#ongoingwip").gantt({ 
+                source: [ <?php echo $this->dashboard->list_projects_progress('','  '); ?> ],
                 navigate: "buttons",
                 scale: "days",
                 maxScale: "days",
@@ -666,47 +474,8 @@ $estimator_colors['Danikka'] = $set_colors[5];
         });
 </script>
   
-
-<?php  foreach ($project_manager_list as $pm ): ?>
-			
-
-			<?php $pm_name_grp = strtolower( str_replace(' ','_',  $pm->user_first_name   )   ).'_'.strtolower( str_replace(' ','_',  $pm->user_last_name   )   ); ?>
-
-
-
-<div class="gantt_chart_grp" id="ongoingwip_<?php echo $pm_name_grp; ?>" ></div>
-<script>
-        $(function() {
-            $("#ongoingwip_<?php echo $pm_name_grp; ?>").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress($pm->project_manager_id); ?> { values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 60 days')); ?>",  customClass: "hide"},{from: "<?php echo date('Y/m/d'); ?>", to: "<?php echo date('Y/m/d'); ?>" ,customClass: "curr_date"}]},  ],
-                navigate: "buttons",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 14,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	//$('#est_deadline_all').hide();
-					$('#ongoingwip_<?php echo $pm_name_grp; ?>').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-
-
-
-
-<?php endforeach; ?>
-
-
  
-
-
-
-  
-
+ 
 
 
 									</div> 
@@ -722,6 +491,19 @@ $estimator_colors['Danikka'] = $set_colors[5];
 
 
 
+
+ 
+
+
+
+ 
+
+ 
+
+						<!-- ************************ -->
+ 
+ 
+ 
 						
 						<div class="clearfix"></div>
 
@@ -734,7 +516,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 								<div class="widg-head box-widg-head pad-5 fill">
 									<strong>Quote Deadline Calendar</strong>
 
-									<select class="pull-right input-control input-sm chart_data_selection_est" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 120px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+									<select class="pull-right input-control input-sm chart_data_selection_est" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 100px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="all">Overall</option>
 										<?php
 											foreach ($estimator_list as $est ) {
@@ -752,8 +534,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 								<div class="box-area clearfix row pad-right-10 pad-left-10">									
 									<div class="widg-content col-md-12 col-xs-12 clearfix" style="    overflow: auto;    height: 465px;    overflow: hidden;">	
 										<?php //echo $this->estimators->load_calendar_planner(); ?>
-
-
+ 
 
 
 <div class="gantt" id="est_deadline_all"></div>
@@ -845,8 +626,14 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						</div>
 
 
+
+
 						<!-- ************************ -->
 
+
+
+
+						<!-- ************************ -->
 
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
@@ -906,10 +693,9 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						
 						<div class="clearfix"></div>
 
+
+
 						<!-- ************************ -->
-
-
-
 
 
 						<!-- ************************ -->
@@ -1098,7 +884,8 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 								</div>
 								<div class="tabs_widget" >
 									<ul  class="nav nav-tabs" role="tablist" style="height: 32px;">
-										<li role="presentation" class="active"><a href="#clients" class="tab_btn_dhb" role="tab" id="clients-tab_a" data-toggle="tab" >Clients</a></li>
+										<li role="presentation" class="active"><a href="#joiners" class="tab_btn_dhb" role="tab" id="joiners-tab_a" data-toggle="tab" >Joiners</a></li>
+										<li role="presentation" class=""><a href="#clients" class="tab_btn_dhb" role="tab" id="clients-tab_a" data-toggle="tab" >Clients</a></li>
 										<li role="presentation" class=""><a href="#contractors" class="tab_btn_dhb" role="tab" id="contractors-tab_a" data-toggle="tab" >Contractors</a></li>
 										<li role="presentation" class=""><a href="#suppliers" class="tab_btn_dhb" role="tab" id="suppliers-tab_a" data-toggle="tab" >Suppliers</a></li>
 
@@ -1111,9 +898,31 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 									</ul>
 
 
+
+
+
 									<div id="myTabContent" class="tab-content pad-10 clearfix"> 
+
+
+										<div role="tabpanel" class="tab-pane active fade in" id="joiners" >
+											<div id="" class="col-lg-5">
+												<div class="" id="donut_jn" style="text-align: center;"></div>
+											</div>
+
+											<div id="" class="col-lg-7">
+												<script type="text/javascript"> pre_load_module('#focus_top_joinery_list_area','dashboard/top_joinery_list',10700); </script>
+												<div id="focus_top_joinery_list_area" class="" style="height: 300px; overflow: auto;">
+													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
+													<?php //echo $this->dashboard->focus_top_ten_clients(); ?>
+												</div>
+											</div>
+
+
+										</div>
+
+
 										
-										<div role="tabpanel" class="tab-pane active fade in" id="clients" >
+										<div role="tabpanel" class="tab-pane fade in" id="clients" >
 											<div id="" class="col-lg-5">
 												<div class="loading_chart" style="height: 300px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
 												<div class="" id="donut_a" style="text-align: center;"></div>
@@ -1198,195 +1007,12 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 
 
 
-
-
-						<div class="clearfix"></div>
-
-
-						<!-- ************************ -->
-
-
-
-<?php 
-
-		$maint_last_year = $this->dashboard->get_count_maint_per_week($current_year-1);
-		$maint_this_year = $this->dashboard->get_count_maint_per_week($current_year);
-		$maint_average = $this->dashboard->get_count_maint_per_week(2015,1);
-
-
-		$maint_last_year_arr = explode(',', $maint_last_year);
-		$ave_maint_last_year = (array_sum($maint_last_year_arr) / 52) ;
-
-
-		$maint_this_year_arr = explode(',', $maint_this_year);
-		$ave_maint_this_year = (array_sum($maint_this_year_arr) / count(array_filter($maint_this_year_arr)) );
-
-		$maint_average_arr = explode(',', $maint_average);
-		$ave_maint_average = (array_sum($maint_average_arr) / 52) ;
-
-
-
-
- ?>
-
-						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Maintenance Projects : Average Per Day - <?php echo date('Y'); ?></strong>
-
-
-									<span style="float: right;    font-weight: bold;">
-										<span class=" tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Average Last Year: <?php echo $current_year-1; ?>">Avg Last Year: <?php echo round($ave_maint_last_year,2); ?></span> &nbsp;  &nbsp;  &nbsp; 
-										<span class=" tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Average This Year: <?php echo $current_year; ?>">Avg This Year: <?php echo round($ave_maint_this_year,2); ?></span> &nbsp;  &nbsp;  &nbsp; 
-										<span class=" tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Average Overall">Over All Avg: <?php echo round($ave_maint_average,2); ?></span>
-
-									</span>
-							
-								</div>
-
-								<div class="box-area clearfix row pad-right-10 pad-left-10">									
-									<div class="widg-content col-md-12 col-xs-12 clearfix">
-										<div class="loading_chart" style="height: 457px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
-										<div class id="job_book_area">
-											<div id="chart_main"></div>
-											<div id="" class="" style="margin: -6px -26px 17px 53px;    display: block;    clear: both;    font-size: 10px;">
-												<?php foreach ($months as $key => $value): ?>
-													<div id="" class="mos"><?php echo $value; ?></div>
-												<?php endforeach; ?>
-											</div>
-											<style type="text/css">.mos {    float: left;    width: 8.1%;    text-align: center;}</style>
-										</div> 	
-									</div>
-								</div>
-
-							</div>
-						</div>
-
-
-						<script type="text/javascript">
-
-
-var chart = c3.generate({
-	size: {
-		height: 310
-	},data: {
-		x : 'x',
-		columns: [
-          ['x',  // months labels
-
-          <?php 
-
-          for($i=1; $i <53 ; $i++){
-          	echo "'".$i."',";
-          }
-
-
-          ?> ], // months labels
-
-
-
-// 	Overall Last Year Sales
-<?php
-echo "['Last Year',";
-echo $maint_last_year;
-echo "],";
-?>
-// 	Overall Last Year Sales
-
-
-// Overall Sales
-<?php
-echo "['Current',";
-echo $maint_this_year;
-echo "],";
-?>
-
  
-<?php
-echo "['Average',";
-echo $maint_average;
-echo "]";
-?>
-
-
-
-
-
-],
-selection: {enabled: true},
-type: 'bar',
-colors: {
-	'Average': '#FF7F0E',
-	'Current': '#2CA02C',
-	'Last Year': '#9467BD',
-
-        },
-        types: {   'Average' : 'line',  
-},
-
-order: null,
-},
-tooltip: {
-        grouped: true // false // Default true
-    },
-    bindto: "#chart_main",
-    bar:{ width:{ ratio: 0.5 }},
-    point:{ select:{ r: 6 }},
-   // onrendered: function () { $('.loading_chart').remove(); },
-//zoom: {enabled: true, rescale: true,extent: [1, 7]},
-legend: { show: false },
-
-
-axis: {x: {type: 'category', tick: {rotate: 0,multiline: false}, height: 0}, y: {        tick: {          format: d3.format('.2f')        }      } }, 
-tooltip: {
-	format: {
-     title: function (x) { return 'Week '+(x+1); },
-     value: function (value, ratio, id) {
-               // var format = id === 'data1' ? d3.format(',') : d3.format('$');
-               var format = d3.format('.2f');
-
-               var mod_value =  value.toFixed(2); //Math.ceil(value,2)  // need to get 2 decimal places
-
-           //    var mod_value_x = parseFloat(Math.round(mod_value * Math.pow(10, 2)) /Math.pow(10,2)).toFixed(2);
-
-            // var mod_value_y =   d3.format('.2f')
-
-            //   var mod_value = parseFloat(Math.round(value * 100) / 100).toFixed(2);
-               //return '$ '+format(mod_value);
-               return format(mod_value);
-           }//
-       } 
-
-   }
-});
-
-
-
-chart.select();
-
-</script>
-
-
-						<!-- ************************ -->
-
-
-
-
-
-
 
 
 
 
 						<!-- ************   LEAVE CHART   ************ -->
-
-						<div class="clearfix"></div>
-
-
-						<!-- ************************ -->
-
-
 
 
 
@@ -1407,8 +1033,8 @@ chart.select();
 
 
 
-							$leave_totals =  $this->dashboard->get_count_per_week(2);
-							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year);
+							$leave_totals =  $this->dashboard->get_count_per_week(2,'',$user_id);
+							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,$user_id);
 
 							?>
 						</div>
@@ -1419,19 +1045,6 @@ chart.select();
 								<div class="widg-head box-widg-head fill  pad-5">
 									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>
 
-									<select class="pull-right input-control input-sm chart_data_selection_emps" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 100px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
-										<option value="all" selected="all">Overall</option>
-										<option value="grouped"  >Grouped</option>
-
-										<?php 
-											$user_list_q = $this->user_model->list_user_short();
-											$user_list= $user_list_q->result();
-										?>
-
-										<?php foreach ($user_list as $key => $value): ?> 
-												<option class="emp_opy_select"  value="<?php echo $value->user_first_name.' '.$value->user_last_name.'|'.$value->primary_user_id; ?>" ><?php echo $value->user_first_name.' '.$value->user_last_name; ?></option>
-										<?php endforeach; ?>
-									</select>
 							
 								</div>
 
@@ -1450,7 +1063,6 @@ $leave_type_list[3] = 'Personal (Carers Leave)';
 $leave_type_list[4] = 'Personal (Comp. Leave)';
 
 ?>
-
 
 
 
@@ -1477,22 +1089,8 @@ $leave_type_list[4] = 'Personal (Comp. Leave)';
 													<div class="" style="padding:2px; float:left; display:block; width: 14%;  background: <?php echo $color_leave_type[$leave_data_id];  ?>;">
 														<p class="pointer leave_type_selection tooltip-enabled type_label_<?php echo $leave_data_id; ?>" title="" data-html="true" data-placement="top" data-original-title="Total Applied: <?php echo $leave_totals[$leave_data_id]; ?><br />Last Year:  <?php echo $last_year_leave[$leave_data_id]; ?>" id="<?php echo $leave_name_value; ?>" style="color: #fff;   font-size: 12px;  text-align: center;"><?php echo $leave_name_value; ?></p>
 													</div>
-
-													<?php 
-														$current_total_leaves .= $leave_data_id.'-'.$leave_totals[$leave_data_id].'|';
-														$previou_total_leaves .= $leave_data_id.'-'.$last_year_leave[$leave_data_id].'|';
-													 ?>
-												<?php endforeach; ?>	
-
-
+												<?php endforeach; ?>
 											</div>
-
-											<div id="" class="hide hidden">
-												<p class="current_total_leaves" ><?php echo "$current_total_leaves"; ?></p>
-												<p class="previou_total_leaves" ><?php echo "$previou_total_leaves"; ?></p>
-											</div>
-
-
 
 											<style type="text/css">.mos {    float: left;    width: 8.1%;    text-align: center;}</style>
 										</div> 	
@@ -1532,7 +1130,7 @@ var chart_emply = c3.generate({
 
           <?php 
 
-          echo $this->dashboard->get_count_per_week(1);
+          echo $this->dashboard->get_count_per_week(1,'', $user_id);
 
            ?>
 
@@ -1548,33 +1146,20 @@ colors: {
 	'Current': '#2CA02C',
 	'Last Year': '#9467BD',*/
 
-
 	<?php foreach ($leave_types as $leave_data): ?>
-		'<?php echo "Overall ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id];  ?>',
+		'<?php echo $pm_name." ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id];  ?>',
 	<?php endforeach; ?>
 
-<?php foreach ($user_list as $key => $value): ?> 
-	<?php foreach ($leave_types as $leave_data): ?>
-		'<?php echo $value->user_first_name.' '.$value->user_last_name." ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id]; ?>',
-	<?php endforeach; ?>
-<?php endforeach; ?>
 
         },
 
 groups: [
 
-[
-<?php foreach ($user_list as $key => $value): ?> 
-	<?php foreach ($leave_types as $leave_data): ?>
-		'<?php echo $value->user_first_name.' '.$value->user_last_name.' '.$leave_data->leave_type; ?>',
-	<?php endforeach; ?>
-<?php endforeach; ?>
-],
 
 
 [
 	<?php foreach ($leave_types as $leave_data): ?>
-		'<?php echo "Overall ".$leave_data->leave_type; ?>',
+		'<?php echo $pm_name." ".$leave_data->leave_type; ?>',
 	<?php endforeach; ?>
 ],
 
@@ -1601,8 +1186,6 @@ legend: { show: false },
 
 axis: {x: {type: 'category', tick: {rotate: 0,multiline: false}, height: 0}, y: {       tick: {          format: d3.format('.2f')        }      } }, 
 
-
-
 tooltip: {
 	format: {
      title: function (x) { return 'Week '+(x+3); },
@@ -1625,148 +1208,7 @@ tooltip: {
    }
 });
 
-chart_emply.hide(); 
-
-
-chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
-
-/*
-		setTimeout(function () { 
-			chart_emply.show();
-			chart_emply.unselect();
-		}, 500);
-
-*/
-$('select.chart_data_selection_emps').on("change", function(e) {
-
-	$('#loading_modal').modal({"backdrop": "static", "show" : true} );
-
-	var data = $(this).val();
-
-	var current_total_leaves = $('p.current_total_leaves').text().split('|');
-	var previou_total_leaves = $('p.previou_total_leaves').text().split('|');
-
-
-
-	setTimeout(function(){
-
-
-		chart_emply.hide(); 
-		chart_emply.unselect();
-
-		if(data == 'all'){
-			setTimeout(function () { 
-				chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
-			}, 500);
-
-
-
-			for (var i = 0; i < current_total_leaves.length; i++) {
-				var data_thisYear = current_total_leaves[i].split('-');
-				var data_lastYear = previou_total_leaves[i].split('-');
-				$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
-			}
-
-
-
-
-		}else if(data == 'grouped'){
-			setTimeout(function () {
-				chart_emply.show();
-				chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
-			}, 500);
-
-
-			for (var i = 0; i < current_total_leaves.length; i++) {
-				var data_thisYear = current_total_leaves[i].split('-');
-				var data_lastYear = previou_total_leaves[i].split('-');
-				$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
-			}
-
-
-
-		}else{
-
-			var user_data_selected = data.split('|');
-
-//alert(user_data_selected[1]);
-			setTimeout(function () {
-//get_count_per_week($return_total = 0, $set_year = '', $set_emp_id = '' )
-
-				$.ajax({
-					'url' : base_url+'dashboard/get_count_per_week/2/<?php echo $current_year; ?>/'+user_data_selected[1],
-					'type' : 'GET',
-					'success' : function(dataValCurr){
-						var data_arr_curr_dataVal = dataValCurr.split('|');
-						
-						$.ajax({
-							'url' : base_url+'dashboard/get_count_per_week/2/<?php echo $last_year; ?>/'+user_data_selected[1],
-							'type' : 'GET',
-							'success' : function(dataVal){
-
-								var data_arr_dataVal = dataVal.split('|');
-
-								for (var i = 0; i < data_arr_curr_dataVal.length; i++) {
-
-									var data_thisYear = data_arr_curr_dataVal[i].split('-');
-									var data_lastYear = data_arr_dataVal[i].split('-');
-
-									//alert(data_thisYear[0]+' **** '+data_thisYear[1]);
-									//alert(data_lastYear[0]+' **** '+data_lastYear[1]);
-
-									$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
-								}
-
-							}
-						});
-					}
-				});
-
-
-
-				chart_emply.show([user_data_selected[0]+' Annual Leave',user_data_selected[0]+' Personal (Sick Leave)',user_data_selected[0]+' Personal (Carers Leave)',user_data_selected[0]+' Personal (Compassionate Leave)',user_data_selected[0]+' Unpaid Leave',user_data_selected[0]+' Philippines Public Holiday',user_data_selected[0]+' RDO (Rostered Day Off)']);
-			}, 500);
-		}
-
-	//	chart_emply.select();
-
-	 
-	},500);	
-
-	setTimeout(function(){
-		$('#loading_modal').modal('hide');
-	},5000);	
-
-	});
-
-
-$('.leave_type_selection').click(function(){
-	$('#loading_modal').modal({"backdrop": "static", "show" : true} );
-	var leave_type = $(this).attr('id');
-
-	//$('select.chart_data_selection_emps').val('grouped');
-
-	setTimeout(function () {
-		chart_emply.hide(); 
-		chart_emply.unselect();
-	}, 500);
- 
-	setTimeout(function () {
-		chart_emply.show([
-
-			<?php foreach ($user_list as $key => $value): ?>  
-				'<?php echo $value->user_first_name.' '.$value->user_last_name.' '; ?>'+leave_type,
-			<?php endforeach; ?> 
-
-		]);
-	}, 1000);
-
-	setTimeout(function(){
-		//chart_emply.select();
-		$('#loading_modal').modal('hide');
-	},3000);
-
-});
+chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
 
 </script>
 
@@ -1774,6 +1216,8 @@ $('.leave_type_selection').click(function(){
 						<!-- ************************ -->
 
 						<!-- ************   LEAVE CHART   ************ -->
+
+
 
 
 
@@ -2413,6 +1857,36 @@ var donuta = c3.generate({
 });
 
 
+
+var donutjp = c3.generate({
+	size: {
+		height: 300,
+		width: 300
+	},data: {
+		columns: [ <?php echo $this->dashboard->top_joinery_list($current_year,1); ?> ],
+		type : 'pie',
+		onclick: function (d, i) { console.log("onclick", d, i); },
+		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+	},
+	legend: {
+		show: false //hides label
+	},
+	bindto: "#donut_jn",
+	tooltip: {
+		format: {
+			value: function (value, ratio, id) {
+				var format = d3.format(',');
+				var rounded_percent = Math.round( ratio * 1000 ) / 10;
+				var mod_value = Math.round(value);
+			return '$ '+format(mod_value)+' '+rounded_percent+'%';
+		}
+	} 
+}
+});
+
+
+
 var donutb = c3.generate({
 	size: {
 		height: 300,
@@ -2594,10 +2068,7 @@ var donutg = c3.generate({
 
 
 </script>
- 
-
-
-
+  
 
 
 <!-- maps api js -->

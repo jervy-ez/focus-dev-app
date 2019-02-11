@@ -85,7 +85,6 @@ endif;
 		$this_year =  date("d/m/Y", strtotime("- 5 days"));
  
 		$estimator_dlq = $this->dashboard_m_es->fetch_upcoming_deadline($this_year,$estimator_id);
-		$num_result = $estimator_dlq->num_rows();
 		$estimator_dl = $estimator_dlq->result();
 	 
 		
@@ -111,7 +110,7 @@ endif;
 
  
 $quote_deadline_date_replaced = str_replace('/', '-', $est->quote_deadline_date);
-$quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_replaced - 2 day"));
+$quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_replaced - 1 day"));
 
 
 	$date_deadline_check_val = date('N',$est->deadline_unix);
@@ -119,17 +118,16 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 	// var_dump($date_deadline_check_val);
 	// echo "<p><br /></p>";
 
-	if($date_deadline_check_val == 3){
-		$deadline_unix = $est->deadline_unix - 259200000;
-		$quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_replaced - 4 day"));
+	if($date_deadline_check_val == 4){
+		$deadline_unix = $est->deadline_unix - 172800000;
+		$quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_replaced - 3 day"));
 	}else{
-		//$deadline_unix = $est->deadline_unix;
-		$deadline_unix = $est->deadline_unix - 86400000;
+		$deadline_unix = $est->deadline_unix;
 	}
 	   
 
 		echo '{
-                name: "<a href=\"'.base_url().'projects/view/'.$est->project_id.'\" target=\"_blank\">'.$est->project_id.'</a>", 
+                name: "<a href=\"./projects/view/'.$est->project_id.'\" target=\"_blank\">'.$est->project_id.'</a>", 
                 dataObj: "'.$est->user_first_name.' : '.$est->project_name.'",
                 values: [
                 	{from: "/Date('.$use_date_stamp.')/", to: "/Date('.$quote_deadline_date_reformated.')/", "desc": "<strong>'.$est->user_first_name.'</strong> : '.$est->project_name.'<br /><strong>'.$est->client_name.'</strong> &nbsp;  &nbsp;  &nbsp;   &nbsp;  Brand : '.$est->brand_name.'",customClass: "'.$est->user_first_name.'"},
@@ -138,31 +136,6 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
                 ]
         },';
  
-
-		}
-
-		//echo "<p><strong>$num_result</strong></p>";
-
-
-		//echo "<p><strong>$num_result</strong></p>";
-
-
-
-		for($looper = $num_result; $looper < 16 ; $looper ++ ){
-
-		//echo "<p><strong>$looper</strong></p>";
-			
-
-			echo '
-
-			{ values: [
-					{from: "'.date('Y/m/d', strtotime('- 5 days')).'", to: "'.date('Y/m/d', strtotime('+ 5 days')).'",  customClass: "hide"},
-					{from: "'.date('Y/m/d').'", to: "'.date('Y/m/d').'" ,customClass: "curr_date"}
-				]
-			}, 
-
-
-			';
 
 		}
 
@@ -206,47 +179,45 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 
 		foreach ($estimator_dl as $est ) {
 
-			if(   array_key_exists($est->project_estiamator_id, $estimators_val) ){
-				if( $estimators_val[$est->project_estiamator_id] == 0  ){
+			if( $estimators_val[$est->project_estiamator_id] == 0 ){
 
-					$quote_deadline_date_replaced = str_replace('/', '-', $est->quote_deadline_date);
+				$quote_deadline_date_replaced = str_replace('/', '-', $est->quote_deadline_date);
 
-					$quote_deadline_date_checker = date('N', strtotime("$quote_deadline_date_replaced"));
+				$quote_deadline_date_checker = date('N', strtotime("$quote_deadline_date_replaced"));
+ 
+				if($quote_deadline_date_checker == 1){
+					$dEnd = new DateTime( date('Y-m-d', strtotime("$quote_deadline_date_replaced - 2 day")));
+				}else{
+					$dEnd = new DateTime( date('Y-m-d', strtotime("$quote_deadline_date_replaced")));
+				}
 
-					if($quote_deadline_date_checker == 1){
-						$dEnd = new DateTime( date('Y-m-d', strtotime("$quote_deadline_date_replaced - 2 day")));
-					}else{
-						$dEnd = new DateTime( date('Y-m-d', strtotime("$quote_deadline_date_replaced")));
-					}
+				$dDiff = $dStart->diff($dEnd);
 
-					$dDiff = $dStart->diff($dEnd);
+				$project_date_date_replaced = str_replace('/', '-', $est->project_date);
+				$pdEnd = new DateTime( date('Y-m-d', strtotime("$project_date_date_replaced")));
+				$pdDiff = $dEnd->diff($pdEnd);
 
-					$project_date_date_replaced = str_replace('/', '-', $est->project_date);
-					$pdEnd = new DateTime( date('Y-m-d', strtotime("$project_date_date_replaced")));
-					$pdDiff = $dEnd->diff($pdEnd);
+				if($est->project_estiamator_id == $estimator_id){
+			 		$diff_a = intval($dDiff->days) - 1;
+					$diff_b = $pdDiff->days;
+				}
 
-					if($est->project_estiamator_id == $estimator_id){
+				$days_remains = intval($dDiff->days) - 1;
+
+				if($days_remains > 0){	
+
+
+					if($estimator_id == '' && $no_selected == 0){
 						$diff_a = intval($dDiff->days) - 1;
 						$diff_b = $pdDiff->days;
-					}
+						$no_selected = 1;
+					}			
 
-					$days_remains = intval($dDiff->days) - 1;
-
-					if($days_remains > 0){	
-
-
-						if($estimator_id == '' && $no_selected == 0){
-							$diff_a = intval($dDiff->days) - 1;
-							$diff_b = $pdDiff->days;
-							$no_selected = 1;
-						}			
-
-
-						$estimators_val[$est->project_estiamator_id] = 1;
-						$total_string .= '<div class=\'row\'><span class=\'col-xs-4\'>'.$est->user_first_name.'</span><span class=\'col-xs-8\'>'.$days_remains.' day(s) before dealine.</span></div>';
-					}
-
+				
+					$estimators_val[$est->project_estiamator_id] = 1;
+					$total_string .= '<div class=\'row\'><span class=\'col-xs-4\'>'.$est->user_first_name.'</span><span class=\'col-xs-8\'>'.$days_remains.' day(s) before dealine.</span></div>';
 				}
+
 			}
 		}
 
@@ -356,22 +327,8 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 							$project_cost = $row['budget_estimate_total'];
 						}
 
-						//$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-						//$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-
-
-
-
-						if ( array_key_exists($row['focus_company_id'], $cost_focus) ) {
-							$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-						}
-
-						if ( array_key_exists($row['project_estiamator_id'], $cost_estimator) ) {
-							$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-						}
-
-
-
+						$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
+						$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
 					}
 				}
 			}
@@ -392,73 +349,9 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 			$year_odl_set = $last_year + 1;
 			$date_last_year_next = "01/$m_month/$year_odl_set";
 		}else{
+
 			$date_last_year_next = "01/$m_month/$last_year";
 		}
-
-
-
-		$date_last_year_today_exx = "01/01/$current_year";
-
-		$date_last_year_today_err = "$n_day/$n_month/$current_year";
-
-
-		//echo "<p>$date_last_year_today_exx,$date_last_year_today_err</p>";
-
-
-		foreach ($estimator_list as $est ) {
-
-
-			if($est->project_estiamator_id != '0'){
-				if($est->project_estiamator_id != '8'){
-
-
-
-
-			if( $cost_estimator[$est->project_estiamator_id] == 0){
-
-
-				$est_q_cst = "  AND `project`.`project_estiamator_id` = '$est->project_estiamator_id' ";
-
-
-
-
-
-		$all_projects_q = $this->dashboard_m->get_all_active_projects($date_last_year_today_exx,$date_last_year_today_err,$est_q_cst);
-		foreach ($all_projects_q->result_array() as $row){
-
-			if($row['project_estiamator_id'] != '0'){
-				if($row['project_estiamator_id'] != '8'){
-
-					$project_cost = 0;
-
-					$quoted_estimator[$row['project_estiamator_id']]++; 
-					$quoted_focus_company[$row['focus_company_id']]++;
-
-					if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
-						$project_cost = $row['project_total'] + $row['variation_total'];
-					}else{
-						$project_cost = $row['budget_estimate_total'];
-					}
-
-					$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-					$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost; 
-				}
-			}
-		}
-
-
-
-
-			}
-
-		} 
-
-
-
-			}
-
-		} 
-
 
 
 		$all_projects_q = $this->dashboard_m->get_all_active_projects($date_last_year_today,$date_last_year_next);
@@ -510,15 +403,8 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 						}
 					}
 
-
-					if ( array_key_exists($row['project_estiamator_id'], $quoted_estimator) ) {
-						$quoted_estimator[$row['project_estiamator_id']]++;
-					}
-
-					if ( array_key_exists($row['focus_company_id'], $quoted_focus_company) ) {
-						$quoted_focus_company[$row['focus_company_id']]++;
-					}
-
+					$quoted_estimator[$row['project_estiamator_id']]++; 
+					$quoted_focus_company[$row['focus_company_id']]++;
 
 					if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
 						$project_cost = $row['project_total'] + $row['variation_total'];
@@ -527,13 +413,7 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 					}
 
 					$cost_focus_b[$row['focus_company_id']] = $cost_focus_b[$row['focus_company_id']] + $project_cost;
-
-
-					if ( array_key_exists($row['project_estiamator_id'], $cost_estimator_b) ) {
-						$cost_estimator_b[$row['project_estiamator_id']] = $cost_estimator_b[$row['project_estiamator_id']] + $project_cost; 
-					}
-
-
+					$cost_estimator_b[$row['project_estiamator_id']] = $cost_estimator_b[$row['project_estiamator_id']] + $project_cost; 
 				}
 			}
 		}
@@ -558,7 +438,7 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 									<span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed tooltip-enabled" title="" data-placement="left" data-html="true" data-original-title="'.$current_year.'" style="width: 150px;"><i class="fa fa-usd"></i> '.number_format($cost_estimator[$est->project_estiamator_id],2).'</span> <br> 
 									<span class="label pull-right m-bottom-3 small_green_fixed tooltip-enabled" title="" data-placement="left" data-html="true" data-original-title="'.$last_year.'" style="width: 150px; background-color: #aaa !important;"><i class="fa fa-usd"></i> '.number_format($cost_estimator_b[$est->project_estiamator_id],2).'</span>
 								</span>	 
-								<strong style="padding-top: 10px; display: block; color:#fff; "><span class="'.str_replace(' ','_',strtolower($quoted_estimator_name[$est->project_estiamator_id])).'" style="padding: 3px 6px; border-radius: 10px;" >'.$quoted_estimator_name[$est->project_estiamator_id].'</span></strong>
+								<strong style="padding-top: 10px; display: block; color:#fff; "><span class="'.strtolower($quoted_estimator_name[$est->project_estiamator_id]).'" style="padding: 3px 6px; border-radius: 10px;" >'.$quoted_estimator_name[$est->project_estiamator_id].'</span></strong>
 							</p>
 						</div>
 					</div>';			
@@ -638,11 +518,6 @@ $total_past = 0;
 			$estimator_name[$est->project_estiamator_id] = $est->user_first_name;
 		}
 
-		if($es_id != ''){
-			$estimators_cost[$es_id] = 0;
-			$estimator_counter[$es_id] = 0;
-		}
-
 		$estimators_cost[0] = 0;
 		$estimator_counter[0] = 0;
 		$estimator_name[0] = '';
@@ -655,15 +530,9 @@ $total_past = 0;
 		$loop_counter = 0;
 
 		foreach ($all_estimators_wip as $es_wip){
-			
-				if ( array_key_exists($es_wip->project_estiamator_id, $estimators_cost) ) {		
-					$total_cost = $es_wip->project_total + $es_wip->variation_total + $estimators_cost[$es_wip->project_estiamator_id];
-					$estimators_cost[$es_wip->project_estiamator_id] = $total_cost;	
-				}
-
-				if ( array_key_exists($es_wip->project_estiamator_id, $estimator_counter) ) {		
-					$estimator_counter[$es_wip->project_estiamator_id]++;
-				}
+			$total_cost = $es_wip->project_total + $es_wip->variation_total + $estimators_cost[$es_wip->project_estiamator_id];
+			$estimators_cost[$es_wip->project_estiamator_id] = $total_cost;			
+			$estimator_counter[$es_wip->project_estiamator_id]++;
 		}
 
 		if($es_id != ''){
