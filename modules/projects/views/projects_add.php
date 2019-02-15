@@ -288,7 +288,16 @@
 													<div class="input-group ">
 														<span class="input-group-addon">($)</span>
 														<?php $est_amt = str_replace (',','', $this->input->post('project_total') ); ?>
-														<input type="text" name="project_total" id="project_total" class="form-control number_format"  tabindex="10" placeholder="Project Estimate" value="<?php echo ($this->input->post('project_total') && $this->input->post('project_total')!=0 ?  number_format($est_amt) : '' ); ?>"/>
+														<input type="text" name="project_total" id="project_total" class="form-control number_format tooltip-test" data-original-title = "This must be an accurate estimate" tabindex="10" placeholder="Project Estimate" value="<?php echo ($this->input->post('project_total') && $this->input->post('project_total')!=0 ?  number_format($est_amt) : '' ); ?>"/>
+														<script type="text/javascript">
+															$("#project_total").blur(function(){
+																var proj_estimate = $("#project_total").val();
+																if(proj_estimate < 11){
+																	alert("Estimate must be an accurate estimate");
+																	$("#project_total").val("");
+																}
+															});
+														</script>
 													</div>
 												</div>
 

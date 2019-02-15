@@ -155,7 +155,14 @@ class Projects extends MY_Controller{
 		$static_defaults = array_shift($static_defaults_q->result() ) ;
 		$row_stat = '';
 		$day_revew_req = $static_defaults->prj_review_day;		
-		$timestamp_day_revuew_req =  strtotime("$day_revew_req this week");
+		//$timestamp_day_revuew_req =  strtotime("$day_revew_req this week");
+
+
+
+$timestamp_day_revuew_req = (int)strtotime("$day_revew_req this week");
+$monday_revuew_req = (int)strtotime("Monday this week");
+$friday_revuew_req = (int)strtotime("Friday this week");
+$today_rvw_mrkr = (int)strtotime("Today");
 
 		$total_project_value = 0;
 		$total_outstading_value = 0;
@@ -163,8 +170,21 @@ class Projects extends MY_Controller{
 		$inv_date_type = '';
 		$records_num = '';	
 		$current_day = date('d/m/Y');
+
+		$extra_query = '';
+		if( $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 20   ){
+			$user_pm_id = $this->session->userdata('user_id');
+			$extra_query .= " AND `project`.`project_manager_id` = '$user_pm_id' ";
+		}
+
+		if( $this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 7   ){
+			$user_pa_id = $this->session->userdata('user_id');
+			$extra_query .= " AND `project`.`project_admin_id` = '$user_pa_id' ";
+		}
+
+
 		$order_q = " ORDER BY UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) ASC ";
-		$has_where = " WHERE  `invoice`.`is_invoiced` = '0' AND `invoice`.`is_paid` = '0'     AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$current_day', '%d/%m/%Y') ) 				";
+		$has_where = " WHERE  `invoice`.`is_invoiced` = '0' AND `invoice`.`is_paid` = '0'     AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$current_day', '%d/%m/%Y') ) 		$extra_query		";
 		$table_q = $this->reports_m->select_list_invoice($has_where,'','','','','',$order_q);
 
 		foreach ($table_q->result() as $row){
@@ -190,12 +210,33 @@ class Projects extends MY_Controller{
 
 			$project_total_percent = number_format($project_total_percent,2);
 
-
+/*
 			if( $timestamp_day_revuew_req > $row->unix_review_date  || $row->unix_review_date  == '' ){
 				$row_stat = 'needed_rev';
 			}else{
 				$row_stat = 'posted_rev';
 			}
+*/
+			if($today_rvw_mrkr <= $timestamp_day_revuew_req){
+
+				if( $monday_revuew_req < $row->unix_review_date && $row->unix_review_date <= $timestamp_day_revuew_req  ){
+					$row_stat = 'posted_rev';
+				} else{
+					$row_stat = 'needed_rev';
+				}
+
+			}else{
+
+				if( $timestamp_day_revuew_req <  $row->unix_review_date && $row->unix_review_date <= $friday_revuew_req  ){
+					$row_stat = 'posted_rev';
+				} else{
+					$row_stat = 'needed_rev';
+				}
+
+			}
+
+
+
 
 			
 			echo '<tr class="prj_rvw_rw '.$row_stat.'" id="'.$row->invoice_project_id.'-uninvoiced_prj_view" >';
@@ -215,7 +256,7 @@ class Projects extends MY_Controller{
 		}	
 	}
 
-	public function display_all_projects($stat,$is_wpev = 0){
+	public function display_all_projects($stat,$is_wpev = 0,$custom_q = ''){
 		$admin_defaults = $this->admin_m->fetch_admin_defaults(); //1
 		foreach ($admin_defaults->result() as $row){
 			$data['unaccepted_date_categories'] = $row->unaccepted_date_categories;
@@ -245,11 +286,26 @@ class Projects extends MY_Controller{
 			$extra_query = 'AND `project`.`job_date` != ""  AND `project`.`is_paid` = "0"   '; 
 		}
 
+
 		$data['is_wpev'] = $is_wpev;
 			$extra_order = '';
 
 		if($is_wpev > 0){
 			$extra_order = ' ORDER BY `unix_date_site_finish`  ASC ';
+
+
+			if( $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 20   ){
+				$user_pm_id = $this->session->userdata('user_id');
+				$extra_query .= " AND `project`.`project_manager_id` = '$user_pm_id' ";
+			}
+
+			if( $this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 7   ){
+				$user_pa_id = $this->session->userdata('user_id');
+				$extra_query .= " AND `project`.`project_admin_id` = '$user_pa_id' ";
+			}
+		
+
+		
 		}
 
 		if($is_wpev > 0 && $stat == 'quote'){
@@ -380,6 +436,68 @@ class Projects extends MY_Controller{
 	public function list_invoiced_items($project_id,$project_total,$variation_total){
 		$this->invoice->list_invoiced_items($project_id,$project_total,$variation_total);
 	}
+
+	public function induction_project_exempted($project_id){
+		$admin_defaults = $this->admin_m->fetch_admin_defaults(1);
+		foreach ($admin_defaults->result() as $row){
+			$induction_work_value = $row->induction_work_value;
+			$induction_project_value = $row->induction_project_value;
+			$induction_categories = $row->induction_categories;
+		}
+
+		$proj_q = $this->projects_m->fetch_complete_project_details($project_id);
+		foreach ($proj_q->result() as $row) {	
+			$job_category = $row->job_category;
+			$project_value = $row->job_category;
+			$project_estimate = $row->job_category;
+			$client_id = $row->client_id;
+
+		}
+
+		$q_client_company = $this->company_m->display_company_detail_by_id($client_id);
+		$client_company = array_shift($q_client_company->result_array());
+
+		$query_client_address = $this->company_m->fetch_complete_detail_address($client_company['address_id']);
+		$temp_data = array_shift($query_client_address->result_array());
+
+		$project_is_exempted = $this->admin_m->project_is_exempted_induction($project_id);
+
+		if($project_is_exempted == 0){
+			$induction_categories_arr = explode (",", $induction_categories);
+			$arr_num = count($induction_categories_arr);
+			$x = 0;
+			$exist = 0;
+			while($x < $arr_num){
+				if($job_category == $induction_categories_arr[$x]){
+					$exist = 1;
+				}
+				$x++;
+			}
+
+			if($exist == 1){
+				$post_code_is_exempted = $this->admin_m->postcode_excempted($temp_data['postcode']);
+				if($post_code_is_exempted == 1){
+					$induction_exempted = 1;
+				}else{
+					if($project_estimate >= $induction_project_value){
+						$induction_exempted = 0;
+					}else{
+						if($project_estimate >= $induction_project_value){
+							$induction_exempted = 0;
+						}else{
+							$induction_exempted = 1;
+						}
+					}
+				}
+			}else{
+				$induction_exempted = 1;
+			}
+		}else{
+			$induction_exempted = $project_is_exempted;
+		}
+		
+		return $induction_exempted;
+	}
 	
 	public function view(){
 
@@ -398,8 +516,8 @@ class Projects extends MY_Controller{
 		foreach ($admin_defaults->result() as $row){
 			$unaccepted_no_days = $row->unaccepted_no_days;
 			$induction_work_value = $row->induction_work_value;
-			$induction_project_value = $row->induction_project_value;
-			$induction_categories = $row->induction_categories;
+			// $induction_project_value = $row->induction_project_value;
+			// $induction_categories = $row->induction_categories;
 		}
 
 		$restricted_cat = 0;
@@ -679,42 +797,11 @@ class Projects extends MY_Controller{
 			$data['main_content'] = 'projects_view';
 			$data['screen'] = 'Project Details';
 
-			$project_is_exempted = $this->admin_m->project_is_exempted_induction($project_id);
-
-			
-			$induction_categories_arr = explode (",", $induction_categories);
-			$arr_num = count($induction_categories_arr);
-			$x = 0;
-			$exist = 0;
-			while($x < $arr_num){
-				if($data['job_category'] == $induction_categories_arr[$x]){
-					$exist = 1;
-				}
-				$x++;
-			}
-
-			if($exist == 1){
-				if($project_is_exempted == 1){
-					$induction_exempted = 1;
-				}else{
-					$post_code_is_exempted = $this->admin_m->postcode_excempted($temp_data['postcode']);
-					if($post_code_is_exempted == 1){
-						$induction_exempted = 1;
-					}else{
-						$induction_exempted = 0;
-					}
-				}
-			}else{
-				$induction_exempted = 1;
-			}
-
-			$data['induction_exempted'] = $induction_exempted;
-			
-
-			$video_generated = $this->induction_health_safety_m->fetch_induction_videos_generated($project_id);
-			$data['video_generated'] = $video_generated;
+			$data['induction_exempted'] = $this->induction_project_exempted($data['project_id']);
 			$data['induction_work_value'] = $induction_work_value;
-			$data['induction_project_value'] = $induction_project_value;
+			$video_generated = $this->induction_health_safety_m->fetch_induction_videos_generated($project_id);
+
+			$data['video_generated'] = $video_generated;
 
 			$this->load->view('page', $data);
 		}else{
@@ -2808,6 +2895,7 @@ $rev_date  = date("d/m/Y");
     	$this->session->userdata('user_role_id') != 20 && 
     	$this->session->userdata('user_role_id') != 2  && 
     	$this->session->userdata('user_role_id') != 16 && 
+    	$this->session->userdata('user_role_id') != 7 && 
     	$this->session->userdata('is_admin') != 1 && 
     	$this->session->userdata('user_id') != 6 ){
 		redirect('/projects');
@@ -3500,7 +3588,7 @@ $rev_date  = date("d/m/Y");
 
 		/*========= CC & BCC emails end ========= */
 
-		$user_mail->addBCC('mike.coros02@gmail.com');
+		$user_mail->addBCC('michael@focusshopfit.com.au');
 		$user_mail->addBCC($sendpdf_from);
 
 		// $user_mail->smtpdebug  = 2;

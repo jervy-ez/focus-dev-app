@@ -13,7 +13,10 @@ $row_stat = '';
 
 $day_revew_req = $static_defaults->prj_review_day;
  
-$timestamp_day_revuew_req =  strtotime("$day_revew_req this week");
+$timestamp_day_revuew_req = (int)strtotime("$day_revew_req this week");
+$monday_revuew_req = (int)strtotime("Monday this week");
+$friday_revuew_req = (int)strtotime("Friday this week");
+$today_rvw_mrkr = (int)strtotime("Today");
 
 //echo strtotime("Thursday this week")."<p><br /></p>";
  
@@ -161,6 +164,18 @@ foreach ($proj_t->result_array() as $row){
 	$prime_pm = $assignment['project_manager_primary_id'];
 	$group_pm = explode(',', $assignment['project_manager_ids']);
 
+	timestamp_day_revuew_req
+monday_revuew_req
+
+
+
+
+timestamp_day_revuew_req
+monday_revuew_req
+friday_revuew_req
+
+$today_rvw_mrkr
+
 	*/
  	
 	if($is_wpev == 1 ){
@@ -170,13 +185,36 @@ foreach ($proj_t->result_array() as $row){
 			
 			$total_invoiced_init = $this->invoice->get_project_invoiced($row['project_id'],$row['project_total'],$row['variation_total']);
 
+			$row_stat = 'needed_rev';
 
-			if( $timestamp_day_revuew_req > $row['unix_review_date'] || $row['unix_review_date'] == '' ){
-				$row_stat = 'needed_rev';
+
+			if($today_rvw_mrkr <= $timestamp_day_revuew_req){
+
+				if( $monday_revuew_req < $row['unix_review_date'] && $row['unix_review_date'] <= $timestamp_day_revuew_req  ){
+					$row_stat = 'posted_rev';
+				} else{
+					$row_stat = 'needed_rev';
+				}
+
 			}else{
-				$row_stat = 'posted_rev';
-			}
 
+				if( $timestamp_day_revuew_req <  $row['unix_review_date'] && $row['unix_review_date'] <= $friday_revuew_req  ){
+					$row_stat = 'posted_rev';
+				} else{
+					$row_stat = 'needed_rev';
+				}
+
+			}
+/*
+
+			if( $monday_revuew_req < $row['unix_review_date'] && $row['unix_review_date'] <= $timestamp_day_revuew_req  ){
+				$row_stat = 'posted_rev';
+			} 
+/*
+			if( $timestamp_day_revuew_req < $row['unix_review_date'] && $row['unix_review_date'] <= $friday_revuew_req  ){
+				$row_stat = 'posted_rev_late';
+			} 
+*/
 			echo '<tr class="'.$status.' prj_rvw_rw '.$row_stat.'"  id="'.$row['project_id'].'-'.$status.'_prj_view" >';
 
 

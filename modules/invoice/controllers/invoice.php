@@ -1426,7 +1426,7 @@ endif;
 
 
 
- if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 5 || $this->session->userdata('user_role_id') == 6):
+ if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 5 || $this->session->userdata('user_role_id') == 6|| $this->session->userdata('user_role_id') == 16):
 
 	if($row->is_paid == 1){
 	//	echo '<button class="btn btn-primary  m-right-10 progress_invoice_resend paid_view_invoice"><i class="fa fa-files-o"></i> View Invoice</button>';

@@ -11,27 +11,26 @@
 
 
 
-<?php  if( $this->session->userdata('user_role_id') == 2 ): ?>
+<?php if( $this->session->userdata('user_role_id') == 2 ): ?>
 
   <?php 
 
   $user_id = $this->session->userdata('user_id');
-
   $pa_data = $this->dashboard_m->fetch_pa_assignment($user_id);
   $assignment = array_shift($pa_data->result_array());
 
-                         // $assignment = $this->dashboard->pa_assignment();
   $prime_pm = $assignment['project_manager_primary_id'];
   $group_pm = explode(',', $assignment['project_manager_ids']);
 
-/*
-  var_dump($prime_pm);
-  echo "<p>-----------</p>";
-  var_dump($group_pm);
-*/
   ?>
 
 <?php  endif; ?>
+
+
+<?php if( $this->session->userdata('user_role_id') == 7 ): 
+  $prime_pm = 29;
+  $group_pm = array(29);
+ endif; ?>
 
 
 <?php //$this->invoice->reload_invoiced_amount(); ?>
@@ -139,7 +138,7 @@
                             <option value="all|0">View All</option>
                             <?php
                               foreach ($users->result_array() as $row):
-                                if($row['user_role_id']==3 || $row['user_role_id']==20):
+                                if($row['user_role_id']==3 || $row['user_role_id']==20   ):
                                   if( $this->session->userdata('user_role_id') == 2 ):
                                     if( in_array($row['user_id'], $group_pm) ):
                                       echo '<option value="'.$row['user_first_name'].' '.$row['user_last_name'].'|'.$row['user_id'].'" >'.$row['user_first_name'].' '.$row['user_last_name'].'</option>';
@@ -149,6 +148,7 @@
 
                                   endif;
 
+ 
 
 
                                 endif;
@@ -168,10 +168,17 @@
                           <?php endif; ?>
 
 
+                            <?php if( $this->session->userdata('user_role_id') == 7 ): ?>
+                            var pm_name = 'Maintenance Manager';
+                            var pm_set_selector = "Maintenance Manager|29";
+                            setTimeout(function(){ 
+                              $('select.prjrvw_pm_selection').val(pm_set_selector).trigger("change").parent().hide();
+                            },1);
+                          <?php endif; ?>
 
 
 
-
+ 
 
                           function reset_pa_table(){
                             <?php if( $this->session->userdata('user_role_id') == 2 ): ?>
@@ -330,8 +337,9 @@
 
                   <div class="clearfix pull-left" style="margin: 7px 0 0px 3px;">
  
-                    <div  style=" background:#424141; font-size: 12px; padding: 1px 8px;  color:#F7901E;  float: right;     border: 1px solid #424141;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;"><strong>Un-Reviewed</strong></div>
-                    <div  style=" background:#FFA9E6; font-size: 12px; padding: 1px 8px;  color:#000;  float: right;     border: 1px solid #000000;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;"><strong>Reviewed</strong></div>
+                    <div class="hide" style=" background:#7d1e62 ; font-size: 12px; padding: 1px 8px;  color:#fff;  float: right;     border: 1px solid #424141;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;"><strong>Late Reviewed</strong></div>
+                     <div  style=" background:#424141; font-size: 12px; padding: 1px 8px;  color:#F7901E;  float: right;     border: 1px solid #424141;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;"><strong>Un-Reviewed</strong></div>
+                   <div  style=" background:#FFA9E6; font-size: 12px; padding: 1px 8px;  color:#000;  float: right;     border: 1px solid #000000;    height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;"><strong>Reviewed</strong></div>
 
                   </div>
 
@@ -505,12 +513,25 @@ tr.prj_rvw_rw:hover, tr.prj_rvw_rw:hover td, tr.prj_rvw_rw:hover a{
 }
 
 tr.current_item_prjrvw{
+  background-color: #ffa9e6 !important;
+}
+
+tr.current_item_prjrvw_selected{
   background-color: #84f1ff !important;
+  color:#000 !important;  
+}
+
+
+tr.posted_rev_late,
+tr.posted_rev_late td,
+
+tr.posted_rev_late td a{
+  background-color: #7d1e62 !important;
+  color: #fff !important;
 }
 
 </style>
-  
-
+   
 
 <div class="toggle_notes_prjrvw" style="width: 35%;height: 100%;background-color: #0E283C;position: fixed;top: 0px;right: -35%;color: #fff;z-index: 10001;">
  
@@ -641,7 +662,11 @@ tr.current_item_prjrvw{
 $('.close_toggle_prjrvw').click(function(e) {
  
 
-  $('tr.prj_rvw_rw').removeClass('current_item_prjrvw');
+  $('tr.prj_rvw_rw').removeClass('current_item_prjrvw_selected');
+
+ 
+
+
   $('.project_title_rvw').text('PRJID');
   $('.toggle_notes_prjrvw').animate({
     right: '-35%'
@@ -654,26 +679,6 @@ $('.close_toggle_prjrvw').click(function(e) {
  
 
  
-
-
-//  $('.completed_review_btn').click(function(event) {
-
-//   var project_id = $(this).attr('id');
-//   $(this).html('<i class="fa fa-refresh fa-spin"></i> Loading...');
-
-//   $.post(baseurl+"projects/set_finished_date_review",{ 
-//     'ajax_var': project_id
-//   });
-
-  
-//   setTimeout(function(){   
-//     $('.completed_review_btn').text('Completed').hide();
-//     $('tr.current_item_prjrvw .needs_review').hide();
-//     $('tr.current_item_prjrvw .view_notes_prjrvw').parent().append('<span> <i class="fa fa-check-square" style="color:#673ab7 !important;"></i></span>');
-//   },1000);
-
-// });
-
  $('.no_updates_btn').click(function(event) {
 
   var project_id = $(this).attr('id');
@@ -682,24 +687,28 @@ $('.close_toggle_prjrvw').click(function(e) {
   $.post(baseurl+"projects/set_date_review",{ 
     'ajax_var': project_id
   });
+  var target_row_id = $('input.prjrvw_btn_clck_id').val();
 
   setTimeout(function(){   
     $('.no_updates_btn').text('No Updates').hide();
    // $('tr.current_item_prjrvw .needs_review').hide();
+   $('tr#'+target_row_id).removeClass('current_item_prjrvw_selected').removeClass('needed_rev').addClass('posted_rev');
 
+ },1000);
 
+/*
+  $('#loading_modal').modal({"backdrop": "static", "show" : true} );
 
-    $('tr.current_item_prjrvw').removeClass('needed_rev').addClass('posted_rev');
+  setTimeout(function(){
+    $('#loading_modal').modal('hide');
+  },2000);
 
-
-
-  },1000);
-
+*/
 });
 
   $('.view_notes_prjrvw').click(function(event) {
 
-      $('.box-area tr').removeClass('current_item_prjrvw');
+      $('.box-area tr').removeClass('current_item_prjrvw_selected');
 
 
       event.preventDefault(); // because it is an anchor element
@@ -707,7 +716,7 @@ $('.close_toggle_prjrvw').click(function(e) {
           right: '0'
       });
 
-      $(this).parent().parent().addClass('current_item_prjrvw');
+      $(this).parent().parent().addClass('current_item_prjrvw_selected');
 
       $('textarea#notes_comment_text').val('');
 
@@ -806,202 +815,7 @@ $('.proj_rvw_reload_bttn').click(function(){
 
 </script>
 
-
-
-<?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 5 || $this->session->userdata('user_role_id') == 6 ): ?>
-
-<!-- payments modal -->
-<div class="modal fade" id="invoice_payment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel">Payments</h4>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="row">
-
-            <div class="col-sm-12 border-bottom">
-
-              <div class="clearfix col-sm-6">
-                <p>Total Ex-GST: $<strong class="po_total_mod">0.00</strong></p>
-              </div>
-              <div class="clearfix col-sm-6">
-                <p>Total Inc-GST: $<strong class="po_total_mod_inc_gst">0.00</strong></p>
-              </div>
-
-              <div class="clearfix col-sm-6">
-                <p>Description: <strong class="po_desc_mod"></strong></p>
-              </div>
-              <div class="clearfix col-sm-6">
-                <p>Outstanding Ex-GST: $<strong class="po_balance_mod">0.00</strong></p>
-              </div>          
-            </div>
-
-            <div class="po_error"></div>
-
-
-            <div class="col-sm-6">
-              <div class="clearfix m-top-15">
-                <label for="" class="col-sm-3 control-label text-left m-top-10" style="font-weight: normal;">Date*</label>
-                <div class="col-sm-9">
-                  <div class="input-group">
-                    <span class="input-group-addon" id=""><i class="fa fa-calendar"></i></span>
-                    <input type="text" data-date-format="dd/mm/yyyy" placeholder="DD/MM/YYYY" class="form-control datepicker" id="invoice_payment_date" tabindex="1" name="" value="<?php echo date("d/m/Y"); ?>">
-                  </div>                
-                  
-                </div>
-              </div>
-            </div>
-
-            <input type="hidden" name="invoice_project_id" id="invoice_project_id" class="invoice_project_id">
-            <input type="hidden" name="invoice_id" id="invoice_id" class="invoice_id">
-            <input type="hidden" name="invoice_order" id="invoice_order" class="invoice_order">
-            <input type="hidden" name="invoice_gst" id="invoice_gst" class="invoice_gst" value="">
-            <input type="hidden" name="invoice_current_value" id="invoice_current_value" class="invoice_current_value" value="">
-            <input type="hidden" name="invoice_current_value_inc_gst" id="invoice_current_value_inc_gst" class="invoice_current_value_inc_gst" value="">
-
-            <div class="col-sm-6">
-              <div class="clearfix m-top-15">
-                <label for="po_amount_value" class="col-sm-3 control-label text-left m-top-10" style="font-weight: normal;">Amount*</label>
-                <div class="col-sm-9">
-                  <div class="input-group m-bottom-10">
-                    <span class="input-group-addon" id="">$</span>
-                    <input type="text" placeholder="Amount" class="form-control amount_ext_gst tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Commas are not allowed." id="amount_ext_gst" name="" value="" tabindex="2">
-                    <span class="input-group-addon" id="">ex-gst</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-6">
-              <div class="clearfix">
-                <label for="" class="col-sm-6 control-label text-left m-top-10" style="font-weight: normal;">Reference Name*</label>
-                <div class="col-sm-6">
-                  <input type="text" placeholder="Reference Name" class="form-control" id="invoice_payment_reference" name="" value="" tabindex="3">
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-6">
-              <div class="clearfix">
-                <label for="po_amount_value" class="col-sm-3 control-label text-left m-top-10" style="font-weight: normal;"></label>
-                <div class="col-sm-9">
-                  <div class="input-group m-bottom-10">
-                    <span class="input-group-addon" id="">$</span>
-                    <input type="text" placeholder="Amount" class="form-control amount_inc_gst  tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="Commas are not allowed." id="amount_inc_gst" name="" value="" tabindex="2">
-                    <span class="input-group-addon" id="">inc-gst</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-12">
-              <div class="clearfix  m-top-10">
-                <label for="" class="col-sm-1 control-label text-left m-top-10" style="font-weight: normal;">Notes</label>
-                <div class="col-sm-11">
-                  <div class="input-group m-bottom-10">
-                    <input type="text" placeholder="Notes" class="form-control" id="invoice_payment_notes" name="" value="" tabindex="4">
-                    <span class="input-group-addon" id=""><i class="fa fa-exclamation-triangle"></i> Set As Paid <input type="checkbox" name="is_invoice_paid_check" id="is_invoice_paid_check"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-12 m-top-15">
-              <table class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Amount Ext-GST</th>
-                  <th>Reference Name</th>
-                </tr>
-              </thead>
-              <tbody class="payment_history"></tbody>
-            </table>
-              <button id="" class="btn btn-danger invoice_remove_trans">Remove Recent Transaction</button>
-
-              <?php if($this->session->userdata('is_admin') == 1): ?>
-                <button id="" class="pull-right btn btn-warning zero_payment">Zero Payment</button>
-              <?php endif; ?>
-            </div>
  
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default po_cancel_values" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success invoice_payment_bttn"><i class="fa fa-floppy-o"></i> Save Payment</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- payments modal -->
-
-
-
-
-
-
-
-<!-- paid modal -->
-<div class="modal fade" id="invoice_paid_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel">Payments</h4>
-      </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="row">
-
-            <div class="col-sm-12 border-bottom">
-
-              <div class="clearfix col-sm-6">
-                <p>Description: <strong class="po_desc_mod"></strong></p>
-              </div>
-              <div class="clearfix col-sm-6">
-                <p>Outstanding: $<strong class="po_balance_mod">0.00</strong></p>
-              </div>          
-            </div>
-
-
-            <input type="hidden" name="invoice_project_id" id="invoice_project_id" class="invoice_project_id">
-            <input type="hidden" name="invoice_id" id="invoice_id" class="invoice_id">
-            <input type="hidden" name="invoice_order" id="invoice_order" class="invoice_order">
-            <input type="hidden" name="invoice_gst" id="invoice_gst" class="invoice_gst" value="">
-            <input type="hidden" name="invoice_current_value" id="invoice_current_value" class="invoice_current_value" value="">
-            <input type="hidden" name="invoice_current_value_inc_gst" id="invoice_current_value_inc_gst" class="invoice_current_value_inc_gst" value="">
- 
-  
-
-            <div class="col-sm-12 m-top-15">
-              <table class="table table-bordered table-striped">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Amount Ext-GST</th>
-                  <th>Reference Number</th>
-                </tr>
-              </thead>
-              <tbody class="payment_history"></tbody>
-            </table>
-              <button id="" class="btn btn-danger invoice_remove_trans">Remove Recent Transaction</button>
-            </div>
- 
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default po_cancel_values" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success invoice_payment_bttn"><i class="fa fa-floppy-o"></i> Save Payment</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- paid modal -->
-<?php endif; ?>
-
 
 <div class="po_legend hide">
   <p class="pad-top-5 m-left-10"> &nbsp;  &nbsp; <span class="ex-gst">Ex GST</span> &nbsp;  &nbsp; <span class="inc-gst">Inc GST</span></p>
