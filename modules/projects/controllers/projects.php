@@ -153,8 +153,8 @@ class Projects extends MY_Controller{
 
 		$static_defaults_q = $this->user_model->select_static_defaults();
 		$static_defaults = array_shift($static_defaults_q->result() ) ;
-		$row_stat = '';
-		$day_revew_req = $static_defaults->prj_review_day;		
+		$day_revew_req = $static_defaults->prj_review_day;	
+		$row_stat = '';	
 		//$timestamp_day_revuew_req =  strtotime("$day_revew_req this week");
 
 
@@ -163,6 +163,12 @@ $timestamp_day_revuew_req = (int)strtotime("$day_revew_req this week");
 $monday_revuew_req = (int)strtotime("Monday this week");
 $friday_revuew_req = (int)strtotime("Friday this week");
 $today_rvw_mrkr = (int)strtotime("Today");
+
+
+$timestamp_lwk_revuew_req = (int)strtotime("$day_revew_req last week");
+$timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
+
+
 
 		$total_project_value = 0;
 		$total_outstading_value = 0;
@@ -181,6 +187,8 @@ $today_rvw_mrkr = (int)strtotime("Today");
 			$user_pa_id = $this->session->userdata('user_id');
 			$extra_query .= " AND `project`.`project_admin_id` = '$user_pa_id' ";
 		}
+
+		$extra_query .= " AND `project`.`job_type` != 'Company' ";
 
 
 		$order_q = " ORDER BY UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) ASC ";
@@ -217,9 +225,29 @@ $today_rvw_mrkr = (int)strtotime("Today");
 				$row_stat = 'posted_rev';
 			}
 */
-			if($today_rvw_mrkr <= $timestamp_day_revuew_req){
+			// if($today_rvw_mrkr <= $timestamp_day_revuew_req){
 
-				if( $monday_revuew_req < $row->unix_review_date && $row->unix_review_date <= $timestamp_day_revuew_req  ){
+			// 	if( $monday_revuew_req < $row->unix_review_date && $row->unix_review_date <= $timestamp_day_revuew_req  ){
+			// 		$row_stat = 'posted_rev';
+			// 	} else{
+			// 		$row_stat = 'needed_rev';
+			// 	}
+
+			// }else{
+
+			// 	if( $timestamp_day_revuew_req <  $row->unix_review_date && $row->unix_review_date <= $friday_revuew_req  ){
+			// 		$row_stat = 'posted_rev';
+			// 	} else{
+			// 		$row_stat = 'needed_rev';
+			// 	}
+
+			// }
+
+
+
+if($timestamp_lwk_revuew_req < $today_rvw_mrkr &&   $today_rvw_mrkr <= $timestamp_day_revuew_req ){
+
+				if( $timestamp_lwk_revuew_req < $row->unix_review_date && $row->unix_review_date <= $timestamp_day_revuew_req  ){
 					$row_stat = 'posted_rev';
 				} else{
 					$row_stat = 'needed_rev';
@@ -227,14 +255,13 @@ $today_rvw_mrkr = (int)strtotime("Today");
 
 			}else{
 
-				if( $timestamp_day_revuew_req <  $row->unix_review_date && $row->unix_review_date <= $friday_revuew_req  ){
+				if( $timestamp_day_revuew_req <  $row->unix_review_date && $row->unix_review_date <= $timestamp_nxt_revuew_req  ){
 					$row_stat = 'posted_rev';
 				} else{
 					$row_stat = 'needed_rev';
 				}
 
 			}
-
 
 
 
@@ -292,6 +319,10 @@ $today_rvw_mrkr = (int)strtotime("Today");
 
 		if($is_wpev > 0){
 			$extra_order = ' ORDER BY `unix_date_site_finish`  ASC ';
+
+			
+
+			$extra_query .= " AND `project`.`job_type` != 'Company' ";
 
 
 			if( $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 20   ){
@@ -1025,8 +1056,42 @@ $today_rvw_mrkr = (int)strtotime("Today");
 
 	public function set_date_review(){
 		$project_id = $this->security->xss_clean($this->input->post('ajax_var'));
-		$date = date('d/m/Y');
-		$this->projects_m->set_project_date_review($project_id,$date);	
+		$rev_date  = date("d/m/Y");
+		$this->projects_m->set_project_date_review($project_id,$rev_date);	
+
+		$static_defaults_q = $this->user_model->select_static_defaults();
+		$static_defaults = array_shift($static_defaults_q->result() ) ;
+
+		$day_revew_req = $static_defaults->prj_review_day;
+		$timestamp_day_revuew_req = (int)strtotime("$day_revew_req this week");
+		$date_day_revuew_req = date('d/m/Y',$timestamp_day_revuew_req);
+		$this->projects_m->update_set_wip_rvw($project_id,$date_day_revuew_req,$rev_date);
+
+		$monday_revuew_req = (int)strtotime("Monday this week");
+		$friday_revuew_req = (int)strtotime("Friday this week");
+
+
+$timestamp_lwk_revuew_req = (int)strtotime("$day_revew_req last week");
+$timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
+
+		$today_rvw_mrkr = (int)strtotime("Today");
+
+		/*
+		if($today_rvw_mrkr > $timestamp_day_revuew_req){  
+		// baddd
+
+			if( $timestamp_day_revuew_req <  $today_rvw_mrkr && $today_rvw_mrkr <= $friday_revuew_req  ){
+				$this->projects_m->prj_rvw_late($project_id,$date_day_revuew_req );
+			} 
+		}*/
+
+
+		if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_nxt_revuew_req ){  // baddd
+			if( $timestamp_day_revuew_req <  $today_rvw_mrkr && $today_rvw_mrkr <= $friday_revuew_req  ){
+				$this->projects_m->prj_rvw_late($project_id,$date_day_revuew_req );
+			}
+		}
+
 	}
 
 	public function clear_apost(){
@@ -1302,10 +1367,15 @@ $today_rvw_mrkr = (int)strtotime("Today");
 				$date_quote_deadline =  date('d/m/Y', strtotime("$formated_start_date -$new_days_quote_deadline days"));
 			}
 
-
-
-
 			$inserted_project_id = $this->projects_m->insert_new_project($project_name, $project_date, $contact_person_id, $project_total, $job_date,$brand_name, $is_wip, $client_po, $site_start, $site_finish, $job_category, $job_type, $focus_user_id ,$focus_id, $project_manager_id, $project_admin_id, $project_estiamator_id,$site_address_id, $invoice_address_id, $project_notes_id, $project_markup,$project_status_id, $client_id, $install_hrs, $project_area, $is_double_time, $labour_hrs_estimate, $shop_tenancy_number,$defaults_id,$cc_pm,$date_quote_deadline,$proj_joinery_user);
+
+
+			$static_defaults_q = $this->user_model->select_static_defaults();
+			$static_defaults = array_shift($static_defaults_q->result() ) ;
+			$day_revew_req = $static_defaults->prj_review_day;
+			$current_dead_line = date('d/m/Y', strtotime("$day_revew_req this week") );
+
+			$this->projects_m->insert_wip_rvw($inserted_project_id, $current_dead_line, $project_date);
 
 			if( strpos(implode(",",$data['warranty_categories']), $job_category) !== false ):
 				$this->projects->set_warranty_date_after_paid($inserted_project_id);
@@ -2554,6 +2624,39 @@ $rev_date  = date("d/m/Y");
 					$this->projects->set_warranty_date_after_paid($project_id);
 				endif;
 
+				
+
+		$static_defaults_q = $this->user_model->select_static_defaults();
+		$static_defaults = array_shift($static_defaults_q->result() ) ;
+
+		$day_revew_req = $static_defaults->prj_review_day;
+
+		$timestamp_day_revuew_req = (int)strtotime("$day_revew_req this week");
+		$monday_revuew_req = (int)strtotime("Monday this week");
+		$friday_revuew_req = (int)strtotime("Friday this week");
+		$timestamp_lwk_revuew_req = (int)strtotime("$day_revew_req last week");
+		$timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
+
+		$date_day_revuew_req = date('d/m/Y',$timestamp_day_revuew_req);
+		$today_rvw_mrkr = (int)strtotime("Today");
+
+		$q_prj_rvw = $this->projects_m->get_prj_rvw($date_day_revuew_req,$project_id);
+
+
+		if($q_prj_rvw->num_rows === 1){ // if found data
+			$this->projects_m->update_set_wip_rvw($project_id,$date_day_revuew_req,$rev_date);
+		}else{
+			$this->projects_m->insert_wip_rvw($project_id, $date_day_revuew_req, $rev_date);
+		}
+
+		if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_nxt_revuew_req ){  // baddd
+			if( $timestamp_day_revuew_req <  $today_rvw_mrkr && $today_rvw_mrkr <= $friday_revuew_req  ){
+				$this->projects_m->prj_rvw_late($project_id,$date_day_revuew_req );
+			}
+		}
+
+
+
 				$this->projects_m->update_project_sched_for_pr_lead($project_id, $project_leading_hand_id);
 
 				if ($project_leading_hand_id == 0){
@@ -2803,12 +2906,65 @@ $rev_date  = date("d/m/Y");
 		$has_updated_wip = $this->projects_m->set_wip_project($project_id,$is_wip);
 
 
-$rev_date  = date("d/m/Y");
+		$rev_date  = date("d/m/Y");
 
 
 		$this->projects_m->project_details_quick_update($project_id,$project_name,$budget_estimate_total,$job_date,$date_quote_deadline,$client_po,$install_time_hrs,$project_markup,$site_start,$site_finish,$unaccepted_date,$rev_date);
 		
 		$this->update_install_cost_total($project_id,$prj_install_hrs,$is_double_time);
+
+
+
+
+
+//$prev_project_details['job_date']
+
+
+		$static_defaults_q = $this->user_model->select_static_defaults();
+		$static_defaults = array_shift($static_defaults_q->result() ) ;
+
+		$day_revew_req = $static_defaults->prj_review_day;
+
+		$timestamp_day_revuew_req = (int)strtotime("$day_revew_req this week");
+		$monday_revuew_req = (int)strtotime("Monday this week");
+		$friday_revuew_req = (int)strtotime("Friday this week");
+
+		$date_day_revuew_req = date('d/m/Y',$timestamp_day_revuew_req);
+		$today_rvw_mrkr = (int)strtotime("Today");
+
+		$q_prj_rvw = $this->projects_m->get_prj_rvw($date_day_revuew_req,$project_id);
+
+
+		if($q_prj_rvw->num_rows === 1){ // if found data
+			$this->projects_m->update_set_wip_rvw($project_id,$date_day_revuew_req,$rev_date);
+		}else{
+			$this->projects_m->insert_wip_rvw($project_id, $date_day_revuew_req, $rev_date);
+		}
+
+		// if($today_rvw_mrkr > $timestamp_day_revuew_req){  // baddd
+		// 	if( $timestamp_day_revuew_req <  $today_rvw_mrkr && $today_rvw_mrkr <= $friday_revuew_req  ){
+		// 		$this->projects_m->prj_rvw_late($project_id,$date_day_revuew_req );
+		// 	}
+		// }
+
+
+
+		$timestamp_lwk_revuew_req = (int)strtotime("$day_revew_req last week");
+		$timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
+
+if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_nxt_revuew_req ){  // baddd
+	if( $timestamp_day_revuew_req <  $today_rvw_mrkr && $today_rvw_mrkr <= $friday_revuew_req  ){
+		$this->projects_m->prj_rvw_late($project_id,$date_day_revuew_req );
+	}
+}
+
+
+
+
+
+
+
+
 
 		date_default_timezone_set("Australia/Perth");
 		$user_id = $this->session->userdata('user_id');
@@ -4037,4 +4193,12 @@ $rev_date  = date("d/m/Y");
 
 		$this->projects_m->select_all_images($project_id);
 	}
+
+	public function induction_qrcode(){
+		include('./phpqrcode/qrlib.php');
+	
+		//QRcode::png('code data text', 'filename.png'); // creates file 
+		QRcode::png('https://sojourn.focusshopfit.com.au/direct_contractor_upload/contractor_induction_video?project_id=35021'); // creates code image and outputs it directly into browser
+	
+	} 
 }

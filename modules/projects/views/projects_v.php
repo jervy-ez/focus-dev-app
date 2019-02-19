@@ -1,3 +1,7 @@
+<script src="<?php echo base_url(); ?>js/vue.js"></script>
+<script src="<?php echo base_url(); ?>js/moment.min.js"></script>
+<script src="<?php echo base_url(); ?>js/jmespath.js"></script>
+
 <?php date_default_timezone_set("Australia/Perth");  // date is set to perth and important setting for diff timezone acounts ?>
 <?php $this->load->module('company'); ?>
 <?php $this->load->module('projects'); ?>
@@ -986,5 +990,43 @@ $('select.select_table_status').change(function(){
     $("#projectTable_wrapper #projectTable_filter input").attr('autocomplete', 'new-password'); 
   },500);
 
+  var app = new Vue({
+    el: '#brand_app',
+    data: {
+    },
+    mounted: function(){
+    },
+
+    methods: {
+      getImageLogo: function(){
+        $.post(baseurl+"induction_health_safety/get_brand_logo",
+        {
+          brand_id: brand_id
+        },
+        function(result){
+          if(result == 1){
+            $("#brandLogo").show();
+            $("#brandLogo").attr("src",baseurl+'uploads/brand_logo/'+brand_id+'.jpg');
+          }else{
+            $("#brandLogo").hide();
+            $("#brandLogo").attr("src","");
+          }
+          
+        });
+      },
+    },
+
+  });
+
+  function view_brand(obj){
+    var elm_id = obj.id.trim();
+    var elm_var = elm_id.split('_');
+    brand_id = elm_var[1];
+    $("#brand_id").val(brand_id);
+    var brand_name = $("#brnd_name_"+brand_id).text();
+    $("#BrandLabel").text(brand_name);
+    $("#brand_logo_view").modal('show');
+    app.getImageLogo();
+  }
 </script>
 <?php $this->bulletin_board->list_latest_post(); ?>

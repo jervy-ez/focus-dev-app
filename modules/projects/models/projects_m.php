@@ -299,9 +299,29 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
-	public function set_project_date_review($project_id,$date){
-		$query = $this->db->query("UPDATE  `project` SET `project`.`review_date` = '$date' WHERE `project`.`project_id` = '$project_id' ");
+	public function set_project_date_review($project_id,$date_rev){
+		$query = $this->db->query("UPDATE  `project` SET `project`.`review_date` = '$date_rev' WHERE `project`.`project_id` = '$project_id' ");
 		return $query;		
+	}
+
+	public function insert_wip_rvw($project_id, $current_dead_line, $date_set){
+		$this->db->query("INSERT INTO `project_wip_review` (`project_id`, `current_dead_line`, `date_set`) VALUES ('$project_id', '$current_dead_line', '$date_set')");
+		return $this->db->insert_id();
+	}
+
+	public function update_set_wip_rvw($project_id,$current_dead_line,$date_set){
+		$query = $this->db->query("UPDATE `project_wip_review` SET `project_wip_review`.`date_set` = '$date_set' WHERE `project_wip_review`.`project_id` = '$project_id' AND `project_wip_review`.`current_dead_line` = '$current_dead_line' ");
+		return $query;
+	}
+
+	public function prj_rvw_late($project_id,$current_dead_line ){
+	$query = $this->db->query("UPDATE `project_wip_review` SET `project_wip_review`.`is_revw_late` = '1' WHERE `project_wip_review`.`project_id` = '$project_id' AND `project_wip_review`.`current_dead_line` = '$current_dead_line' ");
+		return $query;
+	}	
+
+	public function get_prj_rvw($current_dead_line,$project_id){
+		$query = $this->db->query("SELECT * FROM `project_wip_review` WHERE `project_wip_review`.`current_dead_line` = '$current_dead_line' AND  `project_wip_review`.`project_id` = '$project_id' ");
+		return $query;
 	}
 
 	public function insert_new_project($project_name, $project_date, $primary_contact_person_id, $budget_estimate_total, $job_date, $brand,$is_wip, $client_po, $date_site_commencement, $date_site_finish, $job_category, $job_type, $focus_user_id ,$focus_company_id, $project_manager_id, $project_admin_id, $project_estiamator_id, $address_id, $invoice_address_id, $notes_id, $markup,$project_status_id, $client_id, $install_time_hrs, $project_area, $is_double_time, $labour_hrs_estimate, $shop_tenancy_number,$defaults_id,$cc_pm,$quote_deadline_date,$proj_joinery_user){

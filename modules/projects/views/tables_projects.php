@@ -4,16 +4,17 @@
 
 
 
+//echo "<tr><td><p>********".$static_defaults->prj_review_day."</p></td></tr>";
+$row_stat = '';
+
 $static_defaults_q = $this->user_model->select_static_defaults();
 $static_defaults = array_shift($static_defaults_q->result() ) ;
-$row_stat = '';
- 
-
-//echo "<tr><td><p>********".$static_defaults->prj_review_day."</p></td></tr>";
 
 $day_revew_req = $static_defaults->prj_review_day;
- 
+
 $timestamp_day_revuew_req = (int)strtotime("$day_revew_req this week");
+$timestamp_lwk_revuew_req = (int)strtotime("$day_revew_req last week");
+$timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 $monday_revuew_req = (int)strtotime("Monday this week");
 $friday_revuew_req = (int)strtotime("Friday this week");
 $today_rvw_mrkr = (int)strtotime("Today");
@@ -188,9 +189,9 @@ $today_rvw_mrkr
 			$row_stat = 'needed_rev';
 
 
-			if($today_rvw_mrkr <= $timestamp_day_revuew_req){
+			if($timestamp_lwk_revuew_req < $today_rvw_mrkr &&   $today_rvw_mrkr <= $timestamp_day_revuew_req ){
 
-				if( $monday_revuew_req < $row['unix_review_date'] && $row['unix_review_date'] <= $timestamp_day_revuew_req  ){
+				if( $timestamp_lwk_revuew_req < $row['unix_review_date'] && $row['unix_review_date'] <= $timestamp_day_revuew_req  ){
 					$row_stat = 'posted_rev';
 				} else{
 					$row_stat = 'needed_rev';
@@ -198,7 +199,7 @@ $today_rvw_mrkr
 
 			}else{
 
-				if( $timestamp_day_revuew_req <  $row['unix_review_date'] && $row['unix_review_date'] <= $friday_revuew_req  ){
+				if( $timestamp_day_revuew_req <  $row['unix_review_date'] && $row['unix_review_date'] <= $timestamp_nxt_revuew_req  ){
 					$row_stat = 'posted_rev';
 				} else{
 					$row_stat = 'needed_rev';
