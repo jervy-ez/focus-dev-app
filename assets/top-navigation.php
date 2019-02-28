@@ -206,6 +206,10 @@
                             <li>
                                 <a role="menuitem" tabindex="-1" href="<?php echo base_url(); ?>dashboard/sales_forecast"><i class="fa fa-bar-chart"></i> Sales Forecast</a>
                             </li>
+                        				
+                            <li>
+                                <a role="menuitem" data-toggle="modal" data-target="#wip_project_review" href="#"><i class="fa fa-table"></i> WIP Review Report</a>
+                            </li>
 						<?php endif; ?>
 							<li role="presentation">
 								<a id="apply_for_leave" style="cursor: pointer;" onclick="apply_for_leave('');"><i class="fa fa-calendar-plus-o"></i> Apply for Leave</a>
@@ -275,7 +279,7 @@
 	      <div class="modal-body pad-5">
 	        <div class="box-area pad-5 clearfix">
 
-	        	<input type="hidden" class="no_hrs_of_work" name="no_hrs_of_work" value="<?php echo $leave_remaining1->no_hrs_of_work; ?>">
+	        	<input type="hidden" class="no_hrs_of_work" name="no_hrs_of_work" value="<?php echo isset($leave_remaining1->no_hrs_of_work) ? $leave_remaining1->no_hrs_of_work : '8'; ?>">
 
 				<input type="hidden" id="user_id_page_no_hrs_of_work" name="user_id_page_no_hrs_of_work" value="<?php echo (!empty($leave_remaining2->no_hrs_of_work)) ? $leave_remaining2->no_hrs_of_work : ''; ?>">	        	
 

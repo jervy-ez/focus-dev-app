@@ -391,6 +391,7 @@
 
 <!-- wip
 quote -->
+
                               <tr> <th>Finish</th> <th>Start</th><th>Client</th> <th>Project</th> <th>Total</th> <th>Quote Deadline  <i class="fa  fa-sort-numeric-asc"></i>  </th> <th>Install Hrs</th> <th>Invoiced</th> <th class=" hide">PM</th> </tr> 
                             </thead>
                             <tbody  class="prj_qut_rvw"> 
@@ -428,7 +429,7 @@ quote -->
                            <table id=" " class="prj_rvw_tbl table table-bordered" cellspacing="0" width="100%">
                             
                             <thead>
-                              <tr> <th>Finish</th> <th>Cliet</th>  <th>Project</th> <th>Invoicing <i class="fa fa-sort-numeric-asc"></i></th> <th>Progress</th> <th>Percent</th> <th>Amount</th> <th class=" hide">PM</th></tr> 
+                              <tr> <th>Finish</th> <th>Client</th>  <th>Project</th> <th>Invoicing <i class="fa fa-sort-numeric-asc"></i></th> <th>Progress</th> <th>Percent</th> <th>Amount</th> <th class=" hide">PM</th></tr> 
                             </thead>
                             <tbody class="un_invoiced_rvw"> 
                               <?php  echo $this->projects->list_un_invoiced_rvw(); ?>

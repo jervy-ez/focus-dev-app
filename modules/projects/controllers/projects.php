@@ -157,18 +157,14 @@ class Projects extends MY_Controller{
 		$row_stat = '';	
 		//$timestamp_day_revuew_req =  strtotime("$day_revew_req this week");
 
+		$timestamp_day_revuew_req = (int)strtotime("$day_revew_req this week");
+		$monday_revuew_req = (int)strtotime("Monday this week");
+		$friday_revuew_req = (int)strtotime("Friday this week");
+		$today_rvw_mrkr = (int)strtotime("Today");
 
 
-$timestamp_day_revuew_req = (int)strtotime("$day_revew_req this week");
-$monday_revuew_req = (int)strtotime("Monday this week");
-$friday_revuew_req = (int)strtotime("Friday this week");
-$today_rvw_mrkr = (int)strtotime("Today");
-
-
-$timestamp_lwk_revuew_req = (int)strtotime("$day_revew_req last week");
-$timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
-
-
+		$timestamp_lwk_revuew_req = (int)strtotime("$day_revew_req last week");
+		$timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 
 		$total_project_value = 0;
 		$total_outstading_value = 0;
@@ -218,34 +214,8 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 
 			$project_total_percent = number_format($project_total_percent,2);
 
-/*
-			if( $timestamp_day_revuew_req > $row->unix_review_date  || $row->unix_review_date  == '' ){
-				$row_stat = 'needed_rev';
-			}else{
-				$row_stat = 'posted_rev';
-			}
-*/
-			// if($today_rvw_mrkr <= $timestamp_day_revuew_req){
 
-			// 	if( $monday_revuew_req < $row->unix_review_date && $row->unix_review_date <= $timestamp_day_revuew_req  ){
-			// 		$row_stat = 'posted_rev';
-			// 	} else{
-			// 		$row_stat = 'needed_rev';
-			// 	}
-
-			// }else{
-
-			// 	if( $timestamp_day_revuew_req <  $row->unix_review_date && $row->unix_review_date <= $friday_revuew_req  ){
-			// 		$row_stat = 'posted_rev';
-			// 	} else{
-			// 		$row_stat = 'needed_rev';
-			// 	}
-
-			// }
-
-
-
-if($timestamp_lwk_revuew_req < $today_rvw_mrkr &&   $today_rvw_mrkr <= $timestamp_day_revuew_req ){
+			if($timestamp_lwk_revuew_req < $today_rvw_mrkr &&   $today_rvw_mrkr <= $timestamp_day_revuew_req ){
 
 				if( $timestamp_lwk_revuew_req < $row->unix_review_date && $row->unix_review_date <= $timestamp_day_revuew_req  ){
 					$row_stat = 'posted_rev';
@@ -263,9 +233,6 @@ if($timestamp_lwk_revuew_req < $today_rvw_mrkr &&   $today_rvw_mrkr <= $timestam
 
 			}
 
-
-
-			
 			echo '<tr class="prj_rvw_rw '.$row_stat.'" id="'.$row->invoice_project_id.'-uninvoiced_prj_view" >';
 			echo '<td><strong>'.$row->date_site_finish.'</strong></td>';
 			echo '<td><strong>'.$row->company_name.'</strong></td>';

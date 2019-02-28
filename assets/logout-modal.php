@@ -29,6 +29,108 @@
 
 
 
+
+<div id="wip_project_review" class="modal fade" tabindex="-1" data-width="760" style="display: none; overflow: hidden;">
+	<div class="modal-dialog">
+		
+<div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myModalLabel">Projects Report Filters</h4>
+      </div>
+      <div class="modal-body">
+      	
+
+      	
+
+      	<div class="input-group m-bottom-10">
+      		<span class="input-group-addon" id="">
+      			<i class="fa fa-user"></i>
+      		</span>
+      		<select class="form-control select_pm_prj_rvw m-bottom-10">
+      			<option value="" disabled="true" selected="true">Select Project Manager</option>
+
+      			<?php
+      			$project_manager_q = $this->user_model->fetch_user_by_role(3);
+      			$project_manager = $project_manager_q->result();     foreach ($project_manager as $row){    
+      				echo '<option value="'.$row->user_first_name.' '.$row->user_last_name.'|'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+      			}?>
+
+      			<?php
+      			$project_manager_q = $this->user_model->fetch_user_by_role(20);
+      			$project_manager = $project_manager_q->result();     foreach ($project_manager as $row){    
+      				echo '<option value="'.$row->user_first_name.' '.$row->user_last_name.'|'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+      			}?>
+
+      		</select>
+      	</div>
+
+
+
+      	
+ 
+        
+
+      	<div class="clearfix">
+      		<button type="button" class="btn btn-primary process_prj_wip_revw pull-right" id="">Submit</button> <!-- data-dismiss="modal" -->
+      		<button type="button" class="btn btn-default pull-right m-right-10" data-dismiss="modal">Cancel</button> 
+      	</div>
+
+      	<script type="text/javascript">
+
+
+      		$('.process_prj_wip_revw').click(function(){
+
+      			var pm_selected = $('select.select_pm_prj_rvw').val();
+ 
+
+      			if (pm_selected === undefined || pm_selected === null) {
+      					$('select.select_pm_prj_rvw').parent().addClass('has-error');
+
+      			}else{
+  					$('select.select_pm_prj_rvw').parent().removeClass('has-error');
+  					$('#loading_modal').modal({"backdrop": "static", "show" : true} );
+
+  					setTimeout(function(){ 
+  						$('#loading_modal').modal('hide');
+
+
+
+
+  						var url = '<?php echo base_url(); ?>';
+  						var myWindow = window.open(url+'reports/process_wip_review?pm_id='+pm_selected, '_blank');
+  						myWindow.blur();
+  						//document.getElementById("txturl").value = '';
+
+
+
+  					},1000);
+
+      			}
+
+
+      		});
+
+      	</script>
+
+
+      </div>
+    </div>
+
+
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
 <div id="set_availability" class="modal fade" tabindex="-1" data-width="760" style="display: none; overflow: hidden;">
 	<div class="modal-dialog">
 		<div class="modal-content">
