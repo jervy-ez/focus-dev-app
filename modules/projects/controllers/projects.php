@@ -241,7 +241,7 @@ class Projects extends MY_Controller{
 
 			echo '<td>
 				<div class=" btn btn-sm btn-success view_notes_prjrvw" style="padding: 4px;"><i class="fa fa-book"></i></div>
-				<a href="'.base_url().'projects/update_project_details/'.$row->invoice_project_id.'?status_rvwprj=uninvoiced" ><strong class="prj_id_rvw">'.$row->invoice_project_id.'</strong> - '.$row->project_name.'</a>
+				<a href="'.base_url().'projects/update_project_details/'.$row->invoice_project_id.'?status_rvwprj=uninvoiced&pmr='.$row->project_manager_id.'" ><strong class="prj_id_rvw">'.$row->invoice_project_id.'</strong> - '.$row->project_name.'</a>
 			</td>';
 
 
@@ -514,6 +514,7 @@ class Projects extends MY_Controller{
 		foreach ($admin_defaults->result() as $row){
 			$unaccepted_no_days = $row->unaccepted_no_days;
 			$induction_work_value = $row->induction_work_value;
+			$induction_commencement_date = $row->induction_commencement_date;
 			// $induction_project_value = $row->induction_project_value;
 			// $induction_categories = $row->induction_categories;
 		}
@@ -799,6 +800,7 @@ class Projects extends MY_Controller{
 			$data['induction_work_value'] = $induction_work_value;
 			$video_generated = $this->induction_health_safety_m->fetch_induction_videos_generated($project_id);
 
+			$data['induction_commencement_date'] = $induction_commencement_date;
 			$data['video_generated'] = $video_generated;
 
 			$this->load->view('page', $data);
@@ -1234,7 +1236,10 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 			$data['postcode_b'] = $this->company->if_set($this->input->post('postcode_b', true));		
 
 			$state_a_arr = explode('|', $this->input->post('state_a', true));
-			$data['state_a'] = $state_a_arr[3];
+			$num = count($state_a_arr);
+			if($num > 1){
+				$data['state_a'] = $state_a_arr[3];
+			}
 
 			$suburb_a_ar = explode('|',$this->company->if_set($this->input->post('suburb_a', true)));
 			$data['suburb_a'] = strtoupper($suburb_a_ar[0]);
@@ -1419,7 +1424,78 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 
 				$this->session->set_flashdata('curr_tab', 'works');
 			}
+// ========================= EMAIL Notification for PA for INDUCTION ==================
+			$is_exempted = $this->induction_project_exempted($inserted_project_id);
+			
+			if($is_exempted == 0):
 
+				$proj_q = $this->projects_m->select_particular_project($inserted_project_id);
+				foreach ($proj_q->result_array() as $row){
+					$project_admin_id = $row['project_admin_id'];
+				}
+
+				$users_q = $this->user_model->fetch_user($project_admin_id);
+				foreach ($users_q->result_array() as $users_row){
+					$pm_name = $users_row['user_first_name']." ".$users_row['user_last_name'];
+					$pm_email_id = $users_row['user_email_id'];
+					$email_q = $this->company_m->fetch_email($pm_email_id);
+					foreach ($email_q->result_array() as $email_row){
+						$pm_email = $email_row['general_email'];
+					}
+				}
+
+				$user_id = $this->session->userdata('user_id');
+				$users_q = $this->user_model->fetch_user($user_id);
+				foreach ($users_q->result_array() as $users_row){
+					$user_name = $users_row['user_first_name']." ".$users_row['user_last_name'];
+					$user_email_id = $users_row['user_email_id'];
+					$email_q = $this->company_m->fetch_email($user_email_id);
+					foreach ($email_q->result_array() as $email_row){
+						$sender_user_email = $email_row['general_email'];
+					}
+				}
+
+				$this->induction_health_safety_m->set_inductions_as_saved($inserted_project_id);
+				$sender_name = $user_name;
+				$email_from = $sender_user_email;
+				$email_to = $pm_email;
+				$subject = "Project: ".$inserted_project_id."is required for Induction";
+				$message = "The new project created number: ".$inserted_project_id.", needs to have induction slides created. Please see: https://sojourn.focusshopfit.com.au/induction_health_safety/induction_slide_editor_view?project_id=".$inserted_project_id;
+
+				require_once('PHPMailer/class.phpmailer.php');
+				require_once('PHPMailer/PHPMailerAutoload.php');
+
+
+				$mail = new phpmailer(true);
+				$mail->host = "sojourn-focusshopfit-com-au.mail.protection.outlook.com";
+				$mail->port = 587;
+				$mail->setFrom($email_from, $sender_name);
+		
+				//$mail->setfrom('userconf@sojourn.focusshopfit.com.au', 'name');
+				$mail->setFrom($email_from, $sender_name);
+
+				//$mail->addreplyto('userconf@sojourn.focusshopfit.com.au', 'name');
+				$mail->addReplyTo($email_from);
+		
+				$mail->addAddress($email_to);
+				//$mail->addCC($email_cc);
+				$mail->addBCC('mark.obis2012@gmail.com');
+				$mail->addBCC('ian@focusshopfit.com.au');
+
+				$mail->smtpdebug = 2;
+				$mail->ishtml(true);
+
+				$mail->Subject = $subject;
+				$mail->Body    = $message;
+
+				if(!$mail->send()) {
+					return 'Message could not be sent.'.' Mailer Error: ' . $mail->ErrorInfo;
+				} else {
+
+					return "Email Send Successfully";
+				}
+			endif;
+// ========================= EMAIL Notification for PA for INDUCTION ==================
 			redirect('/projects/view/'.$inserted_project_id);
 		}
 	}
@@ -2039,7 +2115,7 @@ $gp = 0;
 					$fetch_user= $this->user_model->fetch_user($row['user_id']);
 					$user = array_shift($fetch_user->result_array());
 
-					echo '<div class="notes_line"><p class="">'.ucfirst (nl2br($row['project_comments'])).'</p><small><i class="fa fa-user"></i> '.$user['user_first_name'].' '.$user['user_last_name'].'<br /><i class="fa fa-calendar"></i> '.$row['date_posted'].'</small></div>';
+					echo '<div class="notes_line user_postby_'.strtolower( str_replace(' ', '',  $user['user_first_name']) ).' comment_type_'.$row['is_project_comments'].'"><p class="">'.ucfirst (nl2br($row['project_comments'])).'</p><small><i class="fa fa-user"></i> '.$user['user_first_name'].' '.$user['user_last_name'].'<br /><i class="fa fa-calendar"></i> '.$row['date_posted'].'</small></div>';
 				} 
 			}else{
 				echo '<div class="notes_line no_posted_comment"><p>No posted comments yet!</p></div>';
@@ -2720,7 +2796,7 @@ $rev_date  = date("d/m/Y");
 
 
 				if(isset($_GET['status_rvwprj']) && $_GET['status_rvwprj'] != '' ){
-					redirect(base_url().'projects/projects_wip_review?prj_ret_rev='.$project_id.'-'.$_GET['status_rvwprj'].'_prj_view');
+					redirect(base_url().'projects/projects_wip_review?prj_ret_rev='.$project_id.'-'.$_GET['status_rvwprj'].'_prj_view&pmr='.$project_manager_id);
 				}
 
 
@@ -2732,7 +2808,7 @@ $rev_date  = date("d/m/Y");
 
 
 			if(isset($_GET['status_rvwprj']) && $_GET['status_rvwprj'] != '' ){
-				redirect(base_url().'projects/projects_wip_review?prj_ret_rev='.$project_id.'-'.$_GET['status_rvwprj'].'_prj_view');
+				redirect(base_url().'projects/projects_wip_review?prj_ret_rev='.$project_id.'-'.$_GET['status_rvwprj'].'_prj_view&pmr='.$project_manager_id);
 			}
 			redirect('/projects');
 		}
@@ -4168,4 +4244,43 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
 		QRcode::png('https://sojourn.focusshopfit.com.au/direct_contractor_upload/contractor_induction_video?project_id=35021'); // creates code image and outputs it directly into browser
 	
 	} 
+
+	public function induction_qrcode_file(){
+		$project_id = $_POST['project_id'];
+		include('./phpqrcode/qrlib.php');
+		$tempDir = 'docs/tempqrcode/'.$project_id.'/'; 
+     	if(!is_dir($tempDir)){
+			mkdir($tempDir,0755,TRUE);
+		}
+
+	    $codeContents = 'https://sojourn.focusshopfit.com.au/direct_contractor_upload/contractor_induction_video?project_id='.$project_id; 
+	     
+	    // we need to generate filename somehow,  
+	    // with md5 or with database ID used to obtains $codeContents... 
+	    $fileName = 'qrcode.png'; 
+	     
+	    $pngAbsoluteFilePath = $tempDir.$fileName; 
+	    //$urlRelativeFilePath = EXAMPLE_TMP_URLRELPATH.$fileName; 
+	     
+	    // generating 
+	    if (!file_exists($pngAbsoluteFilePath)) { 
+	        QRcode::png($codeContents, $pngAbsoluteFilePath); 
+	        echo 'File generated!'; 
+	        echo '<hr />'; 
+	    } else { 
+	    	$handle=opendir($tempDir);
+			while (($file = readdir($handle))!==false) {
+				@unlink($tempDir.'/'.$file);
+			}
+			QRcode::png($codeContents, $pngAbsoluteFilePath); 
+	        echo 'File generated!'; 
+	        echo '<hr />'; 
+
+	        // echo 'File already generated! We can use this cached file to speed up site on common codes!'; 
+	        // echo '<hr />'; 
+	    } 
+	     
+	    echo 'Server PNG File: '.$pngAbsoluteFilePath; 
+	    echo '<hr />'; 
+	}
 }

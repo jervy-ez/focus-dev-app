@@ -431,7 +431,11 @@ class Projects_m extends CI_Model{
 	}
 
 	public function list_project_comments($project_id,$is_project_comments=1){
-		$query = $this->db->query("SELECT * FROM `project_comments` WHERE `project_comments`.`project_id` = '$project_id' AND `project_comments`.`is_project_comments`='$is_project_comments' ORDER BY `project_comments`.`project_comments_id` DESC");
+		$query = $this->db->query("SELECT * FROM `project_comments` WHERE `project_comments`.`project_id` = '$project_id' 
+
+			".($is_project_comments == 1 ? "  " : " AND `project_comments`.`is_project_comments`='$is_project_comments'  ")."
+
+			ORDER BY `project_comments`.`project_comments_id` DESC");
 		return $query;
 	}
 

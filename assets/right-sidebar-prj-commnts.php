@@ -59,6 +59,19 @@
 	</div>
 </div>
 
+<style type="text/css">
+	
+  .notes_line.user_postby_ian, .notes_line.user_postby_ian small {
+    background-color: #ed9b26;
+    color: #fff !important;
+  }
+
+  .notes_line.user_postby_ian{
+    padding: 5px;
+  }
+  
+</style>
+
 <?php if(isset($project_id) ): ?>
 	<script type="text/javascript">$('select#prjc_project_id').val('<?php echo $project_id; ?>'); </script>
 <?php endif; ?>  

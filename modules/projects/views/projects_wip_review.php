@@ -181,6 +181,8 @@
  
 
                           function reset_pa_table(){
+/*
+
                             <?php if( $this->session->userdata('user_role_id') == 2 ): ?>
                               <?php foreach ($group_pm as $key => $value): ?>
 
@@ -199,6 +201,8 @@
                                },1);
                            <?php endforeach; ?>
                          <?php  endif; ?>
+
+*/
                        }
 
                          
@@ -227,7 +231,7 @@
 <style type="text/css">
   
   .table.prj_rvw_tbl tr.prj_rvw_rw{
-    display: none;
+   /* display: none;*/
   }
 </style>
    <?php  endif; ?>
@@ -271,8 +275,24 @@
   });
 
 
+<?php if(isset($_GET['pmr']) &&  $_GET['pmr'] != '' ): ?>
 
+  var pm_selected_er = <?php echo $_GET['pmr']; ?>;
+  var pm_selected_set = '';
 
+  $.each($('select.prjrvw_pm_selection option'), function (index, itm_obj) { 
+    var pm_list_text = $(itm_obj).val();
+
+    if( pm_list_text.includes( pm_selected_er)  ){
+           pm_selected_set = pm_list_text;
+    }
+  });
+
+  setTimeout(function(){ 
+    $('select.prjrvw_pm_selection').val(pm_selected_set).trigger("change"); 
+  },1);
+
+<?php endif; ?>
 
 
 
@@ -306,16 +326,8 @@
                      
 
 
-                      <?php if( $this->session->userdata('user_role_id') == 2 ): ?>
-
-
-
-                      reset_pa_table();
-
-
-                    <?php else: ?> 
-                    $('tr.prj_rvw_rw').show();
-                  <?php  endif; ?>
+                      
+                    $('tr.prj_rvw_rw').show(); 
 
 
 
@@ -864,6 +876,20 @@ $('.proj_rvw_reload_bttn').click(function(){
   .inc-gst{
     color: rgb(31, 121, 52);  font-weight: bold;
   }
+
+  .notes_line.user_postby_ian, .notes_line.user_postby_ian small {
+    background-color: #ed9b26;
+    color: #fff !important;
+  }
+
+  .notes_line.user_postby_ian{
+    padding: 5px;
+  }
+
+  .notes_line.comment_type_0{
+    background: none !important;
+  }
+
 </style>
 <?php $this->bulletin_board->list_latest_post(); ?>
 <?php $this->load->view('assets/logout-modal'); ?>
