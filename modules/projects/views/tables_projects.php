@@ -234,7 +234,9 @@ $today_rvw_mrkr
 
 
 			echo '<td>
-			<div class=" btn btn-sm btn-success view_notes_prjrvw" style="padding: 4px;"><i class="fa fa-book"></i></div>
+
+			<i class="fa fa-book  btn btn-sm btn-success view_notes_prjrvw" style="padding: 4px;"></i>
+
 			<a href="'.base_url().'projects/update_project_details/'.$row['project_id'].'?status_rvwprj='.$status.'&pmr='.$row['project_manager_id'].'"><strong class="prj_id_rvw">'.$row['project_id'].' '.'</strong> - '.$row['project_name'].'</a>';
 
 			

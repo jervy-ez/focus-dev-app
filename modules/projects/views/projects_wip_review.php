@@ -546,7 +546,7 @@ tr.posted_rev_late td a{
 </style>
    
 
-<div class="toggle_notes_prjrvw" style="width: 35%;height: 100%;background-color: #0E283C;position: fixed;top: 0px;right: -35%;color: #fff;z-index: 10001;">
+<div class="toggle_notes_prjrvw" style="display:none; width: 35%;height: 100%;background-color: #0E283C;position: fixed;top: 0px;right: -35%;color: #fff;z-index: 10001;">
  
 
 <div class="note_side_area pad-10">
@@ -624,8 +624,154 @@ tr.posted_rev_late td a{
 
 <?php endif; ?>
 
+ 
+
 <script type="text/javascript">
 
+$(document).ready(function() {
+
+/*
+
+  var isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+
+    if (isMobile) {
+
+      $('html').css('cursor','pointer');
+      $('body').css('cursor','pointer');
+      $('#main').css('cursor','pointer');
+        //Conditional script here
+    }
+*/
+
+
+
+/*
+ $('.toggle_notes_prjrvw').animate({
+    right: '-35%'
+  }).hide();
+*/
+ 
+
+  $(document).bind("click touchstart", function(event){
+
+
+
+/*
+   $(".view_notes_prjrvw").click(function(event){
+    
+    if(event.currentTarget === this){
+
+alert('open');
+    }else{
+
+
+alert('outside');
+
+    }
+
+
+  }); 
+
+*/
+
+
+// alert( event.target.className ); 
+
+
+
+
+    var trigger = $(".view_notes_prjrvw")[0];
+    var sideAreaPrjRw = $(".toggle_notes_prjrvw");
+    var obj_clicked = event.target.className;
+
+ //   var target = $(this).
+
+ // alert(obj_clicked );
+
+
+if( obj_clicked.includes('view_notes_prjrvw')  ){
+ 
+//alert('clicked button');
+
+   $('.toggle_notes_prjrvw').show().animate({
+        right: '0'
+      });
+
+
+}else{
+//alert('not button');
+
+
+
+if (sideAreaPrjRw !== event.target && !sideAreaPrjRw.has(event.target).length && trigger !== event.target) {
+
+
+$('.toggle_notes_prjrvw').animate({
+    right: '-35%'
+  }); //.hide();
+
+
+}else{
+
+     $('.toggle_notes_prjrvw').show();
+    }
+
+
+
+
+
+}
+
+
+
+
+
+    if ( $(this).hasClass('view_notes_prjrvw') ) {
+     //do something it does have the protected class!
+  //   alert("i have the pretty and awesome classes");
+   }
+
+
+
+
+
+    if (sideAreaPrjRw !== event.target && !sideAreaPrjRw.has(event.target).length && trigger !== event.target) {
+   //alert('1');
+ 
+      
+
+/*
+
+      if ( $('.toggle_notes_prjrvw').css('display') == 'none'){
+
+    //alert('3');
+ 
+     } else {
+
+
+  //   alert('4');
+     }
+
+*/
+
+
+
+
+    }else{
+//     alert('2');
+
+ //    $('.toggle_notes_prjrvw').show();
+    }
+
+
+
+
+
+
+  });
+
+
+});
 
 
   $('.submit_notes_prj').click(function(){
@@ -683,7 +829,7 @@ $('.close_toggle_prjrvw').click(function(e) {
   $('.project_title_rvw').text('PRJID');
   $('.toggle_notes_prjrvw').animate({
     right: '-35%'
-  });
+  }).hide();
 
 
   //alert( $(e.target).attr('class') );
@@ -725,9 +871,6 @@ $('.close_toggle_prjrvw').click(function(e) {
 
 
       event.preventDefault(); // because it is an anchor element
-      $('.toggle_notes_prjrvw').animate({
-          right: '0'
-      });
 
       $(this).parent().parent().addClass('current_item_prjrvw_selected');
 
@@ -799,6 +942,7 @@ $('.close_toggle_prjrvw').click(function(e) {
       }    
     });
   });
+
 
 
 

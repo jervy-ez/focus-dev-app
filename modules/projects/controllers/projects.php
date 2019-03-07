@@ -240,7 +240,7 @@ class Projects extends MY_Controller{
 			//echo '<td><strong class="prj_id_rvw">'.$row->invoice_project_id.'</strong> - '.$row->project_name.'</td>';
 
 			echo '<td>
-				<div class=" btn btn-sm btn-success view_notes_prjrvw" style="padding: 4px;"><i class="fa fa-book"></i></div>
+			<i class="fa fa-book  btn btn-sm btn-success view_notes_prjrvw" style="padding: 4px;"></i>
 				<a href="'.base_url().'projects/update_project_details/'.$row->invoice_project_id.'?status_rvwprj=uninvoiced&pmr='.$row->project_manager_id.'" ><strong class="prj_id_rvw">'.$row->invoice_project_id.'</strong> - '.$row->project_name.'</a>
 			</td>';
 
@@ -446,8 +446,8 @@ class Projects extends MY_Controller{
 		$proj_q = $this->projects_m->fetch_complete_project_details($project_id);
 		foreach ($proj_q->result() as $row) {	
 			$job_category = $row->job_category;
-			$project_value = $row->job_category;
-			$project_estimate = $row->job_category;
+			$project_value = $row->project_total;
+			$project_estimate = $row->budget_estimate_total;
 			$client_id = $row->client_id;
 
 		}
@@ -2145,8 +2145,13 @@ $gp = 0;
 			$prj_id = $_POST['prj_id'];
 			$include_invoice_comments = $_POST['include_invoice_comments'];
 
+			$current_url = $_POST['current_tab'];
+			$current_tab = substr($current_url, strrpos($current_url, '#' )+1);
+
 			$this->projects_m->add_invoice_comment($prj_id,$invoice_comments,$include_invoice_comments);
-			redirect('/projects/view/'.$prj_id.'?submit_invoice='.$prj_id);
+			// redirect('/projects/view/'.$prj_id.'?submit_invoice='.$prj_id);
+
+			redirect('/projects/view/'.$prj_id.'?tab=invoice'); // by Mike
 
 		}else{
 

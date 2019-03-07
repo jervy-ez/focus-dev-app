@@ -109,7 +109,22 @@
 					break;
 			}
 		}else{
-			$curr_tab = 'works';
+			if (isset($_GET['tab'])){
+
+				switch($_GET['tab']){
+					case 'invoice':
+						$curr_tab = 'invoice';
+						break;
+					case 'variations':
+						$curr_tab = 'variations';
+						break;
+					default:
+						$curr_tab = 'project-details';	
+						break;
+				}
+			} else {
+				$curr_tab = 'works';
+			}
 		}
 	}else{
 		if(isset($_GET['curr_tab'])){
@@ -137,7 +152,22 @@
 					break;
 			}
 		}else{
-			$curr_tab = 'project-details';
+			if (isset($_GET['tab'])){
+
+				switch($_GET['tab']){
+					case 'invoice':
+						$curr_tab = 'invoice';
+						break;
+					case 'variations':
+						$curr_tab = 'variations';
+						break;
+					default:
+						$curr_tab = 'project-details';	
+						break;
+				}
+			} else {
+				$curr_tab = 'project-details';	
+			}
 		}
 	}
 	
@@ -441,6 +471,9 @@ $filtered_date = $induction_commencement_date;
 											<?php // endif; ?>
 
 												<form class="form-horizontal tooltip-enabled" role="form" method="post" action="<?php echo base_url(); ?>projects/save_invoice_comments" style="margin-bottom: 0;" data-original-title="Notice: This is for special instuctions to whom the invoice is to be send.">
+
+													<input type="hidden" id="current_tab" name="current_tab" value="">
+
 											<div class="box ">
 													<div class="box-head pad-5">
 														<label><i class="fa fa-pencil-square-o fa-lg"></i> Invoice Comments</label> <em style="font-size: 12px;">Maximum of two (2) lines only.</em>
@@ -1279,6 +1312,14 @@ $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 		localStorage.setItem("local_storage_set", "0");
 		
 	}
+
+	$('#myTab a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	    
+	    var tab_id = e.target;
+
+	    $('#current_tab').val(tab_id);
+	});
+
 </script>
 
 
