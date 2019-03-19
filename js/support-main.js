@@ -1815,7 +1815,10 @@ $('#var_update').click(function(){
 
     if(variation != variation_total_raw){
       alert('Alert! Variation Totals is been updated, Page is reloading.');
-      location.reload();
+      window.location = '?curr_tab=variations';
+      // var file_path = baseurl+"projects/view/"+proj_id+"?curr_tab=variations";
+      // window.open(file_path,"_self");
+      //location.reload();
     }
   },800);
 
@@ -2504,15 +2507,15 @@ $('#new_password').keyup(function(e) {
    $('form.change_password_form').find('input#confirm_password').prop('disabled', true);
  }
 
- var new_pass = $('#new_password').val();
- var confirm_password = $('#confirm_password').val();
+//  var new_pass = $('#new_password').val();
+//  var confirm_password = $('#confirm_password').val();
 
- if(new_pass == confirm_password){
-  $('form.change_password_form').find('.change_passwprd_button').remove();
-  $('form.change_password_form').append('<input type="submit" name="update_password" value="Update Password" class="pull-right btn btn-danger m-right-5 m-bottom-10 change_passwprd_button">');
-}else{
-  $('form.change_password_form').find('.change_passwprd_button').remove();
-}
+//  if(new_pass == confirm_password){
+//   $('form.change_password_form').find('.change_passwprd_button').remove();
+//   $('form.change_password_form').append('<input type="submit" name="update_password" value="Update Password" class="pull-right btn btn-danger m-right-5 m-bottom-10 change_passwprd_button">');
+// }else{
+//   $('form.change_password_form').find('.change_passwprd_button').remove();
+// }
 
 
 return true;
@@ -2532,12 +2535,12 @@ $('#confirm_password').keyup(function(e) {
   if(new_pass == confirm_password){
     $('#passstrength').removeClass('.alert-info').removeClass('alert-warning').removeClass('alert-danger').addClass('alert-success').show();
     $('#passstrength').html('Password matched!');
-    $('form.change_password_form').find('.change_passwprd_button').remove();
-    $('form.change_password_form').append('<input type="submit" name="update_password" value="Update Password" class="pull-right btn btn-danger m-right-5 m-bottom-10 change_passwprd_button">');
+    // $('form.change_password_form').find('.change_passwprd_button').remove();
+    // $('form.change_password_form').append('<input type="submit" name="update_password" value="Update Password" class="pull-right btn btn-danger m-right-5 m-bottom-10 change_passwprd_button">');
   }else{
     $('#passstrength').removeClass('.alert-info').removeClass('alert-warning').removeClass('alert-success').addClass('alert-danger').show();
     $('#passstrength').html('Please Confirm your new password.');
-    $('form.change_password_form').find('.change_passwprd_button').remove();
+    // $('form.change_password_form').find('.change_passwprd_button').remove();
   }
 
 });
@@ -4140,6 +4143,87 @@ $('button.set_full_day').click(function(){
 });
 
 
+// $('.print-wip').on("click", function(event) {
+//   event.preventDefault();
+//   var totals_wip = $('.totals_wip').html();
+//   var has_error = 0;
+
+//   var wip_client = $('select.report_company').val();
+//   var wip_pm = $('.select-pm-tbl').val();
+//   var wip_find_start_finish_date = $('#finish_date_start').val();
+//   var wip_find_finish_date = $('#finish_date').val();
+//   var wip_cost_total = $('#cost_total').val();
+//   var selected_cat = $('#select-cat-tbl').val();
+
+
+//   var wip_start_date_start_a = $('#start_date_start').val();
+//   var wip_start_date_b = $('#start_date').val();
+  
+//   var doc_type = $('#doc_type').val();
+
+//   var date_created_start = $('#date_created_start').val();
+//   var date_created = $('#date_created').val();
+  
+  
+//   var un_acepted_start_date = $('#un_acepted_start_date').val();
+//   var un_acepted_end_date = $('#un_acepted_end_date').val();
+
+//   if(doc_type == 'WIP'){
+//     var prj_status = 'wip';
+//   }else{
+//     var prj_status = $('select#prj_status').val();
+//   }
+
+ 
+
+
+
+
+//   $('#loading_modal').modal('show');
+  
+
+
+
+//   $('.report_result').html('');
+
+
+//   if(has_error == 0){
+//     setTimeout(function(){
+
+//       var wip_project_total = ''; // $('.wip_project_total').html();
+//       var wip_project_estimate = ''; // $('.wip_project_estimate').html();
+//       var wip_project_quoted = ''; // $('.wip_project_quoted').html();
+//       var wip_project_total_invoiced = ''; // $('.wip_project_total_invoiced').html();
+
+//       var wip_sort = $('select#wip_sort').val();
+
+//       var data = wip_client+'*'+wip_pm+'*'+wip_find_start_finish_date+'*'+wip_find_finish_date+'*'+wip_cost_total+'*'+selected_cat+'*'+wip_project_total+'*'+wip_project_estimate+'*'+wip_project_quoted+'*'+wip_project_total_invoiced+'*'+wip_sort+'*'+wip_start_date_start_a+'*'+wip_start_date_b+'*'+doc_type+'*'+date_created_start+'*'+date_created+'*'+prj_status+'*'+un_acepted_start_date+'*'+un_acepted_end_date;
+
+//  // alert(data);
+
+//       $.ajax({
+//         'url' : base_url+'reports/wip_report',
+//         'type' : 'POST',
+//         'data' : {'ajax_var' : data },
+//         'success' : function(data){
+//           if(data){
+//             $('#loading_modal').modal('hide');
+//             $('.report_result').html(data);
+//             window.open(baseurl+'docs/temp/'+data+'.pdf', '', 'height=600,width=850,top=100,left=100,location=no,toolbar=no,resizable=yes,menubar=no,scrollbars=yes',true);
+//           }
+//         }
+//       });  
+
+
+//     }, 1000);  
+// }
+
+
+
+// var wipTable = $('#wipTable').dataTable();
+// wipTable.fnFilter();
+// });
+
 $('.print-wip').on("click", function(event) {
   event.preventDefault();
   var totals_wip = $('.totals_wip').html();
@@ -4164,6 +4248,9 @@ $('.print-wip').on("click", function(event) {
   
   var un_acepted_start_date = $('#un_acepted_start_date').val();
   var un_acepted_end_date = $('#un_acepted_end_date').val();
+  var output_file = $('select#output_file').val();
+
+
 
   if(doc_type == 'WIP'){
     var prj_status = 'wip';
@@ -4172,19 +4259,29 @@ $('.print-wip').on("click", function(event) {
   }
 
  
+  if (prj_status == 'unaccepted'){
 
+    if (un_acepted_start_date == '' && un_acepted_end_date == ''){
 
+      has_error = 1;
+      alert("Please fill the required fields.");
+      
+      $('#un_acepted_start_date').parent().parent().addClass('has-error');
+      $('#un_acepted_end_date').parent().parent().addClass('has-error');
+    }else{
+      $('#un_acepted_start_date').parent().parent().removeClass('has-error');
+      $('#un_acepted_start_date').parent().parent().addClass('has-error');
+    }
 
-
-  $('#loading_modal').modal('show');
-  
-
-
-
-  $('.report_result').html('');
-
+  }
 
   if(has_error == 0){
+
+    $('#wip_filter_modal').modal('hide');
+
+    $('#loading_modal').modal('show');
+    $('.report_result').html('');
+
     setTimeout(function(){
 
       var wip_project_total = ''; // $('.wip_project_total').html();
@@ -4194,9 +4291,17 @@ $('.print-wip').on("click", function(event) {
 
       var wip_sort = $('select#wip_sort').val();
 
-      var data = wip_client+'*'+wip_pm+'*'+wip_find_start_finish_date+'*'+wip_find_finish_date+'*'+wip_cost_total+'*'+selected_cat+'*'+wip_project_total+'*'+wip_project_estimate+'*'+wip_project_quoted+'*'+wip_project_total_invoiced+'*'+wip_sort+'*'+wip_start_date_start_a+'*'+wip_start_date_b+'*'+doc_type+'*'+date_created_start+'*'+date_created+'*'+prj_status+'*'+un_acepted_start_date+'*'+un_acepted_end_date;
+      var data = wip_client+'*'+wip_pm+'*'+wip_find_start_finish_date+'*'+wip_find_finish_date+'*'+wip_cost_total+'*'+selected_cat+'*'+wip_project_total+'*'+wip_project_estimate+'*'+wip_project_quoted+'*'+wip_project_total_invoiced+'*'+wip_sort+'*'+wip_start_date_start_a+'*'+wip_start_date_b+'*'+doc_type+'*'+date_created_start+'*'+date_created+'*'+prj_status+'*'+un_acepted_start_date+'*'+un_acepted_end_date+'*'+output_file;
 
  // alert(data);
+
+
+
+
+   
+    if(output_file == 'pdf'){
+
+
 
       $.ajax({
         'url' : base_url+'reports/wip_report',
@@ -4210,6 +4315,21 @@ $('.print-wip').on("click", function(event) {
           }
         }
       });  
+
+
+    }else{
+
+
+     $('#wip_filter_modal').modal('hide');
+     $('#loading_modal').modal('hide');
+            window.open(baseurl+'reports/wip_report?ajax_var='+data, '_blank');
+
+
+    } 
+
+
+
+
 
 
     }, 1000);  

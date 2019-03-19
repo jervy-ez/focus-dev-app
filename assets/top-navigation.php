@@ -111,7 +111,7 @@
 			<?php endif; ?>
 
 
-
+ <?php $user_id = $this->session->userdata('user_id'); if($user_id != '72'): ?>
 
 			<ul class="nav navbar-nav navbar-left">
 				<li>
@@ -123,6 +123,7 @@
 			</ul>
 
 
+			<?php endif; ?>
 
 
 
@@ -279,7 +280,7 @@
 	      <div class="modal-body pad-5">
 	        <div class="box-area pad-5 clearfix">
 
-	        	<input type="hidden" class="no_hrs_of_work" name="no_hrs_of_work" value="<?php echo $leave_remaining1->no_hrs_of_work; ?>">
+	        	<input type="hidden" class="no_hrs_of_work" name="no_hrs_of_work" value="<?php echo isset($leave_remaining1->no_hrs_of_work) ? $leave_remaining1->no_hrs_of_work : '8'; ?>">
 
 				<input type="hidden" id="user_id_page_no_hrs_of_work" name="user_id_page_no_hrs_of_work" value="<?php echo (!empty($leave_remaining2->no_hrs_of_work)) ? $leave_remaining2->no_hrs_of_work : ''; ?>">	        	
 
@@ -499,7 +500,7 @@
 					<div class="modal-body pad-10">
 
 						<div id="" class=""><select id="view_other_dashboard" class="form-control m-bottom-10">
-							<option selected value="">Select User</option>
+							
 							<?php foreach ($project_manager as $row){	
 									if($row->user_id != 29){ echo '<option value="'.$row->user_id.'-pm">'.$row->user_first_name.' '.$row->user_last_name.'</option>'; }
 							}?>
@@ -535,6 +536,20 @@
 				window.open("<?php echo base_url(); ?>dashboard?dash_view="+data);
 			},2000);
 		});
+
+
+		$(function() {
+			var select = $('select#view_other_dashboard');
+			select.html(select.find('option').sort(function(x, y) {
+				return $(x).text() > $(y).text() ? 1 : -1;
+			}));
+
+
+			$('select#view_other_dashboard').prepend('<option selected value="x">Select User</option>').val('x');
+
+		});
+
+
 	</script>
 
 

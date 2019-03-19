@@ -298,8 +298,15 @@ $today_rvw_mrkr
 
 	}elseif($status == $get_table_status || $get_table_status == 'all'){
 
-		echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
-
+		if ($status == 'quote'){
+			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'?tab=works" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
+		} else if ($status == 'invoiced') {
+			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'?tab=invoice" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
+		} else if ($status == 'paid') {
+			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'?tab=project_details" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
+		} else {
+			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
+		}
 
 		if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
 			echo '<td>'.number_format($row['project_total']+$row['variation_total']).'</td>';

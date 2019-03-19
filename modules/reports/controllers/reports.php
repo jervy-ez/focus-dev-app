@@ -1105,6 +1105,13 @@ public function process_wip_review_uni($pm_id){
 		$static_defaults = array_shift($static_defaults_q->result() ) ;
 		$day_revew_req = $static_defaults->prj_review_day;	
 		$row_stat = '';	
+
+
+		$q_prj_rvw_data = $this->projects_m->get_project_rev_data($row['project_id'], $deadline_day);
+		$has_logged_rvw = $q_prj_rvw_data->num_rows;
+		$prj_rvw_data = array_shift($q_prj_rvw_data->result_array());
+
+
 		//$timestamp_day_revuew_req =  strtotime("$day_revew_req this week");
 
 		$content = '';
@@ -1159,7 +1166,7 @@ public function process_wip_review_uni($pm_id){
 
 			$project_total_percent = number_format($project_total_percent,2);
 
-
+/*
 			if($timestamp_lwk_revuew_req < $today_rvw_mrkr &&   $today_rvw_mrkr <= $timestamp_day_revuew_req ){
 
 				if( $timestamp_lwk_revuew_req < $row->unix_review_date && $row->unix_review_date <= $timestamp_day_revuew_req  ){
@@ -1176,6 +1183,17 @@ public function process_wip_review_uni($pm_id){
 					$row_stat = 'needed_rev';
 				}
 
+			}
+*/
+
+			if($has_logged_rvw == 0){
+				$row_stat = 'needed_rev';
+			}else{
+				if($timestamp_lwk_revuew_req < $row->unix_review_date && $row->unix_review_date <= $timestamp_day_revuew_req ){
+					$row_stat = 'posted_rev';
+				}else{
+					$row_stat = 'needed_rev';
+				}
 			}
 
 			$content .= '<tr class="prj_rvw_rw '.$row_stat.'" id="'.$row->invoice_project_id.'-uninvoiced_prj_view" >';

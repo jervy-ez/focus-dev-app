@@ -140,6 +140,11 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
+	public function check_log_jobdate($project_id){
+		$query = $this->db->query("SELECT * FROM `user_log` WHERE `user_log`.`actions` LIKE '%Removed job date%' AND `user_log`.`project_id` = '$project_id' ORDER BY `user_log`.`user_log_id` DESC LIMIT 1");
+		return $query;
+	}
+
 	public function select_particular_contractor($id){
 		$query = $this->db->query("SELECT * FROM `job_category` WHERE `job_category_id` = $id");
 		return $query;

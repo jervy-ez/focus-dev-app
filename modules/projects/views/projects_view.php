@@ -115,6 +115,9 @@
 					case 'invoice':
 						$curr_tab = 'invoice';
 						break;
+					case 'works':
+						$curr_tab = 'works';
+						break;
 					case 'variations':
 						$curr_tab = 'variations';
 						break;
@@ -157,6 +160,9 @@
 				switch($_GET['tab']){
 					case 'invoice':
 						$curr_tab = 'invoice';
+						break;
+					case 'works':
+						$curr_tab = 'works';
 						break;
 					case 'variations':
 						$curr_tab = 'variations';
@@ -231,9 +237,27 @@
 	}
 ?>
 
+<?php 
+	if(isset($_GET['tab'])){
+		if ($_GET['tab'] == 'variations'){
+?>
+	<input type="hidden" id="tab_variations_hidden" name="tab_variations_hidden" value="<?php echo $_GET['tab']; ?>">
+<?php
+		}
+	}
 
+?>
 
+<?php 
+	if(isset($_GET['curr_tab'])){
+		if ( $_GET['curr_tab'] == 'variations'){
+?>
+	<input type="hidden" id="tab_variations_hidden" name="tab_variations_hidden" value="<?php echo $_GET['curr_tab']; ?>">
+<?php
+		}
+	}
 
+?>
 
 <!-- title bar 
 estimate-->
@@ -399,7 +423,7 @@ $filtered_date = $induction_commencement_date;
 										</li>
 										
 										<li class="<?php echo ($curr_tab == 'variations' ? 'active' : '' ); ?>">
-											<a href="#variations" onclick = "load_variation()" data-toggle="tab"><i class="fa fa-cube fa-lg"></i> Variations</a>
+											<a href="#variations" id="tab_variation_btn" data-toggle="tab"><i class="fa fa-cube fa-lg"></i> Variations</a>  <!-- onclick = "load_variation()" -->
 										</li>
 										
 										<li class="<?php echo ($curr_tab == 'attachments' ? 'active' : '' ); ?>">
@@ -984,7 +1008,7 @@ $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 												  white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
 												  white-space: -pre-wrap !important;      /* Opera 4-6 */
 												  white-space: -o-pre-wrap !important;    /* Opera 7 */
-												  word-wrap: break-word !important;       /* Internet Explorer 5.5+ */ "><?php echo $project_comments; ?></pre>
+												  word-wrap: break-word !important;       /* Internet Explorer 5.5+ */ "><?php echo htmlentities($project_comments); ?></pre>
 																			</div>
 																		</div>
 
@@ -1318,6 +1342,19 @@ $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 	    var tab_id = e.target;
 
 	    $('#current_tab').val(tab_id);
+	});
+
+	$(document).ready(function() { 
+
+		if ($('#tab_variations_hidden').val() == 'variations'){
+
+			setTimeout(function(){  
+
+				$('#tab_variation_btn').trigger('click');
+
+		  	},100);
+		}
+
 	});
 
 </script>

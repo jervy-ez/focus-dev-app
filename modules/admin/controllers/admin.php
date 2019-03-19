@@ -61,11 +61,14 @@ class Admin extends MY_Controller{
 		//admin_defaulst
 		$q_admin_defaults = $this->admin_m->fetch_admin_defaults();
 		$data_b = array_shift($q_admin_defaults->result_array());
+
+		$static_defaults = $this->user_model->select_static_defaults();
+		$data_sd = array_shift($static_defaults->result_array());
 		//admin_defaulst
 
 		$data['warranty_months'] = $data_b['warranty_months'];
 		$data['warranty_years'] = $data_b['warranty_years'];
-		$data['prj_review_day'] = $data_b['prj_review_day'];
+		$data['prj_review_day'] = $data_sd['prj_review_day'];
 
 		//default email message
 		$q_admin_default_email_message = $this->admin_m->fetch_admin_default_email_message();
@@ -864,20 +867,58 @@ $redirect_back = $this->session->userdata('referrer_url');
 	public function onboarding_email(){
 		$passArr = array();
 
-		$this->form_validation->set_rules('recipient_email', 'Days Password Expiration','trim|required|xss_clean');
-		$this->form_validation->set_rules('optional_cc_email', 'Temporary User Password','trim|xss_clean');
+		$this->form_validation->set_rules('onboarding_recipient_email', 'Days Password Expiration','trim|required|xss_clean');
+		$this->form_validation->set_rules('onboarding_optional_cc_email', 'Temporary User Password','trim|xss_clean');
 
 		if($this->form_validation->run() === false){
 			$passArr['onboarding_email_errors'] = validation_errors();
 			$this->index($passArr);
 		}else{
-			$recipient_email = $this->input->post('recipient_email', true);
-			$optional_cc_email = $this->input->post('optional_cc_email', true);
+			$recipient_email = $this->input->post('onboarding_recipient_email', true);
+			$optional_cc_email = $this->input->post('onboarding_optional_cc_email', true);
 			
 			$this->admin_m->update_static_settings_onboarding_email($recipient_email,$optional_cc_email);
 
 			$update_success = 'The User Accounts Setting is now updated.';
 			$this->session->set_flashdata('onboarding_default_email', $update_success);
+			redirect('/admin');
+		}
+	}
+
+	public function onboarding_contractor_msg(){
+		$passArr = array();
+
+		$this->form_validation->set_rules('onboarding_contractor_msg', 'Onboarding Contractor Message','trim|required|xss_clean');
+
+		if($this->form_validation->run() === false){
+			$passArr['onboarding_contractor_msg_error'] = validation_errors();
+			$this->index($passArr);
+		}else{
+			$onboarding_contractor_msg = $this->input->post('onboarding_contractor_msg', true);
+			
+			$this->admin_m->update_static_settings_onboarding_contractor_msg($onboarding_contractor_msg);
+
+			$update_success = 'Onboarding Contractor Message is updated';
+			$this->session->set_flashdata('onboarding_contractor_msg', $update_success);
+			redirect('/admin');
+		}
+	}
+
+	public function onboarding_general_msg(){
+		$passArr = array();
+
+		$this->form_validation->set_rules('onboarding_general_msg', 'Onboarding General Message','trim|required|xss_clean');
+
+		if($this->form_validation->run() === false){
+			$passArr['onboarding_general_msg_error'] = validation_errors();
+			$this->index($passArr);
+		}else{
+			$onboarding_general_msg = $this->input->post('onboarding_general_msg', true);
+			
+			$this->admin_m->update_static_settings_onboarding_general_msg($onboarding_general_msg);
+
+			$update_success = 'Onboarding General Message is updated';
+			$this->session->set_flashdata('onboarding_general_msg', $update_success);
 			redirect('/admin');
 		}
 	}
@@ -1835,8 +1876,8 @@ $redirect_back = $this->session->userdata('referrer_url');
 		         $checked_category = $checked_category.",".$check;
 		    }
 
-		    $work_value = $_POST['work_value'];
-			$project_total = $_POST['project_total'];
+		    $work_value = str_replace(",","",$_POST['work_value']);
+			$project_total = str_replace(",","",$_POST['project_total']);
 
 		}
 

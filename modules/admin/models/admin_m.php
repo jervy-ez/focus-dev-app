@@ -311,6 +311,13 @@ class Admin_m extends CI_Model{
 		$query = $this->db->query("UPDATE `static_defaults` SET `invoice_to` = '$recipient_email', `invoice_cc` = '$optional_cc_email' WHERE `static_defaults`.`static_defaults_id` = 1");
 	}
 
+	public function update_static_settings_onboarding_contractor_msg($onboarding_contractor_msg){
+		$query = $this->db->query("UPDATE `static_defaults` SET `onboarding_contractor_msg` = '$onboarding_contractor_msg' WHERE `static_defaults`.`static_defaults_id` = 1");
+	}
+
+	public function update_static_settings_onboarding_general_msg($onboarding_general_msg){
+		$query = $this->db->query("UPDATE `static_defaults` SET `onboarding_general_msg` = '$onboarding_general_msg' WHERE `static_defaults`.`static_defaults_id` = 1");
+	}
 
 	public function update_abn_acn_jurisdiction($abn,$acn,$jurisdiction_id,$comp_id){
 		$query = $this->db->query("UPDATE `company_details` ,`admin_company` SET `company_details`.`abn` = '$abn', `company_details`.`acn` = '$acn', `admin_company`.`admin_jurisdiction_state_ids` = '$jurisdiction_id' WHERE `company_details`.`company_id` = '$comp_id' AND `admin_company`.`admin_company_details_id` = '$comp_id'");

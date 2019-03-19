@@ -62,14 +62,23 @@
 <style type="text/css">
 	
   .notes_line.user_postby_ian, .notes_line.user_postby_ian small {
-    background-color: #ed9b26;
+    background-color: #ed9b26 !important;
     color: #fff !important;
   }
 
-  .notes_line.user_postby_ian{
+  .notes_line.comment_type_0{
     padding: 5px;
+    background-color: #16466b;
+    color: #fff !important;
   }
-  
+
+  .notes_line.comment_type_0 small{
+    color: #fff !important;
+  }
+
+
+
+
 </style>
 
 <?php if(isset($project_id) ): ?>

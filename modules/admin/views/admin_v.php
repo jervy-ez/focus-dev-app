@@ -1470,484 +1470,10 @@
 
 								<div class="box blue-border m-top-0">
 									<div class="box-head blue-bg pad-5">
-										<label class="blue-title"><i class="fa fa-envelope-open fa-lg"></i> Email Default Settings</label>
+										<label class="blue-title"><i class="fa fa-envelope-open fa-lg"></i> Job Book and CPO/CQR Settings</label>
 									</div>
 
 									<div class="box-area clearfix pad-10">
-
-										<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message_induction">
-
-											<div class="box yellow-border">
-												<div class="box-head yellow-bg pad-5 m-bottom-5">
-													<label class="yellow-title"><i class="fa fa-shield fa-lg"></i> Induction Health and Safety Email Defaults</label>
-												</div>
-
-												<div class="box-area pad-5 clearfix">
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
-														<label for="time-half" class="col-sm-4 control-label">Default Sender Name:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_name_induction" name="sender_name_induction" value = "<?php echo ($this->input->post('sender_name_induction') ?  $this->input->post('sender_name_induction') : $induction_sender_name ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
-														<label for="double-time" class="col-sm-4 control-label">Default Senders Email:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_email_induction" name="sender_email_induction" value = "<?php echo ($this->input->post('sender_email_induction') ?  $this->input->post('sender_email_induction') : $induction_sender_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
-														<label for="time-half" class="col-sm-4 control-label">Subject:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="subject_induction" name="subject_induction" value = "<?php echo ($this->input->post('subject_induction') ?  $this->input->post('subject_induction') : $induction_subject ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
-														<label for="double-time" class="col-sm-4 control-label">BCC:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="bcc_email_induction" name="bcc_email_induction" value = "<?php echo ($this->input->post('bcc_email_induction') ?  $this->input->post('bcc_email_induction') : $induction_bcc_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
-														<label for="double-time" class="col-sm-4 control-label">User Responsible: </label>
-														<div class="col-sm-8">
-															<select name="user_assigned_induction" class="form-control find_contact_person chosen" id="user_assigned_induction" style="width: 100%;" tabindex="25">																										
-																<?php //$this->company->company_list('dropdown'); ?>
-																<option value=''>Select User Name*</option>													
-																<?php $this->admin->fetch_users_list(); ?>														
-															</select>
-															<?php echo $this->input->post('user_id'); ?>
-															<script type="text/javascript">$('select#user_assigned_induction').val('<?php echo $induction_assigned_user; ?>');</script>
-															
-														</div>
-													</div>
-
-													<div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Will be send to contractor with the a link to fill up Contractos Site Staff for induction. <i class="fa fa-quote-right"></i></p></strong></div>
-													
-													<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
-														<label for="time-half" class="col-sm-2 control-label">New Message to Contactor for Induction:</label>
-														<div class="col-sm-10">
-															<textarea class="form-control" id="email_msg_induction" name="email_msg_induction" style="height: 100px "><?php echo ($this->input->post('email_msg_induction') ?  $this->input->post('email_msg_induction') : $induction_message_content ); ?></textarea>
-														</div>
-													</div>
-
-													<div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Will be send out automatically to contractor a year after it was entered. <i class="fa fa-quote-right"></i></p></strong></div>
-
-													<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
-														<label for="time-half" class="col-sm-2 control-label">Will be send out automatically to contractor a year after it was entered:</label>
-														<div class="col-sm-10">
-															<textarea class="form-control" id="email_msg_induction_update" name="email_msg_induction_update" style="height: 100px "><?php echo ($this->input->post('email_msg_induction_update') ?  $this->input->post('email_msg_induction_update') : $induction_message_content_update ); ?></textarea>
-														</div>
-													</div>
-
-													<div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Will be to Contractor's Site Staff with the link of the Video for Site Specific Induction. <i class="fa fa-quote-right"></i></p></strong></div>
-
-													<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
-														<label for="time-half" class="col-sm-2 control-label">Message to Site Staff for Site Specific Induction:</label>
-														<div class="col-sm-10">
-															<textarea class="form-control" id="email_msg_induction_video" name="email_msg_induction_video" style="height: 100px "><?php echo ($this->input->post('email_msg_induction_video') ?  $this->input->post('email_msg_induction_video') : $induction_message_content_video ); ?></textarea>
-														</div>
-													</div>
-
-													<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
-												        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
-												    </div>
-
-												</div>
-											</div>
-									    </form>
-
-									    <p><hr /></p>
-
-										<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message">
-
-											<div class="box yellow-border">
-												<div class="box-head yellow-bg pad-5 m-bottom-5">
-													<label class="yellow-title"><i class="fa fa-plus-square fa-lg"></i> Insurance Email Defaults</label>
-												</div>
-
-												<div class="box-area pad-5 clearfix">
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
-														<label for="time-half" class="col-sm-4 control-label">Default Sender Name:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_name_no_insurance" name="sender_name_no_insurance" value = "<?php echo ($this->input->post('sender_name_no_insurance') ?  $this->input->post('sender_name_no_insurance') : $sender_name ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
-														<label for="double-time" class="col-sm-4 control-label">Default Senders Email:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_email_no_insurnace" name="sender_email_no_insurnace" value = "<?php echo ($this->input->post('sender_email_no_insurnace') ?  $this->input->post('sender_email_no_insurnace') : $sender_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
-														<label for="time-half" class="col-sm-4 control-label">Subject:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="subject_no_insurnace" name="subject_no_insurnace" value = "<?php echo ($this->input->post('subject_no_insurnace') ?  $this->input->post('subject_no_insurnace') : $subject ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
-														<label for="double-time" class="col-sm-4 control-label">BCC:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="bcc_email_no_insurnace" name="bcc_email_no_insurnace" value = "<?php echo ($this->input->post('bcc_email_no_insurnace') ?  $this->input->post('bcc_email_no_insurnace') : $bcc_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
-														<label for="double-time" class="col-sm-4 control-label">User Responsible: </label>
-														<div class="col-sm-8">
-															<select name="user_assigned_forinsurance" class="form-control find_contact_person chosen" id="user_assigned_forinsurance" style="width: 100%;" tabindex="25">																										
-																<?php //$this->company->company_list('dropdown'); ?>
-																<option value=''>Select User Name*</option>													
-																<?php $this->admin->fetch_users_list(); ?>														
-															</select>
-															<?php echo $this->input->post('user_id'); ?>
-															<script type="text/javascript">$('select#user_assigned_forinsurance').val('<?php echo $user_id; ?>');</script>
-															
-														</div>
-													</div>
-
-													<div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Automatically sent to any CONTRACTOR who has no insurance documents loaded OR the insurance documents are expired, WHEN a purchase order is reconciled. <i class="fa fa-quote-right"></i></p></strong></div>
-													
-													<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
-														<label for="time-half" class="col-sm-2 control-label">Message to Contractor for Expires or <br>no Insurance:</label>
-														<div class="col-sm-10">
-															<textarea class="form-control" id="email_msg_no_insurance" name="email_msg_no_insurance" style="height: 100px "><?php echo ($this->input->post('email_msg_no_insurance') ?  $this->input->post('email_msg_no_insurance') : $message_content ); ?></textarea>
-														</div>
-													</div>
-
-													<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
-												        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
-												    </div>
-												</div>
-											</div>
-									    </form>
-
-									    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message_onboarding">
-
-											<div class="box yellow-border">
-												<div class="box-head yellow-bg pad-5 m-bottom-5">
-													<label class="yellow-title"><i class="fa fa-link fa-lg"></i> Onboarding Sending Link Email Defaults</label>
-												</div>
-
-												<div class="box-area pad-5 clearfix">
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_name_onboarding')){ echo 'has-error';} ?>">
-														<label for="sender_name_onboarding" class="col-sm-4 control-label">Default Sender Name:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_name_onboarding" name="sender_name_onboarding" value = "<?php echo ($this->input->post('sender_name_onboarding') ?  $this->input->post('sender_name_onboarding') : $onboarding_sender_name ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_email_onboarding')){ echo 'has-error';} ?>">
-														<label for="sender_email_onboarding" class="col-sm-4 control-label">Default Senders Email:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_email_onboarding" name="sender_email_onboarding" value = "<?php echo ($this->input->post('sender_email_onboarding') ?  $this->input->post('sender_email_onboarding') : $onboarding_sender_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('subject_onboarding')){ echo 'has-error';} ?>">
-														<label for="subject_onboarding" class="col-sm-4 control-label">Subject:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="subject_onboarding" name="subject_onboarding" value = "<?php echo ($this->input->post('subject_onboarding') ?  $this->input->post('subject_onboarding') : $onboarding_subject ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('bcc_email_onboarding')){ echo 'has-error';} ?>">
-														<label for="bcc_email_onboarding" class="col-sm-4 control-label">BCC:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="bcc_email_onboarding" name="bcc_email_onboarding" value = "<?php echo ($this->input->post('bcc_email_onboarding') ?  $this->input->post('bcc_email_onboarding') : $onboarding_bcc_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('user_assigned_foronboarding')){ echo 'has-error';} ?>">
-														<label for="user_assigned_onboarding" class="col-sm-4 control-label">User Responsible: </label>
-														<div class="col-sm-8">
-															<select name="user_assigned_onboarding" class="form-control find_contact_person chosen" id="user_assigned_onboarding" style="width: 100%;" tabindex="25">																										
-																<?php //$this->company->company_list('dropdown'); ?>
-																<option value=''>Select User Name*</option>													
-																<?php $this->admin->fetch_users_list(); ?>														
-															</select>
-															<?php echo $this->input->post('user_id'); ?>
-															<script type="text/javascript">$('select#user_assigned_onboarding').val('<?php echo $onboarding_assigned_user; ?>');</script>
-															
-														</div>
-													</div>
-
-													<!-- <div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Automatically sent to any CONTRACTOR who has no insurance documents loaded OR the insurance documents are expired, WHEN a purchase order is reconciled. <i class="fa fa-quote-right"></i></p></strong></div> -->
-													
-													<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email_msg_onboarding')){ echo 'has-error';} ?>">
-														<label for="email_msg_onboarding" class="col-sm-2 control-label">Message to Contractor for Company Details:</label>
-														<div class="col-sm-10">
-															<textarea class="form-control" id="email_msg_onboarding" name="email_msg_onboarding" style="height: 100px "><?php echo ($this->input->post('email_msg_onboarding') ?  $this->input->post('email_msg_onboarding') : $onboarding_message_content ); ?></textarea>
-														</div>
-													</div>
-
-													<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
-												        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
-												    </div>
-												</div>
-											</div>
-									    </form>
-
-									    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/onboarding_email">
-
-											<?php if(@$onboarding_email_errors): ?>
-												<div class="no-pad-t">
-													<div class="border-less-box alert alert-danger fade in">
-														<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-														<h4>Oh snap! You got an error!</h4>
-														<?php echo $onboarding_email_errors;?>
-													</div>
-												</div>
-											<?php endif; ?>
-
-											<?php if(@$this->session->flashdata('onboarding_default_email')): ?>
-												<div class="no-pad-t">
-													<div class="border-less-box alert alert-success fade in">
-														<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-														<h4>Cheers!</h4>
-														<?php echo $this->session->flashdata('onboarding_default_email');?>
-													</div>
-												</div>
-											<?php endif; ?>
-
-											<div class="box yellow-border m-top-0">
-												<div class="box-head yellow-bg pad-5 m-bottom-5">
-													<label class="yellow-title"><i class="fa fa-bell fa-lg"></i> Onboarding Email Notification Recipient Defaults</label>
-												</div>
-
-												<div class="box-area pad-5 clearfix">
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('recipient_email')){ echo 'has-error';} ?>">
-														<label for="recipient_email" class="col-sm-4 control-label">Onboarding Recipient Email</label>
-														<div class="col-sm-8">
-															<div class="input-group">
-																<span class="input-group-addon" id=""><i class="fa fa-envelope-o"></i></span>
-																<input type="email" class="form-control" id="recipient_email" name="recipient_email" placeholder="Recipient Email" value="<?php echo $static_defaults[0]->onboarding_to; ?>">
-															</div>
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('optional_cc_email')){ echo 'has-error';} ?>">
-														<label for="optional_cc_email" class="col-sm-4 control-label">Onboarding Optional CC Email</label>
-														<div class="col-sm-8">
-															<div class="input-group">
-																<span class="input-group-addon" id=""><i class="fa fa-envelope-o"></i></span>
-																<input type="email" class="form-control" id="optional_cc_email" name="optional_cc_email" placeholder="Optional CC Email" value="<?php echo $static_defaults[0]->onboarding_cc; ?>">
-															</div>
-														</div>
-													</div>
-
-													<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
-												        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Emails</button>
-												    </div>
-												</div>
-											</div>
-
-									    </form>
-
-									    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message_onboarding_notif">
-
-											<div class="box yellow-border">
-												<div class="box-head yellow-bg pad-5 m-bottom-5">
-													<label class="yellow-title"><i class="fa fa-bell-o fa-lg"></i> Onboarding Email Notification Content Defaults</label>
-												</div>
-
-												<div class="box-area pad-5 clearfix">
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_name_onboarding_notif')){ echo 'has-error';} ?>">
-														<label for="sender_name_onboarding_notif" class="col-sm-4 control-label">Default Sender Name:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_name_onboarding_notif" name="sender_name_onboarding_notif" value = "<?php echo ($this->input->post('sender_name_onboarding_notif') ?  $this->input->post('sender_name_onboarding_notif') : $onboarding_notif_sender_name ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_email_onboarding_notif')){ echo 'has-error';} ?>">
-														<label for="sender_email_onboarding_notif" class="col-sm-4 control-label">Default Senders Email:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_email_onboarding_notif" name="sender_email_onboarding_notif" value = "<?php echo ($this->input->post('sender_email_onboarding_notif') ?  $this->input->post('sender_email_onboarding_notif') : $onboarding_notif_sender_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('subject_onboarding_notif')){ echo 'has-error';} ?>">
-														<label for="subject_onboarding_notif" class="col-sm-4 control-label">Subject:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="subject_onboarding_notif" name="subject_onboarding_notif" value = "<?php echo ($this->input->post('subject_onboarding_notif') ?  $this->input->post('subject_onboarding_notif') : $onboarding_notif_subject ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('bcc_email_onboarding_notif')){ echo 'has-error';} ?>">
-														<label for="bcc_email_onboarding_notif" class="col-sm-4 control-label">BCC:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="bcc_email_onboarding_notif" name="bcc_email_onboarding_notif" value = "<?php echo ($this->input->post('bcc_email_onboarding_notif') ?  $this->input->post('bcc_email_onboarding_notif') : $onboarding_notif_bcc_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('user_assigned_foronboarding')){ echo 'has-error';} ?>">
-														<label for="user_assigned_onboarding_notif" class="col-sm-4 control-label">User Responsible: </label>
-														<div class="col-sm-8">
-															<select name="user_assigned_onboarding_notif" class="form-control find_contact_person chosen" id="user_assigned_onboarding_notif" style="width: 100%;" tabindex="25">																										
-																<?php //$this->company->company_list('dropdown'); ?>
-																<option value=''>Select User Name*</option>													
-																<?php $this->admin->fetch_users_list(); ?>														
-															</select>
-															<?php echo $this->input->post('user_id'); ?>
-															<script type="text/javascript">$('select#user_assigned_onboarding_notif').val('<?php echo $onboarding_notif_assigned_user; ?>');</script>
-															
-														</div>
-													</div>
-
-													<!-- <div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Automatically sent to any CONTRACTOR who has no insurance documents loaded OR the insurance documents are expired, WHEN a purchase order is reconciled. <i class="fa fa-quote-right"></i></p></strong></div> -->
-													
-													<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email_msg_onboarding_notif')){ echo 'has-error';} ?>">
-														<label for="email_msg_onboarding_notif" class="col-sm-2 control-label">Message to Contractor for Company Details:</label>
-														<div class="col-sm-10">
-															<textarea class="form-control" id="email_msg_onboarding_notif" name="email_msg_onboarding_notif" style="height: 100px "><?php echo ($this->input->post('email_msg_onboarding_notif') ?  $this->input->post('email_msg_onboarding_notif') : $onboarding_notif_message_content ); ?></textarea>
-														</div>
-													</div>
-
-													<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
-												        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
-												    </div>
-												</div>
-											</div>
-									    </form>
-
-									    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message_onboarding_approved">
-
-											<div class="box yellow-border">
-												<div class="box-head yellow-bg pad-5 m-bottom-5">
-													<label class="yellow-title"><i class="fa fa-check fa-lg"></i> Onboarding Approved Defaults</label>
-												</div>
-
-												<div class="box-area pad-5 clearfix">
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_name_onboarding_approved')){ echo 'has-error';} ?>">
-														<label for="sender_name_onboarding_approved" class="col-sm-4 control-label">Default Sender Name:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_name_onboarding_approved" name="sender_name_onboarding_approved" value = "<?php echo ($this->input->post('sender_name_onboarding_approved') ?  $this->input->post('sender_name_onboarding_approved') : $onboarding_approved_sender_name ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_email_onboarding_approved')){ echo 'has-error';} ?>">
-														<label for="sender_email_onboarding_approved" class="col-sm-4 control-label">Default Senders Email:</label>
-							 							<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_email_onboarding_approved" name="sender_email_onboarding_approved" value = "<?php echo ($this->input->post('sender_email_onboarding_approved') ?  $this->input->post('sender_email_onboarding_approved') : $onboarding_approved_sender_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('subject_onboarding_approved')){ echo 'has-error';} ?>">
-														<label for="subject_onboarding_approved" class="col-sm-4 control-label">Subject:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="subject_onboarding_approved" name="subject_onboarding_approved" value = "<?php echo ($this->input->post('subject_onboarding_approved') ?  $this->input->post('subject_onboarding_approved') : $onboarding_approved_subject ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('bcc_email_onboarding_approved')){ echo 'has-error';} ?>">
-														<label for="bcc_email_onboarding_approved" class="col-sm-4 control-label">BCC:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="bcc_email_onboarding_approved" name="bcc_email_onboarding_approved" value = "<?php echo ($this->input->post('bcc_email_onboarding_approved') ?  $this->input->post('bcc_email_onboarding_approved') : $onboarding_approved_bcc_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('user_assigned_foronboarding')){ echo 'has-error';} ?>">
-														<label for="user_assigned_onboarding_approved" class="col-sm-4 control-label">User Responsible: </label>
-														<div class="col-sm-8">
-															<select name="user_assigned_onboarding_approved" class="form-control find_contact_person chosen" id="user_assigned_onboarding_approved" style="width: 100%;" tabindex="25">																										
-																<?php //$this->company->company_list('dropdown'); ?>
-																<option value=''>Select User Name*</option>													
-																<?php $this->admin->fetch_users_list(); ?>														
-															</select>
-															<?php echo $this->input->post('user_id'); ?>
-															<script type="text/javascript">$('select#user_assigned_onboarding_approved').val('<?php echo $onboarding_approved_assigned_user; ?>');</script>
-															
-														</div>
-													</div>
-
-													<!-- <div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Automatically sent to any CONTRACTOR who has no insurance documents loaded OR the insurance documents are expired, WHEN a purchase order is reconciled. <i class="fa fa-quote-right"></i></p></strong></div> -->
-													
-													<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email_msg_onboarding_approved')){ echo 'has-error';} ?>">
-														<label for="email_msg_onboarding_approved" class="col-sm-2 control-label">Message to Contractor for Company Details:</label>
-														<div class="col-sm-10">
-															<textarea class="form-control" id="email_msg_onboarding_approved" name="email_msg_onboarding_approved" style="height: 100px "><?php echo ($this->input->post('email_msg_onboarding_approved') ?  $this->input->post('email_msg_onboarding_approved') : $onboarding_approved_message_content ); ?></textarea>
-														</div>
-													</div>
-
-													<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
-												        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
-												    </div>
-												</div>
-											</div>
-									    </form>
-
-									    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message_onboarding_declined">
-
-											<div class="box yellow-border">
-												<div class="box-head yellow-bg pad-5 m-bottom-5">
-													<label class="yellow-title"><i class="fa fa-times fa-lg"></i> Onboarding Declined Defaults</label>
-												</div>
-
-												<div class="box-area pad-5 clearfix">
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_name_onboarding_declined')){ echo 'has-error';} ?>">
-														<label for="sender_name_onboarding_declined" class="col-sm-4 control-label">Default Sender Name:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_name_onboarding_declined" name="sender_name_onboarding_declined" value = "<?php echo ($this->input->post('sender_name_onboarding_declined') ?  $this->input->post('sender_name_onboarding_declined') : $onboarding_declined_sender_name ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_email_onboarding_declined')){ echo 'has-error';} ?>">
-														<label for="sender_email_onboarding_declined" class="col-sm-4 control-label">Default Senders Email:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="sender_email_onboarding_declined" name="sender_email_onboarding_declined" value = "<?php echo ($this->input->post('sender_email_onboarding_declined') ?  $this->input->post('sender_email_onboarding_declined') : $onboarding_declined_sender_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('subject_onboarding_declined')){ echo 'has-error';} ?>">
-														<label for="subject_onboarding_declined" class="col-sm-4 control-label">Subject:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="subject_onboarding_declined" name="subject_onboarding_declined" value = "<?php echo ($this->input->post('subject_onboarding_declined') ?  $this->input->post('subject_onboarding_declined') : $onboarding_declined_subject ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('bcc_email_onboarding_declined')){ echo 'has-error';} ?>">
-														<label for="bcc_email_onboarding_declined" class="col-sm-4 control-label">BCC:</label>
-														<div class="col-sm-8">
-															<input type = "text" class="form-control" id="bcc_email_onboarding_declined" name="bcc_email_onboarding_declined" value = "<?php echo ($this->input->post('bcc_email_onboarding_declined') ?  $this->input->post('bcc_email_onboarding_declined') : $onboarding_declined_bcc_email ); ?>">
-														</div>
-													</div>
-
-													<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('user_assigned_foronboarding')){ echo 'has-error';} ?>">
-														<label for="user_assigned_onboarding_declined" class="col-sm-4 control-label">User Responsible: </label>
-														<div class="col-sm-8">
-															<select name="user_assigned_onboarding_declined" class="form-control find_contact_person chosen" id="user_assigned_onboarding_declined" style="width: 100%;" tabindex="25">																										
-																<?php //$this->company->company_list('dropdown'); ?>
-																<option value=''>Select User Name*</option>													
-																<?php $this->admin->fetch_users_list(); ?>														
-															</select>
-															<?php echo $this->input->post('user_id'); ?>
-															<script type="text/javascript">$('select#user_assigned_onboarding_declined').val('<?php echo $onboarding_declined_assigned_user; ?>');</script>
-															
-														</div>
-													</div>
-
-													<!-- <div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Automatically sent to any CONTRACTOR who has no insurance documents loaded OR the insurance documents are expired, WHEN a purchase order is reconciled. <i class="fa fa-quote-right"></i></p></strong></div> -->
-													
-													<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email_msg_onboarding_declined')){ echo 'has-error';} ?>">
-														<label for="email_msg_onboarding_declined" class="col-sm-2 control-label">Message to Contractor for Company Details:</label>
-														<div class="col-sm-10">
-															<textarea class="form-control" id="email_msg_onboarding_declined" name="email_msg_onboarding_declined" style="height: 100px "><?php echo ($this->input->post('email_msg_onboarding_declined') ?  $this->input->post('email_msg_onboarding_declined') : $onboarding_declined_message_content ); ?></textarea>
-														</div>
-													</div>
-
-													<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
-												        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
-												    </div>
-												</div>
-											</div>
-									    </form>
 
 										<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/invoice_email">
 
@@ -2209,12 +1735,588 @@
 									</div>
 								</div>
 
+<p><hr /></p>
+
+<div class="box blue-border m-top-0">
+	<div class="box-head blue-bg pad-5">
+		<label class="blue-title"><i class="fa fa-envelope-open fa-lg"></i> Email Default Settings</label>
+	</div>
+
+	<div class="box-area clearfix pad-10">
+
+		<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message_induction">
+
+			<div class="box yellow-border">
+				<div class="box-head yellow-bg pad-5 m-bottom-5">
+					<label class="yellow-title"><i class="fa fa-shield fa-lg"></i> Induction Health and Safety Email Defaults</label>
+				</div>
+
+				<div class="box-area pad-5 clearfix">
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
+						<label for="time-half" class="col-sm-4 control-label">Default Sender Name:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_name_induction" name="sender_name_induction" value = "<?php echo ($this->input->post('sender_name_induction') ?  $this->input->post('sender_name_induction') : $induction_sender_name ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
+						<label for="double-time" class="col-sm-4 control-label">Default Senders Email:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_email_induction" name="sender_email_induction" value = "<?php echo ($this->input->post('sender_email_induction') ?  $this->input->post('sender_email_induction') : $induction_sender_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
+						<label for="time-half" class="col-sm-4 control-label">Subject:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="subject_induction" name="subject_induction" value = "<?php echo ($this->input->post('subject_induction') ?  $this->input->post('subject_induction') : $induction_subject ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
+						<label for="double-time" class="col-sm-4 control-label">BCC:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="bcc_email_induction" name="bcc_email_induction" value = "<?php echo ($this->input->post('bcc_email_induction') ?  $this->input->post('bcc_email_induction') : $induction_bcc_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
+						<label for="double-time" class="col-sm-4 control-label">User Responsible: </label>
+						<div class="col-sm-8">
+							<select name="user_assigned_induction" class="form-control find_contact_person chosen" id="user_assigned_induction" style="width: 100%;" tabindex="25">																										
+								<?php //$this->company->company_list('dropdown'); ?>
+								<option value=''>Select User Name*</option>													
+								<?php $this->admin->fetch_users_list(); ?>														
+							</select>
+							<?php echo $this->input->post('user_id'); ?>
+							<script type="text/javascript">$('select#user_assigned_induction').val('<?php echo $induction_assigned_user; ?>');</script>
+							
+						</div>
+					</div>
+
+					<div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Will be send to contractor with the a link to fill up Contractos Site Staff for induction. <i class="fa fa-quote-right"></i></p></strong></div>
+					
+					<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
+						<label for="time-half" class="col-sm-2 control-label">New Message to Contactor for Induction:</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="email_msg_induction" name="email_msg_induction" style="height: 100px "><?php echo ($this->input->post('email_msg_induction') ?  $this->input->post('email_msg_induction') : $induction_message_content ); ?></textarea>
+						</div>
+					</div>
+
+					<div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Will be send out automatically to contractor a year after it was entered. <i class="fa fa-quote-right"></i></p></strong></div>
+
+					<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
+						<label for="time-half" class="col-sm-2 control-label">Will be send out automatically to contractor a year after it was entered:</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="email_msg_induction_update" name="email_msg_induction_update" style="height: 100px "><?php echo ($this->input->post('email_msg_induction_update') ?  $this->input->post('email_msg_induction_update') : $induction_message_content_update ); ?></textarea>
+						</div>
+					</div>
+
+					<div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Will be to Contractor's Site Staff with the link of the Video for Site Specific Induction. <i class="fa fa-quote-right"></i></p></strong></div>
+
+					<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
+						<label for="time-half" class="col-sm-2 control-label">Message to Site Staff for Site Specific Induction:</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="email_msg_induction_video" name="email_msg_induction_video" style="height: 100px "><?php echo ($this->input->post('email_msg_induction_video') ?  $this->input->post('email_msg_induction_video') : $induction_message_content_video ); ?></textarea>
+						</div>
+					</div>
+
+					<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
+				        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
+				    </div>
+
+				</div>
+			</div>
+	    </form>
+
+	    <p><hr /></p>
+
+		<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message">
+
+			<div class="box yellow-border">
+				<div class="box-head yellow-bg pad-5 m-bottom-5">
+					<label class="yellow-title"><i class="fa fa-plus-square fa-lg"></i> Insurance Email Defaults</label>
+				</div>
+
+				<div class="box-area pad-5 clearfix">
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
+						<label for="time-half" class="col-sm-4 control-label">Default Sender Name:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_name_no_insurance" name="sender_name_no_insurance" value = "<?php echo ($this->input->post('sender_name_no_insurance') ?  $this->input->post('sender_name_no_insurance') : $sender_name ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
+						<label for="double-time" class="col-sm-4 control-label">Default Senders Email:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_email_no_insurnace" name="sender_email_no_insurnace" value = "<?php echo ($this->input->post('sender_email_no_insurnace') ?  $this->input->post('sender_email_no_insurnace') : $sender_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
+						<label for="time-half" class="col-sm-4 control-label">Subject:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="subject_no_insurnace" name="subject_no_insurnace" value = "<?php echo ($this->input->post('subject_no_insurnace') ?  $this->input->post('subject_no_insurnace') : $subject ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
+						<label for="double-time" class="col-sm-4 control-label">BCC:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="bcc_email_no_insurnace" name="bcc_email_no_insurnace" value = "<?php echo ($this->input->post('bcc_email_no_insurnace') ?  $this->input->post('bcc_email_no_insurnace') : $bcc_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('double-time')){ echo 'has-error';} ?>">
+						<label for="double-time" class="col-sm-4 control-label">User Responsible: </label>
+						<div class="col-sm-8">
+							<select name="user_assigned_forinsurance" class="form-control find_contact_person chosen" id="user_assigned_forinsurance" style="width: 100%;" tabindex="25">																										
+								<?php //$this->company->company_list('dropdown'); ?>
+								<option value=''>Select User Name*</option>													
+								<?php $this->admin->fetch_users_list(); ?>														
+							</select>
+							<?php echo $this->input->post('user_id'); ?>
+							<script type="text/javascript">$('select#user_assigned_forinsurance').val('<?php echo $user_id; ?>');</script>
+							
+						</div>
+					</div>
+
+					<div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Automatically sent to any CONTRACTOR who has no insurance documents loaded OR the insurance documents are expired, WHEN a purchase order is reconciled. <i class="fa fa-quote-right"></i></p></strong></div>
+					
+					<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('time-half')){ echo 'has-error';} ?>">
+						<label for="time-half" class="col-sm-2 control-label">Message to Contractor for Expires or <br>no Insurance:</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="email_msg_no_insurance" name="email_msg_no_insurance" style="height: 100px "><?php echo ($this->input->post('email_msg_no_insurance') ?  $this->input->post('email_msg_no_insurance') : $message_content ); ?></textarea>
+						</div>
+					</div>
+
+					<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
+				        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
+				    </div>
+				</div>
+			</div>
+	    </form>
+	</div>
 </div>
 
+<p><hr /></p>
 
+<div class="box blue-border m-top-0">
+	<div class="box-head blue-bg pad-5">
+		<label class="blue-title"><i class="fa fa-id-card-o fa-lg"></i> Onboarding Settings</label>
+	</div>
 
+	<?php if(@$onboarding_email_errors): ?>
+		<div class="no-pad-t">
+			<div class="border-less-box alert alert-danger fade in">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				<h4>Oh snap! You got an error!</h4>
+				<?php echo $onboarding_email_errors;?>
+			</div>
+		</div>
+	<?php endif; ?>
 
+	<?php if(@$this->session->flashdata('onboarding_default_email')): ?>
+		<div class="no-pad-t">
+			<div class="border-less-box alert alert-success fade in">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+				<h4>Cheers!</h4>
+				<?php echo $this->session->flashdata('onboarding_default_email');?>
+			</div>
+		</div>
+	<?php endif; ?>
 
+	<div class="box-area clearfix pad-10">
+
+		<form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message_onboarding">
+
+			<div class="box yellow-border">
+				<div class="box-head yellow-bg pad-5 m-bottom-5">
+					<label class="yellow-title"><i class="fa fa-link fa-lg"></i> Onboarding Sending Link Email Defaults</label>
+				</div>
+
+				<div class="box-area pad-5 clearfix">
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_name_onboarding')){ echo 'has-error';} ?>">
+						<label for="sender_name_onboarding" class="col-sm-4 control-label">Default Sender Name:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_name_onboarding" name="sender_name_onboarding" value = "<?php echo ($this->input->post('sender_name_onboarding') ?  $this->input->post('sender_name_onboarding') : $onboarding_sender_name ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_email_onboarding')){ echo 'has-error';} ?>">
+						<label for="sender_email_onboarding" class="col-sm-4 control-label">Default Senders Email:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_email_onboarding" name="sender_email_onboarding" value = "<?php echo ($this->input->post('sender_email_onboarding') ?  $this->input->post('sender_email_onboarding') : $onboarding_sender_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('subject_onboarding')){ echo 'has-error';} ?>">
+						<label for="subject_onboarding" class="col-sm-4 control-label">Subject:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="subject_onboarding" name="subject_onboarding" value = "<?php echo ($this->input->post('subject_onboarding') ?  $this->input->post('subject_onboarding') : $onboarding_subject ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('bcc_email_onboarding')){ echo 'has-error';} ?>">
+						<label for="bcc_email_onboarding" class="col-sm-4 control-label">BCC:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="bcc_email_onboarding" name="bcc_email_onboarding" value = "<?php echo ($this->input->post('bcc_email_onboarding') ?  $this->input->post('bcc_email_onboarding') : $onboarding_bcc_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('user_assigned_foronboarding')){ echo 'has-error';} ?>">
+						<label for="user_assigned_onboarding" class="col-sm-4 control-label">User Responsible: </label>
+						<div class="col-sm-8">
+							<select name="user_assigned_onboarding" class="form-control find_contact_person chosen" id="user_assigned_onboarding" style="width: 100%;" tabindex="25">																										
+								<?php //$this->company->company_list('dropdown'); ?>
+								<option value=''>Select User Name*</option>													
+								<?php $this->admin->fetch_users_list(); ?>														
+							</select>
+							<?php echo $this->input->post('user_id'); ?>
+							<script type="text/javascript">$('select#user_assigned_onboarding').val('<?php echo $onboarding_assigned_user; ?>');</script>
+							
+						</div>
+					</div>
+
+					<!-- <div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Automatically sent to any CONTRACTOR who has no insurance documents loaded OR the insurance documents are expired, WHEN a purchase order is reconciled. <i class="fa fa-quote-right"></i></p></strong></div> -->
+					
+					<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email_msg_onboarding')){ echo 'has-error';} ?>">
+						<label for="email_msg_onboarding" class="col-sm-2 control-label">Message to Contractor for Company Details:</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="email_msg_onboarding" name="email_msg_onboarding" style="height: 100px "><?php echo ($this->input->post('email_msg_onboarding') ?  $this->input->post('email_msg_onboarding') : $onboarding_message_content ); ?></textarea>
+						</div>
+					</div>
+
+					<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
+				        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
+				    </div>
+				</div>
+			</div>
+	    </form>
+
+	    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/onboarding_contractor_msg">
+
+			<div class="box yellow-border">
+				<div class="box-head yellow-bg pad-5 m-bottom-5">
+					<label class="yellow-title"><i class="fa fa-exclamation-circle fa-lg"></i> Onboarding Message for Contractors Only (Onboarding Registration Form)</label>
+				</div>
+
+				<?php if(@$onboarding_contractor_msg_error): ?>
+					<div class="no-pad-t">
+						<div class="border-less-box alert alert-danger fade in">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+							<h4>Oh snap! You got an error!</h4>
+							<?php echo $onboarding_contractor_msg_error;?>
+						</div>
+					</div>
+				<?php endif; ?>
+
+				<?php if(@$this->session->flashdata('onboarding_contractor_msg')): ?>
+					<div class="no-pad-t">
+						<div class="border-less-box alert alert-success fade in">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+							<h4>Cheers!</h4>
+							<?php echo $this->session->flashdata('onboarding_contractor_msg');?>
+						</div>
+					</div>
+				<?php endif; ?>
+
+				<div class="box-area pad-5 clearfix">
+					<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('onboarding_contractor_msg')){ echo 'has-error';} ?>">
+						<label for="onboarding_contractor_msg" class="col-sm-2 control-label">Message attached to the form:</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="onboarding_contractor_msg" name="onboarding_contractor_msg" style="height: 100px "><?php echo $static_defaults[0]->onboarding_contractor_msg; ?></textarea>
+						</div>
+					</div>
+
+					<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
+				        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Message</button>
+				    </div>
+				</div>
+			</div>
+		</form>
+
+	    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/onboarding_email">
+
+			<div class="box yellow-border m-top-0">
+				<div class="box-head yellow-bg pad-5 m-bottom-5">
+					<label class="yellow-title"><i class="fa  fa-user fa-lg"></i> Onboarding Email Notification Recipient Defaults</label>
+				</div>
+
+				<div class="box-area pad-5 clearfix">
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('onboarding_recipient_email')){ echo 'has-error';} ?>">
+						<label for="onboarding_recipient_email" class="col-sm-4 control-label">Onboarding Recipient Email</label>
+						<div class="col-sm-8">
+							<div class="input-group">
+								<span class="input-group-addon" id=""><i class="fa fa-envelope-o"></i></span>
+								<input type="email" class="form-control" id="onboarding_recipient_email" name="onboarding_recipient_email" placeholder="Recipient Email" value="<?php echo $static_defaults[0]->onboarding_to; ?>">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('onboarding_optional_cc_email')){ echo 'has-error';} ?>">
+						<label for="onboarding_optional_cc_email" class="col-sm-4 control-label">Onboarding Optional CC Email</label>
+						<div class="col-sm-8">
+							<div class="input-group">
+								<span class="input-group-addon" id=""><i class="fa fa-envelope-o"></i></span>
+								<input type="email" class="form-control" id="onboarding_optional_cc_email" name="onboarding_optional_cc_email" placeholder="Optional CC Email" value="<?php echo $static_defaults[0]->onboarding_cc; ?>">
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
+				        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Emails</button>
+				    </div>
+				</div>
+			</div>
+
+	    </form>
+
+	    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message_onboarding_notif">
+
+			<div class="box yellow-border">
+				<div class="box-head yellow-bg pad-5 m-bottom-5">
+					<label class="yellow-title"><i class="fa fa-bell fa-lg"></i> Onboarding Email Notification Content Defaults</label>
+				</div>
+
+				<div class="box-area pad-5 clearfix">
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_name_onboarding_notif')){ echo 'has-error';} ?>">
+						<label for="sender_name_onboarding_notif" class="col-sm-4 control-label">Default Sender Name:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_name_onboarding_notif" name="sender_name_onboarding_notif" value = "<?php echo ($this->input->post('sender_name_onboarding_notif') ?  $this->input->post('sender_name_onboarding_notif') : $onboarding_notif_sender_name ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_email_onboarding_notif')){ echo 'has-error';} ?>">
+						<label for="sender_email_onboarding_notif" class="col-sm-4 control-label">Default Senders Email:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_email_onboarding_notif" name="sender_email_onboarding_notif" value = "<?php echo ($this->input->post('sender_email_onboarding_notif') ?  $this->input->post('sender_email_onboarding_notif') : $onboarding_notif_sender_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('subject_onboarding_notif')){ echo 'has-error';} ?>">
+						<label for="subject_onboarding_notif" class="col-sm-4 control-label">Subject:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="subject_onboarding_notif" name="subject_onboarding_notif" value = "<?php echo ($this->input->post('subject_onboarding_notif') ?  $this->input->post('subject_onboarding_notif') : $onboarding_notif_subject ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('bcc_email_onboarding_notif')){ echo 'has-error';} ?>">
+						<label for="bcc_email_onboarding_notif" class="col-sm-4 control-label">BCC:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="bcc_email_onboarding_notif" name="bcc_email_onboarding_notif" value = "<?php echo ($this->input->post('bcc_email_onboarding_notif') ?  $this->input->post('bcc_email_onboarding_notif') : $onboarding_notif_bcc_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('user_assigned_foronboarding')){ echo 'has-error';} ?>">
+						<label for="user_assigned_onboarding_notif" class="col-sm-4 control-label">User Responsible: </label>
+						<div class="col-sm-8">
+							<select name="user_assigned_onboarding_notif" class="form-control find_contact_person chosen" id="user_assigned_onboarding_notif" style="width: 100%;" tabindex="25">																										
+								<?php //$this->company->company_list('dropdown'); ?>
+								<option value=''>Select User Name*</option>													
+								<?php $this->admin->fetch_users_list(); ?>														
+							</select>
+							<?php echo $this->input->post('user_id'); ?>
+							<script type="text/javascript">$('select#user_assigned_onboarding_notif').val('<?php echo $onboarding_notif_assigned_user; ?>');</script>
+							
+						</div>
+					</div>
+
+					<!-- <div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Automatically sent to any CONTRACTOR who has no insurance documents loaded OR the insurance documents are expired, WHEN a purchase order is reconciled. <i class="fa fa-quote-right"></i></p></strong></div> -->
+					
+					<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email_msg_onboarding_notif')){ echo 'has-error';} ?>">
+						<label for="email_msg_onboarding_notif" class="col-sm-2 control-label">Message to Contractor for Company Details:</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="email_msg_onboarding_notif" name="email_msg_onboarding_notif" style="height: 100px "><?php echo ($this->input->post('email_msg_onboarding_notif') ?  $this->input->post('email_msg_onboarding_notif') : $onboarding_notif_message_content ); ?></textarea>
+						</div>
+					</div>
+
+					<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
+				        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
+				    </div>
+				</div>
+			</div>
+	    </form>
+
+	    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message_onboarding_approved">
+
+			<div class="box yellow-border">
+				<div class="box-head yellow-bg pad-5 m-bottom-5">
+					<label class="yellow-title"><i class="fa fa-check fa-lg"></i> Onboarding Approved Defaults</label>
+				</div>
+
+				<div class="box-area pad-5 clearfix">
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_name_onboarding_approved')){ echo 'has-error';} ?>">
+						<label for="sender_name_onboarding_approved" class="col-sm-4 control-label">Default Sender Name:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_name_onboarding_approved" name="sender_name_onboarding_approved" value = "<?php echo ($this->input->post('sender_name_onboarding_approved') ?  $this->input->post('sender_name_onboarding_approved') : $onboarding_approved_sender_name ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_email_onboarding_approved')){ echo 'has-error';} ?>">
+						<label for="sender_email_onboarding_approved" class="col-sm-4 control-label">Default Senders Email:</label>
+							<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_email_onboarding_approved" name="sender_email_onboarding_approved" value = "<?php echo ($this->input->post('sender_email_onboarding_approved') ?  $this->input->post('sender_email_onboarding_approved') : $onboarding_approved_sender_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('subject_onboarding_approved')){ echo 'has-error';} ?>">
+						<label for="subject_onboarding_approved" class="col-sm-4 control-label">Subject:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="subject_onboarding_approved" name="subject_onboarding_approved" value = "<?php echo ($this->input->post('subject_onboarding_approved') ?  $this->input->post('subject_onboarding_approved') : $onboarding_approved_subject ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('bcc_email_onboarding_approved')){ echo 'has-error';} ?>">
+						<label for="bcc_email_onboarding_approved" class="col-sm-4 control-label">BCC:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="bcc_email_onboarding_approved" name="bcc_email_onboarding_approved" value = "<?php echo ($this->input->post('bcc_email_onboarding_approved') ?  $this->input->post('bcc_email_onboarding_approved') : $onboarding_approved_bcc_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('user_assigned_foronboarding')){ echo 'has-error';} ?>">
+						<label for="user_assigned_onboarding_approved" class="col-sm-4 control-label">User Responsible: </label>
+						<div class="col-sm-8">
+							<select name="user_assigned_onboarding_approved" class="form-control find_contact_person chosen" id="user_assigned_onboarding_approved" style="width: 100%;" tabindex="25">																										
+								<?php //$this->company->company_list('dropdown'); ?>
+								<option value=''>Select User Name*</option>													
+								<?php $this->admin->fetch_users_list(); ?>														
+							</select>
+							<?php echo $this->input->post('user_id'); ?>
+							<script type="text/javascript">$('select#user_assigned_onboarding_approved').val('<?php echo $onboarding_approved_assigned_user; ?>');</script>
+							
+						</div>
+					</div>
+
+					<!-- <div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Automatically sent to any CONTRACTOR who has no insurance documents loaded OR the insurance documents are expired, WHEN a purchase order is reconciled. <i class="fa fa-quote-right"></i></p></strong></div> -->
+					
+					<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email_msg_onboarding_approved')){ echo 'has-error';} ?>">
+						<label for="email_msg_onboarding_approved" class="col-sm-2 control-label">Message to Contractor for Company Details:</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="email_msg_onboarding_approved" name="email_msg_onboarding_approved" style="height: 100px "><?php echo ($this->input->post('email_msg_onboarding_approved') ?  $this->input->post('email_msg_onboarding_approved') : $onboarding_approved_message_content ); ?></textarea>
+						</div>
+					</div>
+
+					<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
+				        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
+				    </div>
+				</div>
+			</div>
+	    </form>
+
+	    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/default_email_message_onboarding_declined">
+
+			<div class="box yellow-border">
+				<div class="box-head yellow-bg pad-5 m-bottom-5">
+					<label class="yellow-title"><i class="fa fa-times fa-lg"></i> Onboarding Declined Defaults</label>
+				</div>
+
+				<div class="box-area pad-5 clearfix">
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_name_onboarding_declined')){ echo 'has-error';} ?>">
+						<label for="sender_name_onboarding_declined" class="col-sm-4 control-label">Default Sender Name:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_name_onboarding_declined" name="sender_name_onboarding_declined" value = "<?php echo ($this->input->post('sender_name_onboarding_declined') ?  $this->input->post('sender_name_onboarding_declined') : $onboarding_declined_sender_name ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('sender_email_onboarding_declined')){ echo 'has-error';} ?>">
+						<label for="sender_email_onboarding_declined" class="col-sm-4 control-label">Default Senders Email:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="sender_email_onboarding_declined" name="sender_email_onboarding_declined" value = "<?php echo ($this->input->post('sender_email_onboarding_declined') ?  $this->input->post('sender_email_onboarding_declined') : $onboarding_declined_sender_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('subject_onboarding_declined')){ echo 'has-error';} ?>">
+						<label for="subject_onboarding_declined" class="col-sm-4 control-label">Subject:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="subject_onboarding_declined" name="subject_onboarding_declined" value = "<?php echo ($this->input->post('subject_onboarding_declined') ?  $this->input->post('subject_onboarding_declined') : $onboarding_declined_subject ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('bcc_email_onboarding_declined')){ echo 'has-error';} ?>">
+						<label for="bcc_email_onboarding_declined" class="col-sm-4 control-label">BCC:</label>
+						<div class="col-sm-8">
+							<input type = "text" class="form-control" id="bcc_email_onboarding_declined" name="bcc_email_onboarding_declined" value = "<?php echo ($this->input->post('bcc_email_onboarding_declined') ?  $this->input->post('bcc_email_onboarding_declined') : $onboarding_declined_bcc_email ); ?>">
+						</div>
+					</div>
+
+					<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('user_assigned_foronboarding')){ echo 'has-error';} ?>">
+						<label for="user_assigned_onboarding_declined" class="col-sm-4 control-label">User Responsible: </label>
+						<div class="col-sm-8">
+							<select name="user_assigned_onboarding_declined" class="form-control find_contact_person chosen" id="user_assigned_onboarding_declined" style="width: 100%;" tabindex="25">																										
+								<?php //$this->company->company_list('dropdown'); ?>
+								<option value=''>Select User Name*</option>													
+								<?php $this->admin->fetch_users_list(); ?>														
+							</select>
+							<?php echo $this->input->post('user_id'); ?>
+							<script type="text/javascript">$('select#user_assigned_onboarding_declined').val('<?php echo $onboarding_declined_assigned_user; ?>');</script>
+							
+						</div>
+					</div>
+
+					<!-- <div class="clearfix col-xs-12 m-top-20 text-center"><strong> <p><i class="fa fa-quote-left"></i> Automatically sent to any CONTRACTOR who has no insurance documents loaded OR the insurance documents are expired, WHEN a purchase order is reconciled. <i class="fa fa-quote-right"></i></p></strong></div> -->
+					
+					<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('email_msg_onboarding_declined')){ echo 'has-error';} ?>">
+						<label for="email_msg_onboarding_declined" class="col-sm-2 control-label">Message to Contractor for Company Details:</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="email_msg_onboarding_declined" name="email_msg_onboarding_declined" style="height: 100px "><?php echo ($this->input->post('email_msg_onboarding_declined') ?  $this->input->post('email_msg_onboarding_declined') : $onboarding_declined_message_content ); ?></textarea>
+						</div>
+					</div>
+
+					<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
+				        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Email Default</button>
+				    </div>
+				</div>
+			</div>
+	    </form>
+
+	    <form class="form-horizontal" role="form" method="post" action="<?php echo current_url(); ?>/onboarding_general_msg">
+
+			<div class="box yellow-border">
+				<div class="box-head yellow-bg pad-5 m-bottom-5">
+					<label class="yellow-title"><i class="fa fa-info-circle fa-lg"></i> Onboarding General Message Box (Included after the Approved and Declined Email Messages)</label>
+				</div>
+
+				<?php if(@$onboarding_general_msg_error): ?>
+					<div class="no-pad-t">
+						<div class="border-less-box alert alert-danger fade in">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+							<h4>Oh snap! You got an error!</h4>
+							<?php echo $onboarding_general_msg_error;?>
+						</div>
+					</div>
+				<?php endif; ?>
+
+				<?php if(@$this->session->flashdata('onboarding_general_msg')): ?>
+					<div class="no-pad-t">
+						<div class="border-less-box alert alert-success fade in">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+							<h4>Cheers!</h4>
+							<?php echo $this->session->flashdata('onboarding_general_msg');?>
+						</div>
+					</div>
+				<?php endif; ?>
+
+				<div class="box-area pad-5 clearfix">
+					<div class="col-md-12 col-sm-12 col-xs-12 m-bottom-10 clearfix <?php if(form_error('onboarding_general_msg')){ echo 'has-error';} ?>">
+						<label for="onboarding_general_msg" class="col-sm-2 control-label">General Message:</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="onboarding_general_msg" name="onboarding_general_msg" style="height: 100px "><?php echo $static_defaults[0]->onboarding_general_msg; ?></textarea>
+						</div>
+					</div>
+
+					<div class="col-md-offset-6 col-sm-6 col-xs-12 clearfix m-top-20 m-bottom-10 text-right">
+				        <button type="submit" class="btn btn-success"><i class="fa fa-floppy-o"></i> Save Message Default</button>
+				    </div>
+				</div>
+
+			</div>
+		</form>
+
+	</div>
+</div>
+</div>
 
 <div class="tab-pane fade in <?php echo ($curr_tab == 'users' ? 'active' : '' ); ?>" id="users" aria-labelledby="users">
 	

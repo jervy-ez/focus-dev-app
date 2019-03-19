@@ -22,6 +22,8 @@ class Projects extends MY_Controller{
 		if(!$this->users->_is_logged_in() ): 		
 			redirect('', 'refresh');
 		endif;
+
+
 	}
 	
 
@@ -39,6 +41,14 @@ class Projects extends MY_Controller{
 		$data['main_content'] = 'projects_v';
 		$data['screen'] = 'Projects';
 		$this->load->view('page', $data);
+
+		
+$user_id = $this->session->userdata('user_id');
+
+ 
+		if($user_id == '72'){
+			redirect('/dashboard');
+		}
 	}
 
 
@@ -498,6 +508,14 @@ class Projects extends MY_Controller{
 	}
 	
 	public function view(){
+
+
+$user_id = $this->session->userdata('user_id');
+
+ 
+		if($user_id == '72'){
+			redirect('/dashboard');
+		}
 
 
 
@@ -1263,6 +1281,7 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 
 			$company_prg_arr =  explode('|',$this->input->post('company_prg'));
 			$client_id = $company_prg_arr[1];
+			$company_name = $company_prg_arr[0];
 
 /*
 			$sub_client_arr =  explode('|',$this->input->post('sub_client'));
@@ -1459,7 +1478,7 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 				$sender_name = $user_name;
 				$email_from = $sender_user_email;
 				$email_to = $pm_email;
-				$subject = "Project: ".$inserted_project_id."is required for Induction";
+				$subject = "Project: ".$inserted_project_id." ".$project_name.",".$company_name."is required for Induction";
 				$message = "The new project created number: ".$inserted_project_id.", needs to have induction slides created. Please see: https://sojourn.focusshopfit.com.au/induction_health_safety/induction_slide_editor_view?project_id=".$inserted_project_id;
 
 				require_once('PHPMailer/class.phpmailer.php');
@@ -1489,10 +1508,9 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 				$mail->Body    = $message;
 
 				if(!$mail->send()) {
-					return 'Message could not be sent.'.' Mailer Error: ' . $mail->ErrorInfo;
+					//return 'Message could not be sent.'.' Mailer Error: ' . $mail->ErrorInfo;
 				} else {
-
-					return "Email Send Successfully";
+					//return "Email Send Successfully";
 				}
 			endif;
 // ========================= EMAIL Notification for PA for INDUCTION ==================
@@ -2560,14 +2578,28 @@ $gp = 0;
 				}elseif($job_date != $prev_project_details['job_date'] && strlen($job_date) == 0){
 					$actions = 'Removed job date: '.$prev_project_details['job_date'];
 				}else{
-					$actions = 'Added job new date: '.$job_date;
-				}
+
+					$q_get_log_prjId = $this->projects_m->check_log_jobdate($project_id);
+					$prj_log = array_shift($q_get_log_prjId->result_array());
+
+					$prj_log_arr = explode(':', $prj_log['actions'] );
+					$log_job_date = str_replace(' ','', $prj_log_arr[1]);
+
+					//var_dump($prj_log);
+					//var_dump($prj_log_arr);
+
+					if( strtotime($job_date) == strtotime($log_job_date) ){
+						$actions = 'Restored old job date: '.$job_date;
+					}else{
+						$actions = 'Added job new date: '.$job_date;
+					}
+ 				}
 
 				if($attempt == 1){
 					$actions = 'Updated project details';
 				}
 
-				$data['unit_level'] = $this->company->if_set($this->input->post('unit_level', true));
+				$data['unit_level'] = $this->company->if_set ($this->input->post('unit_level', true));
 				$data['unit_number'] = $this->company->if_set($this->input->post('unit_number', true));
 				$data['street'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street', true)));
 				$data['postcode_a'] = $this->company->if_set($this->input->post('postcode_a', true));
@@ -2920,7 +2952,19 @@ $rev_date  = date("d/m/Y");
 		}elseif($job_date != $prev_project_details['job_date'] && strlen($job_date) == 0){
 			$actions = 'Removed job date: '.$prev_project_details['job_date'];
 		}else{
-			$actions = 'Added job new date: '.$job_date;
+		//	$actions = 'Added job new date: '.$job_date;
+
+			$q_get_log_prjId = $this->projects_m->check_log_jobdate($project_id);
+			$prj_log = array_shift($q_get_log_prjId->result_array());
+
+			$prj_log_arr = explode(':', $prj_log['actions'] );
+			$log_job_date = str_replace(' ','', $prj_log_arr[1]);
+
+			if( strtotime($job_date) == strtotime($log_job_date) ){
+				$actions = 'Restored old job date: '.$job_date;
+			}else{
+				$actions = 'Added job new date: '.$job_date;
+			}
 		}
 
 		if($attempt == 1){

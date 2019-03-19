@@ -1,4 +1,4 @@
-var segment_index = 6;  // 5 if live |||   6 is local
+var segment_index = 5;  // 5 if live |||   6 is local
 
     //dynamic_value_ajax
     function ajax_data(value,controller_method,classLocation){
@@ -117,7 +117,16 @@ function get_project_id(){
   var url = $(location).attr('href').split("/").splice(0, 7).join("/");
   var segments = url.split( '/' );
   var segmentlength = segments.length;
-  var proj_id = segments[segment_index].replace("#", ""); // changes to 6 - when local and 5 -  on live site
+  var get_proj_id = segments[segment_index].replace("#", ""); // changes to 6 - when local and 5 -  on live site
+
+  var indexproj_id = get_proj_id.indexOf("?");
+
+  if(indexproj_id !== -1){
+    var proj_id = get_proj_id.substring(0, indexproj_id);
+  } else {
+    var proj_id = get_proj_id;
+  }
+
   return proj_id;
 }
 function num_to_month(month_num){
@@ -951,7 +960,8 @@ $("#create_contract_send_pdf").click(function(){
     });
   }
 
-  window.load_variation = function(){
+  // window.load_variation = function(){
+  $("#tab_variation_btn").click(function(){
     $("#add_new_var").removeAttr('disabled');
     $("#variation_name").val("");
     $("#variation_name").attr('disabled','disabled');
@@ -991,7 +1001,7 @@ $("#create_contract_send_pdf").click(function(){
         $(".variation_total").html(t_accepted);
       });
     });
-  }
+  });
 
   $("#add_new_var").click(function(){
     //$("#add_new_var").attr('disabled','disabled');
@@ -1527,6 +1537,25 @@ $("#btn_creat_cqr").click(function(){
     });
   });
 });
+
+function removeParam(key, sourceURL) {
+    var rtn = sourceURL.split("?")[0],
+        param,
+        params_arr = [],
+        queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
+    if (queryString !== "") {
+        params_arr = queryString.split("&");
+        for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+            param = params_arr[i].split("=")[0];
+            if (param === key) {
+                params_arr.splice(i, 1);
+            }
+        }
+        rtn = rtn + "?" + params_arr.join("&");
+    }
+    return rtn;
+}
+
 window.show_cqr = function(a){
   var work_contractor_id = a;
   //var project_id = get_project_id();
@@ -1619,7 +1648,10 @@ $("#btn_send_cqr").click(function(){
   send_email = 1;
   no_cqr = 0;
   var contractor_selected = 0;
+
+  work_contractor_ids = [];
   $('input[class=cont_checkbox]:checked').map(function() {
+    work_contractor_ids.push($(this).val());
     //checkboxValues_contractor.push($(this).val());
     contractor_selected++;
     work_contractor_id = $(this).val();
@@ -1679,7 +1711,11 @@ $("#btn_send_cpo").click(function(){
   var contractor_email = "";
   send_email = 2;
   no_cpo = 0;
+  
+  work_contractor_ids = [];
   $('input[class=cont_checkbox_cpo]:checked').map(function() {
+
+    work_contractor_ids.push($(this).val());
     contractor_selected++;
     //checkboxValues_contractor.push($(this).val());
     work_contractor_id = $(this).val();
@@ -1749,9 +1785,10 @@ $('#check_attach_ps').click(function(){
   }
 });
 
+var work_contractor_ids = [];
 $("#send_email").click(function(){
   counter = 0;
-  var work_contractor_ids = [];
+  //var work_contractor_ids = [];
   if(send_email == 1){
     if(no_cqr > 0){
       alert("Cannot send Some of the selected Contractor doesn't have CQR created yet!");
@@ -1761,9 +1798,9 @@ $("#send_email").click(function(){
       $("#send_email").hide();
       $(".sending_button").show();
 
-      $('input[class=cont_checkbox]:checked').each(function() {
-        work_contractor_ids.push($(this).val());
-      });
+      // $('input[class=cont_checkbox]:checked').each(function() {
+      //   work_contractor_ids.push($(this).val());
+      // });
 
       var alt_email = $("#contractor_alt_email_add").val();
       var cc_email = $("#contractor_cc").val();
@@ -1811,9 +1848,9 @@ $("#send_email").click(function(){
       //var project_id = get_project_id();
       var contractor_email = ""
       send_email = 1;
-      $('input[class=cont_checkbox_cpo]:checked').map(function() {
-        work_contractor_ids.push($(this).val());
-      });
+      // $('input[class=cont_checkbox_cpo]:checked').map(function() {
+      //   work_contractor_ids.push($(this).val());
+      // });
 
       var mss_attach = 0;
       if($("#check_attach_mss").is(':checked')){
@@ -2414,33 +2451,33 @@ window.chk_select_attachment = function(a){
   //=== Works JS ====
   $("#btnaddcontractor").hide();
   $("#btnadd_var_contractor").hide();
-  $("#btnaddcontractor").click(function(){
-    $("#contractor_notes_div").hide();
-    $("#select2-chosen-1").text("");
-    $('select#contact_person').attr('disabled',false);
-    $('select#contact_person').empty();
+  // $("#btnaddcontractor").click(function(){
+  //   $("#contractor_notes_div").hide();
+  //   $("#select2-chosen-1").text("");
+  //   $('select#contact_person').attr('disabled',false);
+  //   $('select#contact_person').empty();
     
-    var formattedDate = new Date();
-    var d = formattedDate.getDate();
-    var m =  formattedDate.getMonth();
-    m += 1;  // JavaScript months are 0-11
-    var y = formattedDate.getFullYear();
-    $("#contractor_date_entered").val(d+"/"+m+"/"+y);
+  //   var formattedDate = new Date();
+  //   var d = formattedDate.getDate();
+  //   var m =  formattedDate.getMonth();
+  //   m += 1;  // JavaScript months are 0-11
+  //   var y = formattedDate.getFullYear();
+  //   $("#contractor_date_entered").val(d+"/"+m+"/"+y);
 
-    $("#work_contructor_name").val("");
+  //   $("#work_contructor_name").val("");
 
-    //$("select#work_contructor_name").val("");
+  //   //$("select#work_contructor_name").val("");
 
-    $("#contact_person").empty();
-    $("#inc_gst").val("");
-    $("#price_ex_gst").val("");
+  //   $("#contact_person").empty();
+  //   $("#inc_gst").val("");
+  //   $("#price_ex_gst").val("");
    
-    $("#save_contractor").show();
-    $("#create_cqr").hide();
-    $("#update_contractor").hide();
-    $("#delete_contractor").hide();
+  //   $("#save_contractor").show();
+  //   $("#create_cqr").hide();
+  //   $("#update_contractor").hide();
+  //   $("#delete_contractor").hide();
    
-  });
+  // });
 $("#btnadd_var_contractor").click(function(){
   $("#select2-chosen-1").text("");
   $('select#contact_person').attr('disabled',false);
@@ -2478,6 +2515,7 @@ $('.work_contractor_click').click(function () {
 
 
   window.selwork = function(a){
+    var jobdate_disabled = localStorage.getItem("jobdate_disabled");
     contractor_set = 1;
     work_id = a;
     selected_work_contractor_id = 0;
@@ -2487,6 +2525,7 @@ $('.work_contractor_click').click(function () {
     
       $.post(baseurl+"works/display_work_contractor", 
       { 
+        jobdate_disabled: jobdate_disabled,
         proj_id: proj_id,
         work_id: a
       }, 
@@ -2571,6 +2610,7 @@ $('.work_contractor_click').click(function () {
   }
 
   window.selwork_badge = function(a){
+    var jobdate_disabled = localStorage.getItem("jobdate_disabled");
     contractor_set = 0;
     work_id = a;
     selected_work_contractor_id = 0;
@@ -2581,6 +2621,7 @@ $('.work_contractor_click').click(function () {
  
       $.post(baseurl+"works/display_work_contractor", 
       { 
+        jobdate_disabled: jobdate_disabled,
         proj_id: proj_id,
         work_id: a
       }, 
@@ -2903,6 +2944,7 @@ $('.work_contractor_click').click(function () {
   });
 
   window.selwork_joinery = function(a){
+    var jobdate_disabled = localStorage.getItem("jobdate_disabled");
     work_joinery_id = a;
     contractor_set = 1;
     selected_work_contractor_id = 0;
@@ -2916,6 +2958,7 @@ $('.work_contractor_click').click(function () {
       //var proj_id = get_project_id();
       $.post(baseurl+"works/display_work_contractor", 
       { 
+        jobdate_disabled: jobdate_disabled,
         proj_id: proj_id,
         work_id: joinery_work_id
       }, 
@@ -2934,6 +2977,7 @@ $('.work_contractor_click').click(function () {
   }
 
   window.sel_var_work_joinery = function(a){
+    var jobdate_disabled = localStorage.getItem("jobdate_disabled");
     work_joinery_id = a;
     contractor_set = 1;
     selected_work_contractor_id = 0;
@@ -2948,7 +2992,7 @@ $('.work_contractor_click').click(function () {
       //var proj_id = get_project_id();
       $.post(baseurl+"works/display_work_contractor", 
       { 
-        var_acceptance_date: var_acceptance_date,
+        jobdate_disabled: jobdate_disabled,
         proj_id: proj_id,
         work_id: joinery_work_id
       }, 
@@ -4472,6 +4516,7 @@ $('.work_contractor_click').click(function () {
 
   $("#contractor_notes_div").hide();
   window.selcontractor = function(a){
+     var jobdate_disabled = localStorage.getItem("jobdate_disabled");
     $("#contractor_notes_div").show();
     $("#save_contractor").hide();
     $("#create_cqr").show();
@@ -4523,7 +4568,7 @@ $('.work_contractor_click').click(function () {
       var var_acceptance_date = $("#variation_acceptance_date").val();
       $.post(baseurl+"works/display_work_contractor", 
       {
-        var_acceptance_date: var_acceptance_date,
+        jobdate_disabled: jobdate_disabled,
         proj_id: proj_id,
         work_id: cont_works_id
       },function(result){
@@ -5646,15 +5691,17 @@ $('.work_contractor_click').click(function () {
     return false;
   });
 
-  $("#back_to_variation").click(function(){
-    $.post(baseurl+"variation/back_to_variations", 
-    { 
-    }, 
-    function(result){
-      window.open(baseurl+"projects/view/"+proj_id+"/variation", '_self', true);
-    })
-    return false;
-  });
+  // $("#back_to_variation").click(function(){
+  //   $.post(baseurl+"variation/back_to_variations", 
+  //   { 
+  //   }, 
+  //   function(result){
+  //     window.open(baseurl+"projects/view/"+proj_id+"/variation", '_self', true);
+  //   })
+  //   return false;
+  // });
+
+
   $("#btn_edit_est_markup").click(function(){
     $("#est_markup").hide();
     $("#edit_est_markups").show();
@@ -6783,13 +6830,6 @@ window.toggleShoppingCenterDetails = function(id){
       $('.more_details_group_data').show();
     });
 
-    $("#save_more_details").click(function(){
-      $(this).hide();
-      $("#edit_more_details").show();
-      $('.more_details_group').show();
-      $('.more_details_group_data').hide();
-    });
-
     $("#edit_comment_details").click(function(){
       $(this).hide();
       $("#save_comment_details").show();
@@ -7013,6 +7053,8 @@ $('input.input-wd').keyup(function(){
 
     //$("#abn").focusout(function(){
   window.add_comp_abn_blur = function(){
+    var is_admin = $("#is_admin").val();
+    var user_id = $("#user_id").val();
     var type = $("#type").val();
     if(type == ""){
       alert("Please select type first.");
@@ -7032,12 +7074,33 @@ $('input.input-wd').keyup(function(){
           $.post(baseurl+"company/check_company_exist",
           {
             abn: abn,
-            type: type
+            type: type,
+            is_admin: is_admin,
+            user_id: user_id
           },
           function(result){
             if(result == 1){
-              alert("ABN already exist!");
-              $("#abn").val("");
+
+              // alert(is_admin+'|'+user_id);
+
+              if (is_admin == 1 || user_id == 6){ // administrator and Kat user_id
+                $('.dynamic_error').modal('hide');
+
+                $('#confirmText').text('ABN is already existing, allow this operation?');
+                $('#confirmButtons').html('<button type="button" class="btn btn-danger" onclick="setABN_blank();">No</button>' +
+                                          '<button type="button" class="btn btn-success" onclick="setABN_ACN();">Confirm</button>');
+                $('#confirmModal button.close').hide();
+
+                $('#confirmModal').modal({
+                  keyboard: false,
+                  backdrop: 'static',
+                  show: true
+                })
+              } else {
+                alert("ABN already exist!");
+                $("#abn").val("");
+              }
+
             }else{
               var new_abn_val = abn.substring( -2,2)+' '+abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
               $("#abn").val(new_abn_val);
@@ -7523,41 +7586,119 @@ $("#ip_expiration").keyup(function(){
 });
 
 window.comp_abn_blur = function(){
-    var type = $("#type").val();
-    if(type == ""){
-      alert("Please select type first.");
-      $("#abn").val("");
+  var company_id = $("#company_id").val();
+  var is_admin = $("#is_admin").val();
+  var user_id = $("#user_id").val();
+  var type = $("#type").val();
+  var acn = $("#acn").val();
+
+  var company_type_id = $("#company_type_id").val();
+  var parent_company_id = $("#parent_company_id").val();
+  var company_activity_id = $("#company_activity_id").val();
+
+  var type = $("#type").val();
+  var parent = $("#parent").val();
+  var activity = $("#activity").val();
+
+  var parent_id = parent.split("|").pop();
+  var activity_id = activity.split("|").pop()
+
+  if(type == ""){
+  
+    alert("Please select type first.");
+    $("#abn").val("");
+  
+  }else{
+  
+    if($("#abn").val() == ''){
+  
+      //$('.is_wip').prop('checked', false);
+      $("#acn").val('');
+  
     }else{
-      if($("#abn").val() == ''){
-        //$('.is_wip').prop('checked', false);
-        $("#acn").val('');
-      }else{
 
-        var type_arr = type.split("|");
-        type = type_arr[1];
+      var type_arr = type.split("|");
+      type = type_arr[1];
 
-        var abn = $("#abn").val().replace(/[^\d]/g, "");
+      var abn = $("#abn").val().replace(/[^\d]/g, "");
 
-        $.post(baseurl+"company/check_company_exist",
+      if(type > 1){
+
+        $.post(baseurl+"company/check_company_exist_edit",
         {
+          company_id: company_id,
           abn: abn,
-          type: type
+          type: type,
+          is_admin: is_admin,
+          user_id: user_id
         },
         function(result){
           if(result == 1){
-            alert("ABN already exist!");
-            location.reload();
+
+            if (is_admin == 1 || user_id == 6){ // administrator and Kat user_id
+              
+              $('#confirmText').text('ABN is already existing, allow this operation?');
+              $('#confirmButtons').html('<button type="button" class="btn btn-danger" onclick="setABN_blank2();">No</button>' +
+                                        '<button type="button" class="btn btn-success" onclick="setABN_ACN2();">Confirm</button>');
+              $('#confirmModal button.close').hide();
+
+              $('#confirmModal').modal({
+                keyboard: false,
+                backdrop: 'static',
+                show: true
+              });
+
+            } else {
+
+              if (company_type_id != type || company_activity_id != activity_id){ // || parent_id != '' (OR parent_id is not blank)
+                saving_more_details();
+
+                location.reload(true);
+              } else {
+                alert("ABN already exist!");
+
+                // $("#save_more_details").hide();
+                // $("#edit_more_details").show();
+                // $('.more_details_group').show();
+                // $('.more_details_group_data').hide();
+              }
+            }
+
           }else{
-            var new_abn_val = abn.substring( -2,2)+' '+abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
-            $("#abn").val(new_abn_val);
 
-            var acn_val = abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
+            if (abn == '') {
 
-            $("#acn").val(acn_val);
+              $('#confirmModal').modal('show');
+
+              $('#confirmText').text('ABN is a required field.');
+              $('#confirmButtons').html('<button type="button" class="btn btn-info" data-dismiss="modal">Okay</button>');
+
+              return false;
+
+            } else {
+
+              var new_abn_val = abn.substring( -2,2)+' '+abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
+              $("#abn").val(new_abn_val);
+
+              saving_more_details();
+
+            }
           }
         });
+
+      }else{
+
+        var new_abn_val = abn.substring( -2,2)+' '+abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
+        $("#abn").val(new_abn_val);
+
+        var acn_val = abn.substring( 2,5)+' '+abn.substring( 5,8)+' '+abn.substring( 8,11);
+
+        $("#acn").val(acn_val);
+
+        saving_more_details();
       }
     }
+  }
 }
 
 window.comp_type_change = function(){
@@ -7829,13 +7970,24 @@ function contact_number_assign(here){
 
   var curVal = $("#"+here).val().replace(/[^\d]/g, '');
 
-  var valhere = curVal.substring(0,2)+' '+curVal.substring(2,3)+' '+curVal.substring(3,7)+' '+curVal.substring(7,16)+' '+curVal.substring(16,20);
+  var valhere = curVal.substring(0,2)+' '+curVal.substring(2,6)+' '+curVal.substring(6,10)+' '+curVal.substring(10,14)+' '+curVal.substring(14,20);
 
   var newString = valhere.replace(/\s+/g,' ').trim();
 
   $("#"+here).val(newString);
 }
 
+function contact_number_assign2(here){
+  //var curVal = $("#"+here).val().replace(/\s/g, '');
+
+  var curVal = $("#"+here).val().replace(/[^\d]/g, '');
+
+  var valhere = curVal.substring(0,2)+' '+curVal.substring(2,6)+' '+curVal.substring(6,10)+' '+curVal.substring(10,14)+' '+curVal.substring(14,18);
+
+  var newString = valhere.replace(/\s+/g,' ').trim();
+
+  $("#"+here).val(newString);
+}
 
 function mobile_number_assign(here){
 //  var curVal = $("#"+here).val().replace(/\s/g, '');
@@ -7859,6 +8011,15 @@ function mobile_number_assign_user(here){
 
 }
 
+function mobile_number_assign_user2(here){
+//  var curVal = $("#"+here).val().replace(/\s/g, '');
+
+  var curVal = $("#"+here).val().replace(/[^\d]/g, '');
+  var valhere = curVal.substring(0,4)+' '+curVal.substring(4,7)+' '+curVal.substring(7,11)+' '+curVal.substring(11,15)+' '+curVal.substring(15,19);
+  var newString = valhere.replace(/\s+/g,' ').trim();
+  $("#"+here).val(newString);
+
+}
 
 function toTitleCase(str){
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
