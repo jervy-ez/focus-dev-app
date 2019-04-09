@@ -2,8 +2,14 @@
 <?php $this->load->module('projects'); ?>
 <?php $this->load->model('projects_m'); ?>
 <?php $projects_q = $this->projects_m->display_all_projects(); ?>
-<div id="main-sidebar" class="main-sidebar main-sidebar-right right-sb-oc"  >
-	<div class="section">
+
+
+
+
+<div id="prj_comments_sidebar" class="dynmc_sb main-sidebar main-sidebar-right right-sb-oc"  style="display:none; width: 35%;height: 100%;background-color: #0E283C;position: fixed;top: 0px;right: -25%;color: #fff;z-index: 10000;">
+
+
+	<div class="section" style="height:100%; overflow: auto;">
 	<!--  -->
 
 		<div class="" >
@@ -11,23 +17,27 @@
 			<input type="hidden" class="prjc_user_first_name" value="<?php echo $this->session->userdata('user_first_name'); ?>" />
 			<input type="hidden" class="prjc_user_last_name" value="<?php echo $this->session->userdata('user_last_name'); ?>" />
 
+			<?php if(isset($project_id) ): ?> 
+				<p><strong>Project Number: <?php echo $project_id; ?></strong>   <span  class="close-sb pull-right pointer strong"><i class="fa-times-circle fa"></i> Close</span> </p>
+			<?php endif; ?>
+
 			<div class="note_side_area">
 
 
 				<?php if(!isset($project_id) ): ?> 
 					<div class="notes_init_search">
-						Search Project Number  <a href="#"><strong  class="close-sb pull-right">Close</strong></a>
+						Search Project Number   <span  class="close-sb pull-right pointer strong"><i class="fa-times-circle fa"></i> Close</span> 
 
-						<div class="clearfix m-top-15" style="padding: 0px;">                       
+						<div class="clearfix m-top-15" style="padding: 0px; color: #555 !important;">                       
 
-							<select class="prjc_project_id chosen_alt" id="prjc_project_id" style="width:235px;">
+							<select class="prjc_project_id form-control pull-left" id="prjc_project_id" style="width:100%;">
 								<option value="" selected="selected" disabled="disabled">Select Project</option>
 								<?php foreach ($projects_q->result_array() as $project_info): ?>
 									<?php echo'<option value="'.$project_info['project_id'].'">'.$project_info['project_id'].' '.$project_info['project_name'].'</option>'; ?>
 								<?php endforeach;   ?>
 							</select>    
 
-							<div class="btn btn-default proj_comments_search_bttn m-left-5" id="">Search</div>
+							<div class="btn btn-default proj_comments_search_bttn m-left-5" id=""  style="    position: absolute;    right: 0;">Search</div>
 
 						</div>      
 					</div>
@@ -75,9 +85,6 @@
   .notes_line.comment_type_0 small{
     color: #fff !important;
   }
-
-
-
 
 </style>
 

@@ -944,15 +944,15 @@ function validate_progress_dates(date_id){
 
 
   $(document).ready(function(){
-
+/*
     $('.sb-open-right').click(function(){
       $('#main').find('#main-sidebar.prg_cmts_sde').show();
     });
-
+*/
     
 
     $('a.currently_logged_user').click(function(){
-      $('#loggedin-sidebar').show();
+    //  $('#loggedin-sidebar').show();
       $("#user_list").html('');
 
       $('.spinner_loading').removeClass('fa-user');
@@ -968,8 +968,9 @@ function validate_progress_dates(date_id){
         $('.spinner_loading').removeClass('fa-spin');
         $('.spinner_loading').removeClass('fa-cog');
         $('.spinner_loading').addClass('fa-user');
+      $('.text_loading_users').html('Currenlty Logged-in');
 
-        $('.text_loading_users').html('User List - <strong>Reload?</strong>');
+      //  $('.text_loading_users').html('User List - <strong onCLick="document.getElementsByClassName(\'currently_logged_user\').click()">Reload?</strong>');
 
 
       },2000);
@@ -979,6 +980,8 @@ function validate_progress_dates(date_id){
       });
     });
 
+
+/*
     $('.update_currently_logged_user').click(function(){
       $('#loggedin-sidebar').show();
       $("#user_list").html('');
@@ -1003,8 +1006,8 @@ function validate_progress_dates(date_id){
         //$('.user_logged').show();
       });
     });
-
-
+*/
+/*
     $('#main-sidebar').simpleSidebar({
       opener: '.sb-open-right',
       wrapper: '#main',
@@ -1024,9 +1027,9 @@ function validate_progress_dates(date_id){
       }
     });
 
+*/
 
-
-
+/*
     $('#loggedin-sidebar').simpleSidebar({
       opener: '.currently_logged_user',
       wrapper: '#main',
@@ -1047,7 +1050,7 @@ function validate_progress_dates(date_id){
     });
 
 
-
+*/
 
 
 
@@ -1149,11 +1152,14 @@ function validate_progress_dates(date_id){
 
     setTimeout(function(){   
       $('.proj_comments_search_bttn').find('i').removeClass('fa-spin');
-    },1000);
+    },2000);
 
 
     var prjc_project_id = $('select#prjc_project_id').val();
     $('.notes_side_content').empty().append('<div class="notes_line no_posted_comment"><p><i class="fa fa-cog fa-spin"></i> Searching...</p></div>');
+
+
+
 
     $.post(baseurl+"projects/list_project_comments",{ 'project_id': prjc_project_id },function(result){    
       if(result == 'Error'){
@@ -1168,6 +1174,9 @@ function validate_progress_dates(date_id){
         },1000);
       }    
     });
+
+
+
   });
 
   $('select.user-role-selection').on("change", function(e) {
@@ -1742,8 +1751,8 @@ $('.submit_ave').click(function(){
     $.post(baseurl+"projects/add_project_comment",{ 
       'ajax_var': dataString
     },function(result){
-      $('.notes_side_content').prepend('<div class="notes_line"><p class="" style="">'+notes_comment_text+'</p><br /><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small></div>');
-      $('.recent_prj_comment').empty().append('<p>'+notes_comment_text+'</p><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small>');
+     // $('.notes_side_content').prepend('<div class="notes_line"><p class="" style="">'+notes_comment_text+'</p><br /><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small></div>');
+    //  $('.recent_prj_comment').empty().append('<p>'+notes_comment_text+'</p><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small>');
     });
   }
 
@@ -1815,9 +1824,8 @@ $('#var_update').click(function(){
 
     if(variation != variation_total_raw){
       alert('Alert! Variation Totals is been updated, Page is reloading.');
-      window.location = '?curr_tab=variations';
-      // var file_path = baseurl+"projects/view/"+proj_id+"?curr_tab=variations";
-      // window.open(file_path,"_self");
+      var file_path = baseurl+"projects/view/"+proj_id+"?curr_tab=variations";
+      window.open(file_path,"_self");
       //location.reload();
     }
   },800);

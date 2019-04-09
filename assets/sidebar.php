@@ -71,7 +71,7 @@
 				
 				<?php if($this->session->userdata('users') > 2 || $this->session->userdata('is_admin') ==  1): ?>
 				<li>
-					<a href="#" class="currently_logged_user"> <i class="fa fa-sign-in fa-3x" ></i> <label class="control-label">Currenlty Logged-in</label></a>
+					<a class="currently_logged_user pointer"> <i class="fa fa-sign-in fa-3x" ></i> <label class="control-label">Currenlty Logged-in</label></a>
 				</li>
 				<?php endif; ?>
 			</ul>

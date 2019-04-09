@@ -102,6 +102,365 @@
 </div>
 
 
+
+<div class="toggle_project_amendments dynmc_sb" style="display:none; width: 35%; overflow-y: auto; height: 100%;background-color: #0E283C;position: fixed;top: 0px;right: -35%;color: #fff;z-index: 1040;">
+
+
+  <div class="prj_amnd_side_area pad-10">
+
+
+    <input type="hidden" class="prjamnd_user_id" value="<?php echo $this->session->userdata('user_id'); ?>" />
+    <input type="hidden" class="prjamnd_user_first_name" value="<?php echo ucfirst($this->session->userdata('user_first_name')); ?>" />
+    <input type="hidden" class="prjamnd_user_last_name" value="<?php echo ucfirst($this->session->userdata('user_last_name')); ?>" />
+    <input type="hidden" class="prjamnd_project_id" value="0" />
+    <input type="hidden" class="prjamnd_btn_clck_id" value="" />
+
+    <!--  <span class="project_title_amnd">PRJID</span>  -->
+
+    <?php $this->load->module('projects'); ?>
+    <?php $this->load->model('projects_m'); ?>
+    <?php $projects_q = $this->projects_m->display_all_projects(); ?>
+
+      <div class="notes_init_search"><strong class="side_bar_label">Project Amendments</strong>  <strong class="pointer close_toggle_amnds pull-right"><i class="fa-times-circle fa"></i> Close</strong> 
+    <?php if(!isset($project_id) ): ?> 
+
+        <div class="clearfix m-top-15" style="padding: 0px; color: #555 !important;">                       
+
+          <select class="amnds_project_id form-control pull-left" id="amnds_project_id" style="width:100%;">
+            <option value="" style="display:none;">Select Project</option>
+            <?php $date_today_tmpstp = strtotime("now"); ?>
+
+            <?php foreach ($projects_q->result_array() as $project_info): ?>
+              <?php echo'<option value="'.$project_info['project_id'].'"';
+
+              echo ' class=" '. ($project_info['unix_start_date'] <=  $date_today_tmpstp ? 'prj_disabled_amnd' : '').' " >'.$project_info['project_id'].' '.$project_info['project_name'].'</option>'; ?>
+            <?php endforeach;   ?>
+          </select>    
+
+          <div class="btn btn-default proj_amnds_search_bttn m-left-5" id=""  style="    position: absolute;    right:5px;">Search</div>
+
+        </div>      
+      </div>
+    <?php else: ?>
+      <select class="amnds_project_id form-control" id="amnds_project_id" style="width:235px; display:none;">
+        <option value="<?php echo $project_id; ?>" selected="selected" ><?php echo $project_id; ?></option>       
+      </select>
+          <div class="btn btn-default proj_amnds_search_bttn m-left-5" id=""  style="    display:none; position: absolute;    right:5px;">Search</div>
+
+          <script type="text/javascript">
+
+
+
+              setTimeout(function(){
+
+ 
+          $('.proj_amnds_search_bttn').trigger('click');
+
+
+          $('.sb-open-right, .submit_notes_prj').click(function(){
+            $('.proj_comments_search_bttn').trigger('click');
+          });
+
+          $('.prj_amndnts_bttn').click(function(){
+            $('.proj_amnd_reload_bttn').trigger('click');
+          });
+
+
+
+
+
+          
+
+
+            },100);
+
+
+
+          </script>
+    <?php endif; ?>
+
+
+    <div class="amnds_side_form m-top-15 clearfix" style="display:none; margin-bottom: -30px;">
+      <textarea class="form-control amnds_comment_text " rows="5" id="amnds_comment_text" placeholder="Details" style="resize: vertical; min-height: 100px;"></textarea>
+      <div class="btn btn-primary btn-sm m-top-10 pull-right submit_amnds_prj">Submit</div>
+      <div class="btn btn-warning btn-md m-top-10 m-right-5 pull-right proj_amnd_reload_bttn" id=""><i class="fa fa-refresh"></i> </div>
+    </div>
+
+    <div class="amnds_line_select_project"  style="padding-top: 10px;   margin-bottom: 10px; font-weight:bold;"><p style="padding-top:10px; clear: both;">Please Select Project.</p></div>
+    <div class="amnds_side_content  clearfix"  style=" margin-top:10px;  clear: both; "></div>
+
+  </div>
+</div>
+
+<script type="text/javascript">
+  
+   $('.dynmc_sb').hide();
+
+  $(document).ready(function(){
+
+
+    $(document).bind("click touchstart", function(event){
+      var trigger = $(".prj_amndnts_bttn")[0];
+      var prj_cmmnts_trigger = $('.sb-open-right')[0];
+      var users_lgin_triggr = $(".currently_logged_user")[0];
+      var obj_clicked = event.target.className;
+
+      if( obj_clicked.includes('prj_amndnts_bttn')){
+        $('.toggle_project_amendments').show().animate({
+          right: '0'
+        });
+
+      }else if( obj_clicked.includes('sb-open-right')){
+        $('#prj_comments_sidebar').show().animate({
+          right: '0'
+        });
+
+      }else if( obj_clicked.includes('currently_logged_user')){
+        $('#loggedin_sidebar').show().animate({
+          right: '0'
+        });
+
+      }else{
+
+        if ( $('.dynmc_sb') !== event.target && !$('.dynmc_sb').has(event.target).length && trigger !== event.target && prj_cmmnts_trigger !== event.target && users_lgin_triggr !== event.target ) {
+          $('.dynmc_sb').animate({ right: '-35%' });
+          setTimeout(function(){ $('.dynmc_sb').hide(); },750);
+        }else{
+        //  $('.dynmc_sb').show();
+        }  
+      }
+
+    });
+
+  });
+
+
+  $('.proj_amnds_search_bttn').click(function(){
+
+
+    if ($("select.amnds_project_id  option:selected").hasClass('prj_disabled_amnd')) {
+      $('.amnds_side_form').hide();
+      alert('This project has commenced, posting amendments is disabled.');
+    }
+    else {
+      $('.amnds_side_form').show();
+    }
+
+    $('.amnds_line_select_project').text('Amendments Posted');
+    $('.amnds_side_content').show();
+    $('.proj_amnd_reload_bttn').trigger('click');
+  });
+
+
+  
+
+
+   $("select.amnds_project_id").on("change", function(e) {
+
+    $('.amnds_side_form').hide();
+    $('.amnds_line_select_project').text('Please click search.');
+
+    
+    $('.amnds_side_content').hide();
+
+
+
+  });
+
+
+
+  $('.close_toggle_amnds, .close-sb, .close_dynmc_sb').click(function(e) {
+    $('.dynmc_sb').animate({
+      right: '-35%'
+    });
+
+    setTimeout(function(){ 
+      $('.dynmc_sb').hide();
+    },750);
+
+  });
+ 
+
+
+  $('.submit_amnds_prj').click(function(){
+
+  $('.proj_amnd_reload_bttn').find('i').addClass('fa-spin');
+  $('.amnds_side_content').empty().append('<div class="notes_line no_posted_comment"><p><i class="fa fa-cog fa-spin"></i> Loading...</p></div>');
+
+
+    $('.no_posted_comment').remove();
+
+    var prjc_user_id = $('.prjamnd_user_id').val();
+    var prjc_user_first_name = $('.prjamnd_user_first_name').val();
+    var prjc_user_last_name = $('.prjamnd_user_last_name').val();
+    var prjc_project_id = $('select.amnds_project_id ').val();
+    var notes_comment_text = $('.amnds_comment_text').val();
+    var result = '';
+    var dataString = prjc_user_id+'`'+prjc_project_id+'`'+notes_comment_text+'`0`2';
+
+    $('.notes_comment_text').empty().val('');
+
+  //$('.notes_side_content').prepend('<div class="notes_line"><p>'+notes_comment_text+'</p><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small></div>');
+
+
+  if(notes_comment_text!=''){
+    $.post(baseurl+"projects/add_project_comment",{ 
+      'ajax_var': dataString
+    },function(result){
+     // $('.amnds_side_content').prepend('<div class="notes_line"><p class="" style="">'+notes_comment_text+'</p><br /><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small></div>');
+    //  $('.recent_prj_comment').empty().append('<p>'+notes_comment_text+'</p><small><i class="fa fa-user"></i> '+prjc_user_first_name+' '+prjc_user_last_name+'<br><i class="fa fa-calendar"></i> '+result+'</small>');
+    });
+  }
+$('.amnds_comment_text').val('');
+
+  setTimeout(function(){   
+    $('.proj_amnd_reload_bttn').find('i').removeClass('fa-spin');
+    $('.proj_amnd_reload_bttn').trigger('click');
+ },1000);
+
+
+
+
+});
+
+
+
+
+   $('.proj_amnd_reload_bttn').click(function(){
+
+
+
+  $(this).find('i').addClass('fa-spin');
+
+  setTimeout(function(){   
+    $('.proj_amnd_reload_bttn').find('i').removeClass('fa-spin');
+ },1000);
+
+
+
+
+    var prjc_project_id = $('select.amnds_project_id ').val();
+
+     $('.amnds_side_content').empty().append('<div class="notes_line no_posted_comment"><p><i class="fa fa-cog fa-spin"></i> Loading...</p></div>');
+
+    $.post(baseurl+"projects/list_project_comments",{ 'project_id': prjc_project_id, 'is_prj_rvw': '2'  },function(result){    
+      if(result == 'Error'){
+        setTimeout(function(){   
+          $('.amnds_side_content').empty().append('<div class="notes_line no_posted_comment"><p>Project Not Found!</p></div>');
+        },1000);
+      }else{
+        setTimeout(function(){        
+
+
+          $('.amnds_side_content').empty().append(result);
+        },1000);
+      }    
+    });
+
+
+
+   });
+
+
+
+
+   $(document).on('click', '.view_delete', function(){
+    $(this).parent().addClass('deleted').prepend('<div class="pull-right btn btn-warning view_deleted btn-xs fa fa-eye-slash"> </div>');
+    $(this).hide();
+    var comments_id = $(this).attr('id');
+    var prjc_project_id = $('select.amnds_project_id ').val();
+    var user_id = <?php echo $this->session->userdata('user_id'); ?>;
+    $.post(baseurl+"projects/project_comments_deleted",{ 'comments_id': comments_id, 'project_id': prjc_project_id, 'user_id': user_id   });
+  });
+
+   $(document).on('click', '.view_deleted', function(){
+    $(this).parent().css('height','auto').prepend('<div class="pull-right btn btn-warning viewing_deleted btn-xs fa fa-eye"> </div>');
+    $(this).hide();
+  });
+
+   $(document).on('click', '.viewing_deleted', function(){
+    $(this).parent().css('height','30px').prepend('<div class="pull-right btn btn-warning view_deleted btn-xs fa fa-eye-slash"> </div>');
+    $(this).hide();
+  });
+
+
+
+
+<?php if(isset($date_site_commencement)): ?>
+if ($("input.quick_input#site_start").length){  
+  var prj_start_tmsp = <?php echo strtotime ( date_format(date_create_from_format('d/m/Y', $date_site_commencement), 'Y-m-d') ); ?>;
+  var today = <?php  echo  strtotime("today");  ?>;
+
+  if(prj_start_tmsp <= today){
+   setTimeout(function(){ 
+    $('.amnds_side_form').hide();
+    $('.side_bar_label').hide();
+
+  },1000);
+ }
+}
+<?php endif; ?>
+
+
+
+
+
+  $('.prj_amndnts_bttn').click(function(event) {
+
+      event.preventDefault(); // because it is an anchor element
+
+      var notes_height = $('.toggle_project_amendments').innerHeight() - 525;
+
+      $('.amnds_side_content').css('height',notes_height+'px');
+
+ 
+
+//    $('.amnds_side_content').empty().append('<div class="notes_line no_posted_comment"><p><i class="fa fa-cog fa-spin"></i> Loading...</p></div>');
+/*
+    $.post(baseurl+"projects/list_project_comments",{ 'project_id': project_id, 'is_prj_rvw': '1'  },function(result){    
+      if(result == 'Error'){
+        $('.notes_side_form').hide();
+        setTimeout(function(){   
+          $('.notes_side_content').empty().append('<div class="notes_line no_posted_comment"><p>Project Not Found!</p></div>');
+        },1000);
+      }else{
+        setTimeout(function(){   
+          $('.notes_side_form').show();         
+          $('.notes_side_content').empty().append(result);
+        },1000);
+      }    
+    });
+
+   */
+  });
+
+
+</script>
+
+<style type="text/css">
+  
+.notes_line small{
+  color: #8A8A8A !important;
+}
+
+
+.amnds_side_content .notes_line br {
+    display: block !important;
+}
+
+.notes_line.comment_type_2 {
+    background-color: #fff;
+    padding: 5px;
+    color: red !important;
+}
+
+.deleted.notes_line{
+  text-decoration: line-through;
+  height: 30px;
+  overflow: hidden;
+}
+
+</style>
 	
 	<script type="text/javascript"> var base_url = '<?php echo site_url(); //you have to load the "url_helper" to use this function ?>'; </script>
 	<script src="<?php echo base_url(); ?>js/vendor/bootstrap.min.js"></script>	
