@@ -63,6 +63,87 @@ class Purchase_order extends MY_Controller{
 		$this->load->view('page', $data);
 	}
 
+
+	public function po_review_process(){
+		$po_data_arr = explode('_', $_POST['ajax_var']);
+
+		$po_number = $po_data_arr[0];
+		$project_id = $po_data_arr[1];
+		$pm_id = $po_data_arr[2];
+		$pa_id = $po_data_arr[3];
+
+		$estimate = str_replace(",", "", $po_data_arr[4]);
+
+
+		$estimated = (float)$estimate;
+
+		$action = $po_data_arr[5];
+		$date_set = date('d/m/Y');
+
+		$this->purchase_order_m->insert_po_review($po_number,$project_id,$date_set,$estimated,$action);
+
+		$action_notice = '';
+
+		if($action == 1){
+			$action_notice = 'Request for Removal';
+		}
+
+		if($action == 2){
+			$action_notice = 'Waiting for Invoice';
+		}
+
+		$content = '<p>A Purchase Order has been reviewed and it needs you to update it`s details.</p><p>You can click <a href="'.base_url().'purchase_order?po_rev=1" target="_blank" title="Go to Sojourn - Purchase Orders"><strong>this link</strong></a> to go to the purchase order screen.<p>';
+		$content .= '<p>PO Number: <strong>'.$po_number.'</strong><br /> Project: <strong>'.$project_id.'</strong><br />Action: <strong>'.$action_notice.'</strong></p>';
+
+		$q_pm_email = $this->purchase_order_m->get_contact_user($pm_id);
+		$pm_data_email = array_shift($q_pm_email->result() ) ;
+		$pm_email = $pm_data_email->general_email;	
+
+		$q_pa_email = $this->purchase_order_m->get_contact_user($pa_id);
+		$pm_data_email = array_shift($q_pa_email->result() ) ;
+		$pa_email = $pm_data_email->general_email;	
+
+		$send_to = $pm_email;
+		$add_cc = $pa_email;
+
+		$this->po_review_mail($project_id,$po_number,$content,$send_to,$add_cc);
+	}
+
+
+
+
+
+	public function po_review_mail($project_id,$po_number,$content,$send_to,$add_cc=''){
+
+		$mail = new PHPMailer;                                		
+		$mail->Host = 'sojourn-focusshopfit-com-au.mail.protection.outlook.com';
+		$mail->Port = 587;
+
+		$mail->setFrom('noreply@focusshopfit.com.au', 'Sojourn - PO Review');
+		$mail->addReplyTo('noreply@focusshopfit.com.au', 'Do Not Reply');
+
+		$mail->addAddress($send_to);
+		if($add_cc != ''){ $mail->addCC($add_cc);	}
+
+		$mail->isHTML(true);                               
+
+		$inv_curr_set = '_P1';
+
+		$year = date('Y');
+
+		$mail->Subject = 'Purchase Order Review: '.$project_id.' - '.$po_number;
+		$mail->Body    = $content.'<br /><br />Sent via Sojourn auto-email service, you have a purchase order that needs action.<br />Please log-in to Sojourn and apply the necessary changes as per details above.<br /><br />&copy; FSF Group '.$year;
+
+		if(!$mail->send()) {
+			echo 'Message could not be sent.';
+			echo 'Mailer Error: ' . $mail->ErrorInfo;
+		} else {
+			echo 'Message has been sent';
+		}
+
+
+	}
+
 	public function check_contractor_insurance($company_id){
 
 

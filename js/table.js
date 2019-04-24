@@ -76,6 +76,19 @@ $('#po_table').dataTable({
 });
 
 
+$('#po_rev_table').dataTable({
+    "iDisplayLength": 15,
+    "aLengthMenu": [[15, 20, 25, 50, -1], [15, 20, 25, 50, "All"]],
+    "order": [[ 9, "asc" ]],
+    "aoColumnDefs":[{"targets":0,"orderable": false},{"targets": 5,"orderable": false},{"targets": 6,"orderable": false},{"targets": 8,"orderable": false},{ "bVisible": false, "aTargets":[9] }]
+});
+
+
+
+
+
+
+
 $('#invoice_table').dataTable({
     "iDisplayLength": 13,
     "aLengthMenu": [[13, 20, 25, 50, -1], [13, 20, 25, 50, "All"]],
@@ -407,6 +420,7 @@ $('#projectTable_filter input.prj_gen_seearch').keyup( function(){
 
 $('.po-area #po_table_filter').prepend($('.outstading_pm').html());
 $('.po-area #reconciled_list_table_filter').prepend($('.outstading_pm').html());
+$('.po-area #po_rev_table_filter').prepend($('.outstading_pm').html());
 
 $('#shoppingCenterTable_filter').prepend($('.state_select_list').html());
 $('#shoppingCenterTable_prj_filter').append($('.state_select_list').html());
@@ -417,6 +431,17 @@ $('#po_table_filter select#outstading_pm').on("change", function(e) {
     var searchA = $(this).val();
     companyTable.fnFilter(searchA,'8');
 });
+
+$('#po_review select#outstading_pm').on("change", function(e) { 
+    var companyTable = $('#po_rev_table').dataTable();
+    var searchA = $(this).val();
+    companyTable.fnFilter(searchA,'7');
+});
+
+
+
+
+
 
 $('#reconciled_list_table_filter select#outstading_pm').on("change", function(e) { 
     var companyTable = $('#reconciled_list_table').dataTable();
@@ -431,6 +456,10 @@ $('#reconciled_list_table_filter select#outstading_pm').on("change", function(e)
 
 
 $('.po-area #po_table_filter').prepend($('.cpo_date_filter').html());
+$('.po-area #po_rev_table_filter').prepend($('.cpo_date_filter').html());
+$('.po-area #po_rev_table_filter').prepend($('.complation_date_filter').html());
+
+
 $('.po-area #reconciled_list_table_filter').prepend($('.cpo_date_filter').html());
 
 
@@ -438,6 +467,14 @@ $('#po_table_filter select#cpo_date_filter').on("change", function(e) {
     var companyTable = $('#po_table').DataTable();
     var sort_val = $(this).val();
     companyTable.order( [ 11, sort_val ] ).draw();
+});
+
+
+
+$('#po_review select#cpo_date_filter').on("change", function(e) { 
+    var companyTable = $('#po_rev_table').DataTable();
+    var sort_val = $(this).val();
+    companyTable.order( [ 9, sort_val ] ).draw();
 });
 
 $('#reconciled_list_table_filter select#cpo_date_filter').on("change", function(e) { 

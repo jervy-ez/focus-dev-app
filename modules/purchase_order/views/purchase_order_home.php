@@ -2,8 +2,16 @@
 <?php $this->load->module('company'); ?>
 <?php $this->load->module('projects'); ?>
 <?php $this->load->module('purchase_order'); ?>
+<?php $this->load->model('purchase_order_m'); ?>
 <?php $this->load->module('bulletin_board'); ?>
 <!-- title bar -->
+
+
+
+<?php $this->load->module('dashboard'); ?>
+<?php $this->load->model('dashboard_m'); ?>
+
+
 <div class="container-fluid head-control">
 	<div class="container-fluid">
 		<div class="row">
@@ -88,8 +96,108 @@
 
 
 
+								<?php
+									if($this->session->userdata('user_role_id') == 3){
+										$po_rev_prime = 'active';
+										$def_prime = '';
+									//	project manager
 
 
+										echo '<script type="text/javascript">
+										setTimeout(function(){
+											$("#po_review select.po_rev_pm option").remove();
+											$("#po_review select.po_rev_pm").append("<option>'.$this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name').'</option>");
+											$("#po_review select.po_rev_pm").val("'.$this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name').'").trigger("change");
+
+										},500);</script>';
+
+
+									}elseif($this->session->userdata('user_role_id') == 20){
+										$po_rev_prime = 'active';
+										$def_prime = '';
+										// account manager
+
+										echo '<script type="text/javascript">
+										setTimeout(function(){
+											$("#po_review select.po_rev_pm option").remove();
+											$("#po_review select.po_rev_pm").append("<option>'.$this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name').'</option>");
+											$("#po_review select.po_rev_pm").val("'.$this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name').'").trigger("change");
+
+										},500);</script>';
+
+									}elseif($this->session->userdata('user_id') == 20){
+										$po_rev_prime = 'active';
+										$def_prime = '';
+										//echo "<p>GF</p>"; gary ford
+
+										echo '<script type="text/javascript">
+										setTimeout(function(){
+											$("#po_review select.po_rev_pm option").remove();
+											$("#po_review select.po_rev_pm").append("<option>'.$this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name').'</option>");
+											$("#po_review select.po_rev_pm").val("'.$this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name').'").trigger("change");
+
+										},500);</script>';
+									}elseif($this->session->userdata('user_role_id') == 7){
+										$po_rev_prime = 'active';
+										$def_prime = '';
+										// maintenance
+
+										echo '<script type="text/javascript">
+										setTimeout(function(){
+											$("#po_review select.po_rev_pm option").remove();
+											$("#po_review select.po_rev_pm").append("<option value=\"Maintenance Manager\">Maintenance Manager</option>");
+											$("#po_review select.po_rev_pm").val("Maintenance Manager").trigger("change");
+
+										},500);</script>';
+									}elseif($this->session->userdata('user_role_id') == 2){
+										//echo "<p>PA</p>";
+										$po_rev_prime = 'active';
+										$def_prime = '';
+
+										$user_id = $this->session->userdata('user_id');
+										$pa_data = $this->dashboard_m->fetch_pa_assignment($user_id);
+										$assignment = array_shift($pa_data->result_array());
+										$pa_pms = explode(',',$assignment['project_manager_ids']);
+
+										echo '<script type="text/javascript">
+										setTimeout(function(){
+											$("#po_review select.po_rev_pm option").remove();';
+											
+
+											foreach ($users->result_array() as $row){
+												if($row['user_role_id']==3 || $row['user_role_id']==20):
+
+													if (in_array($row['user_id'], $pa_pms)){ 
+														echo '$("#po_review select.po_rev_pm").append("<option value=\"'.$row['user_first_name'].' '.$row['user_last_name'].'\">'.$row['user_first_name'].' '.$row['user_last_name'].'</option>");';														
+													}
+
+													if($row['user_id'] == $assignment['project_manager_primary_id']){
+														echo '$("#po_review select.po_rev_pm").val("'.$row['user_first_name'].' '.$row['user_last_name'].'").trigger("change");';
+													}
+												endif;
+
+											}
+										echo '},500);</script>';         
+
+									}else{
+										$po_rev_prime = '';
+										$def_prime = 'active';
+									//	echo "<p>deff</p>";
+									}
+								?>
+
+
+
+
+								<?php
+									if(isset($_GET['po_rev']) && $_GET['po_rev'] != ''){
+										$po_rev_prime = 'active';
+										$def_prime = '';
+									}else{
+										$po_rev_prime = '';
+										$def_prime = 'active';
+									}
+								?>
 
 
 								<div class="row clearfix">
@@ -114,7 +222,13 @@
 
 
 												<ul id="myTab" class="nav nav-tabs pull-right">
-													<li class="active">
+
+													<?php if($this->session->userdata('is_admin') == 1): ?>
+														<li class="<?php echo $po_rev_prime; ?>">
+															<a class="po_review_lnk" href="#po_review" data-toggle="tab"><i class="fa fa-file-text-o fa-lg"></i> PO Review</a>
+														</li>
+													<?php endif; ?>
+													<li class="<?php echo $def_prime; ?>">
 														<a href="#outstanding" data-toggle="tab"><i class="fa fa-level-up fa-lg"></i> Outstanding</a>
 													</li>
 													<li class="" >
@@ -129,16 +243,241 @@
 
 								</div>
 
+
+
+
+
 								<div class="box-area">
 
 									<div class="box-tabs m-bottom-15">
 										<div class="tab-content">
-											<div class="tab-pane  clearfix active" id="outstanding">
+
+
+
+								<div id="po_review" class="tab-pane clearfix <?php echo $po_rev_prime; ?>">
 												<div class="m-bottom-15 clearfix">
 
 
 													<div class="box-area po-area">
-														<table id="po_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+														<table id="po_rev_table" class="table table-bordered table_adjusted" cellspacing="0" width="100%">
+
+															<thead><tr><th>CPO Date</th><th>PO Number</th><th>Project</th><th>Contractor</th><th>Price w/ GST</th><th>Estimate w/ GST</th><th>Finish Date</th><th>Personel</th><th>Action</th> <th>finish_date_tmpstp_date</th></tr></thead>
+															
+
+
+															<tbody>
+
+																<?php
+
+																$total_price_exgst = 0;
+																$total_price_incgst = 0;
+
+																$today_date = new DateTime(date("Y-m-d"));
+																$today_date_timestamp = $today_date->format('U'); 
+
+																$date_month_today = '01'.date('/m/Y');
+																$date_next_month = '01'.date("/m/Y", strtotime("today +1 Month"));
+																$has_been_reviewed = 0;
+ 
+																	foreach ($po_list->result_array() as $row){
+
+
+																		$q_po_reviewer = $this->purchase_order_m->check_po_reviewer($row['works_id'],$date_month_today,$date_next_month);
+
+																		if($q_po_reviewer->num_rows > 0){
+																			$po_reviewer_data = array_shift($q_po_reviewer->result());
+
+																			$po_marker = 'posted_rev';
+																			$po_rv_estimate = floatval($po_reviewer_data->estimate_price_wgst);
+																			$po_rv_action = $po_reviewer_data->action;
+																			$has_been_reviewed = 1;
+																		}else{
+																			$po_marker = '';
+																			$po_rv_estimate = '';
+																			$po_rv_action = '';
+																			$has_been_reviewed = 0;
+																		}
+
+
+
+																		$srchDate = date_format(date_create_from_format('d/m/Y', $row['date_site_finish']), 'Y-m-d');
+																		$date_control = $today_date->diff(new DateTime($srchDate));
+
+																		$project_month_ended = strtotime($srchDate. ' + 30 days');
+
+																		if($date_control->days > 29 && $project_month_ended < $today_date_timestamp ){
+
+																		$comp_insurance_status = $this->purchase_order->check_contractor_insurance($row['company_client_id']);
+
+																		$balance_a = $this->purchase_order->check_balance_po($row['works_id']);
+
+                                    $prj_defaults = $this->projects->display_project_applied_defaults($row['project_id']);
+
+                                    $inc_gst_price = $this->purchase_order->ext_to_inc_gst($row['price'],$prj_defaults['admin_gst_rate']);
+
+
+
+echo '<tr class="'.$po_marker.'"><td>'.$row['work_cpo_date'].'</td><td>'.$row['works_id'].'</td><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" target="_blank"  >'.$row['project_id'].' - '.$row['project_name'].'<a></td><td>'.$row['contractor_name'].'</td><td><span class="inc-gst">'.number_format($inc_gst_price,2).'</span> </td>';
+
+
+
+if( $has_been_reviewed == 1){
+	echo '<td> <strong>'.number_format($po_rv_estimate,2).'</strong> </td>';
+}else{
+
+
+
+	if($inc_gst_price > 1){
+//echo '<td> <input disabled class="form-control input-sm estimate_price_wgst" placeholder="$ Estimate" value="'.number_format($inc_gst_price,2).'" /> </td>';
+
+
+		echo '<td> <strong><input class="hide estimate_price_wgst" value="'.$inc_gst_price.'" /> '.number_format($inc_gst_price,2).'</strong> </td>';
+	}else{
+
+
+		echo '<td> <input class="form-control input-sm estimate_price_wgst" placeholder="$ Estimate w/ GST" value="" /> </td>';
+
+	}
+
+
+}
+
+
+
+
+
+
+echo '<td>'.$row['date_site_finish'].'</td> <td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td> 
+<td>';
+
+
+if( $has_been_reviewed == 1){
+
+	
+	
+
+	if($po_rv_action == 1){
+		echo '<strong>Request for Removal</strong>';
+	}
+
+	if($po_rv_action == 2){
+		echo '<strong>Waiting for Invoice</strong>';
+	}
+
+
+}else{
+
+
+echo '<select class="form-control input-sm po_action_set" id="'.$row['works_id'].'_'.$row['project_id'].'_'.$row['project_manager_id'].'_'.$row['project_admin_id'].'" >
+	<option value="0" selected="" disabled="">Pls Select an Action</option>
+	<option value="1">Request for Removal</option>
+	<option value="2">Waiting for Invoice</option>
+</select>';
+}
+			
+			echo'</td>
+
+<td>'.$row['workfinish_tmpstp_date'].'</td>
+</tr>';
+
+
+ 
+
+
+
+
+/*
+
+																		echo '<tr class="reviewed" id="'.$prj_defaults['admin_gst_rate'].'"><td><a href="#" data-toggle="modal" data-target="#invoice_po_modal" data-backdrop="static" onclick="select_po_item(\''.$row['works_id'].'-'.$row['project_id'].'\');" id="'.$row['works_id'].'-'.$row['project_id'].'" class="select_po_item">'.$row['works_id'].'</a></td><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row['project_id'].'/'.$row['works_id'].'">';
+
+																		if($row['contractor_type']==2){
+
+																			if($row['job_sub_cat']=='Other'){
+																				echo $row['other_work_desc'];
+																			}else{ 
+                                        echo $row['job_sub_cat'];
+																			}
+
+																		}elseif($row['contractor_type']==3){
+																			if($row['supplier_cat_name']=='Other'){
+																				echo $row['other_work_desc'];
+																			}else{
+																				echo $row['supplier_cat_name'];
+																			}
+																		}else{ }
+
+
+																		$total_price_exgst = $row['price'] + $total_price_exgst;
+
+																		$inc_gst_price = $this->purchase_order->ext_to_inc_gst($row['price'],$prj_defaults['admin_gst_rate']);
+
+																		$total_price_incgst = $inc_gst_price + $total_price_incgst;
+
+																		echo '</a></td><td id="'.$comp_insurance_status.'"><span class="'.$comp_insurance_status.'">'.($comp_insurance_status == 'red_bad' ? '<a class="tooltip-test" title="Incomplete Insurance">' : '').''.$row['contractor_name'].''.($comp_insurance_status == 'red_bad' ? '</a>' : '').'</span></td><td>'.$row['project_name'].'</td><td>'.$row['job_date'].'</td><td>'.$row['client_name'].'</td><td>'.$row['user_first_name'].' '.$row['user_last_name'].'</td><td><span class="ex-gst">'.number_format($row['price'],2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($inc_gst_price,2).'</span></td>';
+                                    echo '<td><span class="ex-gst">'.number_format($balance_a,2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($this->purchase_order->ext_to_inc_gst($balance_a,$prj_defaults['admin_gst_rate']),2).'</span></td>';
+                                    echo '<td>'.$row['workfinish_tmpstp_date'].'</td>';
+                                    echo '</tr>';*/
+																  }
+																  }
+																?>
+
+                                <?php  
+                                  foreach ($work_joinery_list->result_array() as $row_j){
+
+
+																		$srchDate = date_format(date_create_from_format('d/m/Y', $row_j['date_site_finish']), 'Y-m-d');
+																		$date_control_j = $today_date->diff(new DateTime($srchDate));
+																		$project_month_ended = strtotime($srchDate. ' + 30 days');
+
+
+																		if($date_control_j->days > 29 && $project_month_ended < $today_date_timestamp ){
+
+
+
+																		$comp_insurance_status = $this->purchase_order->check_contractor_insurance($row_j['company_client_id']);
+
+                                  	$total_price_exgst = $row_j['price'] + $total_price_exgst;
+                                    $j_prj_defaults = $this->projects->display_project_applied_defaults($row_j['project_id']);
+
+
+                                  	$inc_gst_price_j = $this->purchase_order->ext_to_inc_gst($row_j['price'],$j_prj_defaults['admin_gst_rate']);
+
+                                  	$total_price_incgst = $inc_gst_price_j + $total_price_incgst;
+
+
+									$balance_b = $this->purchase_order->check_balance_po($row_j['works_id'],$row_j['work_joinery_id']);
+
+                                    echo '<tr class="reviewed" id="'.$j_prj_defaults['admin_gst_rate'].'"><td><a href="#" data-toggle="modal" data-target="#invoice_po_modal" data-backdrop="static" onclick="select_po_item(\''.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'-'.$row_j['project_id'].'\');" id="'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'-'.$row_j['project_id'].'" class="select_po_item">'.$row_j['works_id'].'-'.$row_j['work_joinery_id'].'</a></td><td><a href="'.base_url().'projects/view/'.$row_j['project_id'].'" >'.$row_j['project_id'].'</a></td><td>'.$row_j['work_cpo_date'].'</td><td><a href="'.base_url().'works/update_work_details/'.$row_j['project_id'].'/'.$row_j['works_id'].'">';
+                                    echo $row_j['joinery_name'];
+                                    echo '</a></td><td id="'.$comp_insurance_status.'"><span class="'.$comp_insurance_status.'">'.$row_j['contractor_name'].'</span></td><td>'.$row_j['project_name'].'</td><td>'.$row_j['job_date'].'</td><td>'.$row_j['client_name'].'</td><td>'.$row_j['user_first_name'].' '.$row_j['user_last_name'].'</td><td><span class="ex-gst">'.number_format($row_j['price'],2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($inc_gst_price_j,2).'</span></td>';
+                                    echo '<td><span class="ex-gst">'.number_format($balance_b,2).'</span><br /><span class="hide">-</span><span class="inc-gst">'.number_format($this->purchase_order->ext_to_inc_gst($balance_b,$j_prj_defaults['admin_gst_rate']),2).'</span></td>';
+                                    echo '<td>'.$row_j['workfinish_tmpstp_date'].'</td>';
+                                    echo '</tr>';
+                                  } 
+                                  } 
+                               ?>
+
+															</tbody>
+
+														</table>
+
+													</div>
+
+
+
+												</div>
+											</div>
+
+
+
+
+
+											<div class="tab-pane  clearfix <?php echo $def_prime; ?>" id="outstanding">
+												<div class="m-bottom-15 clearfix">
+
+
+													<div class="box-area po-area">
+														<table id="po_table" class="table table_adjusted  table-striped table-bordered" cellspacing="0" width="100%">
 															<thead><tr><th>PO Number</th><th>Project Number</th><th>CPO Date</th><th>Job Description</th><th>Contractor</th><th>Project Name</th><th>Job Date</th><th>Client</th><th>Project Manager</th><th>Price</th><th>Balance</th><th>cpo_tmpstp_date</th></tr></thead>
 															<tbody>
 
@@ -257,13 +596,18 @@
 		/*color: blue;
 		font-weight: bold;*/
 	}
+
+
+	.table_adjusted{
+		font-size: 13px !important;
+	}
 </style>
 
 
 
 
 
-														<table class="table table-striped table-bordered" cellspacing="0" width="100%">
+														<table class="table table-striped table-bordered table_adjusted " cellspacing="0" width="100%">
 															<thead><tr><th>PO Number</th><th>Project Number</th><th>CPO Date</th><th>Job Description</th><th>Contractor</th><th>Project Name</th><th>Reconciled Date</th><th>Client</th><th>Project Manager</th><th>Price</th><th>Balance</th></tr></thead>
 															<tbody class="dynamic_search_result_reconciled_list">
 																<tr><td colspan="11">Please input your PO number in the search field.</td></tr>
@@ -287,7 +631,165 @@
 </div>
 
 
+
+<style type="text/css">
+	
+
+	table tr.posted_rev{
+		background-color: #ffa9e6;                      
+	}
+
+	table tr.posted_rev td, table tr.posted_rev td a{
+		color: #000 !important;
+	}
+
+	table tr.posted_rev input.estimate_price_wgst, table tr.posted_rev select.po_action_set{
+		pointer-events: none;
+	}
+
+
+
+	table#po_rev_table tr:hover, table#po_rev_table tr.prj_rvw_rw:hover td, table#po_rev_table tr.prj_rvw_rw:hover a {
+		background-color: #84f1ff;
+		color: #000 !important;
+	}
+
+	table#po_rev_table tr td {
+		    vertical-align: inherit;
+	}
+
+	table#po_rev_table .has_error{
+		border-color: red;
+		color: red;
+	}
+
+	table#po_rev_table thead, table#po_table thead{
+		background-color: #f1f1f1;
+		font-size: 13px;
+	}
+
+</style>
+
+<div class="modal fade" id="confirm_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog  modal-sm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Please Confirm</h4>
+				<input type="hidden" class="selected_action" value="0">
+				<input type="hidden" class="price_estimate" value="0">
+				<input type="hidden" class="po_data" value="0">
+			</div>
+			<div class="modal-body clearfix pad-10">
+				<center><h4>Are you sure with your review?</h4></center>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default pull-left process_cancel" data-dismiss="modal">Cancel</button>
+				<button type="submit" class="btn btn-success pull-right process_continue" data-dismiss="modal">Yes, Continue</button>		
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
 <script type="text/javascript">
+
+
+	$('.process_continue').click(function(){
+
+	var estimate_price_wgst = $('input.price_estimate').val();
+	var po_action_set = $('input.selected_action').val();
+	var po_data = $('input.po_data').val();
+
+ 
+
+	if(!estimate_price_wgst){
+		estimate_price_wgst = '';
+	}
+
+	$('select.po_action_set').removeClass('has_error');
+	$('input.estimate_price_wgst').removeClass('has_error');
+
+
+
+
+	if(estimate_price_wgst < 1 && po_action_set == 2){
+		$('select#'+po_data).parent().parent().find('input.estimate_price_wgst').addClass('has_error');
+		$('select#'+po_data).val(0);
+		alert('Please set estimate amount with GST.');
+
+	}else{
+		$('select#'+po_data).parent().parent().addClass('posted_rev');
+
+		$('#loading_modal').modal({"backdrop": "static", "show" : true} );
+		setTimeout(function(){
+			$('#loading_modal').modal('hide');
+		},2000);
+
+ 
+      	var estimate_parsed = estimate_price_wgst;
+
+    //  	$('select#'+estimate_price_wgst).parent().parent().find('input.estimate_price_wgst').prop('disabled', true);
+
+    if(po_action_set == 1){
+    	var action_selected = 'Request for Removal';
+    }
+
+    if(po_action_set == 2){
+    	var action_selected = 'Waiting for Invoice';
+
+    }
+
+
+      	$('select#'+po_data).prop('disabled', true).hide().replaceWith('<strong>'+action_selected+'</strong>');
+      	$('select#'+po_data).parent().parent().find('input.estimate_price_wgst').prop('disabled', true).hide().replaceWith('<strong>'+estimate_price_wgst+'</strong>');
+
+
+
+
+
+     // alert(estimate_price_wgst);
+	//	$(this).parent().parent().find('select.po_action_set').prop('disabled', true);
+     // 	$(this).parent().parent().find('input.estimate_price_wgst').prop('disabled', true);
+    //  	$(this).hide();
+
+      	var po_data = po_data+'_'+estimate_parsed+'_'+po_action_set;
+
+     	 ajax_data(po_data,'purchase_order/po_review_process','');
+	}
+
+//	
+
+
+
+
+
+	});
+
+
+$('.process_cancel').click(function(){
+	var selection_id = $('input.po_data').val();
+	$('input.price_estimate').val('0');
+	$('input.po_data').val('0');
+	$('select#'+selection_id).val('0')
+	$('input.selected_action').val('0');
+});
+
+
+	$('select.po_action_set').on("change", function(e) {
+		$('#confirm_modal').modal({"backdrop": "static", "show" : true} );
+		var data_po = $(this).attr('id');
+		var data_action = $(this).val();
+
+		var estimate_price_wgst = $(this).parent().parent().find('input.estimate_price_wgst').removeClass('has_error').val();
+
+		$('input.selected_action').val(data_action);
+		$('input.price_estimate').val(estimate_price_wgst);
+		$('input.po_data').val(data_po);
+
+
+
+	});
 
  
 	
@@ -399,7 +901,7 @@
       					<div class="col-sm-9">
       						<div class="input-group m-bottom-10">
       							<span class="input-group-addon" id="">$</span>
-      							<input type="text" placeholder="Amount" class="form-control number_format" id="po_amount_value" name="po_amount_value" value="" tabindex="2">
+      							<input type="text" placeholder="Amount" class="form-control number_format" onkeyup="" id="po_amount_value" name="po_amount_value" value="" tabindex="2">
                     <span class="input-group-addon" id="">ex-gst</span>
       						</div>
       					</div>
@@ -1004,15 +1506,16 @@ if(focus_company == ''){
 
 
 <div style="display:none;" class="outstading_pm">
-	<select id="outstading_pm" class="form-control  pull-right input-sm m-left-10"  style="width:200px;">
+	<select id="outstading_pm" class="form-control  pull-right input-sm m-left-10 po_rev_pm"  style="width:200px;">
 		<option value="">Select Project Manager</option>
 		<?php
 		foreach ($users->result_array() as $row){
-			if($row['user_role_id']==3):
+			if($row['user_role_id']==3 || $row['user_role_id']==20):
 				echo '<option value="'.$row['user_first_name'].' '.$row['user_last_name'].'" >'.$row['user_first_name'].' '.$row['user_last_name'].'</option>';
 			endif;
 		}
 		?>
+		<option value="Gary Ford">Gary Ford</option>
 	</select>
 </div>
 
@@ -1021,6 +1524,17 @@ if(focus_company == ''){
 <div id="" style="display:none;" class="cpo_date_filter">
 	<select id="cpo_date_filter" class="form-control  pull-right input-sm m-left-10"  style="width:200px;">
 		<option value="">Sort CPO Date</option>
+		<option value="asc">Ascending</option>
+		<option value="desc">Descending</option>
+	</select>
+</div>
+
+
+
+
+<div id="" style="display:none;" class="cpo_date_filter">
+	<select id="complation_date_filter" class="form-control  pull-right input-sm m-left-10"  style="width:200px;">
+		<option value="">Sort Completion Date</option>
 		<option value="asc">Ascending</option>
 		<option value="desc">Descending</option>
 	</select>
@@ -1068,6 +1582,8 @@ if(focus_company == ''){
     $('input#po_amount_value_inc_gst').val('0.00');
     $('input#po_is_reconciled_value').prop('checked', true);
   });
+
+
 </script>
 
 
