@@ -15,7 +15,6 @@ class Dashboard extends MY_Controller{
 		$this->load->module('admin');
 		$this->load->model('admin_m');
 
-
 		$this->load->module('wip');
 		$this->load->model('wip_m');
 
@@ -26,7 +25,6 @@ class Dashboard extends MY_Controller{
 		$this->load->model('purchase_order_m');
 
 		$this->load->model('dashboard_m');
-
 
 		if(!$this->users->_is_logged_in() ): 		
 			redirect('', 'refresh');
@@ -45,7 +43,7 @@ class Dashboard extends MY_Controller{
 		endif;
 */
 // temporary restriction for dashboaed devf
-   
+
 
 
 
@@ -73,7 +71,7 @@ class Dashboard extends MY_Controller{
 		$c_year = date("Y");
 
 	//	for ($my_year = 2015; $my_year <= $c_year; $my_year++){
-			for ($month=1; $month < 13; $month++) { 
+		for ($month=1; $month < 13; $month++) { 
 			//	if($month > $c_month && $c_year == $c_year){
 			//	}else{
 				//	echo "$my_year,$month<br />";
@@ -84,79 +82,41 @@ class Dashboard extends MY_Controller{
 	//		$this->check_estimates($my_year);
 	//	}
 
-	}
+			}
 
-	public function d_estimators_wip($es_id=''){
+			public function d_estimators_wip($es_id=''){
 		//$this->dashboard('estimators')->estimators_wip($es_id='');
 
 	//	echo "test";
-	}
-
-	function index(){
-		$this->users->_check_user_access('dashboard',1);
-		$data['assign_id'] = 0;
-		$data['screen'] = 'Dashboard';
-		$user_role_id = $this->session->userdata('user_role_id');
-		$user_department_id = $this->session->userdata('user_department_id');
-		//Grant acess to Operations Manager
-		$data['pm_setter'] = '';
-
-		if($this->session->userdata('is_admin') == 1 || $user_role_id == 16 || $this->session->userdata('user_id') == 9 || $this->session->userdata('user_id') == 6):
-
-			$dash_type = $this->input->get('dash_view', TRUE);
-			if( isset($dash_type) && $dash_type != ''){
-				$dash_details = explode('-', $dash_type);
-				$data['assign_id'] = $dash_details[0];
-
-				$fetch_user = $this->user_model->fetch_user($dash_details[0]);
-				$user_details = array_shift($fetch_user->result_array());
- 				$data['pm_setter'] = $user_details['user_first_name'].' '.$user_details['user_last_name']; 
-
- 				
- 				if($dash_details[1] == 'pm'){
-					$data['main_content'] = 'dashboard_pm';
- 				}elseif($dash_details[1] == 'mn'){
-					$data['main_content'] = 'dashboard_mn';
- 				}elseif($dash_details[1] == 'es'){
-					redirect('/dashboard/estimators?dash_view='.$dash_details[0].'-es');
- 				}elseif($dash_details[1] == 'ad'){
-						$data['main_content'] = 'dashboard_home';
-				}elseif($dash_details[1] == 'ch'){
-					$data['main_content'] = 'dashboard_general_hammond';
-				}elseif($dash_details[1] == 'jp'){
-					$data['main_content'] = 'dashboard_joinery_procurement';
-				}elseif($dash_details[1] == 'acnt'){
-					$data['main_content'] = 'dashboard_accnt';
-				}elseif($dash_details[1] == 'set'){
-					$data['main_content'] = 'dashboard_set';
-				}else{
-					$data['main_content'] = 'dashboard_home';
- 				}
-
-			}else{
-				$data['main_content'] = 'dashboard_home';
 			}
 
-		elseif($user_role_id == 3 || $user_role_id == 20):
+			function index(){
+				$this->users->_check_user_access('dashboard',1);
+				$data['assign_id'] = 0;
+				$data['screen'] = 'Dashboard';
+				$user_role_id = $this->session->userdata('user_role_id');
+				$user_department_id = $this->session->userdata('user_department_id');
+		//Grant acess to Operations Manager
+				$data['pm_setter'] = '';
 
+				if($this->session->userdata('is_admin') == 1 || $user_role_id == 16 || $this->session->userdata('user_id') == 9 || $this->session->userdata('user_id') == 6):
 
-
-
-			$dash_type = $this->input->get('dash_view', TRUE);
-			if( isset($dash_type) && $dash_type != ''){
-				if($this->session->userdata('user_id') == 15 ){
+					$dash_type = $this->input->get('dash_view', TRUE);
+				if( isset($dash_type) && $dash_type != ''){
 					$dash_details = explode('-', $dash_type);
 					$data['assign_id'] = $dash_details[0];
-
 
 					$fetch_user = $this->user_model->fetch_user($dash_details[0]);
 					$user_details = array_shift($fetch_user->result_array());
 					$data['pm_setter'] = $user_details['user_first_name'].' '.$user_details['user_last_name']; 
 
+
 					if($dash_details[1] == 'pm'){
 						$data['main_content'] = 'dashboard_pm';
 					}elseif($dash_details[1] == 'mn'){
 						$data['main_content'] = 'dashboard_mn';
+					}elseif($dash_details[1] == 'es'){
+						redirect('/dashboard/estimators?dash_view='.$dash_details[0].'-es');
 					}elseif($dash_details[1] == 'ad'){
 						$data['main_content'] = 'dashboard_home';
 					}elseif($dash_details[1] == 'ch'){
@@ -167,52 +127,90 @@ class Dashboard extends MY_Controller{
 						$data['main_content'] = 'dashboard_accnt';
 					}elseif($dash_details[1] == 'set'){
 						$data['main_content'] = 'dashboard_set';
-					}elseif($dash_details[1] == 'es'){
-						redirect('/dashboard/estimators?dash_view='.$dash_details[0].'-es');
+					}else{
+						$data['main_content'] = 'dashboard_home';
+					}
+
+				}else{
+					$data['main_content'] = 'dashboard_home';
+				}
+
+				elseif($user_role_id == 3 || $user_role_id == 20):
+
+
+
+
+					$dash_type = $this->input->get('dash_view', TRUE);
+				if( isset($dash_type) && $dash_type != ''){
+					if($this->session->userdata('user_id') == 15 ){
+						$dash_details = explode('-', $dash_type);
+						$data['assign_id'] = $dash_details[0];
+
+
+						$fetch_user = $this->user_model->fetch_user($dash_details[0]);
+						$user_details = array_shift($fetch_user->result_array());
+						$data['pm_setter'] = $user_details['user_first_name'].' '.$user_details['user_last_name']; 
+
+						if($dash_details[1] == 'pm'){
+							$data['main_content'] = 'dashboard_pm';
+						}elseif($dash_details[1] == 'mn'){
+							$data['main_content'] = 'dashboard_mn';
+						}elseif($dash_details[1] == 'ad'){
+							$data['main_content'] = 'dashboard_home';
+						}elseif($dash_details[1] == 'ch'){
+							$data['main_content'] = 'dashboard_general_hammond';
+						}elseif($dash_details[1] == 'jp'){
+							$data['main_content'] = 'dashboard_joinery_procurement';
+						}elseif($dash_details[1] == 'acnt'){
+							$data['main_content'] = 'dashboard_accnt';
+						}elseif($dash_details[1] == 'set'){
+							$data['main_content'] = 'dashboard_set';
+						}elseif($dash_details[1] == 'es'){
+							redirect('/dashboard/estimators?dash_view='.$dash_details[0].'-es');
+						}else{
+							$data['main_content'] = 'dashboard_pm';
+						}
 					}else{
 						$data['main_content'] = 'dashboard_pm';
 					}
+
 				}else{
+
 					$data['main_content'] = 'dashboard_pm';
 				}
 
-			}else{
-
-				$data['main_content'] = 'dashboard_pm';
-			}
 
 
 
+				elseif($this->session->userdata('user_id') == 32):
+					$fetch_user= $this->user_model->list_user_short();
+				$data['users'] = $fetch_user->result();
+				$data['screen'] = 'User Availability';
+				$data['main_content'] = 'users/availability';
+				elseif($user_role_id == 8):
+					redirect('/dashboard/estimators');
 
-		elseif($this->session->userdata('user_id') == 32):
-			$fetch_user= $this->user_model->list_user_short();
-			$data['users'] = $fetch_user->result();
-			$data['screen'] = 'User Availability';
-			$data['main_content'] = 'users/availability';
-		elseif($user_role_id == 8):
-			redirect('/dashboard/estimators');
-
-		elseif($user_role_id == 2):
-			$data['main_content'] = 'dashboard_pa';
-		elseif($user_role_id == 7):
-			$data['main_content'] = 'dashboard_mn';
-		elseif($user_role_id == 9):
-			$data['main_content'] = 'dashboard_joinery_procurement';
-		elseif($user_department_id == 3):
-			$data['main_content'] = 'dashboard_accnt';
-		elseif($user_role_id == 12):
-			$data['main_content'] = 'dashboard_set';
-		elseif( $this->session->userdata('user_id') == 72 ):
-			$data['main_content'] = 'dashboard_general_hammond';
-		elseif( $this->session->userdata('dashboard') == 1 ):
-			$data['main_content'] = 'dashboard_general';
-		else:		
-			redirect('projects', 'refresh');
-		endif;
+				elseif($user_role_id == 2):
+					$data['main_content'] = 'dashboard_pa';
+				elseif($user_role_id == 7):
+					$data['main_content'] = 'dashboard_mn';
+				elseif($user_role_id == 9):
+					$data['main_content'] = 'dashboard_joinery_procurement';
+				elseif($user_department_id == 3):
+					$data['main_content'] = 'dashboard_accnt';
+				elseif($user_role_id == 12):
+					$data['main_content'] = 'dashboard_set';
+				elseif( $this->session->userdata('user_id') == 72 ):
+					$data['main_content'] = 'dashboard_general_hammond';
+				elseif( $this->session->userdata('dashboard') == 1 ):
+					$data['main_content'] = 'dashboard_general';
+				else:		
+					redirect('projects', 'refresh');
+				endif;
 
 
 	//	redirect('projects', 'refresh');
-		$this_year = date("Y");
+				$this_year = date("Y");
 
 		$project_manager = $this->dashboard_m->fetch_pms_year($this_year); // ****--___--***
 		
@@ -274,7 +272,7 @@ class Dashboard extends MY_Controller{
 			}
 
 			$key = $i - 1;
-		 	$focus_wip_overall[$key] = $this->get_wip_value_permonth($wip_date_a,$wip_date_b);
+			$focus_wip_overall[$key] = $this->get_wip_value_permonth($wip_date_a,$wip_date_b);
 		}
 
 		$all_focus_company = $this->admin_m->fetch_all_company_focus();
@@ -439,7 +437,7 @@ class Dashboard extends MY_Controller{
 
 
 	public function get_count_per_week($return_total = 0, $set_year = '', $set_emp_id = '' ){
- 
+
 
 		$q_leave_types = $this->user_model->fetch_leave_type();
 		$leave_types = $q_leave_types->result();
@@ -448,147 +446,147 @@ class Dashboard extends MY_Controller{
 		if(isset($set_year) && $set_year != ''){
 			$this_year = $set_year;
 		}
-$custom_q = '';
+		$custom_q = '';
 
-$added_data = new StdClass();
-$added_data->{"leave_type_id"} = '0';
-$added_data->{"leave_type"} = 'Philippines Public Holiday';
-$added_data->{"remarks"} = '';
+		$added_data = new StdClass();
+		$added_data->{"leave_type_id"} = '0';
+		$added_data->{"leave_type"} = 'Philippines Public Holiday';
+		$added_data->{"remarks"} = '';
 
 
 		array_push($leave_types, $added_data);
 
- 
- 
+
+
 		$leave_typess_arr = array('');
 
 		$user_id_logger = '';
 
 
 
-						$leave_typess_arr[] = array();
+		$leave_typess_arr[] = array();
 
 
-						if(isset($set_emp_id) && $set_emp_id != '' ){
+		if(isset($set_emp_id) && $set_emp_id != '' ){
 
-							$list_user_short_q = $this->user_model->fetch_user($set_emp_id);
-							$user_list = $list_user_short_q->result();
-							$user_id_logger = $set_emp_id;
+			$list_user_short_q = $this->user_model->fetch_user($set_emp_id);
+			$user_list = $list_user_short_q->result();
+			$user_id_logger = $set_emp_id;
 
-						}else{
+		}else{
 
-							$list_user_short_q = $this->user_model->list_user_short();
-							$user_list = $list_user_short_q->result();
-						}
-
-
-					
-						if(isset($user_id_logger) && $user_id_logger != '' ){
-							$set_emp_id = '';
-
-							if($user_id_logger == 72){
-								$custom_q = " AND `users`.`user_department_id` = '10' ";
-							}
-
-							if($user_id_logger == 16){
-								$custom_q = " AND `users`.`user_focus_company_id` = '6' ";
-							}
-
-							if($user_id_logger == 15){
-								$custom_q = " AND `users`.`user_focus_company_id` = '5' ";
-							}
-
-							if($user_id_logger == 72 || $user_id_logger == 16 || $user_id_logger == 15){
-								$list_user_short_q = $this->user_model->list_user_short($custom_q);
-								$user_list = $list_user_short_q->result();
-							}
-
-							if($user_id_logger == 21){
-								$custom_q = " AND `users`.`user_department_id` = '3' ";
-								$list_user_short_q = $this->user_model->list_user_short($custom_q);
-								$user_list = $list_user_short_q->result();
-							}
-
-							if($return_total == 2){
-								$list_user_short_q = $this->user_model->fetch_user($user_id_logger);
-								$user_list = $list_user_short_q->result();
-
-							}
-
-							if($return_total == 3){
-
-								if($user_id_logger == 72){
-									$custom_q = " AND `users`.`user_department_id` = '10' ";
-								}
-
-								if($user_id_logger == 16){
-									$custom_q = " AND `users`.`user_focus_company_id` = '6' ";
-								}
-
-								if($user_id_logger == 15){
-									$custom_q = " AND `users`.`user_focus_company_id` = '5' ";
-								}
-
-								if($user_id_logger == 72 || $user_id_logger == 16 || $user_id_logger == 15){
-									$list_user_short_q = $this->user_model->list_user_short($custom_q);
-									$user_list = $list_user_short_q->result();
-								}
-
-								if($user_id_logger == 21){
-									$custom_q = " AND `users`.`user_department_id` = '3' ";
-									$list_user_short_q = $this->user_model->list_user_short($custom_q);
-									$user_list = $list_user_short_q->result();
-								}
-
-							}
-
-
-						}
+			$list_user_short_q = $this->user_model->list_user_short();
+			$user_list = $list_user_short_q->result();
+		}
 
 
 
+		if(isset($user_id_logger) && $user_id_logger != '' ){
+			$set_emp_id = '';
 
-						foreach ($user_list as $users_data){
+			if($user_id_logger == 72){
+				$custom_q = " AND `users`.`user_department_id` = '10' ";
+			}
 
-							$user_name = $users_data->user_first_name.' '.$users_data->user_last_name;
+			if($user_id_logger == 16){
+				$custom_q = " AND `users`.`user_focus_company_id` = '6' ";
+			}
 
-							foreach ($leave_types as $leave_data) {
+			if($user_id_logger == 15){
+				$custom_q = " AND `users`.`user_focus_company_id` = '5' ";
+			}
 
-								$leave_type_id = $leave_data->leave_type_id;
+			if($user_id_logger == 72 || $user_id_logger == 16 || $user_id_logger == 15){
+				$list_user_short_q = $this->user_model->list_user_short($custom_q);
+				$user_list = $list_user_short_q->result();
+			}
+
+			if($user_id_logger == 21){
+				$custom_q = " AND `users`.`user_department_id` = '3' ";
+				$list_user_short_q = $this->user_model->list_user_short($custom_q);
+				$user_list = $list_user_short_q->result();
+			}
+
+			if($return_total == 2){
+				$list_user_short_q = $this->user_model->fetch_user($user_id_logger);
+				$user_list = $list_user_short_q->result();
+
+			}
+
+			if($return_total == 3){
+
+				if($user_id_logger == 72){
+					$custom_q = " AND `users`.`user_department_id` = '10' ";
+				}
+
+				if($user_id_logger == 16){
+					$custom_q = " AND `users`.`user_focus_company_id` = '6' ";
+				}
+
+				if($user_id_logger == 15){
+					$custom_q = " AND `users`.`user_focus_company_id` = '5' ";
+				}
+
+				if($user_id_logger == 72 || $user_id_logger == 16 || $user_id_logger == 15){
+					$list_user_short_q = $this->user_model->list_user_short($custom_q);
+					$user_list = $list_user_short_q->result();
+				}
+
+				if($user_id_logger == 21){
+					$custom_q = " AND `users`.`user_department_id` = '3' ";
+					$list_user_short_q = $this->user_model->list_user_short($custom_q);
+					$user_list = $list_user_short_q->result();
+				}
+
+			}
+
+
+		}
 
 
 
 
-if($return_total == 1){
+		foreach ($user_list as $users_data){
 
-		 	echo "['$user_name $leave_data->leave_type',";
-}
+			$user_name = $users_data->user_first_name.' '.$users_data->user_last_name;
 
+			foreach ($leave_types as $leave_data) {
 
-					$total_days_away = 0;
-					$days_numbr = 0;
-			for($x=1;$x<=52;$x++){
-
-				$year = $this_year;
-				$week_no = $x;
-
-				$date = new DateTime();
-				$date->setISODate($year,$week_no);
+				$leave_type_id = $leave_data->leave_type_id;
 
 
 
-				$dateParam =  $date->format('Y-m-d');
-				$date_a =  $date->format('d/m/Y');
+
+				if($return_total == 1){
+
+					echo "['$user_name $leave_data->leave_type',";
+				}
 
 
-				$week = date('w', strtotime($dateParam));
-				$date_mod = new DateTime($dateParam);
+				$total_days_away = 0;
+				$days_numbr = 0;
+				for($x=1;$x<=52;$x++){
 
-				$date_a_x = $date_mod->modify("-".$week." day")->format("d/m/Y");
-				$date_b = $date_mod->modify("+5 day")->format("d/m/Y");
+					$year = $this_year;
+					$week_no = $x;
 
-				$stamp_a = strtotime($date->format('Y-m-d') );
-				$stamp_b = strtotime($date_mod->format('Y-m-d') );
+					$date = new DateTime();
+					$date->setISODate($year,$week_no);
+
+
+
+					$dateParam =  $date->format('Y-m-d');
+					$date_a =  $date->format('d/m/Y');
+
+
+					$week = date('w', strtotime($dateParam));
+					$date_mod = new DateTime($dateParam);
+
+					$date_a_x = $date_mod->modify("-".$week." day")->format("d/m/Y");
+					$date_b = $date_mod->modify("+5 day")->format("d/m/Y");
+
+					$stamp_a = strtotime($date->format('Y-m-d') );
+					$stamp_b = strtotime($date_mod->format('Y-m-d') );
 
 
 
@@ -600,63 +598,63 @@ if($return_total == 1){
 					$days_count = 'null';
 
 
- 
-if($get_weekly_leaves_q->num_rows() ){
+
+					if($get_weekly_leaves_q->num_rows() ){
 
 
 
 					//foreach ($leave_data as $leave_numbers){
 
-					foreach ($get_weekly_leaves_q->result() as $leave_numbers){
-						
-						if($leave_numbers->partial_day == 1){
+						foreach ($get_weekly_leaves_q->result() as $leave_numbers){
 
-							$days_numbr =  number_format( ($leave_numbers->total_days_away / 8) , 2 );
+							if($leave_numbers->partial_day == 1){
 
-						}else{
+								$days_numbr =  number_format( ($leave_numbers->total_days_away / 8) , 2 );
 
-							if($leave_numbers->total_days_away == 8){
-								$days_numbr = 1;
 							}else{
 
-								$start_day_of_leave =   new DateTime (date("Y-m-d", $leave_numbers->start_day_of_leave) );
-								$end_day_of_leave =   new DateTime (date("Y-m-d", $leave_numbers->end_day_of_leave) );
-
-								$data_stamp_a =  new DateTime (date("Y-m-d", $stamp_a) );
-								$data_stamp_b =  new DateTime (date("Y-m-d", $stamp_b) );
-								$total_days_away = $leave_numbers->total_days_away;
-
-
-								if($total_days_away > 80){
-									
-
-
-
-									if($stamp_b <=  $leave_numbers->start_day_of_leave ){
-										$days_numbr = abs($start_day_of_leave->diff($data_stamp_b)->format("%a")) + 1;
-										
-									}elseif($stamp_a <=  $leave_numbers->end_day_of_leave ){
-										$days_numbr = abs($end_day_of_leave->diff($data_stamp_a)->format("%a")) + 1;
-										$total_days_away = 0;
-										//$days_numbr = $days_numbr + 
-									}else{
-										$days_numbr = 5;
-									}
-
-
-
-
+								if($leave_numbers->total_days_away == 8){
+									$days_numbr = 1;
 								}else{
-									if($stamp_a <=  $leave_numbers->start_day_of_leave && $stamp_b >=  $leave_numbers->end_day_of_leave ){
-										$days_numbr = abs($start_day_of_leave->diff($end_day_of_leave)->format("%a"))+1;
-									}
+
+									$start_day_of_leave =   new DateTime (date("Y-m-d", $leave_numbers->start_day_of_leave) );
+									$end_day_of_leave =   new DateTime (date("Y-m-d", $leave_numbers->end_day_of_leave) );
+
+									$data_stamp_a =  new DateTime (date("Y-m-d", $stamp_a) );
+									$data_stamp_b =  new DateTime (date("Y-m-d", $stamp_b) );
+									$total_days_away = $leave_numbers->total_days_away;
 
 
-									elseif($stamp_a <=  $leave_numbers->start_day_of_leave){
-										$days_numbr =  (abs( $stamp_b - $leave_numbers->start_day_of_leave) / 86400) + 1;
+									if($total_days_away > 80){
+
+
+
+
+										if($stamp_b <=  $leave_numbers->start_day_of_leave ){
+											$days_numbr = abs($start_day_of_leave->diff($data_stamp_b)->format("%a")) + 1;
+
+										}elseif($stamp_a <=  $leave_numbers->end_day_of_leave ){
+											$days_numbr = abs($end_day_of_leave->diff($data_stamp_a)->format("%a")) + 1;
+											$total_days_away = 0;
+										//$days_numbr = $days_numbr + 
+										}else{
+											$days_numbr = 5;
+										}
+
+
+
+
 									}else{
-										$days_numbr = (abs($leave_numbers->end_day_of_leave - $stamp_a ) / 86400) + 1;
-									}
+										if($stamp_a <=  $leave_numbers->start_day_of_leave && $stamp_b >=  $leave_numbers->end_day_of_leave ){
+											$days_numbr = abs($start_day_of_leave->diff($end_day_of_leave)->format("%a"))+1;
+										}
+
+
+										elseif($stamp_a <=  $leave_numbers->start_day_of_leave){
+											$days_numbr =  (abs( $stamp_b - $leave_numbers->start_day_of_leave) / 86400) + 1;
+										}else{
+											$days_numbr = (abs($leave_numbers->end_day_of_leave - $stamp_a ) / 86400) + 1;
+										}
 
 
 
@@ -675,7 +673,7 @@ if($get_weekly_leaves_q->num_rows() ){
 
 								}
 
-						
+
 
 
 
@@ -716,132 +714,132 @@ if($get_weekly_leaves_q->num_rows() ){
 
 
 
-						$key_loop = $x-1;
+				$key_loop = $x-1;
 
 						// if (   	isset($leave_typess_arr[$key_loop]) && array_key_exists($leave_type_id,$leave_typess_arr[$key_loop])) {
-						
-						 if(isset($leave_typess_arr[$key_loop][$leave_type_id])){
 
-							$leave_typess_arr[$key_loop][$leave_type_id] = $leave_typess_arr[$key_loop][$leave_type_id] + floatval($days_count);
-						}else{
+				if(isset($leave_typess_arr[$key_loop][$leave_type_id])){
 
-							$leave_typess_arr[$key_loop][$leave_type_id] = floatval($days_count);
-						}
+					$leave_typess_arr[$key_loop][$leave_type_id] = $leave_typess_arr[$key_loop][$leave_type_id] + floatval($days_count);
+				}else{
 
-
-					$days_count = 'null';
-
-
+					$leave_typess_arr[$key_loop][$leave_type_id] = floatval($days_count);
 				}
 
 
+				$days_count = 'null';
 
-				if($return_total == 1){
 
-					echo "],";
-				}
 			}
 
 
 
+			if($return_total == 1){
+
+				echo "],";
+			}
+		}
 
 
 
 
 
-		} 
+
+
+
+	} 
 	//	echo "<p>----------------</p>";
 
 	//	$test_looper=1;
 
-		$return_arr = array('');
-		$iteam_leave_total = 0;
-		$last_value_arr = '';
+	$return_arr = array('');
+	$iteam_leave_total = 0;
+	$last_value_arr = '';
 
 
-		foreach ($leave_types as $leave_data ) {
+	foreach ($leave_types as $leave_data ) {
 
 
 
-			$ounter_loop = 0;
+		$ounter_loop = 0;
 
 
-			if($return_total == 1){
-				echo "['Overall $leave_data->leave_type',";
-			}
+		if($return_total == 1){
+			echo "['Overall $leave_data->leave_type',";
+		}
 
-			foreach ($leave_typess_arr as $row => $value) {
+		foreach ($leave_typess_arr as $row => $value) {
 
 		 	//var_dump($value);
-				$ounter_loop++;
+			$ounter_loop++;
 
 				//	echo "<p>".$leave_data->leave_type_id."</p>";
 
-					if($return_total == 1){
+			if($return_total == 1){
 
-						if($ounter_loop > 2){
-							echo  ($value[$leave_data->leave_type_id] == 0 ? 'null,' : $value[$leave_data->leave_type_id]."," );
-						}
-					}
+				if($ounter_loop > 2){
+					echo  ($value[$leave_data->leave_type_id] == 0 ? 'null,' : $value[$leave_data->leave_type_id]."," );
+				}
+			}
 
-					if($return_total == 2 || $return_total == 3){
+			if($return_total == 2 || $return_total == 3){
 							//echo ($value[$leave_data->leave_type_id] == 0 ? 0 : $value[$leave_data->leave_type_id]."," );
-							$iteam_leave_total = $iteam_leave_total +  ($value[$leave_data->leave_type_id] == 0 ? 0 : $value[$leave_data->leave_type_id] );
-					}
+				$iteam_leave_total = $iteam_leave_total +  ($value[$leave_data->leave_type_id] == 0 ? 0 : $value[$leave_data->leave_type_id] );
+			}
 
 					/*if($set_emp_id != ''){
 							$iteam_leave_total = $iteam_leave_total +  ($value[$leave_data->leave_type_id] == 0 ? 0 : $value[$leave_data->leave_type_id] );
-					}*/
+						}*/
 
-		 	}
-				
-
-
-		 	if($return_total == 1){
-		 		echo "],";
-		 	}
+					}
 
 
-		 	if($return_total == 2 || $return_total == 3){
-//echo "<p> $leave_data->leave_type -  $iteam_leave_total</p>";
 
-		 		$return_arr[$leave_data->leave_type_id] = $iteam_leave_total;
-				$last_value_arr .= $leave_data->leave_type_id.'-'.$iteam_leave_total.'|';
-				$iteam_leave_total = 0;
-		 	}
+					if($return_total == 1){
+						echo "],";
+					}
 
-		}
-
-	
-
-
-		if( isset($set_year) ){
-			echo substr($last_value_arr, 0, -1);
-		}
 
 					if($return_total == 2 || $return_total == 3){
-			return $return_arr;
-		}
+//echo "<p> $leave_data->leave_type -  $iteam_leave_total</p>";
 
-		
+						$return_arr[$leave_data->leave_type_id] = $iteam_leave_total;
+						$last_value_arr .= $leave_data->leave_type_id.'-'.$iteam_leave_total.'|';
+						$iteam_leave_total = 0;
+					}
+
+				}
 
 
-	}
 
 
-	
+				if( isset($set_year) ){
+					echo substr($last_value_arr, 0, -1);
+				}
 
-	public function get_count_maint_per_week($this_year,$is_ave=0){
+				if($return_total == 2 || $return_total == 3){
+					return $return_arr;
+				}
 
-		$counter_loop = 0;
 
-		$ave_year = 0;
 
-		if($is_ave == 1){
-			$counter_loop = date("Y") - $this_year; 
-			$ave_year = $counter_loop;
+
+			}
+
+
+
+
+			public function get_count_maint_per_week($this_year,$is_ave=0){
+
+				$counter_loop = 0;
+
+				$ave_year = 0;
+
+				if($is_ave == 1){
+					$counter_loop = date("Y") - $this_year; 
+					$ave_year = $counter_loop;
 			// $counter_loop--;
-		}
+				}
 
 
 
@@ -852,52 +850,52 @@ if($get_weekly_leaves_q->num_rows() ){
 
 
 
-		$list_data = array(0);
+				$list_data = array(0);
 
-		while($counter_loop >= 0){
+				while($counter_loop >= 0){
 
 //echo "<br />$counter_loop<br /><br />";
 
-			for($x=1;$x<=52;$x++){
+					for($x=1;$x<=52;$x++){
 		//	echo "<br/>";
 
 
 
-				$year = $this_year;
-				$week_no = $x;
+						$year = $this_year;
+						$week_no = $x;
 
-				$date = new DateTime();
-				$date->setISODate($year,$week_no);
+						$date = new DateTime();
+						$date->setISODate($year,$week_no);
 	//echo $date->format('d-M-Y');
 
 
-				$dateParam =  $date->format('Y-m-d');
-				$date_a =  $date->format('d/m/Y');
+						$dateParam =  $date->format('Y-m-d');
+						$date_a =  $date->format('d/m/Y');
 
 
-				$week = date('w', strtotime($dateParam));
-				$date_mod = new DateTime($dateParam);
+						$week = date('w', strtotime($dateParam));
+						$date_mod = new DateTime($dateParam);
 
-				$date_a_x = $date_mod->modify("-".$week." day")->format("d/m/Y");
-				$date_b = $date_mod->modify("+5 day")->format("d/m/Y");
+						$date_a_x = $date_mod->modify("-".$week." day")->format("d/m/Y");
+						$date_b = $date_mod->modify("+5 day")->format("d/m/Y");
 
 
 			//	$date_gg = $date_mod->modify("+6 day")->format("d/m/Y");
 
 
-				$query = $this->dashboard_m->get_maintenance_counts($date_a,$date_b);
-				$result_q = $query->result();
+						$query = $this->dashboard_m->get_maintenance_counts($date_a,$date_b);
+						$result_q = $query->result();
 
 //echo "<p>$testD ----- $date_b  ******</p>";
 
 
-				if(array_key_exists( $x-1, $list_data )){
-					$list_data[$x-1] =  $list_data[$x-1] + $result_q[0]->num_projects;
+						if(array_key_exists( $x-1, $list_data )){
+							$list_data[$x-1] =  $list_data[$x-1] + $result_q[0]->num_projects;
 
-				}else{
-					$list_data[$x-1] =   $result_q[0]->num_projects ;
+						}else{
+							$list_data[$x-1] =   $result_q[0]->num_projects ;
 
-				}
+						}
 
 
 
@@ -906,53 +904,53 @@ if($get_weekly_leaves_q->num_rows() ){
 				 //array_push($list_data, $result_q[0]->num_projects);
 
 
-			}
+					}
 
 //var_dump($list_data);
 
 
-			$counter_loop--;
-			$this_year++;
-		}
+					$counter_loop--;
+					$this_year++;
+				}
 
 
 
 
 
 
-			for($x=0;$x<52;$x++){
+				for($x=0;$x<52;$x++){
 
-				if($is_ave == 1){
+					if($is_ave == 1){
 
-					$list_data[$x] =    ( ($list_data[$x]  / $ave_year )   ) /5 ;
+						$list_data[$x] =    ( ($list_data[$x]  / $ave_year )   ) /5 ;
 
-				} else{
+					} else{
 
 
-					$list_data[$x] =     ($list_data[$x]  )  / 5;
+						$list_data[$x] =     ($list_data[$x]  )  / 5;
+
+					}
 
 				}
 
-		}
-
 //var_dump($list_data);
 
-		return implode(',', $list_data);
+				return implode(',', $list_data);
 
 
-	}
+			}
 
 
 
-	function get_wip_personal($date_a,$date_b,$pm_id,$comp){
-		$q_wip_vales = $this->dashboard_m->get_personal_wip($date_a,$date_b,$pm_id, $comp);
-		$wip_values = $q_wip_vales->result();
+			function get_wip_personal($date_a,$date_b,$pm_id,$comp){
+				$q_wip_vales = $this->dashboard_m->get_personal_wip($date_a,$date_b,$pm_id, $comp);
+				$wip_values = $q_wip_vales->result();
 
-		$amount = 0;
-		$total = 0;
-		$count = 0;
+				$amount = 0;
+				$total = 0;
+				$count = 0;
 
-		foreach ($wip_values as $prj_wip){
+				foreach ($wip_values as $prj_wip){
 /*
 			if($prj_wip->install_time_hrs > 0 || $prj_wip->work_estimated_total > 0.00){
 				$amount = $prj_wip->project_total * ($prj_wip->progress_percent/100);
@@ -1229,9 +1227,9 @@ if($get_weekly_leaves_q->num_rows() ){
 
 		if($return_val == 0){
 
-		foreach ($get_joinery_list as $joinery){
+			foreach ($get_joinery_list as $joinery){
 
- 
+
 	//		echo "<tr><td> -------- $joinery->project_id --------- $joinery->work_cpo_date ------------ $joinery->price</tr>"; //$joinery->company_name 
 
 			// echo '  <div class="row"  style="border-bottom: 1px solid #ccc;    padding: 4px;">
@@ -1246,44 +1244,44 @@ if($get_weekly_leaves_q->num_rows() ){
 
 
 
-echo '<tr role="row">
-<td><a href="'.base_url().'projects/view/'.$joinery->project_id.'" target="_blank">'.$joinery->project_id.' &nbsp; '.$joinery->project_name.'</a></strong></td>
-<td class="">'.$joinery->works_id.'  &nbsp;  '.$joinery->company_name.'</td>
-<td class="">'.$joinery->goods_deliver_by_date.'</td>
-<td class="">'.$joinery->work_cpo_date.'</td>
-<td class=""><strong>$ '. number_format($joinery->price,2).'</strong></td>
+				echo '<tr role="row">
+				<td><a href="'.base_url().'projects/view/'.$joinery->project_id.'" target="_blank">'.$joinery->project_id.' &nbsp; '.$joinery->project_name.'</a></strong></td>
+				<td class="">'.$joinery->works_id.'  &nbsp;  '.$joinery->company_name.'</td>
+				<td class="">'.$joinery->goods_deliver_by_date.'</td>
+				<td class="">'.$joinery->work_cpo_date.'</td>
+				<td class=""><strong>$ '. number_format($joinery->price,2).'</strong></td>
 
-<td class="hide">'.$joinery->unix_goods_deliver_by_date.'</td>
-<td class="hide">'.$joinery->unix_cpo_date.'</td></tr>';
-
-
+				<td class="hide">'.$joinery->unix_goods_deliver_by_date.'</td>
+				<td class="hide">'.$joinery->unix_cpo_date.'</td></tr>';
 
 
 
 
-		} 
-	}else{
-
-		foreach ($get_joinery_list as $joinery){
-
-			$val_amount = $val_amount + $joinery->price;
-
- 
 
 
+			} 
+		}else{
 
-	} 
+			foreach ($get_joinery_list as $joinery){
+
+				$val_amount = $val_amount + $joinery->price;
 
 
-	return number_format($val_amount,2);
+
+
+
+			} 
+
+
+			return number_format($val_amount,2);
+
+
+		}
+
 
 
 	}
 
-
-
-	}
- 
 
 
 
@@ -1293,11 +1291,11 @@ echo '<tr role="row">
 
 		$this_year =  date("d/m/Y", strtotime("- 5 days"));
 
- 
+
 
 		if($is_joinery == 1){
 
- 
+
 /*
 echo '<tr role="row">
 <td><a href="'.base_url().'projects/view/'.$joinery->project_id.'" target="_blank">'.$joinery->project_id.' &nbsp; '.$joinery->project_name.'</a></strong></td>
@@ -1313,129 +1311,129 @@ echo '<tr role="row">
 
 
 
-			$q_get_project_progress_list = $this->dashboard_m->get_joinery_list(1);
+$q_get_project_progress_list = $this->dashboard_m->get_joinery_list(1);
 
 
 
-		}else{
+}else{
 
-			$q_get_project_progress_list = $this->dashboard_m->get_project_progress_list($this_year,$pm_id,$custom);
-			
-		}
+	$q_get_project_progress_list = $this->dashboard_m->get_project_progress_list($this_year,$pm_id,$custom);
 
-
-		$num_result = $q_get_project_progress_list->num_rows();
-		$progress_list = $q_get_project_progress_list->result();
-
-		$use_date_stamp = 0;
-
-		$current_day_line = date('Y/m/d');
-		$date_allowance = strtotime(date("Y-m-d", strtotime("- 5 days")) ) * 1000 ;
-
-		foreach ($progress_list as $prj ) {
-
-			$quote_deadline_date_replaced = str_replace('/', '-', $prj->date_site_finish);
-			$quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_replaced "));
-
-			$quote_start_date_replaced = str_replace('/', '-', $prj->date_site_commencement);
-			$quote_start_date_reformated = strtotime("$quote_start_date_replaced ");
-
-			$quote_start_date_reformated = $quote_start_date_reformated."000";
+}
 
 
-			if($date_allowance <= $quote_start_date_reformated){
-				$use_date_stamp = $quote_start_date_reformated;
-			}else{
-				$use_date_stamp = $date_allowance;
-			}
+$num_result = $q_get_project_progress_list->num_rows();
+$progress_list = $q_get_project_progress_list->result();
 
-			$date_deadline_check_val = date('N',$prj->project_unix_end_date);
+$use_date_stamp = 0;
 
-			echo '{
-				name: "<a href=\"'.base_url().'projects/view/'.$prj->project_id.'\" target=\"_blank\">'.$prj->project_id.'</a>", 
-				dataObj: "'.$prj->pm_name.' : '.$prj->project_name.'",
-				values: [
-				{from: "/Date('.$use_date_stamp.')/", to: "'.$quote_deadline_date_reformated.'", "desc": "<strong>'.$prj->pm_name.'</strong> : '.$prj->project_name.'<br /><strong>'.$prj->client_name.'</strong>&nbsp;  &nbsp;  &nbsp;   &nbsp;  Brand : '.$prj->brand_name.'",customClass: "'.strtolower(str_replace(' ','',$prj->job_category)).'"},
-				{from: "'.$current_day_line.'", to: "'.$current_day_line.'", "desc": "<strong>'.$prj->pm_name.'</strong> : '.$prj->project_name.'<br /><strong>'.$prj->client_name.'</strong>&nbsp;  &nbsp;  &nbsp;   &nbsp;  Brand : '.$prj->brand_name.'",customClass: "curr_date"},
-				{from: "'.date('Y/m/d', strtotime('- 5 days')).'", to: "'.date('Y/m/d', strtotime('+ 80 days')).'",  customClass: "hide"}
-				]
-			},';
-		}
+$current_day_line = date('Y/m/d');
+$date_allowance = strtotime(date("Y-m-d", strtotime("- 5 days")) ) * 1000 ;
 
+foreach ($progress_list as $prj ) {
+
+	$quote_deadline_date_replaced = str_replace('/', '-', $prj->date_site_finish);
+	$quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_replaced "));
+
+	$quote_start_date_replaced = str_replace('/', '-', $prj->date_site_commencement);
+	$quote_start_date_reformated = strtotime("$quote_start_date_replaced ");
+
+	$quote_start_date_reformated = $quote_start_date_reformated."000";
 
 
-		for($looper = $num_result; $looper < 14 ; $looper ++ ){
-
-		//echo "<p><strong>$looper</strong></p>";
-			
-
-			echo '
-
-			{ values: [
-					{from: "'.date('Y/m/d', strtotime('- 5 days')).'", to: "'.date('Y/m/d', strtotime('+ 5 days')).'",  customClass: "hide"},
-					{from: "'.date('Y/m/d').'", to: "'.date('Y/m/d').'" ,customClass: "curr_date"},
-					{from: "'.date('Y/m/d', strtotime('+ 5 days')).'", to: "'.date('Y/m/d', strtotime('+ 80 days')).'",  customClass: "hide"}
-				]
-			}, 
-
-
-			';
-
-		}
-
-
+	if($date_allowance <= $quote_start_date_reformated){
+		$use_date_stamp = $quote_start_date_reformated;
+	}else{
+		$use_date_stamp = $date_allowance;
 	}
 
+	$date_deadline_check_val = date('N',$prj->project_unix_end_date);
+
+	echo '{
+		name: "<a href=\"'.base_url().'projects/view/'.$prj->project_id.'\" target=\"_blank\">'.$prj->project_id.'</a>", 
+		dataObj: "'.$prj->pm_name.' : '.$prj->project_name.'",
+		values: [
+		{from: "/Date('.$use_date_stamp.')/", to: "'.$quote_deadline_date_reformated.'", "desc": "<strong>'.$prj->pm_name.'</strong> : '.$prj->project_name.'<br /><strong>'.$prj->client_name.'</strong>&nbsp;  &nbsp;  &nbsp;   &nbsp;  Brand : '.$prj->brand_name.'",customClass: "'.strtolower(str_replace(' ','',$prj->job_category)).'"},
+		{from: "'.$current_day_line.'", to: "'.$current_day_line.'", "desc": "<strong>'.$prj->pm_name.'</strong> : '.$prj->project_name.'<br /><strong>'.$prj->client_name.'</strong>&nbsp;  &nbsp;  &nbsp;   &nbsp;  Brand : '.$prj->brand_name.'",customClass: "curr_date"},
+		{from: "'.date('Y/m/d', strtotime('- 5 days')).'", to: "'.date('Y/m/d', strtotime('+ 80 days')).'",  customClass: "hide"}
+		]
+	},';
+}
 
 
 
-	public function top_joinery_list($year='',$is_pie=''){
+for($looper = $num_result; $looper < 14 ; $looper ++ ){
+
+		//echo "<p><strong>$looper</strong></p>";
 
 
-		if($year != ''){
-			$c_year = $year;
+	echo '
+
+	{ values: [
+		{from: "'.date('Y/m/d', strtotime('- 5 days')).'", to: "'.date('Y/m/d', strtotime('+ 5 days')).'",  customClass: "hide"},
+		{from: "'.date('Y/m/d').'", to: "'.date('Y/m/d').'" ,customClass: "curr_date"},
+		{from: "'.date('Y/m/d', strtotime('+ 5 days')).'", to: "'.date('Y/m/d', strtotime('+ 80 days')).'",  customClass: "hide"}
+		]
+	}, 
+
+
+	';
+
+}
+
+
+}
+
+
+
+
+public function top_joinery_list($year='',$is_pie=''){
+
+
+	if($year != ''){
+		$c_year = $year;
+	}else{
+		$c_year = date("Y");
+	}
+
+	$total_pie = 0;
+
+
+
+
+	$q_get_top_joinery_list = $this->dashboard_m->get_top_joinery_list($c_year);
+	$get_top_joinery_list = $q_get_top_joinery_list->result();
+
+
+	foreach ($get_top_joinery_list as $joinery){
+		$total_pie = $total_pie + round($joinery->total_price,1);
+	} 
+
+
+	foreach ($get_top_joinery_list as $joinery){
+
+
+		if($is_pie != ''){
+
+			echo "['".$joinery->company_name."',".round($joinery->total_price,2)."  ],";
+
 		}else{
-			$c_year = date("Y");
-		}
 
-		$total_pie = 0;
+			$join_percent_val  = round( 100 / ($total_pie / round($joinery->total_price,1) ) ,1);
 
+			echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
-
-
-		$q_get_top_joinery_list = $this->dashboard_m->get_top_joinery_list($c_year);
-		$get_top_joinery_list = $q_get_top_joinery_list->result();
-
-
-		foreach ($get_top_joinery_list as $joinery){
-			$total_pie = $total_pie + round($joinery->total_price,1);
-		} 
-
-
-		foreach ($get_top_joinery_list as $joinery){
-
-
-			if($is_pie != ''){
-
-				echo "['".$joinery->company_name."',".round($joinery->total_price,2)."  ],";
-
+			$comp_name = $joinery->company_name;
+			if(strlen($comp_name) > 30){
+				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="right" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
 			}else{
-
-				$join_percent_val  = round( 100 / ($total_pie / round($joinery->total_price,1) ) ,1);
-
-				echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
-
-				$comp_name = $joinery->company_name;
-				if(strlen($comp_name) > 30){
-					echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="right" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
-				}else{
-					echo $comp_name;
-				}
-
-				echo ' </div><div class="col-md-2 col-sm-4"><strong>'.$join_percent_val.'%</strong></div>  <div class="col-md-3 col-sm-4 " ><i class="fa fa-usd"></i> '.number_format($joinery->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-
-
+				echo $comp_name;
 			}
+
+			echo ' </div><div class="col-md-2 col-sm-4"><strong>'.$join_percent_val.'%</strong></div>  <div class="col-md-3 col-sm-4 " ><i class="fa fa-usd"></i> '.number_format($joinery->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+
+
+		}
 
 
 
@@ -1449,60 +1447,60 @@ echo '<tr role="row">
 
 
 
-		} 
+	} 
 
 
 
 
 
+}
+
+
+
+function _check_sales($c_year,$c_month){
+	$see_outstanding_mn = 0;
+	$see_outstanding_pm = 0;
+	$init_invoied_amount = 0;
+
+	$currentYear = $c_year;
+
+	$n_month = $c_month+1;
+	$n_year = $c_year;
+
+	if($c_month == 12){
+		$n_month = 1;
+		$n_year = $c_year+1;
 	}
 
+	$date_a = "01/$c_month/$c_year";
+	$date_b = "01/$n_month/$n_year";
 
+	$mons = array(1 => "jan", 2 => "feb", 3 => "mar", 4 => "apr", 5 => "may", 6 => "jun", 7 => "jul", 8 => "aug", 9 => "sep", 10 => "oct", 11 => "nov", 12 => "dec");
 
-	function _check_sales($c_year,$c_month){
-		$see_outstanding_mn = 0;
-		$see_outstanding_pm = 0;
-		$init_invoied_amount = 0;
- 
-		$currentYear = $c_year;
-
-		$n_month = $c_month+1;
-		$n_year = $c_year;
-
-		if($c_month == 12){
-			$n_month = 1;
-			$n_year = $c_year+1;
-		}
-
-		$date_a = "01/$c_month/$c_year";
-		$date_b = "01/$n_month/$n_year";
-
-		$mons = array(1 => "jan", 2 => "feb", 3 => "mar", 4 => "apr", 5 => "may", 6 => "jun", 7 => "jul", 8 => "aug", 9 => "sep", 10 => "oct", 11 => "nov", 12 => "dec");
-
-		$rev_month = 'rev_'.$mons[$c_month];
-		$q_list_pms = $this->dashboard_m->list_pm_bysales($date_a,$date_b);
+	$rev_month = 'rev_'.$mons[$c_month];
+	$q_list_pms = $this->dashboard_m->list_pm_bysales($date_a,$date_b);
 
 //	 echo "$date_a,$date_b,$rev_month ***$c_year,$c_month<br />";
 
 
-		$pm_data = $this->dashboard_m->fetch_project_pm_nomore();
-		$pm_q = array_shift($pm_data->result_array());
-		$not_pm_arr = explode(',',$pm_q['user_id'] );
+	$pm_data = $this->dashboard_m->fetch_project_pm_nomore();
+	$pm_q = array_shift($pm_data->result_array());
+	$not_pm_arr = explode(',',$pm_q['user_id'] );
 
 
 
-	 $this->dashboard_m->reset_revenue($rev_month,$c_year);
+	$this->dashboard_m->reset_revenue($rev_month,$c_year);
 
 
 
 
-		$list_pms = $q_list_pms->result();
-		foreach ($list_pms as $pm_data ){
+	$list_pms = $q_list_pms->result();
+	foreach ($list_pms as $pm_data ){
 
 
-			$pm_id = $pm_data->user_id;
-			$comp_id = $pm_data->focus_company_id;
-			if( !in_array($pm_id, $not_pm_arr) ){
+		$pm_id = $pm_data->user_id;
+		$comp_id = $pm_data->focus_company_id;
+		if( !in_array($pm_id, $not_pm_arr) ){
 
 			$q_get_sales = $this->dashboard_m->get_sales($date_a,$date_b,$pm_id,$comp_id);
 			$pm_get_sales = $q_get_sales->result();
@@ -1518,7 +1516,7 @@ echo '<tr role="row">
 			}
 
 			$revenue_id = intval($this->_if_sales_changed($currentYear,$pm_data->user_id,$pm_data->focus_company_id,$rev_month,$pm_sale_total));
- 
+
 
 
 
@@ -1536,35 +1534,35 @@ echo '<tr role="row">
 
 			}	
 
-}
+		}
 
 
 		//	echo "<br />$revenue_id<br />";
 
-		}
-
 	}
 
+}
 
-	function _get_focus_splits($year,$company_id){
 
-		$sales_focus_q = $this->dashboard_m->get_sales_focus($year);
-		$sales_focus = array_shift($sales_focus_q->result_array());
+function _get_focus_splits($year,$company_id){
 
-		$sales_focus_comp_q = $this->dashboard_m->get_sales_focus($year,$company_id);
-		$sales_focus_comp = array_shift($sales_focus_comp_q->result_array());
+	$sales_focus_q = $this->dashboard_m->get_sales_focus($year);
+	$sales_focus = array_shift($sales_focus_q->result_array());
 
-		if($sales_focus_comp['total_sales'] > 0){
-			$shares_focus_comp =  100/($sales_focus['total_sales']/$sales_focus_comp['total_sales']);
-		}else{
-			$shares_focus_comp = 0;
-		}
+	$sales_focus_comp_q = $this->dashboard_m->get_sales_focus($year,$company_id);
+	$sales_focus_comp = array_shift($sales_focus_comp_q->result_array());
 
-		return number_format($shares_focus_comp,2);
+	if($sales_focus_comp['total_sales'] > 0){
+		$shares_focus_comp =  100/($sales_focus['total_sales']/$sales_focus_comp['total_sales']);
+	}else{
+		$shares_focus_comp = 0;
 	}
+
+	return number_format($shares_focus_comp,2);
+}
 
 //get sales
-	function _get_focus_pm_splits($year,$company_id,$pm_id){
+function _get_focus_pm_splits($year,$company_id,$pm_id){
 
 /*
 		$date_a = "01/01/$year";
@@ -1619,68 +1617,78 @@ if($focus_copm_total != ''){
 
 
 
-		$sales_focus_q = $this->dashboard_m->get_sales_focus($year,$company_id);
-		$sales_focus = array_shift($sales_focus_q->result_array());
+$sales_focus_q = $this->dashboard_m->get_sales_focus($year,$company_id);
+$sales_focus = array_shift($sales_focus_q->result_array());
 
-		$get_sales_focus_pm_q = $this->dashboard_m->get_sales_focus_pm($year,$company_id,$pm_id);
-		$get_sales_focus_pm = array_shift($get_sales_focus_pm_q->result_array());
+$get_sales_focus_pm_q = $this->dashboard_m->get_sales_focus_pm($year,$company_id,$pm_id);
+$get_sales_focus_pm = array_shift($get_sales_focus_pm_q->result_array());
 
-		if($get_sales_focus_pm['total_sales'] > 0){
-			$shares_focus_comp =  100/($sales_focus['total_sales']/$get_sales_focus_pm['total_sales']);
-		}else{
-			$shares_focus_comp = 0;
-		}
+if($get_sales_focus_pm['total_sales'] > 0){
+	$shares_focus_comp =  100/($sales_focus['total_sales']/$get_sales_focus_pm['total_sales']);
+}else{
+	$shares_focus_comp = 0;
+}
 
-		return number_format($shares_focus_comp,2);
+return number_format($shares_focus_comp,2);
 
 //		
-	}
+}
 
-	public function sales_forecast_settings(){
-		$data['main_content'] = 'sales_forecast_settings_page';
-		$data['screen'] = 'Sales Forecast Settings';
+public function sales_forecast_settings(){
+	$data['main_content'] = 'sales_forecast_settings_page';
+	$data['screen'] = 'Sales Forecast Settings';
 
-		$focus = $this->admin_m->fetch_all_company_focus();
-		$data['focus'] = $focus->result();
+	$focus = $this->admin_m->fetch_all_company_focus();
+	$data['focus'] = $focus->result();
 
-		$pm_names = $this->dashboard_m->get_pm_names();
-		$data['pm_names'] = $pm_names->result();
+	$pm_names = $this->dashboard_m->get_pm_names();
+	$data['pm_names'] = $pm_names->result();
 
-		$this->load->view('page', $data);
-	}
-
-
+	$this->load->view('page', $data);
+}
 
 
 
-	public function progressBar($assign_id=''){
+
+
+public function progressBar($assign_id='',$comp_id=''){
+	$user_id = '';
+	$type = '';
+	$init_f_total = 0;
+	$init_c_total = 0;
+
+
+	if(isset($assign_id) && $assign_id != '' && $assign_id != 0){
+		$user_id = $assign_id;
+		$type = 1;
+	}else{
 		$user_id = '';
 		$type = '';
-		$init_f_total = 0;
-		$init_c_total = 0;
-		
+	}
 
-		if(isset($assign_id) && $assign_id != '' && $assign_id != 0){
-			$user_id = $assign_id;
-			$type = 1;
-		}else{
-			$user_id = '';
-			$type = '';
-		}
+	if(isset($comp_id) && $comp_id != '' && $comp_id != 0){
+		$user_id = $assign_id;
+		$type = '';
+	}
 
-		$c_year = date("Y");
-		$c_month = date("m")+1;
+	$c_year = date("Y");
+	$c_month = date("m")+1;
 
-		$date_a = "01/01/$c_year";
-		$date_b = date("d/$c_month/Y");
-		$date_c = "01/$c_month/$c_year";
+	$date_a = "01/01/$c_year";
+	$date_b = date("d/$c_month/Y");
+	$date_c = "01/$c_month/$c_year";
 
-		$months = array("jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec");
+	$months = array("jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec");
 
 		$focus_wip_overall = $this->get_wip_value_permonth($date_a,$date_c,$user_id,$type);   //--------------------
 
 
-		$q_current_invoiced_amount = $this->dashboard_m->fetch_current_total_invoices($c_year,$user_id);   //--------------------
+		if(isset($comp_id) && $comp_id != '' && $comp_id != 0){
+			$q_current_invoiced_amount = $this->dashboard_m->fetch_current_total_invoices($c_year,'',$user_id);   //--------------------
+		}else{
+			$q_current_invoiced_amount = $this->dashboard_m->fetch_current_total_invoices($c_year,$user_id);   //--------------------
+		}
+
 		$current_invoiced_amount =  array_shift($q_current_invoiced_amount->result_array());
 
  	//	var_dump($current_invoiced_amount);
@@ -1711,12 +1719,27 @@ if($focus_copm_total != ''){
 	//	echo "<p>$current_standing</p>";
 
 		if(isset($assign_id) && $assign_id != '' && $assign_id != 0){
-			$q_pm_forecast = $this->dashboard_m->fetch_pm_forecast_details($c_year,$forecast['revenue_forecast_id'],$user_id);
+
+
+			if(isset($comp_id) && $comp_id != '' && $comp_id != 0){
+				$q_pm_forecast = $this->dashboard_m->fetch_pm_forecast_details($c_year,$forecast['revenue_forecast_id'],'',$user_id);
+			}else{
+				$q_pm_forecast = $this->dashboard_m->fetch_pm_forecast_details($c_year,$forecast['revenue_forecast_id'],$user_id);
+			}
+
+
 			$pm_forecast = $q_pm_forecast->result();
 
 			foreach ($pm_forecast as $pm_val_forecast){
 
-				$init_temp = ($forecast['total'] * ($pm_val_forecast->f_comp_forecast_percent/100) ) * ($pm_val_forecast->forecast_percent / 100);
+
+				if(isset($comp_id) && $comp_id != '' && $comp_id != 0){
+
+					$init_temp = ($forecast['total'] * ($pm_val_forecast->f_comp_forecast_percent/100) ) ;
+				}else{
+
+					$init_temp = ($forecast['total'] * ($pm_val_forecast->f_comp_forecast_percent/100) ) * ($pm_val_forecast->forecast_percent / 100);
+				}
 
 				$init_c_total = $init_c_total + $init_temp;
 
@@ -1726,11 +1749,11 @@ if($focus_copm_total != ''){
 			//	$init_f_total = $init_f_total + ( $forecast['total'] * ($pm_val_forecast->f_comp_forecast_percent/100) ) * ($pm_val_forecast->forecast_percent/100);
 			}
 
-// 			echo "<p>----</p>";
-// var_dump($init_f_total);
+				// 			echo "<p>----</p>";
+				// var_dump($init_f_total);
 
-// 			echo "<p>----</p>";
-// var_dump($init_c_total);
+				// 			echo "<p>----</p>";
+				// var_dump($init_c_total);
 
 
 			$forecasted_amount = $init_c_total * ($percent_total/100);
@@ -1760,15 +1783,15 @@ if($focus_copm_total != ''){
 		//  $current_standing = 700000;
 
 
-			if($current_standing > 0 && $forecasted_amount > 0){
-				$current_amnt_progress = 100 / ( $forecasted_amount / $current_standing );
-			}elseif($forecasted_amount > 0 && $current_standing <= 0 ){
-				$current_amnt_progress = 100 / ( $forecasted_amount );
-			}elseif($forecasted_amount <= 0 && $current_standing > 0 ){
-				$current_amnt_progress = 100 / ( $current_standing );
-			}else{
-				$current_amnt_progress = 100 / 1;
-			}
+		if($current_standing > 0 && $forecasted_amount > 0){
+			$current_amnt_progress = 100 / ( $forecasted_amount / $current_standing );
+		}elseif($forecasted_amount > 0 && $current_standing <= 0 ){
+			$current_amnt_progress = 100 / ( $forecasted_amount );
+		}elseif($forecasted_amount <= 0 && $current_standing > 0 ){
+			$current_amnt_progress = 100 / ( $current_standing );
+		}else{
+			$current_amnt_progress = 100 / 1;
+		}
 
 
 
@@ -1781,10 +1804,20 @@ if($focus_copm_total != ''){
 				$less_amount_percent = 100 / ( $current_standing / $forecasted_amount );
 
 
+				if(isset($comp_id) && $comp_id != '' && $comp_id != 0){
+					$dyn_width_val=92;
+					$dyn_wth_z = 92;
+				}else{
+					$dyn_width_val=96;
+					$dyn_wth_z = 96;
+				}
 
-			echo '<div class="x progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).'"  style="position: absolute; width: 97.2%; background-color: #1c61a7; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">'.number_format($current_amnt_progress).'%</div>
-			<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-original-title="Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'<br /><br />Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at '.number_format($current_amnt_progress).'%" style="z-index: 1; position: absolute; width: '.($less_amount_percent-2).'%; background-color: #002C8F; border-radius: 0px 10px 10px 0px; height: 30px;">Cumulative Forecast YTD</div> ';
-	
+
+
+
+				echo '<div class="x progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).'"  style="position: absolute; width: '.$dyn_width_val.'%; background-color: #1c61a7; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">'.number_format($current_amnt_progress).'%</div>
+				<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-original-title="Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'<br /><br />Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at '.number_format($current_amnt_progress).'%" style="z-index: 1; position: absolute; width: '.($less_amount_percent-6.5).'%; background-color: #002C8F; border-radius: 0px 10px 10px 0px; height: 30px;">Cumulative Forecast YTD</div> ';
+
 
 
 			}else{
@@ -1794,8 +1827,8 @@ if($focus_copm_total != ''){
 
 
 
-			echo '<div class="y progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at 100%"  style="left: 30px; position: absolute; width: 97.9%; background-color: #1c61a7; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">100%</div>';
-	
+				echo '<div class="y progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at 100%"  style="left: 30px; position: absolute; width: 93.5%; background-color: #1c61a7; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">100%</div>';
+
 
 
 
@@ -1806,6 +1839,15 @@ if($focus_copm_total != ''){
 		}else{
 
 	//		$less_amount_percent = 100 / ( $forecasted_amount / $current_standing );
+
+
+
+
+				if(isset($comp_id) && $comp_id != '' && $comp_id != 0){
+					$dyn_wth_z = 92;
+				}else{
+					$dyn_wth_z = 96;
+				}
 
 
 
@@ -1820,8 +1862,8 @@ if($focus_copm_total != ''){
 			}
 
 
-			echo '<div class="z progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at '.number_format($current_amnt_progress).'%<br /><br />Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'"  style="z-index: 1; position: absolute; width: '.($current_progress-2).'%; background-color: #1c61a7; border-radius: 0px 10px 10px 0px; height: 30px;">'.number_format($current_amnt_progress).'%</div>
-			<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'" style="position: absolute; width: 97.2%; background-color: #002C8F; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">Cumulative Forecast YTD</div> ';
+			echo '<div class="z progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-original-title="Current Standing plus YTD WIP<br />$'.number_format($current_standing).' at '.number_format($current_amnt_progress).'%<br /><br />Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'"  style="z-index: 1; position: absolute; width: '.($current_progress-5.5).'%; background-color: #1c61a7; border-radius: 0px 10px 10px 0px; height: 30px;">'.number_format($current_amnt_progress).'%</div>
+			<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'" style="position: absolute; width: '.$dyn_wth_z.'%; background-color: #002C8F; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">Cumulative Forecast YTD</div> ';
 		}
 
 
@@ -1950,11 +1992,11 @@ if($focus_copm_total != ''){
 			endif; //for directors 
 
 			if($user_data['user_role_id'] == 3 && $user_data['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM 
 
 			if($user_data['user_role_id'] == 20 && $user_data['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM 
 
 		}else{
@@ -1963,11 +2005,11 @@ if($focus_copm_total != ''){
 			endif; //for directors 
 
 			if($this->session->userdata('user_role_id') == 3 && $this->session->userdata('user_department_id') == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM 
 
 			if($this->session->userdata('user_role_id') == 20 && $this->session->userdata('user_department_id') == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM 
 		}
 
@@ -2167,7 +2209,7 @@ if($focus_copm_total != ''){
 			$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.$pm_name[$key].'</span> <span class=\'col-xs-6\'>$ '.number_format($value,2).'</span></div>';
 			$pm_data[$key] = 0;
 		}
- 
+
 
 
 
@@ -2224,7 +2266,7 @@ if($focus_copm_total != ''){
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
 
 
- 
+
 
 	}
 
@@ -2257,7 +2299,7 @@ if($focus_copm_total != ''){
 		$n_day = date("d");
 
 		$date_b = "$n_day/$n_month/$n_year";
- 
+
 		$all_focus_company = $this->admin_m->fetch_all_company_focus();
 		$focus_company = $all_focus_company->result();
 
@@ -2305,13 +2347,13 @@ if($focus_copm_total != ''){
 				if ( array_key_exists($oustanding->project_manager_id, $pm_outstanding) ) {
 					$pm_outstanding[$oustanding->project_manager_id] = $pm_outstanding[$oustanding->project_manager_id] + $display_each_value;
 				}
- 
+
 
 
 				if ( array_key_exists($prime_pm, $pm_outstanding) ) {
 					$personal_data_latest = $pm_outstanding[$prime_pm];
 				}
- 
+
 
 
 
@@ -2445,7 +2487,7 @@ if($focus_copm_total != ''){
 		$display_total = $this->get_wip_value_permonth($start_date,$set_new_date,$prime_pm,'1');
 
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($display_total,2).'</strong></p>';
- 
+
 	}
 
 
@@ -2528,7 +2570,7 @@ if($focus_copm_total != ''){
 			}
 		}
 
-		 
+
 		$total_string_inv .= '<div class=\'row\'><span class=\'col-xs-12\'> ('.$year.') Invoiced</div>';
 		$total_string_wip .= '<div class=\'row\'><span class=\'col-xs-12\'> ('.$year.') WIP</div>';
 
@@ -2593,10 +2635,10 @@ if($focus_copm_total != ''){
 
 
 			if ( array_key_exists($value, $pm_name)   &&    array_key_exists($value, $pm_data_a)   ) {
-			$total_string_inv .= '<div class=\'row\'><span class=\'col-xs-7\'>'.$pm_name[$value].'</span> <span class=\'col-xs-5\'>'.$pm_data_a[$value].'</span></div>'; $pm_data_a[$value] = 0;
-	
+				$total_string_inv .= '<div class=\'row\'><span class=\'col-xs-7\'>'.$pm_name[$value].'</span> <span class=\'col-xs-5\'>'.$pm_data_a[$value].'</span></div>'; $pm_data_a[$value] = 0;
 
-		}
+
+			}
 
 		}
 
@@ -2677,100 +2719,100 @@ if($focus_copm_total != ''){
 		}
 		$personal_data = 0;
 
-	 	$q_projects = $this->dashboard_m->get_unaccepted_projects($current_start_year,$current_date);
+		$q_projects = $this->dashboard_m->get_unaccepted_projects($current_start_year,$current_date);
 		$projects = $q_projects->result();
 
 
 		foreach ($projects as $un_accepted){
 		//	if( !in_array($un_accepted->project_manager_id, $not_pm_arr) ){
 
-				$unaccepted_date = $un_accepted->unaccepted_date;
-				if($unaccepted_date !== ""){
-					$unaccepted_date_arr = explode('/',$unaccepted_date);
-					$u_date_day = $unaccepted_date_arr[0];
-					$u_date_month = $unaccepted_date_arr[1];
-					$u_date_year = $unaccepted_date_arr[2];
-					$unaccepted_date = $u_date_year.'-'.$u_date_month.'-'.$u_date_day;
-				}
+			$unaccepted_date = $un_accepted->unaccepted_date;
+			if($unaccepted_date !== ""){
+				$unaccepted_date_arr = explode('/',$unaccepted_date);
+				$u_date_day = $unaccepted_date_arr[0];
+				$u_date_month = $unaccepted_date_arr[1];
+				$u_date_year = $unaccepted_date_arr[2];
+				$unaccepted_date = $u_date_year.'-'.$u_date_month.'-'.$u_date_day;
+			}
 
-				$start_date = $un_accepted->date_site_commencement;
-				if($start_date !== ""){
-					$start_date_arr = explode('/',$start_date);
-					$s_date_day = $start_date_arr[0];
-					$s_date_month = $start_date_arr[1];
-					$s_date_year = $start_date_arr[2];
-					$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
-				} 
+			$start_date = $un_accepted->date_site_commencement;
+			if($start_date !== ""){
+				$start_date_arr = explode('/',$start_date);
+				$s_date_day = $start_date_arr[0];
+				$s_date_month = $start_date_arr[1];
+				$s_date_year = $start_date_arr[2];
+				$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
+			} 
 
-				if( in_array($un_accepted->job_category, $exemp_cat)  ){
-					$is_restricted = 1;
-				}else{
-					$is_restricted = 0;
-				}
+			if( in_array($un_accepted->job_category, $exemp_cat)  ){
+				$is_restricted = 1;
+			}else{
+				$is_restricted = 0;
+			}
 
-				$today = date('Y-m-d');
-				$unaccepteddate = strtotime ( '-'.$unaccepted_no_days.' day' , strtotime ( $start_date ) ) ;
-				$unaccepteddate = date ( 'Y-m-d' , $unaccepteddate );
+			$today = date('Y-m-d');
+			$unaccepteddate = strtotime ( '-'.$unaccepted_no_days.' day' , strtotime ( $start_date ) ) ;
+			$unaccepteddate = date ( 'Y-m-d' , $unaccepteddate );
 
-				if(strtotime($unaccepteddate) < strtotime($today)){
-					if($is_restricted == 1){
-						if($unaccepted_date == ""){
-							$status = 'quote';
-						}else{
-							$status = 'unset';
-						}
-					}else{
-						$status = 'unset';
-					}
-
-				}else{
+			if(strtotime($unaccepteddate) < strtotime($today)){
+				if($is_restricted == 1){
 					if($unaccepted_date == ""){
 						$status = 'quote';
 					}else{
 						$status = 'unset';
 					}
-
+				}else{
+					$status = 'unset';
 				}
 
-				if ($status == 'unset'){
-					
-					if( $un_accepted->focus_company_id == $user_details['user_focus_company_id'] ){
-						if($un_accepted->install_time_hrs > 0 || $un_accepted->work_estimated_total > 0.00 || $un_accepted->variation_total > 0.00 ){
-							$amnt =  $un_accepted->project_total + $un_accepted->variation_total;
-							$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt;
-						}else{
-							$amnt = $un_accepted->budget_estimate_total;
-							$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt; 
-						}
-
-						if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
-							
-
-							if($prime_pm == $un_accepted->project_manager_id){
-								$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
-							}
-
-
-
-
-						}
-					}
- 
-					if( in_array($un_accepted->project_manager_id, $group_pm) ){
-
-
-									if( in_array($un_accepted->project_manager_id, $pm_data) ){
-
-
-															$pm_data[$un_accepted->project_manager_id] = $pm_data[$un_accepted->project_manager_id] + $amnt;
-														}
-						}
-
-					if($prime_pm == $un_accepted->project_manager_id){
-						$personal_data = $personal_data + $amnt;
-					}
-
+			}else{
+				if($unaccepted_date == ""){
+					$status = 'quote';
+				}else{
+					$status = 'unset';
 				}
+
+			}
+
+			if ($status == 'unset'){
+
+				if( $un_accepted->focus_company_id == $user_details['user_focus_company_id'] ){
+					if($un_accepted->install_time_hrs > 0 || $un_accepted->work_estimated_total > 0.00 || $un_accepted->variation_total > 0.00 ){
+						$amnt =  $un_accepted->project_total + $un_accepted->variation_total;
+						$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt;
+					}else{
+						$amnt = $un_accepted->budget_estimate_total;
+						$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt; 
+					}
+
+					if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
+
+
+						if($prime_pm == $un_accepted->project_manager_id){
+							$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
+						}
+
+
+
+
+					}
+				}
+
+				if( in_array($un_accepted->project_manager_id, $group_pm) ){
+
+
+					if( in_array($un_accepted->project_manager_id, $pm_data) ){
+
+
+						$pm_data[$un_accepted->project_manager_id] = $pm_data[$un_accepted->project_manager_id] + $amnt;
+					}
+				}
+
+				if($prime_pm == $un_accepted->project_manager_id){
+					$personal_data = $personal_data + $amnt;
+				}
+
+			}
 			//}
 		}
 
@@ -2787,8 +2829,8 @@ if($focus_copm_total != ''){
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
 
 		foreach ($pm_data as $key => $value) {
-				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.$pm_name[$key].'</span> <span class=\'col-xs-6\'>$ '.number_format($value,2).'</span></div>';
-				$pm_data[$key] = 0;
+			$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.$pm_name[$key].'</span> <span class=\'col-xs-6\'>$ '.number_format($value,2).'</span></div>';
+			$pm_data[$key] = 0;
 		}
 
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
@@ -2821,99 +2863,99 @@ if($focus_copm_total != ''){
 		$n_day = date("d");
 		$date_last_year_today = "$n_day/$n_month/$last_year";
 		$set_date_b = '01/01/'.$last_year;
-	 
 
-	 	$q_projects = $this->dashboard_m->get_unaccepted_projects($set_date_b,$date_last_year_today);
+
+		$q_projects = $this->dashboard_m->get_unaccepted_projects($set_date_b,$date_last_year_today);
 		$projects = $q_projects->result();
 
 
 		foreach ($projects as $un_accepted){
 		//	if( !in_array($un_accepted->project_manager_id, $not_pm_arr) ){
 
-				$unaccepted_date = $un_accepted->unaccepted_date;
-				if($unaccepted_date !== ""){
-					$unaccepted_date_arr = explode('/',$unaccepted_date);
-					$u_date_day = $unaccepted_date_arr[0];
-					$u_date_month = $unaccepted_date_arr[1];
-					$u_date_year = $unaccepted_date_arr[2];
-					$unaccepted_date = $u_date_year.'-'.$u_date_month.'-'.$u_date_day;
-				}
+			$unaccepted_date = $un_accepted->unaccepted_date;
+			if($unaccepted_date !== ""){
+				$unaccepted_date_arr = explode('/',$unaccepted_date);
+				$u_date_day = $unaccepted_date_arr[0];
+				$u_date_month = $unaccepted_date_arr[1];
+				$u_date_year = $unaccepted_date_arr[2];
+				$unaccepted_date = $u_date_year.'-'.$u_date_month.'-'.$u_date_day;
+			}
 
-				$start_date = $un_accepted->date_site_commencement;
-				if($start_date !== ""){
-					$start_date_arr = explode('/',$start_date);
-					$s_date_day = $start_date_arr[0];
-					$s_date_month = $start_date_arr[1];
-					$s_date_year = $start_date_arr[2];
-					$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
-				} 
+			$start_date = $un_accepted->date_site_commencement;
+			if($start_date !== ""){
+				$start_date_arr = explode('/',$start_date);
+				$s_date_day = $start_date_arr[0];
+				$s_date_month = $start_date_arr[1];
+				$s_date_year = $start_date_arr[2];
+				$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
+			} 
 
-				if( in_array($un_accepted->job_category, $exemp_cat)  ){
-					$is_restricted = 1;
-				}else{
-					$is_restricted = 0;
-				}
+			if( in_array($un_accepted->job_category, $exemp_cat)  ){
+				$is_restricted = 1;
+			}else{
+				$is_restricted = 0;
+			}
 
-				$today = date('Y-m-d');
-				$unaccepteddate = strtotime ( '-'.$unaccepted_no_days.' day' , strtotime ( $start_date ) ) ;
-				$unaccepteddate = date ( 'Y-m-d' , $unaccepteddate );
+			$today = date('Y-m-d');
+			$unaccepteddate = strtotime ( '-'.$unaccepted_no_days.' day' , strtotime ( $start_date ) ) ;
+			$unaccepteddate = date ( 'Y-m-d' , $unaccepteddate );
 
-				if(strtotime($unaccepteddate) < strtotime($today)){
-					if($is_restricted == 1){
-						if($unaccepted_date == ""){
-							$status = 'quote';
-						}else{
-							$status = 'unset';
-						}
-					}else{
-						$status = 'unset';
-					}
-
-				}else{
+			if(strtotime($unaccepteddate) < strtotime($today)){
+				if($is_restricted == 1){
 					if($unaccepted_date == ""){
 						$status = 'quote';
 					}else{
 						$status = 'unset';
 					}
-
+				}else{
+					$status = 'unset';
 				}
 
-				if ($status == 'unset'){
-					
-					if( $un_accepted->focus_company_id == $user_details['user_focus_company_id'] ){
-						if($un_accepted->install_time_hrs > 0 || $un_accepted->work_estimated_total > 0.00 || $un_accepted->variation_total > 0.00 ){
-							$amnt =  $un_accepted->project_total + $un_accepted->variation_total;
-							$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt;
-						}else{
-							$amnt = $un_accepted->budget_estimate_total;
-							$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt; 
-						}
-
-						if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
-							
-
-							if($prime_pm == $un_accepted->project_manager_id){
-								$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
-							}
-
-
-
-
-						}
-					}
- 
-
-
-						
-					if( in_array($un_accepted->project_manager_id, $pm_data) ){
-						$pm_data[$un_accepted->project_manager_id] = $pm_data[$un_accepted->project_manager_id] + $amnt;
-					}
-
-					if($prime_pm == $un_accepted->project_manager_id){
-						$personal_data = $personal_data + $amnt;
-					}
-
+			}else{
+				if($unaccepted_date == ""){
+					$status = 'quote';
+				}else{
+					$status = 'unset';
 				}
+
+			}
+
+			if ($status == 'unset'){
+
+				if( $un_accepted->focus_company_id == $user_details['user_focus_company_id'] ){
+					if($un_accepted->install_time_hrs > 0 || $un_accepted->work_estimated_total > 0.00 || $un_accepted->variation_total > 0.00 ){
+						$amnt =  $un_accepted->project_total + $un_accepted->variation_total;
+						$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt;
+					}else{
+						$amnt = $un_accepted->budget_estimate_total;
+						$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt; 
+					}
+
+					if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
+
+
+						if($prime_pm == $un_accepted->project_manager_id){
+							$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
+						}
+
+
+
+
+					}
+				}
+
+
+
+
+				if( in_array($un_accepted->project_manager_id, $pm_data) ){
+					$pm_data[$un_accepted->project_manager_id] = $pm_data[$un_accepted->project_manager_id] + $amnt;
+				}
+
+				if($prime_pm == $un_accepted->project_manager_id){
+					$personal_data = $personal_data + $amnt;
+				}
+
+			}
 			//}
 		}
 
@@ -2929,9 +2971,9 @@ if($focus_copm_total != ''){
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
 
 		foreach ($pm_data as $key => $value) {
-				if($value > 0){
-					$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.$pm_name[$key].'</span> <span class=\'col-xs-6\'>$ '.number_format($value,2).'</span></div>';
-				}
+			if($value > 0){
+				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.$pm_name[$key].'</span> <span class=\'col-xs-6\'>$ '.number_format($value,2).'</span></div>';
+			}
 		}
 
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
@@ -2998,12 +3040,12 @@ if($focus_copm_total != ''){
 			if( in_array($row['project_manager_id'], $group_pm) ){
 
 
-							if( in_array($row['project_manager_id'], $pm_data) ){
+				if( in_array($row['project_manager_id'], $pm_data) ){
 
 
-								$pm_data[$row['project_manager_id']] = $pm_data[$row['project_manager_id']] + $out_standing;
-							}
-					}
+					$pm_data[$row['project_manager_id']] = $pm_data[$row['project_manager_id']] + $out_standing;
+				}
+			}
 
 			if($prime_pm == $row['project_manager_id']){
 				$personal_data = $personal_data + $out_standing;
@@ -3031,7 +3073,7 @@ if($focus_copm_total != ''){
 		$n_day = date("d");
 		$date_last_year_today = "$n_day/$n_month/$last_year";
 		$set_date_b = '01/01/'.$last_year;
- 
+
 
 		$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($set_date_b,$date_last_year_today);
 
@@ -3059,7 +3101,7 @@ if($focus_copm_total != ''){
 		foreach ( $pm_data as $key => $value) {
 			$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.$pm_name[$key].'</span> <span class=\'col-xs-6\'>$ '.number_format($value,2).'</span></div>';
 		}
- 
+
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
 	}
 
@@ -3073,8 +3115,8 @@ if($focus_copm_total != ''){
 		$prime_pm = $assignment['project_manager_primary_id'];
 		$group_pm = explode(',', $assignment['project_manager_ids']);
 
-  
- 
+
+
 
 		$current_date = date("d/m/Y");
 		$year = date("Y");
@@ -3339,7 +3381,7 @@ if($focus_copm_total != ''){
 					$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
 				}
 
-			
+
 
 				if (array_key_exists($row['project_manager_id'], $cost_pm)) {
 					$cost_pm[$row['project_manager_id']] = $cost_pm[$row['project_manager_id']] + $project_cost;
@@ -3460,46 +3502,46 @@ if($focus_copm_total != ''){
 			//if($status == 'quote'){
 
 
-				if ( array_key_exists($row['project_estiamator_id'], $quoted_estimator) ) {
-					$quoted_estimator[$row['project_estiamator_id']]++;
-				}
+			if ( array_key_exists($row['project_estiamator_id'], $quoted_estimator) ) {
+				$quoted_estimator[$row['project_estiamator_id']]++;
+			}
 
 
-				if (array_key_exists($row['project_manager_id'], $quoted_pm)) {
-					$quoted_pm[$row['project_manager_id']]++;
-				}
+			if (array_key_exists($row['project_manager_id'], $quoted_pm)) {
+				$quoted_pm[$row['project_manager_id']]++;
+			}
 
 
-				if (array_key_exists($row['project_manager_id'], $quoted_pm)) {
-					$quoted_pm[$row['project_manager_id']]++;
-				}
+			if (array_key_exists($row['project_manager_id'], $quoted_pm)) {
+				$quoted_pm[$row['project_manager_id']]++;
+			}
 
 
 
-				$quoted_focus_company[$row['focus_company_id']]++;
+			$quoted_focus_company[$row['focus_company_id']]++;
 
-				if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
-					$project_cost = $row['project_total'] + $row['variation_total'];
-				}else{
-					$project_cost = $row['budget_estimate_total'];
-				}
+			if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
+				$project_cost = $row['project_total'] + $row['variation_total'];
+			}else{
+				$project_cost = $row['budget_estimate_total'];
+			}
 
-				$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
+			$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
 
 
-				if ( array_key_exists($row['project_estiamator_id'], $cost_estimator) ) {
-					$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-				}
-				 
+			if ( array_key_exists($row['project_estiamator_id'], $cost_estimator) ) {
+				$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
+			}
 
-				if (array_key_exists($row['project_manager_id'], $cost_pm)) {
-					$cost_pm[$row['project_manager_id']] = $cost_pm[$row['project_manager_id']] + $project_cost;
-				}
+
+			if (array_key_exists($row['project_manager_id'], $cost_pm)) {
+				$cost_pm[$row['project_manager_id']] = $cost_pm[$row['project_manager_id']] + $project_cost;
+			}
 
 
 			//}
 		}
- 
+
 
 		foreach ($focus_company as $company){
 			if($quoted_focus_company[$company->company_id] > 0){
@@ -3644,147 +3686,147 @@ if($focus_copm_total != ''){
 
 		$fetch_user = $this->user_model->fetch_user($prime_pm);
 		$user_details = array_shift($fetch_user->result_array());
- 
+
 		$comp_q = '';
 		$comp_q .= 'AND (';
 			$comp_q .= '`project`.`focus_company_id` = '.$user_details['user_focus_company_id'].'';
-		$comp_q .= ')';
+			$comp_q .= ')';
 
 
 
 	//if( in_array($project['focus_company_id'], $direct_company) ){
 
 
-		$current_date = date("d/m/Y");
-		$year = date("Y");
+$current_date = date("d/m/Y");
+$year = date("Y");
 
-		$last_year = intval(date("Y")) - 1;
+$last_year = intval(date("Y")) - 1;
 
-		$base_year = '01/01/'.$year;
+$base_year = '01/01/'.$year;
 
-		$next_year_date = '01/01/'.$last_year;
-		$current_start_year = date("d/m/Y");
-		$last_start_year = '01/01/'.$last_year;
+$next_year_date = '01/01/'.$last_year;
+$current_start_year = date("d/m/Y");
+$last_start_year = '01/01/'.$last_year;
 
-		$q_companies = $this->dashboard_m->get_company_sales($type,$base_year,$current_start_year,'',$comp_q);
-		$company_details  = $q_companies->result();
-		$counter = 0;
-
-
-		$list_total = 0;
-
-		foreach ($company_details as $company) {
-			$list_total = $list_total + $company->total_price;
-		}
-
-		foreach ($company_details as $company) {
-			$counter ++;
-			$total = $company->total_price;
-			$percent = round(100/($list_total/$company->total_price));
-
-			$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
-			$overall_cost = array_shift($q_clients_overall->result_array());
-			$grand_total = $overall_cost['total_price'];
-
-			echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
-
-			$comp_name = $company->company_name;
-			if(strlen($comp_name) > 40){
-				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,40).'...</span>';
-			}else{
-				echo $comp_name;
-			}
-
-			$cmp_id = $company->company_id;
-
-			$last_year_q = $this->dashboard_m->get_company_sales('',$base_year,$current_start_year,$cmp_id,$comp_q);
-			$last_year_sale = array_shift($last_year_q->result_array());
-			$lst_year_total = $last_year_sale['total_price'];
-
-			echo ' </div><div class="col-md-2 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-		}
+$q_companies = $this->dashboard_m->get_company_sales($type,$base_year,$current_start_year,'',$comp_q);
+$company_details  = $q_companies->result();
+$counter = 0;
 
 
+$list_total = 0;
+
+foreach ($company_details as $company) {
+	$list_total = $list_total + $company->total_price;
+}
+
+foreach ($company_details as $company) {
+	$counter ++;
+	$total = $company->total_price;
+	$percent = round(100/($list_total/$company->total_price));
+
+	$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
+	$overall_cost = array_shift($q_clients_overall->result_array());
+	$grand_total = $overall_cost['total_price'];
+
+	echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+
+	$comp_name = $company->company_name;
+	if(strlen($comp_name) > 40){
+		echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,40).'...</span>';
+	}else{
+		echo $comp_name;
 	}
 
+	$cmp_id = $company->company_id;
 
- 
+	$last_year_q = $this->dashboard_m->get_company_sales('',$base_year,$current_start_year,$cmp_id,$comp_q);
+	$last_year_sale = array_shift($last_year_q->result_array());
+	$lst_year_total = $last_year_sale['total_price'];
+
+	echo ' </div><div class="col-md-2 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+}
 
 
-	public function focus_top_ten_clients_pa(){
-		$assignment = $this->pa_assignment();
-		$prime_pm = $assignment['project_manager_primary_id'];
-		$group_pm = explode(',', $assignment['project_manager_ids']);
+}
 
-		$fetch_user = $this->user_model->fetch_user($prime_pm);
-		$user_details = array_shift($fetch_user->result_array());
- 
-		$comp_q = '';
-		$comp_q .= 'AND (';
+
+
+
+
+public function focus_top_ten_clients_pa(){
+	$assignment = $this->pa_assignment();
+	$prime_pm = $assignment['project_manager_primary_id'];
+	$group_pm = explode(',', $assignment['project_manager_ids']);
+
+	$fetch_user = $this->user_model->fetch_user($prime_pm);
+	$user_details = array_shift($fetch_user->result_array());
+
+	$comp_q = '';
+	$comp_q .= 'AND (';
 		$comp_q .= '`project`.`focus_company_id` = '.$user_details['user_focus_company_id'].'';
 		$comp_q .= ')';
-		 
-		$current_date = date("d/m/Y");
-		$year = date("Y");
-		$next_year_date = '01/01/'.($year+1);
-		$current_start_year = '01/01/'.$year;
-		$last_start_year = '01/01/'.($year-1);
 
-		$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date,'','',$comp_q);
-		$client_details  = $q_clients->result();
-		
-		$list_total = 0;
+$current_date = date("d/m/Y");
+$year = date("Y");
+$next_year_date = '01/01/'.($year+1);
+$current_start_year = '01/01/'.$year;
+$last_start_year = '01/01/'.($year-1);
+
+$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date,'','',$comp_q);
+$client_details  = $q_clients->result();
+
+$list_total = 0;
 
 		//if( in_array($project['focus_company_id'], $direct_company) ){
 
-		foreach ($client_details as $company) {
-			$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
-			$vr_val_t = array_shift($q_vr_c_t->result_array());
-			$list_total = $list_total + $company->grand_total + $vr_val_t['total_variation'];
-		}
+foreach ($client_details as $company) {
+	$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+	$vr_val_t = array_shift($q_vr_c_t->result_array());
+	$list_total = $list_total + $company->grand_total + $vr_val_t['total_variation'];
+}
 
-		$last_year = intval(date("Y")) - 1;
-		$this_month = date("m");
-		$this_day = date("d");
- 
-		$date_a_last = "01/01/$last_year";
-		$date_b_last = "$this_day/$this_month/$last_year";
+$last_year = intval(date("Y")) - 1;
+$this_month = date("m");
+$this_day = date("d");
 
-		foreach ($client_details as $company) {
-			$percent = round(100/($list_total/$company->grand_total));
-			echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+$date_a_last = "01/01/$last_year";
+$date_b_last = "$this_day/$this_month/$last_year";
 
-			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
-			$vr_val = array_shift($q_vr_c->result_array());
+foreach ($client_details as $company) {
+	$percent = round(100/($list_total/$company->grand_total));
+	echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
-			$comp_name = $company->company_name;
-			if(strlen($comp_name) > 30){
-				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
-			}else{
-				echo $comp_name;
-			}
+	$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+	$vr_val = array_shift($q_vr_c->result_array());
 
-			$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$company->client_id,$comp_q);
-			$vr_val_u = array_shift($q_vr_c_u->result_array());
-
-			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$company->company_id);
-			$last_year_sale = array_shift($last_year_q->result_array());
-			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
-			echo ' </div><div class="col-md-2 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->grand_total+ $vr_val['total_variation']).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-		}
-
-
-
-
+	$comp_name = $company->company_name;
+	if(strlen($comp_name) > 30){
+		echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
+	}else{
+		echo $comp_name;
 	}
 
+	$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$company->client_id,$comp_q);
+	$vr_val_u = array_shift($q_vr_c_u->result_array());
+
+	$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$company->company_id);
+	$last_year_sale = array_shift($last_year_q->result_array());
+	$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
+	echo ' </div><div class="col-md-2 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->grand_total+ $vr_val['total_variation']).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+}
 
 
-	public function average_date_invoice_pa(){
 
-		$assignment = $this->pa_assignment();
-		$prime_pm = $assignment['project_manager_primary_id'];
-		$group_pm = explode(',', $assignment['project_manager_ids']);
+
+}
+
+
+
+public function average_date_invoice_pa(){
+
+	$assignment = $this->pa_assignment();
+	$prime_pm = $assignment['project_manager_primary_id'];
+	$group_pm = explode(',', $assignment['project_manager_ids']);
 
 		$project_manager = $this->dashboard_m->fetch_pms_year(date("Y")); // ****--___--***
 		$project_manager_list = $project_manager->result();
@@ -3820,22 +3862,22 @@ if($focus_copm_total != ''){
 		$fetch_user = $this->user_model->fetch_user($prime_pm);
 		$user_details = array_shift($fetch_user->result_array());
 		
- 
+
 
  	//	foreach ($direct_company as $key => $comp_id) {
 			$q_ave = $this->dashboard_m->get_maitenance_dates_pm($date_a,$date_b,$prime_pm,$user_details['user_focus_company_id']); //4
 			$days_result = $q_ave->result();
 
 			foreach ($days_result as $result){
-						$diff = ($result->days_diff < 0 ? 0 : $result->days_diff);
+				$diff = ($result->days_diff < 0 ? 0 : $result->days_diff);
 				array_push($days_dif, $diff);
 			}
 
 		//	if($pm_type == 1){ // for director/pm
-				foreach ($project_manager_list as $pm ) {
+			foreach ($project_manager_list as $pm ) {
 
 
-					if(in_array($pm->user_id, $group_pm) ){
+				if(in_array($pm->user_id, $group_pm) ){
 
 					$q_ave_pm = $this->dashboard_m->get_maitenance_dates_pm($date_a,$date_b,$pm->user_id,$user_details['user_focus_company_id']); //4
 					$days_result_pm = $q_ave_pm->result();
@@ -3845,43 +3887,43 @@ if($focus_copm_total != ''){
 						array_push($pms_averg[$pm->user_id],$diff);
 					}
 				}
-				}
+			}
 		//	}
  	//	}
 
 
 
- 
+
 
 //		var_dump($days_dif);
- 
-		$size = count($days_dif);
 
-		if($size > 0){
-			$average = array_sum($days_dif) / $size;
-			arsort($days_dif,1);
-			$long_day =  max($days_dif);
-			$short_day_day =  min($days_dif);
-			$short_day_day = 1;
-		}else{
-			$average = 0;
-			$long_day = 0;
-			$short_day_day = 0;
-		}
+			$size = count($days_dif);
 
-		$total_string = '';
+			if($size > 0){
+				$average = array_sum($days_dif) / $size;
+				arsort($days_dif,1);
+				$long_day =  max($days_dif);
+				$short_day_day =  min($days_dif);
+				$short_day_day = 1;
+			}else{
+				$average = 0;
+				$long_day = 0;
+				$short_day_day = 0;
+			}
 
- 
-
-		$all_focus_company = $this->admin_m->fetch_all_company_focus();
-		$focus_company = $all_focus_company->result();
+			$total_string = '';
 
 
-		foreach ($focus_company as $company){
 
-			if( $company->company_id == $user_details['user_focus_company_id'] ){
+			$all_focus_company = $this->admin_m->fetch_all_company_focus();
+			$focus_company = $all_focus_company->result();
 
-				$days_dif_comp = array('');
+
+			foreach ($focus_company as $company){
+
+				if( $company->company_id == $user_details['user_focus_company_id'] ){
+
+					$days_dif_comp = array('');
 
 				$q_ave = $this->dashboard_m->get_maitenance_dates_pm($date_a,$date_b,$company->company_id); //5
 				$days_result = $q_ave->result();
@@ -3899,11 +3941,11 @@ if($focus_copm_total != ''){
 				$average_comp = array_sum($days_dif_comp) / $size;
 
 				arsort($days_dif_comp,1);
- 
+
 				$long_day_comp =  max($days_dif_comp);
 				$short_day_day_comp =  min($days_dif_comp);
 				$short_day_day_comp = 1;
- 
+
 				// $total_string .= '<span>'.str_replace("Pty Ltd","",$company->company_name).' &nbsp; '.number_format($average_comp,1).'</span><br />';
 
 
@@ -3913,7 +3955,7 @@ if($focus_copm_total != ''){
 		}
 
 // 	var_dump($pms_averg);
- 
+
 
 /*
 		if($pm_type == 1 &&  in_array($company->company_id, $direct_company)     ){
@@ -3926,27 +3968,27 @@ if($focus_copm_total != ''){
 
 	//		if($pm_type == 1){ // for director/pm
 
-				$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
+		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
 
 
 
-				foreach ($project_manager_list as $pm ){
+		foreach ($project_manager_list as $pm ){
 
-					if(in_array($pm->user_id, $group_pm) ){
+			if(in_array($pm->user_id, $group_pm) ){
 
 
 
-					if( count($pms_averg[$pm->user_id]) > 0  ){
+				if( count($pms_averg[$pm->user_id]) > 0  ){
 						//	var_dump($pms_averg[$pm->user_id]);
 						//	echo "<p></p>"; 
-						$size = count($pms_averg[$pm->user_id]);
+					$size = count($pms_averg[$pm->user_id]);
 
 						//if($size > 0){
-						$pm_average = array_sum($pms_averg[$pm->user_id]) / $size;
-						arsort($pms_averg[$pm->user_id],1);
-						$pm_long_day =  max($pms_averg[$pm->user_id]);
-						$pm_short_day_day =  min($pms_averg[$pm->user_id]);
-						$pm_short_day_day = 1;
+					$pm_average = array_sum($pms_averg[$pm->user_id]) / $size;
+					arsort($pms_averg[$pm->user_id],1);
+					$pm_long_day =  max($pms_averg[$pm->user_id]);
+					$pm_short_day_day =  min($pms_averg[$pm->user_id]);
+					$pm_short_day_day = 1;
 						/*}else{
 							$pm_average = 0;
 							$pm_long_day = 0;
@@ -3957,17 +3999,17 @@ if($focus_copm_total != ''){
 						$total_string .= '<div class=\'row\'><span class=\'col-xs-8\'>'.$pm_name.'</span><span class=\'col-xs-4\'>'.round($pm_average,1).'</span></div>';
 					}
 				}
-				}
+			}
 		//	} 
 
 
-		echo '<div id="" class="tooltip-enabled" title="" data-placement="bottom" data-html="true" data-original-title="'.$total_string .'">
-				<input class="knob" data-width="100%" data-step=".1"  data-thickness=".13" value="'.number_format($average,1).'" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="'.$long_day.'">
-				<div id="" class="clearfix m-top-10">
-					<div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div>
-					<div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div>
-				</div>
-			</div>';
+			echo '<div id="" class="tooltip-enabled" title="" data-placement="bottom" data-html="true" data-original-title="'.$total_string .'">
+			<input class="knob" data-width="100%" data-step=".1"  data-thickness=".13" value="'.number_format($average,1).'" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="'.$long_day.'">
+			<div id="" class="clearfix m-top-10">
+				<div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div>
+				<div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div>
+			</div>
+		</div>';
 
 	}
 
@@ -4003,7 +4045,7 @@ if($focus_copm_total != ''){
 		$n_year =  date("Y")+1;
 		$set_new_date = '01/01/'.$n_year;
 		$date_c = date("d/m/Y");
- 
+
 
 		$pm_set_data = array();
 		$wip_pm_total = array();
@@ -4043,33 +4085,33 @@ if($focus_copm_total != ''){
 		$focus_company = $all_focus_company->result();
 
 		foreach ($focus_company as $company){
- 
-				$q_dash_sales = $this->dashboard_m->dash_sales($date_a,$date_c,$company->company_id,1);
 
-				if($q_dash_sales->num_rows >= 1){
+			$q_dash_sales = $this->dashboard_m->dash_sales($date_a,$date_c,$company->company_id,1);
 
-					$grand_total_sales = 0;
-					$sales_total = 0;
+			if($q_dash_sales->num_rows >= 1){
 
-					$dash_sales = $q_dash_sales->result();
+				$grand_total_sales = 0;
+				$sales_total = 0;
 
-					foreach ($dash_sales as $sales){
-						if( in_array($sales->project_manager_id, $group_pm) ){
+				$dash_sales = $q_dash_sales->result();
 
-							if($sales->label == 'VR'){
-								$sales_total = $sales->variation_total;
-							}else{
-								$sales_total = $sales->project_total*($sales->progress_percent/100);
-							}
+				foreach ($dash_sales as $sales){
+					if( in_array($sales->project_manager_id, $group_pm) ){
 
-							$set_invoiced_amount[$sales->project_manager_id] = $set_invoiced_amount[$sales->project_manager_id] + $sales_total;
-							$pm_set_data[$sales->project_manager_id] = $sales->project_manager_id;
-
-							$grand_total_sales_cmp = $grand_total_sales_cmp + $sales_total;
-
+						if($sales->label == 'VR'){
+							$sales_total = $sales->variation_total;
+						}else{
+							$sales_total = $sales->project_total*($sales->progress_percent/100);
 						}
-					}					
-				} 
+
+						$set_invoiced_amount[$sales->project_manager_id] = $set_invoiced_amount[$sales->project_manager_id] + $sales_total;
+						$pm_set_data[$sales->project_manager_id] = $sales->project_manager_id;
+
+						$grand_total_sales_cmp = $grand_total_sales_cmp + $sales_total;
+
+					}
+				}					
+			} 
 		}
 
 		$forecast_focus_total = 0; 
@@ -4094,7 +4136,7 @@ if($focus_copm_total != ''){
 			}
 
 		}
- 
+
 
 //		foreach ($direct_company as $key => $comp_id) {
 		foreach ($focus_company as $company){
@@ -4128,50 +4170,50 @@ if($focus_copm_total != ''){
 			if( in_array($pm_id, $group_pm) ){
 
 			//	if( $sales > 0){
-					$comp_id_pm = $focus_pm_comp[$pm_id];
+				$comp_id_pm = $focus_pm_comp[$pm_id];
 
 					//$pm_wip = (( $set_estimates[$pm_id] + $set_quotes[$pm_id] ) - $set_invoiced[$pm_id] );
 
-					$q_current_forecast_comp = $this->dashboard_m->get_current_forecast($c_year,$comp_id_pm,'1');
-					$comp_forecast = array_shift($q_current_forecast_comp->result_array());
+				$q_current_forecast_comp = $this->dashboard_m->get_current_forecast($c_year,$comp_id_pm,'1');
+				$comp_forecast = array_shift($q_current_forecast_comp->result_array());
 
-					$q_current_forecast = $this->dashboard_m->get_current_forecast($c_year,$pm_id);
-					$pm_forecast = array_shift($q_current_forecast->result_array());
+				$q_current_forecast = $this->dashboard_m->get_current_forecast($c_year,$pm_id);
+				$pm_forecast = array_shift($q_current_forecast->result_array());
 
-					$total_forecast = ( $comp_forecast['total'] * (  $comp_forecast['forecast_percent']  /100  ) *  ($pm_forecast['forecast_percent']/100) );
-
-
-					$pm_sales_value = $set_invoiced_amount[$pm_id] + $wip_pm_total[$pm_id];
-
-					if( $pm_sales_value > 0 ){
+				$total_forecast = ( $comp_forecast['total'] * (  $comp_forecast['forecast_percent']  /100  ) *  ($pm_forecast['forecast_percent']/100) );
 
 
-				$pm_sales_value = ($pm_sales_value <= 1 ? 1 : $pm_sales_value);
-				$total_forecast = ($total_forecast <= 1 ? 1 : $total_forecast);
+				$pm_sales_value = $set_invoiced_amount[$pm_id] + $wip_pm_total[$pm_id];
 
-				
-						$status_forecast = round(100/($total_forecast/$pm_sales_value));
-					}else{
-						$status_forecast = 0;
-					}
+				if( $pm_sales_value > 0 ){
 
 
-					if($is_term == ''){
-						echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$focus_pm_pic[$pm_id].'"" /></div>';
-						echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
-						echo '<p><i class="fa fa-usd"></i> '.number_format($pm_sales_value).'</p>';
-
-						echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($pm_sales_value).' / $'.number_format($total_forecast).'   " style="height: 7px;">
-						<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
-
-						echo "<div class='clearfix'></div>";
-					}
-					$forecast_focus_total = $forecast_focus_total + $total_forecast;
+					$pm_sales_value = ($pm_sales_value <= 1 ? 1 : $pm_sales_value);
+					$total_forecast = ($total_forecast <= 1 ? 1 : $total_forecast);
 
 
-					if($prime_pm == $pm_id){
-						$return_total = $status_forecast;
-					}
+					$status_forecast = round(100/($total_forecast/$pm_sales_value));
+				}else{
+					$status_forecast = 0;
+				}
+
+
+				if($is_term == ''){
+					echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$focus_pm_pic[$pm_id].'"" /></div>';
+					echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
+					echo '<p><i class="fa fa-usd"></i> '.number_format($pm_sales_value).'</p>';
+
+					echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($pm_sales_value).' / $'.number_format($total_forecast).'   " style="height: 7px;">
+					<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
+
+					echo "<div class='clearfix'></div>";
+				}
+				$forecast_focus_total = $forecast_focus_total + $total_forecast;
+
+
+				if($prime_pm == $pm_id){
+					$return_total = $status_forecast;
+				}
 				//}
 			}
 		}
@@ -4220,26 +4262,26 @@ if($focus_copm_total != ''){
 
 		if($is_term == ''){
 			echo '<div class="clearfix" style="padding-top: 6px;    border-top: 1px solid #eee;"><i class="fa fa-briefcase" style="font-size: 42px;float: left;margin-left: 7px;margin-right: 10px;"></i>';
-		
+
 			if ( array_key_exists($prime_pm, $set_invoiced_amount)   &&    array_key_exists($prime_pm, $wip_pm_total) ) {
 
 
 				echo '<div class="" id=""><p><strong>Primary Overall</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$prime_pm]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format( $wip_pm_total[$prime_pm]).'</span></span></p>';
-		
+
 			}else{
 				
 				echo '<div class="" id=""><p><strong>Primary Overall</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> 0.00</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> 0.00</span></span></p>';
-		
+
 			}
 
 
-		echo '<p><i class="fa fa-usd"></i> '.number_format( $pm_sales_value ).' <strong class="pull-right m-right-10"></strong></p> </p>';
+			echo '<p><i class="fa fa-usd"></i> '.number_format( $pm_sales_value ).' <strong class="pull-right m-right-10"></strong></p> </p>';
 
-		echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format( $pm_sales_value ).' / $'.number_format($total_forecast).'   " style="height: 7px;">';
-		echo '<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
-		echo "<div class='clearfix'></div>";
-		
-	}
+			echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format( $pm_sales_value ).' / $'.number_format($total_forecast).'   " style="height: 7px;">';
+			echo '<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
+			echo "<div class='clearfix'></div>";
+
+		}
 		//return $return_total;
 
 
@@ -4257,11 +4299,11 @@ if($focus_copm_total != ''){
 
 		if($is_term == ''){
 
-		return $return_total.'_'.number_format( $pm_overall_display );
-			}else{
+			return $return_total.'_'.number_format( $pm_overall_display );
+		}else{
 
-		echo $return_total.'_'.number_format( $pm_overall_display );
-			}
+			echo $return_total.'_'.number_format( $pm_overall_display );
+		}
 
 
 	}
@@ -4366,7 +4408,7 @@ if($focus_copm_total != ''){
 		$n_year = $c_year+1;
 		$date_a = "01/01/$c_year";
 		$date_b = date("d/m/Y");
-  
+
 		$total_string = '';
 		$personal_data = 0;
 
@@ -4380,26 +4422,26 @@ if($focus_copm_total != ''){
 
 		foreach ($focus_company_maintenence as $company){ 
 
-				$q_dash_unvoiced = $this->dashboard_m->dash_unvoiced_per_date($date_a,$date_b,$company->focus_company_id);
-				$dash_unvoiced = $q_dash_unvoiced->result();
+			$q_dash_unvoiced = $this->dashboard_m->dash_unvoiced_per_date($date_a,$date_b,$company->focus_company_id);
+			$dash_unvoiced = $q_dash_unvoiced->result();
 
-				$unvoiced_total = 0;
-				$unvoiced_grand_total = 0;
+			$unvoiced_total = 0;
+			$unvoiced_grand_total = 0;
 
-				foreach ($dash_unvoiced as $unvoiced) {
+			foreach ($dash_unvoiced as $unvoiced) {
 
-					if( $company->project_manager_id == $unvoiced->project_manager_id){
+				if( $company->project_manager_id == $unvoiced->project_manager_id){
 
-						if($unvoiced->label == 'VR'){
-							$unvoiced_total = $unvoiced->variation_total;
-						}else{
-							$unvoiced_total = $unvoiced->project_total*($unvoiced->progress_percent/100);
-						}
-
-						$maintenacne_data[$company->focus_company_id] = $maintenacne_data[$company->focus_company_id] + $unvoiced_total;
-						$personal_data = $personal_data + $unvoiced_total;
+					if($unvoiced->label == 'VR'){
+						$unvoiced_total = $unvoiced->variation_total;
+					}else{
+						$unvoiced_total = $unvoiced->project_total*($unvoiced->progress_percent/100);
 					}
+
+					$maintenacne_data[$company->focus_company_id] = $maintenacne_data[$company->focus_company_id] + $unvoiced_total;
+					$personal_data = $personal_data + $unvoiced_total;
 				}
+			}
 
 			$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($maintenacne_data[$company->focus_company_id],2).'</span></div>';
 		}
@@ -4412,24 +4454,24 @@ if($focus_copm_total != ''){
 			$q_dash_sales = $this->dashboard_m->dash_unvoiced_per_date($date_c,$date_d,$company->focus_company_id,1);
 		//	if($q_dash_sales->num_rows >= 1){
 
-				$sales_total = 0;
-				$dash_sales = $q_dash_sales->result();
-				$last_year = 0;
+			$sales_total = 0;
+			$dash_sales = $q_dash_sales->result();
+			$last_year = 0;
 
-				foreach ($dash_sales as $sales){
+			foreach ($dash_sales as $sales){
 
-					if( $company->project_manager_id == $sales->project_manager_id){
-						if($sales->label == 'VR'){
-							$sales_total = $sales->variation_total;
-						}else{
-							$sales_total = $sales->project_total*($sales->progress_percent/100);
-						}
-
-						$last_year = $last_year + $sales_total;
-						$personal_data = $personal_data + $sales_total;
+				if( $company->project_manager_id == $sales->project_manager_id){
+					if($sales->label == 'VR'){
+						$sales_total = $sales->variation_total;
+					}else{
+						$sales_total = $sales->project_total*($sales->progress_percent/100);
 					}
+
+					$last_year = $last_year + $sales_total;
+					$personal_data = $personal_data + $sales_total;
 				}
-				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($last_year,2).'</span></div>';
+			}
+			$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($last_year,2).'</span></div>';
 		//	}
 		}
 
@@ -4489,7 +4531,7 @@ if($focus_copm_total != ''){
 			$sales_result[$pm->user_id] = 0;
 
 		//	if( in_array($pm->user_focus_company_id, $direct_company) ){
-				$pm_set_data[$pm->user_id] = $pm->user_id;
+			$pm_set_data[$pm->user_id] = $pm->user_id;
 		//	}
 		}
 
@@ -4499,32 +4541,32 @@ if($focus_copm_total != ''){
 		foreach ($focus_company as $company){
 
 		//	if( in_array($company->company_id, $direct_company) ){
-				$q_dash_sales = $this->dashboard_m->dash_sales($date_a,$date_c,$company->company_id,1);
+			$q_dash_sales = $this->dashboard_m->dash_sales($date_a,$date_c,$company->company_id,1);
 
-				if($q_dash_sales->num_rows >= 1){
+			if($q_dash_sales->num_rows >= 1){
 
-					$grand_total_sales = 0;
-					$sales_total = 0;
+				$grand_total_sales = 0;
+				$sales_total = 0;
 
-					$dash_sales = $q_dash_sales->result();
+				$dash_sales = $q_dash_sales->result();
 
-					foreach ($dash_sales as $sales){
-						if( !in_array($sales->project_manager_id, $not_pm_arr) ){
+				foreach ($dash_sales as $sales){
+					if( !in_array($sales->project_manager_id, $not_pm_arr) ){
 
-							if($sales->label == 'VR'){
-								$sales_total = $sales->variation_total;
-							}else{
-								$sales_total = $sales->project_total*($sales->progress_percent/100);
-							}
-
-							$set_invoiced_amount[$sales->project_manager_id] = $set_invoiced_amount[$sales->project_manager_id] + $sales_total;
-							$pm_set_data[$sales->project_manager_id] = $sales->project_manager_id;
-
-							$grand_total_sales_cmp = $grand_total_sales_cmp + $sales_total;
-
+						if($sales->label == 'VR'){
+							$sales_total = $sales->variation_total;
+						}else{
+							$sales_total = $sales->project_total*($sales->progress_percent/100);
 						}
-					}					
-				}
+
+						$set_invoiced_amount[$sales->project_manager_id] = $set_invoiced_amount[$sales->project_manager_id] + $sales_total;
+						$pm_set_data[$sales->project_manager_id] = $sales->project_manager_id;
+
+						$grand_total_sales_cmp = $grand_total_sales_cmp + $sales_total;
+
+					}
+				}					
+			}
 		//	}
 		}
 
@@ -4549,15 +4591,15 @@ if($focus_copm_total != ''){
 
 
 		$direct_company = array('5','6');
- 
+
 
 		foreach ($direct_company as $key => $comp_id) {
 
 		//	foreach ($pm_set_data as $pm_id => $value){
 //ion get_wip_perso
-				$wip_amount = $this->get_wip_personal($date_a,$set_new_date,29,$comp_id);
-				$wip_pm_total[29] = $wip_pm_total[29] + $wip_amount;
-				$sales_result[29] = $sales_result[29] + $wip_amount + $set_invoiced_amount[29];
+			$wip_amount = $this->get_wip_personal($date_a,$set_new_date,29,$comp_id);
+			$wip_pm_total[29] = $wip_pm_total[29] + $wip_amount;
+			$sales_result[29] = $sales_result[29] + $wip_amount + $set_invoiced_amount[29];
 
 			//	echo $comp_id.'---'.$pm_id.'---'.$wip_amount.'<br />';
 		//	}
@@ -4600,16 +4642,16 @@ if($focus_copm_total != ''){
 					$status_forecast = 0;
 				}
 
-if($is_term == ''){
-				echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$focus_pm_pic[$pm_id].'"" /></div>';
-				echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
-				echo '<p><i class="fa fa-usd"></i> '.number_format($pm_sales_value).'</p>';
+				if($is_term == ''){
+					echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$focus_pm_pic[$pm_id].'"" /></div>';
+					echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
+					echo '<p><i class="fa fa-usd"></i> '.number_format($pm_sales_value).'</p>';
 
-				echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($pm_sales_value).' / $'.number_format($total_forecast).'   " style="height: 7px;">
-				<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
+					echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($pm_sales_value).' / $'.number_format($total_forecast).'   " style="height: 7px;">
+					<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
 
-				echo "<div class='clearfix'></div>";
-			}
+					echo "<div class='clearfix'></div>";
+				}
 				$forecast_focus_total = $forecast_focus_total + $total_forecast;
 
 				if('29' == $pm_id){
@@ -4619,18 +4661,18 @@ if($is_term == ''){
 			}
 		}
 
-if($is_term == ''){
-		echo "</div>";
-}
+		if($is_term == ''){
+			echo "</div>";
+		}
 
 		$status_forecast = round(100/($forecast_focus_total/ ($total_wip + $total_invoiced) ));
- 
- if($is_term == ''){
-		return $return_total.'_'.number_format( $return_other );
-}else{
 
-		echo $return_total.'_'.number_format( $return_other );
-}
+		if($is_term == ''){
+			return $return_total.'_'.number_format( $return_other );
+		}else{
+
+			echo $return_total.'_'.number_format( $return_other );
+		}
 	//	return $return_total;
 
 	}
@@ -4680,12 +4722,12 @@ if($is_term == ''){
 		
 		$direct_company = array('5','6');
 
- 		foreach ($direct_company as $key => $comp_id) {
+		foreach ($direct_company as $key => $comp_id) {
 			$q_ave = $this->dashboard_m->get_maitenance_dates_pm($date_a,$date_b,$user_id,$comp_id); //4
 			$days_result = $q_ave->result();
 
 			foreach ($days_result as $result){
-						$diff = ($result->days_diff < 0 ? 0 : $result->days_diff);
+				$diff = ($result->days_diff < 0 ? 0 : $result->days_diff);
 				array_push($days_dif, $diff);
 			}
 
@@ -4700,7 +4742,7 @@ if($is_term == ''){
 					}
 				}
 			}
- 		}
+		}
 
 		$size = count($days_dif);
 
@@ -4718,7 +4760,7 @@ if($is_term == ''){
 
 		$total_string = '';
 
- 
+
 
 		$all_focus_company = $this->admin_m->fetch_all_company_focus();
 		$focus_company = $all_focus_company->result();
@@ -4744,7 +4786,7 @@ if($is_term == ''){
 				$average_comp = array_sum($days_dif_comp) / $size_comp;
 
 				arsort($days_dif_comp,1);
- 
+
 				$long_day_comp =  max($days_dif_comp);
 				$short_day_day_comp =  min($days_dif_comp);
 				$short_day_day_comp = 1;
@@ -4784,26 +4826,26 @@ if($is_term == ''){
 
 
 
-		$last_year = intval(date("Y")) - 1;
-		$this_month = date("m");
-		$this_day = date("d");
+			$last_year = intval(date("Y")) - 1;
+			$this_month = date("m");
+			$this_day = date("d");
 
-		$date_a_last = "01/01/$last_year";
-		$date_b_last = "$this_day/$this_month/$last_year";
-		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
+			$date_a_last = "01/01/$last_year";
+			$date_b_last = "$this_day/$this_month/$last_year";
+			$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
 
 
-		$pms_averg_old = array();	 
-		foreach ($project_manager_list as $pm ) {
-			$pms_averg_old[$pm->user_id] = array();			 
-		}
+			$pms_averg_old = array();	 
+			foreach ($project_manager_list as $pm ) {
+				$pms_averg_old[$pm->user_id] = array();			 
+			}
 
-		foreach ($focus_company as $company){
+			foreach ($focus_company as $company){
 
-			if( in_array($company->company_id, $direct_company) ){
+				if( in_array($company->company_id, $direct_company) ){
 
-			if($company->company_id != 4){
-				$days_dif_comp = array('');
+					if($company->company_id != 4){
+						$days_dif_comp = array('');
 				$q_ave = $this->dashboard_m->get_maitenance_dates_pm($date_a_last,$date_b_last,$company->company_id); //5
 				$days_result = $q_ave->result();
 
@@ -4818,12 +4860,12 @@ if($is_term == ''){
 				$average_comp = array_sum($days_dif_comp) / $size_comp;
 
 				arsort($days_dif_comp,1);
- 
+
 				$days_dif_comp = ($days_dif_comp <= 1 ? 1 : $days_dif_comp);
 				$long_day_comp =  max($days_dif_comp);
 				$short_day_day_comp =  min($days_dif_comp);
 				$short_day_day_comp = 1;
- 
+
 
 				$total_string .= '<div class=\'row\'><span class=\'col-xs-8\'>'.str_replace("Pty Ltd","",$company->company_name).'</span><span class=\'col-xs-4\'>'.round($average_comp,1).'</span></div>';
 
@@ -4837,27 +4879,27 @@ if($is_term == ''){
 						array_push($pms_averg_old[$pm->user_id],$diff);
 					}
 				}
- 			}
+			}
 		}
-		}
+	}
 
-		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
+	$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
 
 
 		//foreach ($project_manager_list as $pm ){
-			if(array_key_exists($user_id,$pms_averg_old)){
-				$size = count($pms_averg_old[$user_id]);
-				if($size > 0){ 
-					$pm_average = array_sum($pms_averg_old[$user_id]) / $size;
-					arsort($pms_averg_old[$user_id],1);
-					$pm_long_day =  max($pms_averg_old[$user_id]);
-					$pm_short_day_day =  min($pms_averg_old[$user_id]);
-					$pm_short_day_day = 1;
+	if(array_key_exists($user_id,$pms_averg_old)){
+		$size = count($pms_averg_old[$user_id]);
+		if($size > 0){ 
+			$pm_average = array_sum($pms_averg_old[$user_id]) / $size;
+			arsort($pms_averg_old[$user_id],1);
+			$pm_long_day =  max($pms_averg_old[$user_id]);
+			$pm_short_day_day =  min($pms_averg_old[$user_id]);
+			$pm_short_day_day = 1;
 					//$pm_name = $pm->user_first_name;
 
-					$total_string .= '<div class=\'row\'><span class=\'col-xs-8\'>'.$pm_set_name.'</span><span class=\'col-xs-4\'>'.round($pm_average,1).'</span></div>';
-				}
-			}
+			$total_string .= '<div class=\'row\'><span class=\'col-xs-8\'>'.$pm_set_name.'</span><span class=\'col-xs-4\'>'.round($pm_average,1).'</span></div>';
+		}
+	}
 	//	}
 
 
@@ -4865,126 +4907,125 @@ if($is_term == ''){
 
 
 
-		echo '<div id="" class="tooltip-enabled" title="" data-placement="bottom" data-html="true" data-original-title="'.$total_string .'">
-				<input class="knob" data-width="100%" data-step=".1"  data-thickness=".13" value="'.number_format($average,1).'" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="'.$long_day.'">
-				<div id="" class="clearfix m-top-10">
-					<div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div>
-					<div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div>
-				</div>
-			</div>';
+	echo '<div id="" class="tooltip-enabled" title="" data-placement="bottom" data-html="true" data-original-title="'.$total_string .'">
+	<input class="knob" data-width="100%" data-step=".1"  data-thickness=".13" value="'.number_format($average,1).'" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="'.$long_day.'">
+	<div id="" class="clearfix m-top-10">
+		<div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div>
+		<div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div>
+	</div>
+</div>';
 
+}
+
+
+
+
+
+
+public function outstanding_payments_widget_mn(){
+	$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
+	$focus_company_maintenence = $focus_company_maintenence_q->result();
+
+	$maintenacne_data = array(); 
+	foreach ($focus_company_maintenence as $maintenance_data){
+		$maintenacne_data[$maintenance_data->focus_company_id] = 0;
 	}
 
+	$c_year = date("Y");
+	$n_year = $c_year+1;
+	$date_a = "01/01/$c_year";
+	$date_b = date("d/m/Y");
+
+	$total_string = '';
+	$personal_data = 0;
+
+	$display_each_value = 0;
+
+	$date_c = "01/01/".$c_year-1;
+	$last_year = $c_year-1;
+	$date_d = "31/12/".$last_year;
 
 
+	$total_string .= '<div class=\'row\'> &nbsp; ('.$c_year.')</div>';
+
+	foreach ($focus_company_maintenence as $company){
+
+		$invoice_amount = 0;
+		$total_paid = 0;
 
 
+		$q_dash_oustanding_payments = $this->dashboard_m->dash_oustanding_payments($date_a,$date_b,$company->focus_company_id);
+		$oustanding_payments = $q_dash_oustanding_payments->result();
 
-	public function outstanding_payments_widget_mn(){
-		$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
-		$focus_company_maintenence = $focus_company_maintenence_q->result();
+		foreach ($oustanding_payments as $oustanding) {
 
-		$maintenacne_data = array(); 
-		foreach ($focus_company_maintenence as $maintenance_data){
-			$maintenacne_data[$maintenance_data->focus_company_id] = 0;
+			if( $company->project_manager_id == $oustanding->project_manager_id){
+				if($oustanding->label == 'VR'){
+					$invoice_amount = $oustanding->variation_total;
+				}else{
+					$invoice_amount = $oustanding->project_total*($oustanding->progress_percent/100);
+				}
+
+				$total_paid =  $oustanding->amount_exgst;
+				$display_each_value = $invoice_amount - $total_paid;
+
+
+				$maintenacne_data[$company->focus_company_id] = $maintenacne_data[$company->focus_company_id] + $display_each_value;
+				$personal_data = $personal_data + $display_each_value;
+			}
 		}
 
-		$c_year = date("Y");
-		$n_year = $c_year+1;
-		$date_a = "01/01/$c_year";
-		$date_b = date("d/m/Y");
-  
-		$total_string = '';
-		$personal_data = 0;
+		$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($maintenacne_data[$company->focus_company_id],2).'</span></div>';
+	}
 
-		$display_each_value = 0;
-
-		$date_c = "01/01/".$c_year-1;
-		$last_year = $c_year-1;
-		$date_d = "31/12/".$last_year;
+	$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
 
 
-		$total_string .= '<div class=\'row\'> &nbsp; ('.$c_year.')</div>';
-
-		foreach ($focus_company_maintenence as $company){
-
-				$invoice_amount = 0;
-				$total_paid = 0;
 
 
-				$q_dash_oustanding_payments = $this->dashboard_m->dash_oustanding_payments($date_a,$date_b,$company->focus_company_id);
-				$oustanding_payments = $q_dash_oustanding_payments->result();
 
-				foreach ($oustanding_payments as $oustanding) {
+	foreach ($focus_company_maintenence as $company){
 
-					if( $company->project_manager_id == $oustanding->project_manager_id){
-						if($oustanding->label == 'VR'){
-							$invoice_amount = $oustanding->variation_total;
-						}else{
-							$invoice_amount = $oustanding->project_total*($oustanding->progress_percent/100);
-						}
-
-						$total_paid =  $oustanding->amount_exgst;
-						$display_each_value = $invoice_amount - $total_paid;
+		$invoice_amount = 0;
+		$total_paid = 0;
 
 
-						$maintenacne_data[$company->focus_company_id] = $maintenacne_data[$company->focus_company_id] + $display_each_value;
-						$personal_data = $personal_data + $display_each_value;
-					}
+		$q_dash_oustanding_payments = $this->dashboard_m->dash_oustanding_payments($date_c,$date_d,$company->focus_company_id);
+		$oustanding_payments = $q_dash_oustanding_payments->result();
+		$last_year = 0;
+
+		foreach ($oustanding_payments as $oustanding) {
+
+			if( $company->project_manager_id == $oustanding->project_manager_id){
+				if($oustanding->label == 'VR'){
+					$invoice_amount = $oustanding->variation_total;
+				}else{
+					$invoice_amount = $oustanding->project_total*($oustanding->progress_percent/100);
 				}
- 
-				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($maintenacne_data[$company->focus_company_id],2).'</span></div>';
-			}
 
-		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
-
-
-
-
-
-		foreach ($focus_company_maintenence as $company){
-
-				$invoice_amount = 0;
-				$total_paid = 0;
-
-
-				$q_dash_oustanding_payments = $this->dashboard_m->dash_oustanding_payments($date_c,$date_d,$company->focus_company_id);
-				$oustanding_payments = $q_dash_oustanding_payments->result();
-				$last_year = 0;
-
-				foreach ($oustanding_payments as $oustanding) {
-
-					if( $company->project_manager_id == $oustanding->project_manager_id){
-						if($oustanding->label == 'VR'){
-							$invoice_amount = $oustanding->variation_total;
-						}else{
-							$invoice_amount = $oustanding->project_total*($oustanding->progress_percent/100);
-						}
-
-						$total_paid =  $oustanding->amount_exgst;
-						$display_each_value = $invoice_amount - $total_paid;
+				$total_paid =  $oustanding->amount_exgst;
+				$display_each_value = $invoice_amount - $total_paid;
 
 
 					//	$maintenacne_data[$company->focus_company_id] = $maintenacne_data[$company->focus_company_id] + $display_each_value;
 
 
-						$last_year = $last_year + $display_each_value;
-						$personal_data = $personal_data + $display_each_value;
+				$last_year = $last_year + $display_each_value;
+				$personal_data = $personal_data + $display_each_value;
 
 
 						// $personal_data = $personal_data + $display_each_value;
-					}
-				}
- 
-				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($last_year,2).'</span></div>';
 			}
+		}
 
-
-
-
-		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
+		$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($last_year,2).'</span></div>';
 	}
- 
+
+
+
+
+	echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
+}
 
 
 
@@ -4999,110 +5040,103 @@ if($is_term == ''){
 
 
 
-	public function focus_get_po_widget_mn(){
-		$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
-		$focus_company_maintenence = $focus_company_maintenence_q->result();
 
-		$maintenacne_data = array(); 
-		foreach ($focus_company_maintenence as $maintenance_data){
-			$maintenacne_data[$maintenance_data->focus_company_id] = 0;
-			$pm_id = $maintenance_data->project_manager_id;
+public function focus_get_po_widget_mn(){
+	$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
+	$focus_company_maintenence = $focus_company_maintenence_q->result();
+
+	$maintenacne_data = array(); 
+	foreach ($focus_company_maintenence as $maintenance_data){
+		$maintenacne_data[$maintenance_data->focus_company_id] = 0;
+		$pm_id = $maintenance_data->project_manager_id;
+	}
+
+
+	$year = date("Y");
+	$current_date = '01/01/2030';
+	$current_start_year = '01/01/2000';
+	$set_cpo = array();
+
+	$focus_arr = array();
+	$all_focus_company = $this->admin_m->fetch_all_company_focus();
+	$focus_company = $all_focus_company->result();
+
+	foreach ($focus_company as $company){
+		$focus_arr[$company->company_id] = $company->company_name;
+		$set_cpo[$company->company_id] = 0;
+	}
+
+	$personal_data = 0;
+
+
+
+	$total_string = '';
+	$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'>&nbsp;('.$year.')</div>';
+
+	$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($current_start_year,$current_date);
+	foreach ($po_list_ordered->result_array() as $row){
+		$work_id = $row['works_id'];
+
+		$po_tot_inv_q = $this->purchase_order_m->get_po_total_paid($work_id);
+		$invoiced = 0;
+		foreach ($po_tot_inv_q->result_array() as $po_tot_row){
+			$invoiced = $po_tot_row['total_paid'];
 		}
 
+		$out_standing = $row['price'] - $invoiced;
 
-		$year = date("Y");
-		$current_date = '01/01/2030';
-		$current_start_year = '01/01/2000';
-		$set_cpo = array();
+		if($pm_id == $row['project_manager_id']){
+			$personal_data = $personal_data + $out_standing;
 
-		$focus_arr = array();
-		$all_focus_company = $this->admin_m->fetch_all_company_focus();
-		$focus_company = $all_focus_company->result();
+			$comp_id = $row['focus_company_id'];
 
-		foreach ($focus_company as $company){
-			$focus_arr[$company->company_id] = $company->company_name;
-			$set_cpo[$company->company_id] = 0;
+			$set_cpo[$comp_id] = $set_cpo[$comp_id] + $out_standing;
+		}
+	}
+
+
+	foreach ($focus_company as $company){
+		$display_total_cmp = $set_cpo[$company->company_id];
+		if($display_total_cmp > 0){
+			$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($display_total_cmp,2).'</span></div>';
+		}
+		$set_cpo[$company->company_id] = 0;
+	}
+
+
+
+	$last_year = intval(date("Y"))-1;
+	$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
+
+	$date_a_last = "01/01/$last_year";
+	$date_b_last = "31/12/$last_year";
+
+	$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($current_start_year,$date_b_last);
+	foreach ($po_list_ordered->result_array() as $row){
+		$work_id = $row['works_id'];
+
+		$po_tot_inv_q = $this->purchase_order_m->get_po_total_paid($work_id);
+		$invoiced = 0;
+		foreach ($po_tot_inv_q->result_array() as $po_tot_row){
+			$invoiced = $po_tot_row['total_paid'];
 		}
 
-		$personal_data = 0;
+		$out_standing = $row['price'] - $invoiced;
 
-
-
-		$total_string = '';
-		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'>&nbsp;('.$year.')</div>';
-
-		$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($current_start_year,$current_date);
-		foreach ($po_list_ordered->result_array() as $row){
-			$work_id = $row['works_id'];
-
-			$po_tot_inv_q = $this->purchase_order_m->get_po_total_paid($work_id);
-			$invoiced = 0;
-			foreach ($po_tot_inv_q->result_array() as $po_tot_row){
-				$invoiced = $po_tot_row['total_paid'];
-			}
-
-			$out_standing = $row['price'] - $invoiced;
-
-			if($pm_id == $row['project_manager_id']){
-				$personal_data = $personal_data + $out_standing;
-
-				$comp_id = $row['focus_company_id'];
-
-				$set_cpo[$comp_id] = $set_cpo[$comp_id] + $out_standing;
-			}
-		}
-
-
-		foreach ($focus_company as $company){
-			$display_total_cmp = $set_cpo[$company->company_id];
-			if($display_total_cmp > 0){
-				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($display_total_cmp,2).'</span></div>';
-			}
-			$set_cpo[$company->company_id] = 0;
-		}
-
-
-
-		$last_year = intval(date("Y"))-1;
-		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
-
-		$date_a_last = "01/01/$last_year";
-		$date_b_last = "31/12/$last_year";
- 
-		$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($current_start_year,$date_b_last);
-		foreach ($po_list_ordered->result_array() as $row){
-			$work_id = $row['works_id'];
-
-			$po_tot_inv_q = $this->purchase_order_m->get_po_total_paid($work_id);
-			$invoiced = 0;
-			foreach ($po_tot_inv_q->result_array() as $po_tot_row){
-				$invoiced = $po_tot_row['total_paid'];
-			}
-
-			$out_standing = $row['price'] - $invoiced;
-
-			if($pm_id == $row['project_manager_id']){
+		if($pm_id == $row['project_manager_id']){
 				//$personal_data = $personal_data + $out_standing;
-				$comp_id = $row['focus_company_id'];
+			$comp_id = $row['focus_company_id'];
 
-				$set_cpo[$comp_id] = $set_cpo[$comp_id] + $out_standing;
-			}
+			$set_cpo[$comp_id] = $set_cpo[$comp_id] + $out_standing;
 		}
+	}
 
 
-		foreach ($focus_company as $company){
-			$display_total_cmp = $set_cpo[$company->company_id];
-			if($display_total_cmp > 0){
-				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($display_total_cmp,2).'</span></div>';
-			}
+	foreach ($focus_company as $company){
+		$display_total_cmp = $set_cpo[$company->company_id];
+		if($display_total_cmp > 0){
+			$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($display_total_cmp,2).'</span></div>';
 		}
-
-
-
-
-
-
-		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
 	}
 
 
@@ -5110,244 +5144,252 @@ if($is_term == ''){
 
 
 
-
-	public function pm_estimates_widget_mn(){
-		$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
-		$focus_company_maintenence = $focus_company_maintenence_q->result();
-
-		$maintenacne_data = array(); 
-		foreach ($focus_company_maintenence as $maintenance_data){
-			$maintenacne_data[$maintenance_data->focus_company_id] = 0;
-			$pm_id = $maintenance_data->project_manager_id;
-		}
-
-		$year = date("Y");
-		$current_date = date("d/m/Y");
-		$current_start_year = '01/01/'.$year;
-		$total_string = '';
-		$is_restricted = 0;
+	echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
+}
 
 
-		$total_string .= '<div class=\'row\'> &nbsp; ('.$year.')</div>';
 
-		$admin_defaults = $this->admin_m->fetch_admin_defaults(1);
-		foreach ($admin_defaults->result() as $row){
-			$unaccepted_date_categories = $row->unaccepted_date_categories;
-			$unaccepted_no_days = $row->unaccepted_no_days;
-		}
 
-		$amnt = 0;
+
+
+
+public function pm_estimates_widget_mn(){
+	$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
+	$focus_company_maintenence = $focus_company_maintenence_q->result();
+
+	$maintenacne_data = array(); 
+	foreach ($focus_company_maintenence as $maintenance_data){
+		$maintenacne_data[$maintenance_data->focus_company_id] = 0;
+		$pm_id = $maintenance_data->project_manager_id;
+	}
+
+	$year = date("Y");
+	$current_date = date("d/m/Y");
+	$current_start_year = '01/01/'.$year;
+	$total_string = '';
+	$is_restricted = 0;
+
+
+	$total_string .= '<div class=\'row\'> &nbsp; ('.$year.')</div>';
+
+	$admin_defaults = $this->admin_m->fetch_admin_defaults(1);
+	foreach ($admin_defaults->result() as $row){
+		$unaccepted_date_categories = $row->unaccepted_date_categories;
+		$unaccepted_no_days = $row->unaccepted_no_days;
+	}
+
+	$amnt = 0;
 
 		//lists estimators not PM sorry
-		$unaccepted_amount = array();
-		$estimator = $this->dashboard_m->fetch_project_estimators();
-		$estimator_list = $estimator->result();
+	$unaccepted_amount = array();
+	$estimator = $this->dashboard_m->fetch_project_estimators();
+	$estimator_list = $estimator->result();
 
-		foreach ($estimator_list as $est ) {
-			$unaccepted_amount[$est->project_estiamator_id] = 0;
-		}
+	foreach ($estimator_list as $est ) {
+		$unaccepted_amount[$est->project_estiamator_id] = 0;
+	}
 
-		$exemp_cat = explode(',', $unaccepted_date_categories);
+	$exemp_cat = explode(',', $unaccepted_date_categories);
 
 
-		$focus_arr = array();
-		$project_cost = array();
-		$all_focus_company = $this->admin_m->fetch_all_company_focus();
-		$focus_company = $all_focus_company->result();
+	$focus_arr = array();
+	$project_cost = array();
+	$all_focus_company = $this->admin_m->fetch_all_company_focus();
+	$focus_company = $all_focus_company->result();
 
-		foreach ($focus_company as $company){
-			$focus_arr[$company->company_id] = $company->company_name;
-			$project_cost[$company->company_id] = 0;
-		}
-		$personal_data = 0;
+	foreach ($focus_company as $company){
+		$focus_arr[$company->company_id] = $company->company_name;
+		$project_cost[$company->company_id] = 0;
+	}
+	$personal_data = 0;
 
-	 	$q_projects = $this->dashboard_m->get_unaccepted_projects($current_start_year,$current_date);
-		$projects = $q_projects->result();
-		foreach ($projects as $un_accepted){
-			if( $un_accepted->project_manager_id == $pm_id ){
+	$q_projects = $this->dashboard_m->get_unaccepted_projects($current_start_year,$current_date);
+	$projects = $q_projects->result();
+	foreach ($projects as $un_accepted){
+		if( $un_accepted->project_manager_id == $pm_id ){
 
-				$unaccepted_date = $un_accepted->unaccepted_date;
-				if($unaccepted_date !== ""){
-					$unaccepted_date_arr = explode('/',$unaccepted_date);
-					$u_date_day = $unaccepted_date_arr[0];
-					$u_date_month = $unaccepted_date_arr[1];
-					$u_date_year = $unaccepted_date_arr[2];
-					$unaccepted_date = $u_date_year.'-'.$u_date_month.'-'.$u_date_day;
-				}
+			$unaccepted_date = $un_accepted->unaccepted_date;
+			if($unaccepted_date !== ""){
+				$unaccepted_date_arr = explode('/',$unaccepted_date);
+				$u_date_day = $unaccepted_date_arr[0];
+				$u_date_month = $unaccepted_date_arr[1];
+				$u_date_year = $unaccepted_date_arr[2];
+				$unaccepted_date = $u_date_year.'-'.$u_date_month.'-'.$u_date_day;
+			}
 
-				$start_date = $un_accepted->date_site_commencement;
-				if($start_date !== ""){
-					$start_date_arr = explode('/',$start_date);
-					$s_date_day = $start_date_arr[0];
-					$s_date_month = $start_date_arr[1];
-					$s_date_year = $start_date_arr[2];
-					$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
-				} 
+			$start_date = $un_accepted->date_site_commencement;
+			if($start_date !== ""){
+				$start_date_arr = explode('/',$start_date);
+				$s_date_day = $start_date_arr[0];
+				$s_date_month = $start_date_arr[1];
+				$s_date_year = $start_date_arr[2];
+				$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
+			} 
 
-	 
 
-				if( in_array($un_accepted->job_category, $exemp_cat)  ){
-					$is_restricted = 1;
-				}else{
-					$is_restricted = 0;
-				}
 
-				$today = date('Y-m-d');
-				$unaccepteddate = strtotime ( '-'.$unaccepted_no_days.' day' , strtotime ( $start_date ) ) ;
-				$unaccepteddate = date ( 'Y-m-d' , $unaccepteddate );
+			if( in_array($un_accepted->job_category, $exemp_cat)  ){
+				$is_restricted = 1;
+			}else{
+				$is_restricted = 0;
+			}
 
-				if(strtotime($unaccepteddate) < strtotime($today)){
-					if($is_restricted == 1){
-						if($unaccepted_date == ""){
-							$status = 'quote';
-						}else{
-							$status = 'unset';
-						}
-					}else{
-						$status = 'unset';
-					}
+			$today = date('Y-m-d');
+			$unaccepteddate = strtotime ( '-'.$unaccepted_no_days.' day' , strtotime ( $start_date ) ) ;
+			$unaccepteddate = date ( 'Y-m-d' , $unaccepteddate );
 
-				}else{
+			if(strtotime($unaccepteddate) < strtotime($today)){
+				if($is_restricted == 1){
 					if($unaccepted_date == ""){
 						$status = 'quote';
 					}else{
 						$status = 'unset';
 					}
-
+				}else{
+					$status = 'unset';
 				}
 
-				if ($status == 'unset'){
-				//	if( in_array($un_accepted->focus_company_id, $direct_company) ){
-						if($un_accepted->install_time_hrs > 0 || $un_accepted->work_estimated_total > 0.00 || $un_accepted->variation_total > 0.00 ){
-							$amnt =  $un_accepted->project_total + $un_accepted->variation_total;
-							$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt;
-						}else{
-							$amnt = $un_accepted->budget_estimate_total;
-							$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt; 
-						}
+			}else{
+				if($unaccepted_date == ""){
+					$status = 'quote';
+				}else{
+					$status = 'unset';
+				}
 
-						if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
-							if($pm_id == $un_accepted->project_manager_id){
-								$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
-							}
-						}
+			}
+
+			if ($status == 'unset'){
+				//	if( in_array($un_accepted->focus_company_id, $direct_company) ){
+				if($un_accepted->install_time_hrs > 0 || $un_accepted->work_estimated_total > 0.00 || $un_accepted->variation_total > 0.00 ){
+					$amnt =  $un_accepted->project_total + $un_accepted->variation_total;
+					$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt;
+				}else{
+					$amnt = $un_accepted->budget_estimate_total;
+					$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt; 
+				}
+
+				if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
+					if($pm_id == $un_accepted->project_manager_id){
+						$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
+					}
+				}
 				//	}
 
 
-					if($pm_id == $un_accepted->project_manager_id){
-						$personal_data = $personal_data + $amnt;
-					}
+				if($pm_id == $un_accepted->project_manager_id){
+					$personal_data = $personal_data + $amnt;
 				}
 			}
 		}
+	}
 
 		//var_dump($project_cost);
 
-		foreach ($focus_arr as $comp_id => $value ){
-			$display_total_cmp = $project_cost[$comp_id];
-			if($display_total_cmp > 0){
-				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$focus_arr[$comp_id]).'</span> <span class=\'col-xs-6\'>$ '.number_format($display_total_cmp,2).'</span></div>';
-			}
-			$project_cost[$comp_id] = 0;
+	foreach ($focus_arr as $comp_id => $value ){
+		$display_total_cmp = $project_cost[$comp_id];
+		if($display_total_cmp > 0){
+			$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$focus_arr[$comp_id]).'</span> <span class=\'col-xs-6\'>$ '.number_format($display_total_cmp,2).'</span></div>';
 		}
+		$project_cost[$comp_id] = 0;
+	}
 
-		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
+	$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
 
 
-		foreach ($estimator_list as $est ) {
-			$display_total_cmp = $unaccepted_amount[$est->project_estiamator_id];
-			$pm_name = 'Maintenance';
-			if($display_total_cmp > 0){
-				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.$pm_name.'</span> <span class=\'col-xs-6\'>$ '.number_format($display_total_cmp,2).'</span></div>';
-			}
-			$unaccepted_amount[$est->project_estiamator_id] = 0;
+	foreach ($estimator_list as $est ) {
+		$display_total_cmp = $unaccepted_amount[$est->project_estiamator_id];
+		$pm_name = 'Maintenance';
+		if($display_total_cmp > 0){
+			$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.$pm_name.'</span> <span class=\'col-xs-6\'>$ '.number_format($display_total_cmp,2).'</span></div>';
 		}
+		$unaccepted_amount[$est->project_estiamator_id] = 0;
+	}
 
 
 
 
 
-		$last_year = intval(date("Y"))-1;
-		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
+	$last_year = intval(date("Y"))-1;
+	$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$last_year.')</div>';
 
-		$date_a_last = "01/01/$last_year";
-		$date_b_last = "31/12/$last_year";
+	$date_a_last = "01/01/$last_year";
+	$date_b_last = "31/12/$last_year";
 
-		$n_month = date("m");
-		$n_day = date("d");
-		$date_last_year_today = "$n_day/$n_month/$last_year";
+	$n_month = date("m");
+	$n_day = date("d");
+	$date_last_year_today = "$n_day/$n_month/$last_year";
 
 
-	 	$q_projects = $this->dashboard_m->get_unaccepted_projects($date_a_last,$date_last_year_today);
-		$projects = $q_projects->result();
-		foreach ($projects as $un_accepted){
-			if( $un_accepted->project_manager_id == $pm_id ){
+	$q_projects = $this->dashboard_m->get_unaccepted_projects($date_a_last,$date_last_year_today);
+	$projects = $q_projects->result();
+	foreach ($projects as $un_accepted){
+		if( $un_accepted->project_manager_id == $pm_id ){
 
-				$unaccepted_date = $un_accepted->unaccepted_date;
-				if($unaccepted_date !== ""){
-					$unaccepted_date_arr = explode('/',$unaccepted_date);
-					$u_date_day = $unaccepted_date_arr[0];
-					$u_date_month = $unaccepted_date_arr[1];
-					$u_date_year = $unaccepted_date_arr[2];
-					$unaccepted_date = $u_date_year.'-'.$u_date_month.'-'.$u_date_day;
-				}
+			$unaccepted_date = $un_accepted->unaccepted_date;
+			if($unaccepted_date !== ""){
+				$unaccepted_date_arr = explode('/',$unaccepted_date);
+				$u_date_day = $unaccepted_date_arr[0];
+				$u_date_month = $unaccepted_date_arr[1];
+				$u_date_year = $unaccepted_date_arr[2];
+				$unaccepted_date = $u_date_year.'-'.$u_date_month.'-'.$u_date_day;
+			}
 
-				$start_date = $un_accepted->date_site_commencement;
-				if($start_date !== ""){
-					$start_date_arr = explode('/',$start_date);
-					$s_date_day = $start_date_arr[0];
-					$s_date_month = $start_date_arr[1];
-					$s_date_year = $start_date_arr[2];
-					$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
-				} 
+			$start_date = $un_accepted->date_site_commencement;
+			if($start_date !== ""){
+				$start_date_arr = explode('/',$start_date);
+				$s_date_day = $start_date_arr[0];
+				$s_date_month = $start_date_arr[1];
+				$s_date_year = $start_date_arr[2];
+				$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
+			} 
 
-	 
 
-				if( in_array($un_accepted->job_category, $exemp_cat)  ){
-					$is_restricted = 1;
-				}else{
-					$is_restricted = 0;
-				}
 
-				$today = date('Y-m-d');
-				$unaccepteddate = strtotime ( '-'.$unaccepted_no_days.' day' , strtotime ( $start_date ) ) ;
-				$unaccepteddate = date ( 'Y-m-d' , $unaccepteddate );
+			if( in_array($un_accepted->job_category, $exemp_cat)  ){
+				$is_restricted = 1;
+			}else{
+				$is_restricted = 0;
+			}
 
-				if(strtotime($unaccepteddate) < strtotime($today)){
-					if($is_restricted == 1){
-						if($unaccepted_date == ""){
-							$status = 'quote';
-						}else{
-							$status = 'unset';
-						}
-					}else{
-						$status = 'unset';
-					}
+			$today = date('Y-m-d');
+			$unaccepteddate = strtotime ( '-'.$unaccepted_no_days.' day' , strtotime ( $start_date ) ) ;
+			$unaccepteddate = date ( 'Y-m-d' , $unaccepteddate );
 
-				}else{
+			if(strtotime($unaccepteddate) < strtotime($today)){
+				if($is_restricted == 1){
 					if($unaccepted_date == ""){
 						$status = 'quote';
 					}else{
 						$status = 'unset';
 					}
-
+				}else{
+					$status = 'unset';
 				}
 
-				if ($status == 'unset'){
-				//	if( in_array($un_accepted->focus_company_id, $direct_company) ){
-						if($un_accepted->install_time_hrs > 0 || $un_accepted->work_estimated_total > 0.00 || $un_accepted->variation_total > 0.00 ){
-							$amnt =  $un_accepted->project_total + $un_accepted->variation_total;
-							$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt;
-						}else{
-							$amnt = $un_accepted->budget_estimate_total;
-							$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt; 
-						}
+			}else{
+				if($unaccepted_date == ""){
+					$status = 'quote';
+				}else{
+					$status = 'unset';
+				}
 
-						if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
-							if($pm_id == $un_accepted->project_manager_id){
-								$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
-							}
-						}
+			}
+
+			if ($status == 'unset'){
+				//	if( in_array($un_accepted->focus_company_id, $direct_company) ){
+				if($un_accepted->install_time_hrs > 0 || $un_accepted->work_estimated_total > 0.00 || $un_accepted->variation_total > 0.00 ){
+					$amnt =  $un_accepted->project_total + $un_accepted->variation_total;
+					$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt;
+				}else{
+					$amnt = $un_accepted->budget_estimate_total;
+					$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt; 
+				}
+
+				if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
+					if($pm_id == $un_accepted->project_manager_id){
+						$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
+					}
+				}
 				//	}
 /*
 
@@ -5384,115 +5426,181 @@ if($is_term == ''){
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
 	}
 
+	public function get_count_maintenance(){
+		$this_year = date('Y');
 
-	public function focus_top_ten_con_sup_mn($type,$pie=''){
-		$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
-		$focus_company_maintenence = $focus_company_maintenence_q->result();
+		$this_year_date = '01/01/'.$this_year;
+		$this_year_end = date('d/m/Y');
 
-		$maintenacne_data = array(); 
-		foreach ($focus_company_maintenence as $maintenance_data){
-			$maintenacne_data[$maintenance_data->focus_company_id] = 0;
-			$pm_id = $maintenance_data->project_manager_id;
+
+		$last_year_date = '01/01/'.($this_year-1);
+		$last_year_end = date('d/m/').($this_year-1);
+
+
+		//echo "<p>$this_year_date,$this_year_end-----$last_year_date,$last_year_end</p>";
+
+
+		$count_m_prj_aq = $this->dashboard_m->count_maintenance_projects($this_year_date,$this_year_end);
+		$count_m_prj_a = array_shift($count_m_prj_aq->result());
+		$limit = 0;
+
+
+		$count_m_prj_bq = $this->dashboard_m->count_maintenance_projects($last_year_date,$last_year_end);
+		$count_m_prj_b = array_shift($count_m_prj_bq->result());
+
+		//var_dump($count_m_prj_a->prj_numbers);
+		//var_dump($count_m_prj_b->prj_numbers);
+
+		if($count_m_prj_a->prj_numbers > $count_m_prj_b->prj_numbers ){
+			$limit = $count_m_prj_a->prj_numbers + 50;
+		}else{
+			$limit = $count_m_prj_b->prj_numbers + 50;
 		}
 
-		$comp_q = " AND `project`.`job_category` = 'Maintenance' ";
 
-		$current_date = date("d/m/Y");
-		$year = date("Y");
 
-		$last_year = intval(date("Y")) - 1;
-		$base_year = '01/01/'.$year;
 
-		$next_year_date = '01/01/'.$last_year;
-		$current_start_year = date("d/m/Y");
-		
-		$last_start_year = '01/01/'.$last_year;
-		$last_year_current_date = date("d/m/").$last_year;
+		echo '<div id=""  class="tooltip-enabled" title="" data-placement="top" data-html="true" data-original-title="Total Projects for '.$this_year.': '.number_format($count_m_prj_a->prj_numbers).'"><div class="clearfix center knob_box pad-10 small-widget"  id="" style="height:auto; width:100%;">											
+				<input class="knob hide" data-width="100%" data-step=".1" data-displayInput="false" data-linecap="round"   data-thickness=".15" value="'.$count_m_prj_a->prj_numbers.'" readonly data-fgColor="#FD5309" data-angleOffset="-180"  data-max="'.$limit.'">
+			</div></div>';
 
-		$q_companies = $this->dashboard_m->get_company_sales($type,$base_year,$current_start_year,'',$comp_q);
-		$company_details  = $q_companies->result();
-		$counter = 0;
 
-		$list_total = 0;
 
-		foreach ($company_details as $company) {
-			$list_total = $list_total + round($company->total_price);
-		}
 
-		foreach ($company_details as $company) {
-			$counter ++;
-			$total = $company->total_price;
-			$percent = round(100/($list_total/$company->total_price),1);
 
-			$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
-			$overall_cost = array_shift($q_clients_overall->result_array());
-			$grand_total = $overall_cost['total_price'];
-			
-			$comp_name = $company->company_name;
-			if($pie == ''){
-				echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
-		
-				if(strlen($comp_name) > 30){
-					echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
-				}else{
-					echo $comp_name;
-				}
-			}
+	echo '<div id=""  class="tooltip-enabled" title="" data-placement="bottom" data-html="true" data-original-title="Total Projects for '.($this_year-1).': '.number_format($count_m_prj_b->prj_numbers).'" ><div class="clearfix center knob_box pad-10 small-widget" id="" style="height:65%; width:75%; position: absolute;top: 10.5%; left: 12%;">												
+		<input class="knob hide" data-width="100%" data-step=".1" data-displayInput="false" data-linecap="round"   data-thickness=".19" value="'.$count_m_prj_b->prj_numbers.'" readonly data-fgColor="#8600AF" data-angleOffset="-180"  data-max="'.$limit.'">
+	</div></div>';
 
-			$cmp_id = $company->company_id;
 
-			$last_year_q = $this->dashboard_m->get_company_sales('',$last_start_year,$base_year,$cmp_id,$comp_q);
-			$last_year_sale = array_shift($last_year_q->result_array());
-			$lst_year_total = $last_year_sale['total_price'];
+echo '<div> <p style="font-size: 15px;">
 
-			if($pie != ''){ 
-				echo "['". str_replace("'","&apos;",$comp_name)."', ".$company->total_price."],";
+<span style="color:#FD5309;"><strong>'.$this_year.': '.number_format($count_m_prj_a->prj_numbers).'</strong></span>
+<span style="color:#FD5309;" class="pull-right"><strong>$ '.number_format($count_m_prj_a->total_proj_exgst).'</strong></span>
 
-			}else{
-				echo ' </div><div class="col-md-2 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-			}
-		}
+<br>
+
+
+<span style="color:#8600AF;"><strong>'.($this_year-1).': '.number_format($count_m_prj_b->prj_numbers).'</strong></span>
+<span style="color:#8600AF;" class="pull-right"><strong>$ '.number_format($count_m_prj_b->total_proj_exgst).'</strong></span>
+
+
+</p></div>';
+
+
+
+
+}
+
+
+public function focus_top_ten_con_sup_mn($type,$pie=''){
+	$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
+	$focus_company_maintenence = $focus_company_maintenence_q->result();
+
+	$maintenacne_data = array(); 
+	foreach ($focus_company_maintenence as $maintenance_data){
+		$maintenacne_data[$maintenance_data->focus_company_id] = 0;
+		$pm_id = $maintenance_data->project_manager_id;
 	}
 
+	$comp_q = " AND `project`.`job_category` = 'Maintenance' ";
 
-	public function focus_top_ten_clients_mn($is_pie = '',$year_set='',$is_mr=''){
-		$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
-		$focus_company_maintenence = $focus_company_maintenence_q->result();
+	$current_date = date("d/m/Y");
+	$year = date("Y");
 
-		$maintenacne_data = array(); 
-		foreach ($focus_company_maintenence as $maintenance_data){
-			$maintenacne_data[$maintenance_data->focus_company_id] = 0;
-			$pm_id = $maintenance_data->project_manager_id;
+	$last_year = intval(date("Y")) - 1;
+	$base_year = '01/01/'.$year;
+
+	$next_year_date = '01/01/'.$last_year;
+	$current_start_year = date("d/m/Y");
+
+	$last_start_year = '01/01/'.$last_year;
+	$last_year_current_date = date("d/m/").$last_year;
+
+	$q_companies = $this->dashboard_m->get_company_sales($type,$base_year,$current_start_year,'',$comp_q);
+	$company_details  = $q_companies->result();
+	$counter = 0;
+
+	$list_total = 0;
+
+	foreach ($company_details as $company) {
+		$list_total = $list_total + round($company->total_price);
+	}
+
+	foreach ($company_details as $company) {
+		$counter ++;
+		$total = $company->total_price;
+		$percent = round(100/($list_total/$company->total_price),1);
+
+		$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
+		$overall_cost = array_shift($q_clients_overall->result_array());
+		$grand_total = $overall_cost['total_price'];
+
+		$comp_name = $company->company_name;
+		if($pie == ''){
+			echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+
+			if(strlen($comp_name) > 30){
+				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
+			}else{
+				echo $comp_name;
+			}
 		}
 
-		$comp_q = " AND `project`.`job_category` = 'Maintenance' ";
+		$cmp_id = $company->company_id;
 
-		$current_date = date("d/m/Y");
+		$last_year_q = $this->dashboard_m->get_company_sales('',$last_start_year,$base_year,$cmp_id,$comp_q);
+		$last_year_sale = array_shift($last_year_q->result_array());
+		$lst_year_total = $last_year_sale['total_price'];
+
+		if($pie != ''){ 
+			echo "['". str_replace("'","&apos;",$comp_name)."', ".$company->total_price."],";
+
+		}else{
+			echo ' </div><div class="col-md-2 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+		}
+	}
+}
+
+
+public function focus_top_ten_clients_mn($is_pie = '',$year_set='',$is_mr=''){
+	$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
+	$focus_company_maintenence = $focus_company_maintenence_q->result();
+
+	$maintenacne_data = array(); 
+	foreach ($focus_company_maintenence as $maintenance_data){
+		$maintenacne_data[$maintenance_data->focus_company_id] = 0;
+		$pm_id = $maintenance_data->project_manager_id;
+	}
+
+	$comp_q = " AND `project`.`job_category` = 'Maintenance' ";
+
+	$current_date = date("d/m/Y");
 	//	$year = date("Y");
 
 
 
 
-$current_year = date("Y");
+	$current_year = date("Y");
 
 
 
-if($year_set != ''){
-	if($current_year == $year_set){
-		$current_date = date("d/m/Y");
-		$year = date("Y");
-		$last_year = intval(date("Y")) - 1;		
+	if($year_set != ''){
+		if($current_year == $year_set){
+			$current_date = date("d/m/Y");
+			$year = date("Y");
+			$last_year = intval(date("Y")) - 1;		
+		}else{
+			$current_date = '31/12/'.$year_set;
+			$year = $year_set;
+			$last_year = $year_set -1;
+		}
 	}else{
-		$current_date = '31/12/'.$year_set;
-		$year = $year_set;
-		$last_year = $year_set -1;
-	}
-}else{
 		$current_date = date("d/m/Y");
 		$year = date("Y");
 		$last_year = intval(date("Y")) - 1;	
 
-}
+	}
 
 
 
@@ -5502,23 +5610,23 @@ if($year_set != ''){
 		// 	$current_date = date("d/m/").$year_set;
 		// }
 
-		$next_year_date = '01/01/'.($year+1);
-		$current_start_year = '01/01/'.$year;
-		$last_start_year = '01/01/'.($year-1);
+	$next_year_date = '01/01/'.($year+1);
+	$current_start_year = '01/01/'.$year;
+	$last_start_year = '01/01/'.($year-1);
 
-		$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date,'','',$comp_q);
-		$client_details  = $q_clients->result();
-		
-		$list_total = 0;
-		foreach ($client_details as $company) {
-			$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
-			$vr_val_t = array_shift($q_vr_c_t->result_array());
-			$list_total = $list_total + round($company->grand_total + $vr_val_t['total_variation']);
-		}
+	$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date,'','',$comp_q);
+	$client_details  = $q_clients->result();
+
+	$list_total = 0;
+	foreach ($client_details as $company) {
+		$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+		$vr_val_t = array_shift($q_vr_c_t->result_array());
+		$list_total = $list_total + round($company->grand_total + $vr_val_t['total_variation']);
+	}
 
 		// $last_year = intval(date("Y")) - 1;
-		$this_month = date("m");
-		$this_day = date("d");
+	$this_month = date("m");
+	$this_day = date("d");
 
 		// if($year_set != ''){
 		// 	$last_year = intval($year_set)-1;
@@ -5526,187 +5634,187 @@ if($year_set != ''){
 		// }
 
 
-		$comp_total = array();
-		$comp_name = array();
+	$comp_total = array();
+	$comp_name = array();
 
-		foreach ($client_details as $company) {
-			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
-			$vr_val = array_shift($q_vr_c->result_array());
-			$cost_gtotl_amnt = round($company->grand_total+ $vr_val['total_variation']);
-			$comp_total[$company->company_id] = $cost_gtotl_amnt;
+	foreach ($client_details as $company) {
+		$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+		$vr_val = array_shift($q_vr_c->result_array());
+		$cost_gtotl_amnt = round($company->grand_total+ $vr_val['total_variation']);
+		$comp_total[$company->company_id] = $cost_gtotl_amnt;
 		//	$comp_name[$company->company_id] = $company->company_name;
-			$comp_name[$company->company_id] = $company->company_name_group;
+		$comp_name[$company->company_id] = $company->company_name_group;
 
+	}
+
+	arsort($comp_total);
+
+	$date_a_last = "01/01/$last_year";
+	$date_b_last = "$this_day/$this_month/$last_year";
+
+	if(count($comp_total) == 0 && $report_sheet != 'pie'){
+		echo "<p><center><strong>No Records Yet.</strong></csnter></p>";
+	}
+
+	foreach ($comp_total as $raw_id => $compute_amount) {
+		$percent = round(100/($list_total/$compute_amount),1);
+
+
+		if($is_pie == ''){
+			echo '<div class="mr_comp_name col-sm-6 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 		}
 
-		arsort($comp_total);
+		$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$raw_id,$comp_q);
+		$vr_val = array_shift($q_vr_c->result_array());
 
-		$date_a_last = "01/01/$last_year";
-		$date_b_last = "$this_day/$this_month/$last_year";
+		$company_name = $comp_name[$raw_id];
+		$company_name_group = $comp_name[$raw_id];
 
-		if(count($comp_total) == 0 && $report_sheet != 'pie'){
-			echo "<p><center><strong>No Records Yet.</strong></csnter></p>";
-		}
-
-		foreach ($comp_total as $raw_id => $compute_amount) {
-			$percent = round(100/($list_total/$compute_amount),1);
-
-
-			if($is_pie == ''){
-				echo '<div class="mr_comp_name col-sm-6 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
-			}
-
-			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$raw_id,$comp_q);
-			$vr_val = array_shift($q_vr_c->result_array());
-
-			$company_name = $comp_name[$raw_id];
-			$company_name_group = $comp_name[$raw_id];
-
-			if($is_pie == ''){
-				if(strlen($company_name_group) > 30){
-					echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name_group.'">'.substr($company_name_group,0,30).'...</span>';
-				}else{
-					echo $company_name_group;
-				}
-			}
-
-			$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$current_start_year,$raw_id,$comp_q);
-			$vr_val_u = array_shift($q_vr_c_u->result_array());
-
-			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $current_start_year,$raw_id);
-			$last_year_sale = array_shift($last_year_q->result_array());
-			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
-			
-
-			if($is_pie != ''){
-				echo "['". str_replace("'","&apos;",$company_name_group)."', ".$compute_amount."],";
+		if($is_pie == ''){
+			if(strlen($company_name_group) > 30){
+				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name_group.'">'.substr($company_name_group,0,30).'...</span>';
 			}else{
-				echo ' </div><div class="mr_comp_val col-sm-4 col-md-2"><strong>'.number_format($percent,1).'%</strong></div>  <div class="mr_comp_val col-sm-4 col-md-3 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+				echo $company_name_group;
 			}
-
-
 		}
+
+		$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$current_start_year,$raw_id,$comp_q);
+		$vr_val_u = array_shift($q_vr_c_u->result_array());
+
+		$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $current_start_year,$raw_id);
+		$last_year_sale = array_shift($last_year_q->result_array());
+		$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
+
+
+		if($is_pie != ''){
+			echo "['". str_replace("'","&apos;",$company_name_group)."', ".$compute_amount."],";
+		}else{
+			echo ' </div><div class="mr_comp_val col-sm-4 col-md-2"><strong>'.number_format($percent,1).'%</strong></div>  <div class="mr_comp_val col-sm-4 col-md-3 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+		}
+
+
+	}
+}
+
+
+
+
+
+public function focus_projects_count_widget_mn(){
+
+	$current_date = date("d/m/Y");
+	$year = date("Y");
+	$next_year_date = '01/01/'.($year+1);
+	$current_start_year = '01/01/'.$year;
+	$last_start_year = '01/01/'.($year-1);
+
+	$all_focus_company = $this->admin_m->fetch_all_company_focus();
+	$focus_company = $all_focus_company->result();
+
+	$focus_arr = array();
+
+	$focus_invoiced = array();
+	$focus_invoiced_old = array();
+
+	$focus_comp_wip_count = array();
+
+
+	$last_year = intval(date("Y"))-1;
+	$n_month = date("m");
+	$n_day = date("d");
+
+	$date_a_last = "01/01/$last_year";
+	$date_b_last = "$n_day/$n_month/$last_year";
+
+
+
+	$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
+	$focus_company_maintenence = $focus_company_maintenence_q->result();
+
+	$maintenacne_data = array(); 
+	foreach ($focus_company_maintenence as $maintenance_data){
+		$maintenacne_data[$maintenance_data->focus_company_id] = 0;
+		$pm_id = $maintenance_data->project_manager_id;
 	}
 
 
 
 
+	foreach ($focus_company as $company) {
+		$focus_arr[$company->company_id] = $company->company_name;
+		$focus_comp_wip_count[$company->company_id] = 0;
 
-	public function focus_projects_count_widget_mn(){
+		$invoiced = 0;
+		$invoiced_old = 0;
 
-		$current_date = date("d/m/Y");
-		$year = date("Y");
-		$next_year_date = '01/01/'.($year+1);
-		$current_start_year = '01/01/'.$year;
-		$last_start_year = '01/01/'.($year-1);
+		$projects_qa = $this->dashboard_m->get_wip_invoiced_projects($current_start_year, $next_year_date, $company->company_id);
+		$projects_ra = $projects_qa->result_array();
 
-		$all_focus_company = $this->admin_m->fetch_all_company_focus();
-		$focus_company = $all_focus_company->result();
+		foreach ($projects_ra as $result) {
 
-		$focus_arr = array();
-
-		$focus_invoiced = array();
-		$focus_invoiced_old = array();
-
-		$focus_comp_wip_count = array();
-
-
-		$last_year = intval(date("Y"))-1;
-		$n_month = date("m");
-		$n_day = date("d");
-
-		$date_a_last = "01/01/$last_year";
-		$date_b_last = "$n_day/$n_month/$last_year";
-
-
-
-		$focus_company_maintenence_q = $this->dashboard_m->get_focus_companies_mntnc();
-		$focus_company_maintenence = $focus_company_maintenence_q->result();
-
-		$maintenacne_data = array(); 
-		foreach ($focus_company_maintenence as $maintenance_data){
-			$maintenacne_data[$maintenance_data->focus_company_id] = 0;
-			$pm_id = $maintenance_data->project_manager_id;
-		}
-
-
-
-
-		foreach ($focus_company as $company) {
-			$focus_arr[$company->company_id] = $company->company_name;
-			$focus_comp_wip_count[$company->company_id] = 0;
-
-			$invoiced = 0;
-			$invoiced_old = 0;
-
-			$projects_qa = $this->dashboard_m->get_wip_invoiced_projects($current_start_year, $next_year_date, $company->company_id);
-			$projects_ra = $projects_qa->result_array();
-
-			foreach ($projects_ra as $result) {
-
-				if($result['job_category'] == 'Maintenance' && $this->invoice->if_invoiced_all($result['project_id'])  && $this->invoice->if_has_invoice($result['project_id']) > 0 ){
-					$invoiced++;
-				}
-			}
-
-			$projects_qb = $this->dashboard_m->get_wip_invoiced_projects($date_a_last, $date_b_last, $company->company_id);
-			$projects_rb = $projects_qb->result_array();
-
-			foreach ($projects_rb as $result) {
-				if($result['job_category'] == 'Maintenance' && $this->invoice->if_invoiced_all($result['project_id'])  && $this->invoice->if_has_invoice($result['project_id']) > 0 ){
-					$invoiced_old++;
-				}
-			}
-
-			$focus_invoiced[$company->company_id] = $invoiced;
-			$focus_invoiced_old[$company->company_id] = $invoiced_old;
-		}
-
-		$display_inv = array_sum($focus_invoiced);
-
-		$total_string_wip = '';
-		$total_string_inv = '';
-
-		$total_string_wip .= '('.$year.') WIP Count'; 
-		$total_string_inv .= '('.$year.') Invoiced Count';
-
-		foreach ($focus_arr as $comp_id => $value ){
-			if($focus_invoiced[$comp_id] > 0){
-				$total_string_inv .= '<div class=\'row\'><span class=\'col-xs-7\'>'.str_replace("Pty Ltd","",$focus_arr[$comp_id]).'</span> <span class=\'col-xs-5\'>'.number_format($focus_invoiced[$comp_id]).'</span></div>';
+			if($result['job_category'] == 'Maintenance' && $this->invoice->if_invoiced_all($result['project_id'])  && $this->invoice->if_has_invoice($result['project_id']) > 0 ){
+				$invoiced++;
 			}
 		}
 
-		$lat_old_year = $year-1;
-		$total_string_inv .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$lat_old_year.')</div>';
+		$projects_qb = $this->dashboard_m->get_wip_invoiced_projects($date_a_last, $date_b_last, $company->company_id);
+		$projects_rb = $projects_qb->result_array();
+
+		foreach ($projects_rb as $result) {
+			if($result['job_category'] == 'Maintenance' && $this->invoice->if_invoiced_all($result['project_id'])  && $this->invoice->if_has_invoice($result['project_id']) > 0 ){
+				$invoiced_old++;
+			}
+		}
+
+		$focus_invoiced[$company->company_id] = $invoiced;
+		$focus_invoiced_old[$company->company_id] = $invoiced_old;
+	}
+
+	$display_inv = array_sum($focus_invoiced);
+
+	$total_string_wip = '';
+	$total_string_inv = '';
+
+	$total_string_wip .= '('.$year.') WIP Count'; 
+	$total_string_inv .= '('.$year.') Invoiced Count';
+
+	foreach ($focus_arr as $comp_id => $value ){
+		if($focus_invoiced[$comp_id] > 0){
+			$total_string_inv .= '<div class=\'row\'><span class=\'col-xs-7\'>'.str_replace("Pty Ltd","",$focus_arr[$comp_id]).'</span> <span class=\'col-xs-5\'>'.number_format($focus_invoiced[$comp_id]).'</span></div>';
+		}
+	}
+
+	$lat_old_year = $year-1;
+	$total_string_inv .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$lat_old_year.')</div>';
 
 
 
-		$q_maps = $this->dashboard_m->get_map_projects($current_start_year,$current_date,$pm_id);
-		$map_details = $q_maps->result();
-		foreach ($map_details as $map) {
+	$q_maps = $this->dashboard_m->get_map_projects($current_start_year,$current_date,$pm_id);
+	$map_details = $q_maps->result();
+	foreach ($map_details as $map) {
 		//	$personal_data_b++;
-			$focus_comp_wip_count[$map->focus_company_id]++;
+		$focus_comp_wip_count[$map->focus_company_id]++;
+	}
+
+
+
+
+	foreach ($focus_arr as $comp_id => $value ){
+		if($focus_comp_wip_count[$comp_id] > 0){
+			$total_string_wip .= '<div class=\'row\'><span class=\'col-xs-7\'>'.str_replace("Pty Ltd","",$focus_arr[$comp_id]).'</span> <span class=\'col-xs-5\'>'.number_format($focus_comp_wip_count[$comp_id]).'</span></div>';
 		}
 
-
-
-
-		foreach ($focus_arr as $comp_id => $value ){
-			if($focus_comp_wip_count[$comp_id] > 0){
-				$total_string_wip .= '<div class=\'row\'><span class=\'col-xs-7\'>'.str_replace("Pty Ltd","",$focus_arr[$comp_id]).'</span> <span class=\'col-xs-5\'>'.number_format($focus_comp_wip_count[$comp_id]).'</span></div>';
-			}
-
-			if($focus_invoiced[$comp_id] > 0){
-				$total_string_inv .= '<div class=\'row\'><span class=\'col-xs-7\'>'.str_replace("Pty Ltd","",$focus_arr[$comp_id]).'</span> <span class=\'col-xs-5\'>'.number_format($focus_invoiced_old[$comp_id]).'</span></div>';
-			}
+		if($focus_invoiced[$comp_id] > 0){
+			$total_string_inv .= '<div class=\'row\'><span class=\'col-xs-7\'>'.str_replace("Pty Ltd","",$focus_arr[$comp_id]).'</span> <span class=\'col-xs-5\'>'.number_format($focus_invoiced_old[$comp_id]).'</span></div>';
 		}
+	}
 
-		$display_wip = array_sum($focus_comp_wip_count);
+	$display_wip = array_sum($focus_comp_wip_count);
 
-		echo '<div id="" class="clearfix row">				
-		<strong class="text-center col-xs-4"><p class="h5x value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string_inv.'"><i class="fa fa-list-alt"></i> &nbsp;'.$display_inv.'</p></strong>
-		<strong class="text-center col-xs-4"><p class="h5x value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string_wip.'"><i class="fa fa-tasks"></i> &nbsp;'.$display_wip.'</p></strong>
-		<strong class="text-center col-xs-4"></strong></div>';
+	echo '<div id="" class="clearfix row">				
+	<strong class="text-center col-xs-4"><p class="h5x value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string_inv.'"><i class="fa fa-list-alt"></i> &nbsp;'.$display_inv.'</p></strong>
+	<strong class="text-center col-xs-4"><p class="h5x value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string_wip.'"><i class="fa fa-tasks"></i> &nbsp;'.$display_wip.'</p></strong>
+	<strong class="text-center col-xs-4"></strong></div>';
 
 
 
@@ -5865,17 +5973,17 @@ if($year_set != ''){
 		foreach ($q_projects->result_array() as $project){
 
 		//	if( in_array($project['focus_company_id'], $direct_company) ){
-				$cost = $cost + $project['project_total'];
-				$variation = $variation + $project['variation_total'];
-				$comp_id = $project['focus_company_id'];
+			$cost = $cost + $project['project_total'];
+			$variation = $variation + $project['variation_total'];
+			$comp_id = $project['focus_company_id'];
 
-				$focus_prjs[$comp_id]++;
-				$cat_id =  strtolower(str_replace(" ","_",$project['job_category']));
-				$focus_catgy[$cat_id]++;
+			$focus_prjs[$comp_id]++;
+			$cat_id =  strtolower(str_replace(" ","_",$project['job_category']));
+			$focus_catgy[$cat_id]++;
 
-				$focus_catgy_costs[$cat_id] = $focus_catgy_costs[$cat_id] + $project['project_total'] + $project['variation_total'];
-				$focus_costs[$comp_id] = $focus_costs[$comp_id] + $project['project_total'] + $project['variation_total'];
-				$grand_prj_total = $grand_prj_total +  $project['project_total'];
+			$focus_catgy_costs[$cat_id] = $focus_catgy_costs[$cat_id] + $project['project_total'] + $project['variation_total'];
+			$focus_costs[$comp_id] = $focus_costs[$comp_id] + $project['project_total'] + $project['variation_total'];
+			$grand_prj_total = $grand_prj_total +  $project['project_total'];
 		//	}
 		}
 
@@ -5883,42 +5991,42 @@ if($year_set != ''){
 
 		foreach ($focus_catgy_name as $cat_id => $value){
 			if($value == 'Maintenance'){
-			$cost = $focus_catgy_costs[$cat_id];
-			$count = $focus_catgy[$cat_id];
+				$cost = $focus_catgy_costs[$cat_id];
+				$count = $focus_catgy[$cat_id];
 
 
 
-			$grand_prj_total = ($grand_prj_total <= 1 ? 1 : $grand_prj_total);
-			$cost = ($cost <= 1 ? 1 : $cost);
+				$grand_prj_total = ($grand_prj_total <= 1 ? 1 : $grand_prj_total);
+				$cost = ($cost <= 1 ? 1 : $cost);
 
-			if($cost>0){
-				$percent = round(100/($grand_prj_total/$cost));
-			}else{
-				$percent = round(100/($grand_prj_total/1));
+				if($cost>0){
+					$percent = round(100/($grand_prj_total/$cost));
+				}else{
+					$percent = round(100/($grand_prj_total/1));
+				}
+
+
+				$grand_prj_total = ($grand_prj_total == 1 ? 0 : $grand_prj_total);
+				$cost = ($cost == 1 ? 0 : $cost);
+
+				if($grand_prj_total == 0 && $cost == 0){
+					$percent = 0;
+				}
+
+
+
+				if($is_pie != ''){
+
+					echo "['".str_replace("'","&apos;",$value)."',".$cost."],";
+
+				}else{
+
+					echo '<div id="" class="clearfix"><p><span class="col-sm-7"><i class="fa fa-chevron-circle-right"></i> &nbsp; '.$value.'</span><strong class="col-sm-5">$ '.number_format($cost).'</strong></p></div>';
+					echo '<div class="col-md-12"><hr class="block m-bottom-5 m-top-5"></div>';
+				}
+
+
 			}
-
-
-			$grand_prj_total = ($grand_prj_total == 1 ? 0 : $grand_prj_total);
-			$cost = ($cost == 1 ? 0 : $cost);
-
-			if($grand_prj_total == 0 && $cost == 0){
-				$percent = 0;
-			}
-
-
-
-			if($is_pie != ''){
-
-				echo "['".str_replace("'","&apos;",$value)."',".$cost."],";
-
-			}else{
-
-				echo '<div id="" class="clearfix"><p><span class="col-sm-7"><i class="fa fa-chevron-circle-right"></i> &nbsp; '.$value.'</span><strong class="col-sm-5">$ '.number_format($cost).'</strong></p></div>';
-				echo '<div class="col-md-12"><hr class="block m-bottom-5 m-top-5"></div>';
-			}
-
-			 
-		}
 		}
 	}
 
@@ -5943,27 +6051,27 @@ if($year_set != ''){
 		echo "[";
 		foreach ($focus_lcations as $map){
 
-				$get_employee_location_q = $this->dashboard_m->get_employee_location($map->location_address_id);
-				$employee_location = $get_employee_location_q->result();
+			$get_employee_location_q = $this->dashboard_m->get_employee_location($map->location_address_id);
+			$employee_location = $get_employee_location_q->result();
 
 
-				echo '{"longitude":'.$map->y_coordinate.', "latitude": '.$map->x_coordinate.', "info_head": "<p><strong>'.$map->location.'</strong></p>", "info_text": "<p>';
- 
-				foreach ($employee_location as $employee){
+			echo '{"longitude":'.$map->y_coordinate.', "latitude": '.$map->x_coordinate.', "info_head": "<p><strong>'.$map->location.'</strong></p>", "info_text": "<p>';
+
+			foreach ($employee_location as $employee){
 					//var_dump($employee->user_last_name);
-					echo $employee->user_first_name.' '.$employee->user_last_name.'<br />';
+				echo $employee->user_first_name.' '.$employee->user_last_name.'<br />';
 					//echo $employee->$user_last_name.'<br />'; //.' '.$employee->$user_last_name
-				}
- 
-				echo '</p>" },';
-				$count++;
-			 
+			}
+
+			echo '</p>" },';
+			$count++;
+
 		}
 		echo '],"count": '.$count.'';
 
 
 
- 
+
 	 /*
 
 		$current_date = date("d/m/Y");
@@ -6001,10 +6109,10 @@ if($year_set != ''){
 			$pm_id = $maintenance_data->project_manager_id;
 		}
 
- 
+
 		$user_id = $pm_id;
-		  
-	 
+
+
 
 		$current_date = date("d/m/Y");
 		$year = date("Y");
@@ -6134,9 +6242,9 @@ if($year_set != ''){
 					$sales_total = 0;
 
 					$dash_sales = $q_dash_sales->result();
-				 
+
 					foreach ($dash_sales as $sales){
-					 	if( !in_array($sales->project_manager_id, $not_pm_arr) ){
+						if( !in_array($sales->project_manager_id, $not_pm_arr) ){
 							if($sales->label == 'VR'){
 								$sales_total = $sales->variation_total;
 							}else{
@@ -6169,19 +6277,19 @@ if($year_set != ''){
 				$q_dash_sales = $this->dashboard_m->dash_sales($date_a_last,$date_b_last,$company->company_id,1);
 
 			//	if($q_dash_sales->num_rows >= 1){
-					$grand_total_sales = 0;
-					$sales_total = 0;
-					$dash_sales = $q_dash_sales->result();
+				$grand_total_sales = 0;
+				$sales_total = 0;
+				$dash_sales = $q_dash_sales->result();
 
-					foreach ($dash_sales as $sales){
-						if($sales->label == 'VR'){
-							$sales_total = $sales->variation_total;
-						}else{
-							$sales_total = $sales->project_total*($sales->progress_percent/100);
-						}
-						$grand_total_sales = $grand_total_sales + $sales_total;
+				foreach ($dash_sales as $sales){
+					if($sales->label == 'VR'){
+						$sales_total = $sales->variation_total;
+					}else{
+						$sales_total = $sales->project_total*($sales->progress_percent/100);
 					}
-					$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($grand_total_sales,2).'</span></div>';
+					$grand_total_sales = $grand_total_sales + $sales_total;
+				}
+				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($grand_total_sales,2).'</span></div>';
 			//	}
 			}
 		}
@@ -6251,7 +6359,7 @@ if($year_set != ''){
 			$project_cost[$company->company_id] = 0;
 		}
 
-	 	$q_projects = $this->dashboard_m->get_unaccepted_projects($current_start_year,$current_date);
+		$q_projects = $this->dashboard_m->get_unaccepted_projects($current_start_year,$current_date);
 		$projects = $q_projects->result();
 
 		$personal_data = 0;
@@ -6277,7 +6385,7 @@ if($year_set != ''){
 					$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
 				} 
 
-	 
+
 
 				if( in_array($un_accepted->job_category, $exemp_cat)  ){
 					$is_restricted = 1;
@@ -6320,9 +6428,9 @@ if($year_set != ''){
 						}
 
 						if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
-							 
-								$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
-							 
+
+							$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
+
 						}
 					}
 
@@ -6364,7 +6472,7 @@ if($year_set != ''){
 
 
 
- 
+
 
 
 		$last_year = intval(date("Y"))-1;
@@ -6375,7 +6483,7 @@ if($year_set != ''){
 		$date_last_year_today = "$n_day/$n_month/$last_year";
 
 
-	 	$q_projects = $this->dashboard_m->get_unaccepted_projects("01/01/$last_year",$date_last_year_today);
+		$q_projects = $this->dashboard_m->get_unaccepted_projects("01/01/$last_year",$date_last_year_today);
 		$projects = $q_projects->result();
 		foreach ($projects as $un_accepted){
 
@@ -6399,7 +6507,7 @@ if($year_set != ''){
 					$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
 				} 
 
-	 
+
 
 				if( in_array($un_accepted->job_category, $exemp_cat)  ){
 					$is_restricted = 1;
@@ -6443,14 +6551,14 @@ if($year_set != ''){
 							$project_cost[$un_accepted->focus_company_id] =  $project_cost[$un_accepted->focus_company_id] + $amnt; 
 						}
 
-				 	if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
+						if( isset($unaccepted_amount[$un_accepted->project_estiamator_id])) {
 							$unaccepted_amount[$un_accepted->project_estiamator_id] = $unaccepted_amount[$un_accepted->project_estiamator_id] + $amnt;
-					 	}
+						}
 
 
-					 	if( isset($pm_split[$un_accepted->project_manager_id])) {
+						if( isset($pm_split[$un_accepted->project_manager_id])) {
 							$pm_split[$un_accepted->project_manager_id] = $pm_split[$un_accepted->project_manager_id] + $amnt;
-				 	}
+						}
 
 					}
 				}
@@ -6565,7 +6673,7 @@ if($year_set != ''){
 		$n_day = date("d");
 		$date_last_year_today = "$n_day/$n_month/$last_year";
 		$set_date_b = '01/01/'.$last_year;
-	 
+
 
 		$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($set_date_b,$date_last_year_today);
 		foreach ($po_list_ordered->result_array() as $row){
@@ -6744,7 +6852,7 @@ if($year_set != ''){
 		// $date_a = "01/01/2016";
 		// $date_b = "29/01/2016";
 		$days_dif = array('');
- 
+
 		$q_ave = $this->dashboard_m->get_maitenance_dates_pm($date_a,$date_b); //1
 		$days_result = $q_ave->result();
 
@@ -6752,7 +6860,7 @@ if($year_set != ''){
 			$diff = ($result->days_diff < 0 ? 0 : $result->days_diff); 
 			array_push($days_dif, $diff);
 		}
-   
+
 		$size = count($days_dif);
 
 		$size = ($size <= 1 ? 1 : $size);
@@ -6780,10 +6888,10 @@ if($year_set != ''){
 
 		$all_focus_company = $this->admin_m->fetch_all_company_focus();
 		$focus_company = $all_focus_company->result();
-	
+
 		foreach ($focus_company as $company){
 
-		if($company->company_id != 4){
+			if($company->company_id != 4){
 
 				$days_dif_comp = array('');
 
@@ -6802,12 +6910,12 @@ if($year_set != ''){
 				$average_comp = array_sum($days_dif_comp) / $size_comp;
 
 				arsort($days_dif_comp,1);
- 
+
 				$days_dif_comp = ($days_dif_comp <= 1 ? 1 : $days_dif_comp);
 				$long_day_comp =  max($days_dif_comp);
 				$short_day_day_comp =  min($days_dif_comp);
 				$short_day_day_comp = 1;
- 
+
 
 				$total_string .= '<div class=\'row\'><span class=\'col-xs-8\'>'.str_replace("Pty Ltd","",$company->company_name).'</span><span class=\'col-xs-4\'>'.round($average_comp,1).'</span></div>';
 
@@ -6821,13 +6929,13 @@ if($year_set != ''){
 						array_push($pms_averg[$pm->user_id],$diff);
 					}
 				}
- 			}
+			}
 		}
 
 
 
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
- 
+
 
 		foreach ($project_manager_list as $pm ){
 
@@ -6880,12 +6988,12 @@ if($year_set != ''){
 				$average_comp = array_sum($days_dif_comp) / $size_comp;
 
 				arsort($days_dif_comp,1);
- 
+
 				$days_dif_comp = ($days_dif_comp <= 1 ? 1 : $days_dif_comp);
 				$long_day_comp =  max($days_dif_comp);
 				$short_day_day_comp =  min($days_dif_comp);
 				$short_day_day_comp = 1;
- 
+
 
 				$total_string .= '<div class=\'row\'><span class=\'col-xs-8\'>'.str_replace("Pty Ltd","",$company->company_name).'</span><span class=\'col-xs-4\'>'.round($average_comp,1).'</span></div>';
 
@@ -6899,7 +7007,7 @@ if($year_set != ''){
 						array_push($pms_averg_old[$pm->user_id],$diff);
 					}
 				}
- 			}
+			}
 		}
 
 		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
@@ -6923,8 +7031,8 @@ if($year_set != ''){
 
 
 		echo '<div id="" class="tooltip-enabled" title="" data-placement="bottom" data-html="true" data-original-title="'.$total_string .'">
-			<input class="knob" data-width="100%" data-step=".1"  data-thickness=".13" value="'.number_format($average,1).'" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="'.$long_day.'">
-			<div id="" class="clearfix m-top-10"><div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div><div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div></div></div>';
+		<input class="knob" data-width="100%" data-step=".1"  data-thickness=".13" value="'.number_format($average,1).'" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="'.$long_day.'">
+		<div id="" class="clearfix m-top-10"><div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div><div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div></div></div>';
 
 	}
 
@@ -6942,18 +7050,18 @@ if($year_set != ''){
 		$user_details = array_shift($fetch_user->result_array());
 		$pm_name_solo = $user_details['user_first_name'];
 
- 
+
 		if($pm_data_id != ''){
 			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
 				$pm_type = 1;
 			endif; //for directors 
 
 			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM 
 
 			if($user_details['user_role_id'] == 20 && $user_details['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM or AM
 
 			if($user_id == 29):
@@ -7020,14 +7128,14 @@ if($year_set != ''){
 			$pms_w_avg[$pm->user_id] = $pm->user_id;
 		}
 
- 
- 		foreach ($direct_company as $key => $comp_id) {
+
+		foreach ($direct_company as $key => $comp_id) {
 			$q_ave = $this->dashboard_m->get_maitenance_dates_pm($date_a,$date_b,$user_id,$comp_id); //4
 			$days_result = $q_ave->result();
 
 			foreach ($days_result as $result){
 
-						$diff = ($result->days_diff < 0 ? 0 : $result->days_diff); 
+				$diff = ($result->days_diff < 0 ? 0 : $result->days_diff); 
 				array_push($days_dif, $diff);
 			}
 
@@ -7042,14 +7150,14 @@ if($year_set != ''){
 					}
 				}
 			}
- 		}
+		}
 
 
 
- 
+
 
 //		var_dump($days_dif);
- 
+
 		$size = count($days_dif);
 
 		if($size > 0){
@@ -7092,11 +7200,11 @@ if($year_set != ''){
 				$average_comp = array_sum($days_dif_comp) / $size_comp;
 
 				arsort($days_dif_comp,1);
- 
+
 				$long_day_comp =  max($days_dif_comp);
 				$short_day_day_comp =  min($days_dif_comp);
 				$short_day_day_comp = 1;
- 
+
 				// $total_string .= '<span>'.str_replace("Pty Ltd","",$company->company_name).' &nbsp; '.number_format($average_comp,1).'</span><br />';
 
 
@@ -7157,8 +7265,8 @@ if($year_set != ''){
 
 			if( in_array($company->company_id, $direct_company) ){
 
-			if($company->company_id != 4){
-				$days_dif_comp = array('');
+				if($company->company_id != 4){
+					$days_dif_comp = array('');
 				$q_ave = $this->dashboard_m->get_maitenance_dates_pm($date_a_last,$date_b_last,$company->company_id); //5
 				$days_result = $q_ave->result();
 
@@ -7173,12 +7281,12 @@ if($year_set != ''){
 				$average_comp = array_sum($days_dif_comp) / $size_comp;
 
 				arsort($days_dif_comp,1);
- 
+
 				$days_dif_comp = ($days_dif_comp <= 1 ? 1 : $days_dif_comp);
 				$long_day_comp =  max($days_dif_comp);
 				$short_day_day_comp =  min($days_dif_comp);
 				$short_day_day_comp = 1;
- 
+
 
 				$total_string .= '<div class=\'row\'><span class=\'col-xs-8\'>'.str_replace("Pty Ltd","",$company->company_name).'</span><span class=\'col-xs-4\'>'.round($average_comp,1).'</span></div>';
 
@@ -7192,11 +7300,11 @@ if($year_set != ''){
 						array_push($pms_averg_old[$pm->user_id],$diff);
 					}
 				}
- 			}
+			}
 		}
-		}
+	}
 
-		$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
+	$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span></div>';
 
 
 
@@ -7221,47 +7329,47 @@ if($year_set != ''){
 	}else{
 
 		if(array_key_exists($user_id,$pms_averg_old)){
-				$size = count($pms_averg_old[$user_id]);
-				if($size > 0){ 
-					$pm_average = array_sum($pms_averg_old[$user_id]) / $size;
-					arsort($pms_averg_old[$user_id],1);
-					$pm_long_day =  max($pms_averg_old[$user_id]);
-					$pm_short_day_day =  min($pms_averg_old[$user_id]);
-					$pm_short_day_day = 1;
+			$size = count($pms_averg_old[$user_id]);
+			if($size > 0){ 
+				$pm_average = array_sum($pms_averg_old[$user_id]) / $size;
+				arsort($pms_averg_old[$user_id],1);
+				$pm_long_day =  max($pms_averg_old[$user_id]);
+				$pm_short_day_day =  min($pms_averg_old[$user_id]);
+				$pm_short_day_day = 1;
 
-					$total_string .= '<div class=\'row\'><span class=\'col-xs-8\'>'.$pm_name_solo.'</span><span class=\'col-xs-4\'>'.round($pm_average,1).'</span></div>';
-				}
+				$total_string .= '<div class=\'row\'><span class=\'col-xs-8\'>'.$pm_name_solo.'</span><span class=\'col-xs-4\'>'.round($pm_average,1).'</span></div>';
 			}
-	}
-
-
-		echo '<div id="" class="tooltip-enabled" title="" data-placement="bottom" data-html="true" data-original-title="'.$total_string .'">
-				<input class="knob" data-width="100%" data-step=".1"  data-thickness=".13" value="'.number_format($average,1).'" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="'.$long_day.'">
-				<div id="" class="clearfix m-top-10">
-					<div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div>
-					<div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div>
-				</div>';
-				if($pm_data_id == ''){
-					 echo "<center style='margin-top:-20px;'><span><strong>$comp_custom_msge</strong></span></center>";
-				}
-
-			echo '</div>';
-
-	}
-
-
-	public function uninvoiced_widget_pm($assign_id=''){
-
-		if(isset($assign_id) && $assign_id != '' && $assign_id > 0){
-			$user_id = $assign_id;
-		}else{
-			$user_id = $this->session->userdata('user_id');
 		}
+	}
 
-		$pm_type = $this->pm_type($user_id);
 
-		$fetch_user = $this->user_model->fetch_user($user_id);
-		$user_details = array_shift($fetch_user->result_array());
+	echo '<div id="" class="tooltip-enabled" title="" data-placement="bottom" data-html="true" data-original-title="'.$total_string .'">
+	<input class="knob" data-width="100%" data-step=".1"  data-thickness=".13" value="'.number_format($average,1).'" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="'.$long_day.'">
+	<div id="" class="clearfix m-top-10">
+		<div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div>
+		<div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div>
+	</div>';
+	if($pm_data_id == ''){
+		echo "<center style='margin-top:-20px;'><span><strong>$comp_custom_msge</strong></span></center>";
+	}
+
+	echo '</div>';
+
+}
+
+
+public function uninvoiced_widget_pm($assign_id=''){
+
+	if(isset($assign_id) && $assign_id != '' && $assign_id > 0){
+		$user_id = $assign_id;
+	}else{
+		$user_id = $this->session->userdata('user_id');
+	}
+
+	$pm_type = $this->pm_type($user_id);
+
+	$fetch_user = $this->user_model->fetch_user($user_id);
+	$user_details = array_shift($fetch_user->result_array());
 
 		if($pm_type == 1){ // for director/pm
 			$direct_company = explode(',',$user_details['direct_company'] );
@@ -7319,7 +7427,7 @@ if($year_set != ''){
 				}
 
 				//if($unvoiced_grand_total > 0){
-					$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($unvoiced_grand_total,2).'</span></div>';
+				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($unvoiced_grand_total,2).'</span></div>';
 				//}
 			}
 
@@ -7481,7 +7589,7 @@ if($year_set != ''){
 		$display_total = $this->get_wip_value_permonth($start_date,$set_new_date,$user_id,'1');
 
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($display_total,2).'</strong></p>';
- 
+
 	}
 
 
@@ -7514,7 +7622,7 @@ if($year_set != ''){
 		$n_day = date("d");
 
 		$date_b = "$n_day/$n_month/$n_year";
- 
+
 		$all_focus_company = $this->admin_m->fetch_all_company_focus();
 		$focus_company = $all_focus_company->result();
 
@@ -7601,9 +7709,9 @@ if($year_set != ''){
 				$c_year = $i;
 				$total_string .= '<div class=\'row\'><span class=\'col-xs-12\'><hr style=\'margin:4px 0px;\' /></span> &nbsp; ('.$c_year.')</div>';
 				
-						foreach ($project_manager_list as $pm ) {
-							$pm_outstanding[$pm->user_id] = 0;
-						}
+				foreach ($project_manager_list as $pm ) {
+					$pm_outstanding[$pm->user_id] = 0;
+				}
 
 			//	echo "XXXtest****";
 
@@ -7668,7 +7776,7 @@ if($year_set != ''){
 
 						$total_outstanding =  $each_comp_total[$company->company_id];
 					//	if($total_outstanding > 0){
-							$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($total_outstanding,2).'</span></div>';
+						$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($total_outstanding,2).'</span></div>';
 					//	}
 						$each_comp_total[$company->company_id] = 0;
 					}
@@ -7706,12 +7814,12 @@ if($year_set != ''){
 				}else{
 					$personal_data = $personal_data + 0;
 				}
- 
+
 			}
 		}
 
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($personal_data,2).'</strong></p>';
-}
+	}
 
 
 	public function pm_sales_widget_pm($assign_id='',$is_thermo=''){
@@ -7846,7 +7954,7 @@ if($year_set != ''){
 			}
 
 		}
- 
+
 
 		foreach ($direct_company as $key => $comp_id) {
 
@@ -7888,7 +7996,7 @@ if($year_set != ''){
 
 
 			if( in_array($pm->user_focus_company_id, $direct_company) ){
-			
+
 				$comp_id_pm = $focus_pm_comp[$pm_id];
 
 				//$pm_wip = (( $set_estimates[$pm_id] + $set_quotes[$pm_id] ) - $set_invoiced[$pm_id] );
@@ -7931,7 +8039,7 @@ if($year_set != ''){
 				if($user_id == $pm_id){
 					$return_total = $status_forecast;
 				}
-	 		}
+			}
 		}
 
 		if($is_thermo == ''){
@@ -7944,7 +8052,7 @@ if($year_set != ''){
 		if($total_wip + $total_invoiced >= 1){
 			$status_forecast = round(100/($forecast_focus_total/ ($total_wip + $total_invoiced) ));
 		}else{
-				$status_forecast = round(100/($forecast_focus_total/ 1 ));
+			$status_forecast = round(100/($forecast_focus_total/ 1 ));
 		}
 
 		$comp_code = '';
@@ -7973,7 +8081,7 @@ if($year_set != ''){
 		if ( array_key_exists($user_id, $set_invoiced_amount)  &&  array_key_exists($user_id, $wip_pm_total) ) {
 			$pm_overall_display = $pm_sales_value = $set_invoiced_amount[$user_id] + $wip_pm_total[$user_id]; 
 		}
- 
+
 		if($is_thermo != ''){
 			echo $return_total.'_'.number_format( $pm_overall_display );
 		}else{
@@ -8013,27 +8121,27 @@ if($year_set != ''){
 		foreach ($focus_company as $company){
 			$q_dash_sales = $this->dashboard_m->dash_sales($date_a,$date_c,$company->company_id,1);
 
-				if($q_dash_sales->num_rows >= 1){
+			if($q_dash_sales->num_rows >= 1){
 
-					$grand_total_sales = 0;
-					$sales_total = 0;
+				$grand_total_sales = 0;
+				$sales_total = 0;
 
-					$dash_sales = $q_dash_sales->result();
+				$dash_sales = $q_dash_sales->result();
 
-					foreach ($dash_sales as $sales){
-						if( !in_array($sales->project_manager_id, $not_pm_arr) ){
+				foreach ($dash_sales as $sales){
+					if( !in_array($sales->project_manager_id, $not_pm_arr) ){
 
-							if($sales->label == 'VR'){
-								$sales_total = $sales->variation_total;
-							}else{
-								$sales_total = $sales->project_total*($sales->progress_percent/100);
-							}
-							$grand_total_sales = $grand_total_sales + $sales_total;
-
+						if($sales->label == 'VR'){
+							$sales_total = $sales->variation_total;
+						}else{
+							$sales_total = $sales->project_total*($sales->progress_percent/100);
 						}
+						$grand_total_sales = $grand_total_sales + $sales_total;
+
 					}
-					$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($grand_total_sales,2).'</span></div>';
-					$display_total = $display_total + $grand_total_sales;
+				}
+				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($grand_total_sales,2).'</span></div>';
+				$display_total = $display_total + $grand_total_sales;
 				
 			}
 		}
@@ -8049,8 +8157,8 @@ if($year_set != ''){
 
 		foreach ($focus_company as $company){
 
-		 	if($company->company_id != 4){
-			$q_dash_sales = $this->dashboard_m->dash_sales($date_a_last,$date_b_last,$company->company_id,1);
+			if($company->company_id != 4){
+				$q_dash_sales = $this->dashboard_m->dash_sales($date_a_last,$date_b_last,$company->company_id,1);
 
 				$grand_total_sales = 0;
 				$sales_total = 0;
@@ -8066,9 +8174,9 @@ if($year_set != ''){
 					$grand_total_sales = $grand_total_sales + $sales_total;
 				}
 				$total_string .= '<div class=\'row\'><span class=\'col-xs-6\'>'.str_replace("Pty Ltd","",$company->company_name).'</span> <span class=\'col-xs-6\'>$ '.number_format($grand_total_sales,2).'</span></div>';
-		 	}
+			}
 		}
-		 
+
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($display_total,2).'</strong></p>';
 	}
 
@@ -8130,7 +8238,7 @@ $n_month = date("m");
 
 
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($display_total,2).'</strong></p>';
- 
+
 	}
 
 
@@ -8286,7 +8394,7 @@ $n_month = date("m");
 		$total_string .= '<div class=\'row\'>&nbsp; ('.date("Y").')</div>';
 
 		$total_outstanding_all_time = 0;
- 
+
 
 		for ($i=date("Y"); $i>=2015 ; $i--) { 
 
@@ -8375,6 +8483,68 @@ $n_month = date("m");
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($total_outstanding_all_time,2).'</strong></p>';
 	}
 
+	public function focus_company_sep_thermo($company_id='',$focus_company=''){
+
+		$c_year = date("Y");		
+		$date_a = "01/01/$c_year";
+		$date_b = date("d/m/Y");
+//		$company_id = 6;
+		$total_sales = 0;
+
+		$q_pm_sales = $this->dashboard_m->dash_total_pm_sales('',$c_year,'',$date_a,$date_b,$company_id);
+
+		if($q_pm_sales->num_rows >= 1){
+			$pm_sales = $q_pm_sales->result_array();
+			foreach ($pm_sales as $sales => $value){
+				if($value['label'] == 'VR'){
+					$project_total_percent = $value['variation_total'];
+				}else{
+					$project_total_percent = $value['project_total'] * ($value['progress_percent']/100);
+				}
+				$total_sales = $total_sales + $project_total_percent;
+			}
+		}else{
+			$total_sales = $total_sales + 0;
+		}
+
+		//var_dump($total_sales);
+
+		$n_year =  date("Y")+1;
+		$set_new_date = '01/01/'.$n_year;
+
+		$wip_amount = $this->get_wip_personal($date_a,$set_new_date,'',$company_id);
+
+		$current_sales =  $wip_amount + $total_sales ;
+
+		//var_dump($wip_amount);
+
+		$q_get_current_forecast = $this->dashboard_m->get_current_forecast($c_year,$company_id,1);
+		$current_forecast_fc = $q_get_current_forecast->result();
+		$current_forecast_fcur = array_shift($current_forecast_fc);
+
+
+		if($q_get_current_forecast->num_rows >= 1){
+			$forecasted_amount =  $current_forecast_fcur->total * ($current_forecast_fcur->forecast_percent/100) ;
+			//var_dump($current_forecast_fcur->total);
+			//var_dump($current_forecast_fcur->forecast_percent);
+		}
+
+
+
+		$percent_progess = ($current_sales/$forecasted_amount) * 100;
+
+		$focus_company = str_replace('%20',' ', $focus_company);
+
+
+		echo'
+			<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-pb" style="background-color: rgb(251, 25, 38);width: '.$percent_progess.'%;border-radius: 0px 10px 10px 0px;"   data-original-title="'.$focus_company.' &nbsp;  $'.number_format($current_sales).' - Overall Progress" >'.number_format($percent_progess).'%</div> 
+		
+		';
+
+
+
+	}
+
 
 	public function pm_sales_widget($termo_val=''){
 
@@ -8417,8 +8587,8 @@ $n_month = date("m");
 
 		$forecast_focus_total = 0;
 
- 
-						
+
+
 
 
 
@@ -8519,13 +8689,13 @@ $n_month = date("m");
 
 			if($termo_val == ''):
 				echo '<div class="m-bottom-15 clearfix"><div class="pull-left m-right-10"  style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;"><img class="user_avatar img-responsive img-rounded" src="'.base_url().'/uploads/users/'.$focus_pm_pic[$pm_id].'"" /></div>';
-				echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
-				echo '<p><i class="fa fa-usd"></i> '.number_format($sales).'</p>';
+			echo '<div class="" id=""><p><strong>'.$focus_pms[$pm_id].'</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($set_invoiced_amount[$pm_id]).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($wip_pm_total[$pm_id]).'</span></span></p>';
+			echo '<p><i class="fa fa-usd"></i> '.number_format($sales).'</p>';
 
-				echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($sales).' / $'.number_format($total_forecast).'   " style="height: 7px;">
+			echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format($sales).' / $'.number_format($total_forecast).'   " style="height: 7px;">
 			<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
 
-				echo "<div class='clearfix'></div>";
+			echo "<div class='clearfix'></div>";
 			endif;
 
 			$forecast_focus_total = $forecast_focus_total + $total_forecast;
@@ -8534,7 +8704,7 @@ $n_month = date("m");
 		if($termo_val == ''):
 			echo "</div>";
 		endif;
- 
+
 		$total_wip = ($total_wip <= 1 ? 1 : $total_wip);
 		$forecast_focus_total = ($forecast_focus_total <= 1 ? 1 : $comp_forecast['total']);
 
@@ -8543,15 +8713,15 @@ $n_month = date("m");
 
 		if($termo_val == ''):
 			echo '<div class="clearfix" style="padding-top: 6px;    border-top: 1px solid #eee;"><i class="fa fa-briefcase" style="font-size: 42px;float: left;margin-left: 7px;margin-right: 10px;"></i>';
-			echo '<div class="" id=""><p><strong>Overall Focus</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($grand_total_sales_cmp).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($total_wip).'</span></span></p>';
-			echo '<p><i class="fa fa-usd"></i> '.number_format( ($total_wip + $total_invoiced) ).' <strong class="pull-right m-right-10"></strong></p> </p>';
+		echo '<div class="" id=""><p><strong>Overall Focus</strong><span class="pull-right"><span class="label pull-right m-bottom-3 m-top-3 small_orange_fixed"><i class="fa fa-usd"></i> '.number_format($grand_total_sales_cmp).'</span> <br /> <span class="label pull-right m-bottom-3 small_green_fixed"><i class="fa fa-exclamation-triangle"></i> '.number_format($total_wip).'</span></span></p>';
+		echo '<p><i class="fa fa-usd"></i> '.number_format( ($total_wip + $total_invoiced) ).' <strong class="pull-right m-right-10"></strong></p> </p>';
 
-			echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format( ($total_wip + $total_invoiced) ).' / $'.number_format($forecast_focus_total).'   " style="height: 7px;">
-			<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
-			echo "<div class='clearfix'></div>";
+		echo '<div class="progress no-m m-top-3 clearfix tooltip-enabled" title="" data-original-title="'.$status_forecast.'% - $'.number_format( ($total_wip + $total_invoiced) ).' / $'.number_format($forecast_focus_total).'   " style="height: 7px;">
+		<div class="progress-bar progress-bar-danger" style="width:'.$status_forecast.'%; background:red;"></div></div></div></div>';
+		echo "<div class='clearfix'></div>";
 		else:
 			echo $status_forecast.'_'.number_format( ($total_wip + $total_invoiced) );
-			
+
 		endif;
 
 		return $status_forecast.'_'.number_format( ($total_wip + $total_invoiced) );
@@ -8628,7 +8798,7 @@ $n_month = date("m");
 			$project_cost[$company->company_id] = 0;
 		}
 
-	 	$q_projects = $this->dashboard_m->get_unaccepted_projects($current_start_year,$current_date);
+		$q_projects = $this->dashboard_m->get_unaccepted_projects($current_start_year,$current_date);
 		$projects = $q_projects->result();
 		foreach ($projects as $un_accepted){
 
@@ -8652,7 +8822,7 @@ $n_month = date("m");
 					$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
 				} 
 
-	 
+
 
 				if( in_array($un_accepted->job_category, $exemp_cat)  ){
 					$is_restricted = 1;
@@ -8767,7 +8937,7 @@ $n_month = date("m");
 		$date_last_year_today = "$n_day/$n_month/$last_year";
 
 
-	 	$q_projects = $this->dashboard_m->get_unaccepted_projects("01/01/$last_year",$date_last_year_today);
+		$q_projects = $this->dashboard_m->get_unaccepted_projects("01/01/$last_year",$date_last_year_today);
 		$projects = $q_projects->result();
 		foreach ($projects as $un_accepted){
 
@@ -8791,7 +8961,7 @@ $n_month = date("m");
 					$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
 				} 
 
-	 
+
 
 				if( in_array($un_accepted->job_category, $exemp_cat)  ){
 					$is_restricted = 1;
@@ -8882,7 +9052,7 @@ $n_month = date("m");
 			} 
 		}
 
- 
+
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($display_total,2).' <span class="pull-right">'.$display_counter.'</span></strong></p>';
 	}
 
@@ -9125,9 +9295,9 @@ $n_month = date("m");
 
 		$n_month = date("m");
 		$n_day = date("d");
-		$date_last_year_today = "$n_day/$n_month/$last_year";
+		$date_last_year_today = "31/12/$last_year";
 		$set_date_b = '01/01/'.$last_year;
-	 
+
 
 
 		$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($set_date_b,$date_last_year_today);
@@ -9172,19 +9342,19 @@ $n_month = date("m");
 		$user_details = array_shift($fetch_user->result_array());
 		$comp_q = '';
 		$comp_q .= 'AND (';
-		$limit = 0;
- 
-		if($pm_data_id != ''){
-			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
-				$pm_type = 1;
+			$limit = 0;
+
+			if($pm_data_id != ''){
+				if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
+					$pm_type = 1;
 			endif; //for directors 
 
 			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM 
 
 			if($user_details['user_role_id'] == 20 && $user_details['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM or AM
 		}else{
 			$pm_type = $this->pm_type();
@@ -9229,131 +9399,131 @@ if($year_set != ''){
 		$last_year = $year_set -1;
 	}
 }else{
-		$current_date = date("d/m/Y");
-		$year = date("Y");
-		$last_year = intval(date("Y")) - 1;	
+	$current_date = date("d/m/Y");
+	$year = date("Y");
+	$last_year = intval(date("Y")) - 1;	
 
 }
 
 
-  
-		$next_year_date = '01/01/'.($year+1);
-		$current_start_year = '01/01/'.$year;
-		$last_start_year = '01/01/'.($year-1);
 
-		$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date,'','',$comp_q);
-		$client_details  = $q_clients->result();
-		$list_total = 0;
+$next_year_date = '01/01/'.($year+1);
+$current_start_year = '01/01/'.$year;
+$last_start_year = '01/01/'.($year-1);
 
-		foreach ($client_details as $company) {
-			$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
-			$vr_val_t = array_shift($q_vr_c_t->result_array());
-			$list_total = $list_total + $company->grand_total + $vr_val_t['total_variation'];
+$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date,'','',$comp_q);
+$client_details  = $q_clients->result();
+$list_total = 0;
+
+foreach ($client_details as $company) {
+	$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+	$vr_val_t = array_shift($q_vr_c_t->result_array());
+	$list_total = $list_total + $company->grand_total + $vr_val_t['total_variation'];
+}
+
+$this_month = date("m");
+$this_day = date("d");
+
+$date_a_last = "01/01/$last_year";
+$date_b_last = "$this_day/$this_month/$last_year";
+
+$comp_total = array();
+$comp_name = array();
+
+
+foreach ($client_details as $company) {
+	$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+	$vr_val = array_shift($q_vr_c->result_array());
+	$cost_gtotl_amnt = round($company->grand_total+ $vr_val['total_variation']);
+	$comp_total[$company->company_id] = $cost_gtotl_amnt;
+	$comp_name[$company->company_id] = $company->company_name_group;
+
+}
+
+arsort($comp_total);
+
+
+if(count($comp_total) == 0 && $report_sheet != 'pie'){
+	echo "<p><center><strong>No Records Yet.</strong></csnter></p>";
+}
+
+foreach ($comp_total as $raw_id => $compute_amount) {
+	if($report_sheet == '' || $report_sheet == 'list'){
+		echo '<div class="mr_comp_name col-sm-4 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+	}
+
+	$percent = round(100/($list_total/$compute_amount),1);
+	$company_name = $comp_name[$raw_id];
+	$company_name_group = $comp_name[$raw_id];
+
+	if($is_mr == 'mr' && $is_mr == ''){
+
+		if(strlen($company_name_group) > 55){
+			echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name_group.'">'.substr($company_name_group,0,55).'...</span>';
+		}else{
+			echo $company_name_group;
 		}
- 
-		$this_month = date("m");
-		$this_day = date("d");
- 
-		$date_a_last = "01/01/$last_year";
-		$date_b_last = "$this_day/$this_month/$last_year";
-
-		$comp_total = array();
-		$comp_name = array();
 
 
-		foreach ($client_details as $company) {
-			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
-			$vr_val = array_shift($q_vr_c->result_array());
-			$cost_gtotl_amnt = round($company->grand_total+ $vr_val['total_variation']);
-			$comp_total[$company->company_id] = $cost_gtotl_amnt;
-			$comp_name[$company->company_id] = $company->company_name_group;
+	}elseif($report_sheet == 'pie' && $is_mr == 'mr'){
 
-		}
-
-		arsort($comp_total);
+	}
+	else{
 
 
-		if(count($comp_total) == 0 && $report_sheet != 'pie'){
-			echo "<p><center><strong>No Records Yet.</strong></csnter></p>";
-		}
-
-		foreach ($comp_total as $raw_id => $compute_amount) {
-			if($report_sheet == '' || $report_sheet == 'list'){
-				echo '<div class="mr_comp_name col-sm-4 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
-			}
-
-			$percent = round(100/($list_total/$compute_amount),1);
-			$company_name = $comp_name[$raw_id];
-			$company_name_group = $comp_name[$raw_id];
- 
-		if($is_mr == 'mr' && $is_mr == ''){
-
-			if(strlen($company_name_group) > 55){
-						echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name_group.'">'.substr($company_name_group,0,55).'...</span>';
-					}else{
-						echo $company_name_group;
-					}
-
-
-		}elseif($report_sheet == 'pie' && $is_mr == 'mr'){
-
-		}
-		else{
-
- 
-			if($report_sheet == 'list' || $report_sheet == ''){
-				if($pm_data_id != ''){
-					if(strlen($company_name_group) > 30){
-						echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name_group.'">'.substr($company_name_group,0,30).'...</span>';
-					}else{
-						echo $company_name_group;
-					}
+		if($report_sheet == 'list' || $report_sheet == ''){
+			if($pm_data_id != ''){
+				if(strlen($company_name_group) > 30){
+					echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name_group.'">'.substr($company_name_group,0,30).'...</span>';
 				}else{
-					if(strlen($company_name_group) > 30){
-						echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name_group.'">'.substr($company_name_group,0,30).'...</span>';
-					}else{
-						echo $company_name_group;
-					}
+					echo $company_name_group;
+				}
+			}else{
+				if(strlen($company_name_group) > 30){
+					echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name_group.'">'.substr($company_name_group,0,30).'...</span>';
+				}else{
+					echo $company_name_group;
 				}
 			}
-		}
-
-
-
-
-			$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$raw_id);
-			$vr_val_u = array_shift($q_vr_c_u->result_array());
-
-			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$raw_id);
-			$last_year_sale = array_shift($last_year_q->result_array());
-			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
-		
-
-			if($report_sheet == 'list' ){
-
-				echo ' </div><div class="mr_comp_val col-sm-4 col-md-2"><strong>'.number_format($percent,1).'%</strong></div><div class="mr_comp_val col-sm-4 col-md-3"><i class="fa fa-usd"></i><strong>$ '.number_format($compute_amount).'</strong></div>';
-
-			}elseif($report_sheet == 'pie' ){
-				echo " ['".str_replace("'","&apos;",$comp_name[$raw_id] )."', ".$compute_amount."], ";
-			}else{
-				echo ' </div><div class="col-sm-4 col-md-2"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-sm-4 col-md-3 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-			}
-
-
 		}
 	}
 
 
 
 
+	$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$raw_id);
+	$vr_val_u = array_shift($q_vr_c_u->result_array());
+
+	$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$raw_id);
+	$last_year_sale = array_shift($last_year_q->result_array());
+	$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
+
+
+	if($report_sheet == 'list' ){
+
+		echo ' </div><div class="mr_comp_val col-sm-4 col-md-2"><strong>'.number_format($percent,1).'%</strong></div><div class="mr_comp_val col-sm-4 col-md-3"><i class="fa fa-usd"></i><strong>$ '.number_format($compute_amount).'</strong></div>';
+
+	}elseif($report_sheet == 'pie' ){
+		echo " ['".str_replace("'","&apos;",$comp_name[$raw_id] )."', ".$compute_amount."], ";
+	}else{
+		echo ' </div><div class="col-sm-4 col-md-2"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-sm-4 col-md-3 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+	}
+
+
+}
+}
 
 
 
 
 
 
- public function focus_clients_report($pmid,$year_set,$alternator = ''){
- 	$current_year_date = "01/01/$year_set";
+
+
+
+
+public function focus_clients_report($pmid,$year_set,$alternator = ''){
+	$current_year_date = "01/01/$year_set";
 	$next_year = $year_set+1;
 	$next_year_date = "01/01/$next_year";
 
@@ -9362,95 +9532,95 @@ if($year_set != ''){
 //	echo "$current_year_date,$next_year_date,$pmid <br />";
 
 
- 	$q_clients = $this->dashboard_m->get_top_comp_lists_name($current_year_date,$next_year_date,$pmid);
- 	$client_details  = $q_clients->result();
- 	$company_list_arr = array();
- 	$company_cost_arr = array();
+	$q_clients = $this->dashboard_m->get_top_comp_lists_name($current_year_date,$next_year_date,$pmid);
+	$client_details  = $q_clients->result();
+	$company_list_arr = array();
+	$company_cost_arr = array();
 
- 	foreach ($client_details as $company){
- 		$company_list_arr[$company->company_id] = $company->company_name;
+	foreach ($client_details as $company){
+		$company_list_arr[$company->company_id] = $company->company_name;
 // 		echo $company->company_name."<br />";
- 		$company_cost_arr[$company->company_id] = 0;
- 	}
+		$company_cost_arr[$company->company_id] = 0;
+	}
 
- 	$q_get_sales = $this->dashboard_m->get_sales($current_year_date,$next_year_date,$pmid);
- 	$pm_get_sales = $q_get_sales->result();
+	$q_get_sales = $this->dashboard_m->get_sales($current_year_date,$next_year_date,$pmid);
+	$pm_get_sales = $q_get_sales->result();
 
- 	foreach ($pm_get_sales as $pm_sales ){
- 		$sales_total = 0;
- 		if($pm_sales->label == 'VR'){
- 			$sales_total = $pm_sales->variation_total;
- 		}else{
- 			$sales_total = $pm_sales->project_total*($pm_sales->progress_percent/100);
- 		}
- 		$company_cost_arr[$pm_sales->company_id] = $company_cost_arr[$pm_sales->company_id] + $sales_total;
- 	}
-
-
- 	arsort($company_cost_arr);
-
- 	foreach ($company_cost_arr as $key => $value) {
- 		if($counter > 19){
- 			unset($company_cost_arr[$key]);
- 		}
- 		$counter++;
- 	}
+	foreach ($pm_get_sales as $pm_sales ){
+		$sales_total = 0;
+		if($pm_sales->label == 'VR'){
+			$sales_total = $pm_sales->variation_total;
+		}else{
+			$sales_total = $pm_sales->project_total*($pm_sales->progress_percent/100);
+		}
+		$company_cost_arr[$pm_sales->company_id] = $company_cost_arr[$pm_sales->company_id] + $sales_total;
+	}
 
 
- 	$counter = 0;
- 	$total_sale = array_sum($company_cost_arr);
+	arsort($company_cost_arr);
+
+	foreach ($company_cost_arr as $key => $value) {
+		if($counter > 19){
+			unset($company_cost_arr[$key]);
+		}
+		$counter++;
+	}
 
 
- 	if($alternator != ''){
- 		foreach ($company_cost_arr as $key => $value) {
- 			$percent = round(100/($total_sale/$value),1);
- 			echo "['". str_replace("'","&apos;",$company_list_arr[$key])."', ".$value."],";
- 		}
-
- 	}else{
- 		foreach ($company_cost_arr as $key => $value) {
- 			$percent = round(100/($total_sale/$value),1);
- 			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
- 			$company_name = $company_list_arr[$key];
-
- 			if(strlen($company_name) > 45){
- 				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name.'">'.substr($company_name,0,45).'...</span>';
- 			}else{
- 				echo $company_name;
- 			}
-
- 			echo '</div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>
- 			<div class="col-md-3 col-sm-4"><i class="fa fa-usd"></i><strong>$ '.number_format($value).'</strong></div>
- 			<div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-
- 		}
- 	}
- }
+	$counter = 0;
+	$total_sale = array_sum($company_cost_arr);
 
 
+	if($alternator != ''){
+		foreach ($company_cost_arr as $key => $value) {
+			$percent = round(100/($total_sale/$value),1);
+			echo "['". str_replace("'","&apos;",$company_list_arr[$key])."', ".$value."],";
+		}
+
+	}else{
+		foreach ($company_cost_arr as $key => $value) {
+			$percent = round(100/($total_sale/$value),1);
+			echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+			$company_name = $company_list_arr[$key];
+
+			if(strlen($company_name) > 45){
+				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name.'">'.substr($company_name,0,45).'...</span>';
+			}else{
+				echo $company_name;
+			}
+
+			echo '</div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>
+			<div class="col-md-3 col-sm-4"><i class="fa fa-usd"></i><strong>$ '.number_format($value).'</strong></div>
+			<div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+
+		}
+	}
+}
 
 
-	public function focus_top_ten_clients_pm_donut($pm_data_id = '',$year_set=''){
-		 
+
+
+public function focus_top_ten_clients_pm_donut($pm_data_id = '',$year_set=''){
+
 	$user_id = ($pm_data_id == '' ? $this->session->userdata('user_id') : $pm_data_id);
 
-		$fetch_user = $this->user_model->fetch_user($user_id);
-		$user_details = array_shift($fetch_user->result_array());
-		$comp_q = '';
-		$comp_q .= 'AND (';
+	$fetch_user = $this->user_model->fetch_user($user_id);
+	$user_details = array_shift($fetch_user->result_array());
+	$comp_q = '';
+	$comp_q .= 'AND (';
 		$limit = 0;
- 
+
 		if($pm_data_id != ''){
 			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
 				$pm_type = 1;
 			endif; //for directors 
 
 			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM 
 
 			if($user_details['user_role_id'] == 20 && $user_details['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM or AM
 		}else{
 			$pm_type = $this->pm_type();
@@ -9476,165 +9646,165 @@ if($year_set != ''){
 
 		$comp_q .= ')';
 
-		if($year_set != ''){
-			$current_date = date("d/m/").''.$year_set;
-			$year = $year_set;
-			$last_year = $year_set -1;
-		}else{
-			$current_date = date("d/m/Y");
-			$year = date("Y");
-			$last_year = intval(date("Y")) - 1;
-		}
-  
-		$next_year_date = '01/01/'.($year+1);
-		$current_start_year = '01/01/'.$year;
-		$last_start_year = '01/01/'.($year-1);
+if($year_set != ''){
+	$current_date = date("d/m/").''.$year_set;
+	$year = $year_set;
+	$last_year = $year_set -1;
+}else{
+	$current_date = date("d/m/Y");
+	$year = date("Y");
+	$last_year = intval(date("Y")) - 1;
+}
 
-		$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date,'','',$comp_q);
-		$client_details  = $q_clients->result();
-		$list_total = 0;
+$next_year_date = '01/01/'.($year+1);
+$current_start_year = '01/01/'.$year;
+$last_start_year = '01/01/'.($year-1);
 
-		foreach ($client_details as $company) {
-			$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
-			$vr_val_t = array_shift($q_vr_c_t->result_array());
-			$list_total = $list_total + $company->grand_total + $vr_val_t['total_variation'];
+$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date,'','',$comp_q);
+$client_details  = $q_clients->result();
+$list_total = 0;
+
+foreach ($client_details as $company) {
+	$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+	$vr_val_t = array_shift($q_vr_c_t->result_array());
+	$list_total = $list_total + $company->grand_total + $vr_val_t['total_variation'];
 
 
 
-		}
- 
-		$this_month = date("m");
-		$this_day = date("d");
- 
-		$date_a_last = "01/01/$last_year";
-		$date_b_last = "$this_day/$this_month/$last_year";
+}
 
-		$comp_total = array();
-		$comp_name = array();
+$this_month = date("m");
+$this_day = date("d");
 
-		foreach ($client_details as $company) {
-			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
-			$vr_val = array_shift($q_vr_c->result_array());
-			$cost_gtotl_amnt = round($company->grand_total+ $vr_val['total_variation']);
-			$comp_total[$company->company_id] = $cost_gtotl_amnt;
+$date_a_last = "01/01/$last_year";
+$date_b_last = "$this_day/$this_month/$last_year";
+
+$comp_total = array();
+$comp_name = array();
+
+foreach ($client_details as $company) {
+	$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
+	$vr_val = array_shift($q_vr_c->result_array());
+	$cost_gtotl_amnt = round($company->grand_total+ $vr_val['total_variation']);
+	$comp_total[$company->company_id] = $cost_gtotl_amnt;
 		//	$comp_name[$company->company_id] = $company->company_name;
-			$comp_name[$company->company_id] = $company->company_name_group;
+	$comp_name[$company->company_id] = $company->company_name_group;
 
-		}
+}
 
-		arsort($comp_total);
+arsort($comp_total);
 
-		foreach ($comp_total as $raw_id => $compute_amount) {
-			$percent = round(100/($list_total/$compute_amount),1);
+foreach ($comp_total as $raw_id => $compute_amount) {
+	$percent = round(100/($list_total/$compute_amount),1);
 			//$company_name = $comp_name[$raw_id];
-			$company_name_group = $comp_name[$raw_id];
+	$company_name_group = $comp_name[$raw_id];
 
 
-			echo "['". str_replace("'","&apos;",$company_name_group)."', ".$compute_amount."],";
+	echo "['". str_replace("'","&apos;",$company_name_group)."', ".$compute_amount."],";
 
-		}
+}
+}
+
+
+
+
+
+
+
+
+
+public function focus_top_ten_clients(){
+	$current_date = date("d/m/Y");
+	$year = date("Y");
+	$next_year_date = '01/01/'.($year+1);
+	$current_start_year = '01/01/'.$year;
+	$last_start_year = '01/01/'.($year-1);
+
+	$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date);
+	$client_details  = $q_clients->result();
+
+	$list_total = 0;
+
+	foreach ($client_details as $company){
+		$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id);
+		$vr_val_t = array_shift($q_vr_c_t->result_array());
+		$list_total = $list_total + round($company->grand_total + $vr_val_t['total_variation']);
 	}
 
+	$last_year = intval(date("Y")) - 1;
+	$this_month = date("m");
+	$this_day = date("d");
+	$date_a_last = "01/01/$last_year";
+	$date_b_last = "$this_day/$this_month/$last_year";
+	$comp_total = array();
+	$comp_name = array();
 
+	foreach ($client_details as $company) {
+		$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id);
+		$vr_val = array_shift($q_vr_c->result_array());
+		$cost_gtotl_amnt = round($company->grand_total+ $vr_val['total_variation']);
+		$comp_total[$company->company_id] = $cost_gtotl_amnt;
+		$comp_name[$company->company_id] = $company->company_name_group;
 
-
-
-
-
-
-
-	public function focus_top_ten_clients(){
-		$current_date = date("d/m/Y");
-		$year = date("Y");
-		$next_year_date = '01/01/'.($year+1);
-		$current_start_year = '01/01/'.$year;
-		$last_start_year = '01/01/'.($year-1);
-
-		$q_clients = $this->dashboard_m->get_top_ten_clients($current_start_year, $current_date);
-		$client_details  = $q_clients->result();
-		
-		$list_total = 0;
-
-		foreach ($client_details as $company){
-			$q_vr_c_t = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id);
-			$vr_val_t = array_shift($q_vr_c_t->result_array());
-			$list_total = $list_total + round($company->grand_total + $vr_val_t['total_variation']);
-		}
-
-		$last_year = intval(date("Y")) - 1;
-		$this_month = date("m");
-		$this_day = date("d");
-		$date_a_last = "01/01/$last_year";
-		$date_b_last = "$this_day/$this_month/$last_year";
-		$comp_total = array();
-		$comp_name = array();
-
-		foreach ($client_details as $company) {
-			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id);
-			$vr_val = array_shift($q_vr_c->result_array());
-			$cost_gtotl_amnt = round($company->grand_total+ $vr_val['total_variation']);
-			$comp_total[$company->company_id] = $cost_gtotl_amnt;
-			$comp_name[$company->company_id] = $company->company_name_group;
-
-		}
-
-		arsort($comp_total);
-
-		foreach ($comp_total as $raw_id => $compute_amount) {
-			echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
-			$percent = round(100/($list_total/$compute_amount),1);
-			$company_name_group = $comp_name[$raw_id];
- 
-			if(strlen($company_name_group) > 30){
-				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name_group.'">'.substr($company_name_group,0,30).'...</span>';
-			}else{
-				echo $company_name_group;
-			}
-
-			$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$raw_id);
-			$vr_val_u = array_shift($q_vr_c_u->result_array());
-
-			$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$raw_id);
-			$last_year_sale = array_shift($last_year_q->result_array());
-			$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
-			echo ' </div><div class="col-md-2 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-		}
 	}
+
+	arsort($comp_total);
+
+	foreach ($comp_total as $raw_id => $compute_amount) {
+		echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+		$percent = round(100/($list_total/$compute_amount),1);
+		$company_name_group = $comp_name[$raw_id];
+
+		if(strlen($company_name_group) > 30){
+			echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$company_name_group.'">'.substr($company_name_group,0,30).'...</span>';
+		}else{
+			echo $company_name_group;
+		}
+
+		$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$raw_id);
+		$vr_val_u = array_shift($q_vr_c_u->result_array());
+
+		$last_year_q = $this->dashboard_m->get_top_ten_clients($date_a_last, $date_b_last,$raw_id);
+		$last_year_sale = array_shift($last_year_q->result_array());
+		$lst_year_total = $last_year_sale['grand_total'] + $vr_val_u['total_variation'];
+		echo ' </div><div class="col-md-2 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($compute_amount).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+	}
+}
 
 
 //get_company_sales($type,$date_a,$date_b,$cmp_id='')
 
 
-	
 
 
 
 
-	public function focus_top_ten_con_sup_pm_donut($type,$pm_data_id = ''){
-		
-		if(isset($pm_data_id) && $pm_data_id != ''){
-			$user_id = $pm_data_id;
-		}else{
-			$user_id = $this->session->userdata('user_id');
-		}
 
-		$direct_company = '';
-		$fetch_user = $this->user_model->fetch_user($user_id);
-		$user_details = array_shift($fetch_user->result_array());
+public function focus_top_ten_con_sup_pm_donut($type,$pm_data_id = ''){
+
+	if(isset($pm_data_id) && $pm_data_id != ''){
+		$user_id = $pm_data_id;
+	}else{
+		$user_id = $this->session->userdata('user_id');
+	}
+
+	$direct_company = '';
+	$fetch_user = $this->user_model->fetch_user($user_id);
+	$user_details = array_shift($fetch_user->result_array());
 
 
 
-		if($user_id != ''){
-			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
-				$pm_type = 1;
+	if($user_id != ''){
+		if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
+			$pm_type = 1;
 			endif; //for directors 
 
 			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM 
 
 			if($user_details['user_role_id'] == 20 && $user_details['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM or AM
 		}else{
 
@@ -9659,101 +9829,101 @@ if($year_set != ''){
 		$comp_q = '';
 
 		$comp_q .= 'AND (';
-		foreach ($direct_company as $key => $value) {
-			$comp_q .= '`project`.`focus_company_id` = '.$value.'';
-			$limit++;
+			foreach ($direct_company as $key => $value) {
+				$comp_q .= '`project`.`focus_company_id` = '.$value.'';
+				$limit++;
 
-			if($size != $limit){
-				$comp_q .= ' OR ';
+				if($size != $limit){
+					$comp_q .= ' OR ';
+				}
+
+
 			}
-
-
-		}
-		$comp_q .= ')';
+			$comp_q .= ')';
 
 
 	//if( in_array($project['focus_company_id'], $direct_company) ){
 
 
-		$current_date = date("d/m/Y");
-		$year = date("Y");
+$current_date = date("d/m/Y");
+$year = date("Y");
 
-		$last_year = intval(date("Y")) - 1;
+$last_year = intval(date("Y")) - 1;
 
-		$base_year = '01/01/'.$year;
+$base_year = '01/01/'.$year;
 
-		$next_year_date = '01/01/'.$last_year;
-		$current_start_year = date("d/m/Y");
-		$last_start_year = '01/01/'.$last_year;
+$next_year_date = '01/01/'.$last_year;
+$current_start_year = date("d/m/Y");
+$last_start_year = '01/01/'.$last_year;
 
-		$q_companies = $this->dashboard_m->get_company_sales($type,$base_year,$current_start_year,'',$comp_q);
-		$company_details  = $q_companies->result();
-		$counter = 0;
+$q_companies = $this->dashboard_m->get_company_sales($type,$base_year,$current_start_year,'',$comp_q);
+$company_details  = $q_companies->result();
+$counter = 0;
 
 
-		$list_total = 0;
+$list_total = 0;
 
-		foreach ($company_details as $company) {
-			$list_total = $list_total + $company->total_price;
-		}
+foreach ($company_details as $company) {
+	$list_total = $list_total + $company->total_price;
+}
 
-		foreach ($company_details as $company) {
-			$counter ++;
-			$total = $company->total_price;
-			$percent = round(100/($list_total/$company->total_price));
+foreach ($company_details as $company) {
+	$counter ++;
+	$total = $company->total_price;
+	$percent = round(100/($list_total/$company->total_price));
 
-			$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
-			$overall_cost = array_shift($q_clients_overall->result_array());
-			$grand_total = $overall_cost['total_price'];
+	$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
+	$overall_cost = array_shift($q_clients_overall->result_array());
+	$grand_total = $overall_cost['total_price'];
 
 			//echo '<div class="col-sm-8 col-md-8"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
-			$comp_name = $company->company_name; 
+	$comp_name = $company->company_name; 
 
 
 
-			echo "['". str_replace("'","&apos;",$comp_name)."', ".$company->total_price."],";
+	echo "['". str_replace("'","&apos;",$comp_name)."', ".$company->total_price."],";
 
 
 
-			$cmp_id = $company->company_id;
+	$cmp_id = $company->company_id;
 
-			$last_year_q = $this->dashboard_m->get_company_sales('',$base_year,$current_start_year,$cmp_id,$comp_q);
-			$last_year_sale = array_shift($last_year_q->result_array());
-			$lst_year_total = $last_year_sale['total_price'];
+	$last_year_q = $this->dashboard_m->get_company_sales('',$base_year,$current_start_year,$cmp_id,$comp_q);
+	$last_year_sale = array_shift($last_year_q->result_array());
+	$lst_year_total = $last_year_sale['total_price'];
 
 			//echo ' </div><div class="col-md-1 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-		}
+}
+}
+
+
+
+
+public function focus_top_ten_con_sup_pm($type,$pm_data_id = ''){
+
+	if(isset($pm_data_id) && $pm_data_id != ''){
+		$user_id = $pm_data_id;
+	}else{
+		$user_id = $this->session->userdata('user_id');
 	}
 
+	$direct_company = '';
+	$fetch_user = $this->user_model->fetch_user($user_id);
+	$user_details = array_shift($fetch_user->result_array());
 
 
 
-	public function focus_top_ten_con_sup_pm($type,$pm_data_id = ''){
-		
-		if(isset($pm_data_id) && $pm_data_id != ''){
-			$user_id = $pm_data_id;
-		}else{
-			$user_id = $this->session->userdata('user_id');
-		}
-
-		$direct_company = '';
-		$fetch_user = $this->user_model->fetch_user($user_id);
-		$user_details = array_shift($fetch_user->result_array());
-
-
-
-		if($user_id != ''){
-			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
-				$pm_type = 1;
+	if($user_id != ''){
+		if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 1):
+			$pm_type = 1;
 			endif; //for directors 
 
 			if($user_details['user_role_id'] == 3 && $user_details['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM 
 
 			if($user_details['user_role_id'] == 20 && $user_details['user_department_id'] == 4): //for PM 
-				$pm_type = 2;
+			$pm_type = 2;
 			endif; //for PM or AM
 		}else{
 
@@ -9778,137 +9948,137 @@ if($year_set != ''){
 		$comp_q = '';
 
 		$comp_q .= 'AND (';
-		foreach ($direct_company as $key => $value) {
-			$comp_q .= '`project`.`focus_company_id` = '.$value.'';
-			$limit++;
+			foreach ($direct_company as $key => $value) {
+				$comp_q .= '`project`.`focus_company_id` = '.$value.'';
+				$limit++;
 
-			if($size != $limit){
-				$comp_q .= ' OR ';
+				if($size != $limit){
+					$comp_q .= ' OR ';
+				}
+
+
 			}
-
-
-		}
-		$comp_q .= ')';
+			$comp_q .= ')';
 
 
 	//if( in_array($project['focus_company_id'], $direct_company) ){
 
 
-		$current_date = date("d/m/Y");
-		$year = date("Y");
+$current_date = date("d/m/Y");
+$year = date("Y");
 
-		$last_year = intval(date("Y")) - 1;
+$last_year = intval(date("Y")) - 1;
 
-		$base_year = '01/01/'.$year;
+$base_year = '01/01/'.$year;
 
-		$next_year_date = '01/01/'.$last_year;
-		$current_start_year = date("d/m/Y");
-		$last_start_year = '01/01/'.$last_year;
+$next_year_date = '01/01/'.$last_year;
+$current_start_year = date("d/m/Y");
+$last_start_year = '01/01/'.$last_year;
 
-		$q_companies = $this->dashboard_m->get_company_sales($type,$base_year,$current_start_year,'',$comp_q);
-		$company_details  = $q_companies->result();
-		$counter = 0;
+$q_companies = $this->dashboard_m->get_company_sales($type,$base_year,$current_start_year,'',$comp_q);
+$company_details  = $q_companies->result();
+$counter = 0;
 
 
-		$list_total = 0;
+$list_total = 0;
 
-		foreach ($company_details as $company) {
-			$list_total = $list_total + $company->total_price;
-		}
+foreach ($company_details as $company) {
+	$list_total = $list_total + $company->total_price;
+}
 
-		foreach ($company_details as $company) {
-			$counter ++;
-			$total = $company->total_price;
-			$percent = round(100/($list_total/$company->total_price));
+foreach ($company_details as $company) {
+	$counter ++;
+	$total = $company->total_price;
+	$percent = round(100/($list_total/$company->total_price));
 
-			$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
-			$overall_cost = array_shift($q_clients_overall->result_array());
-			$grand_total = $overall_cost['total_price'];
+	$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
+	$overall_cost = array_shift($q_clients_overall->result_array());
+	$grand_total = $overall_cost['total_price'];
 
-			echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+	echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
 
-			$comp_name = $company->company_name;
-			if(strlen($comp_name) > 30){
-				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
-			}else{
-				echo $comp_name;
-			}
-
-			$cmp_id = $company->company_id;
-
-			$last_year_q = $this->dashboard_m->get_company_sales('',$base_year,$current_start_year,$cmp_id,$comp_q);
-			$last_year_sale = array_shift($last_year_q->result_array());
-			$lst_year_total = $last_year_sale['total_price'];
-
-			echo ' </div><div class="col-md-2 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-		}
+	$comp_name = $company->company_name;
+	if(strlen($comp_name) > 30){
+		echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
+	}else{
+		echo $comp_name;
 	}
 
+	$cmp_id = $company->company_id;
 
-	public function focus_top_ten_con_sup($type){
-		$current_date = date("d/m/Y");
-		$year = date("Y");
+	$last_year_q = $this->dashboard_m->get_company_sales('',$base_year,$current_start_year,$cmp_id,$comp_q);
+	$last_year_sale = array_shift($last_year_q->result_array());
+	$lst_year_total = $last_year_sale['total_price'];
 
-		$last_year = intval(date("Y")) - 1;
-		$base_year = '01/01/'.$year;
+	echo ' </div><div class="col-md-2 col-sm-4"><strong>'.$percent.'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+}
+}
 
-		$next_year_date = '01/01/'.$last_year;
-		$current_start_year = date("d/m/Y");
-		$last_start_year = '01/01/'.$last_year;
-		$last_year_current_date = date("d/m/").$last_year;
 
-		$q_companies = $this->dashboard_m->get_company_sales($type,$base_year,$current_start_year);
-		$company_details  = $q_companies->result();
-		$counter = 0;
+public function focus_top_ten_con_sup($type){
+	$current_date = date("d/m/Y");
+	$year = date("Y");
 
-		$list_total = 0;
+	$last_year = intval(date("Y")) - 1;
+	$base_year = '01/01/'.$year;
 
-		foreach ($company_details as $company) {
-			$list_total = $list_total + round($company->total_price);
-		}
+	$next_year_date = '01/01/'.$last_year;
+	$current_start_year = date("d/m/Y");
+	$last_start_year = '01/01/'.$last_year;
+	$last_year_current_date = date("d/m/").$last_year;
 
-		foreach ($company_details as $company) {
-			$counter ++;
-			$total = $company->total_price;
-			$percent = round(100/($list_total/ round($company->total_price) ),1);
+	$q_companies = $this->dashboard_m->get_company_sales($type,$base_year,$current_start_year);
+	$company_details  = $q_companies->result();
+	$counter = 0;
 
-			$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
-			$overall_cost = array_shift($q_clients_overall->result_array());
-			$grand_total = $overall_cost['total_price'];
+	$list_total = 0;
 
-			echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
-
-			$comp_name = $company->company_name;
-			if(strlen($comp_name) > 30){
-				echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
-			}else{
-				echo $comp_name;
-			}
-
-			$cmp_id = $company->company_id;
-
-			$last_year_q = $this->dashboard_m->get_company_sales('',$last_start_year,$base_year);
-			$last_year_sale = array_shift($last_year_q->result_array());
-			$lst_year_total = $last_year_sale['total_price'];
-
-			echo ' </div><div class="col-md-2 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
-		}
+	foreach ($company_details as $company) {
+		$list_total = $list_total + round($company->total_price);
 	}
 
+	foreach ($company_details as $company) {
+		$counter ++;
+		$total = $company->total_price;
+		$percent = round(100/($list_total/ round($company->total_price) ),1);
 
-	public function focus_projects_by_type_widget_pm($assign_id='',$is_pie=''){
+		$q_clients_overall = $this->dashboard_m->get_company_sales_overall($company->company_id);
+		$overall_cost = array_shift($q_clients_overall->result_array());
+		$grand_total = $overall_cost['total_price'];
 
-		if(isset($assign_id) && $assign_id != ''){
-			$user_id = $assign_id;
+		echo '<div class="col-sm-8 col-md-7"><i class="fa fa-chevron-circle-right"></i>  &nbsp; ';
+
+		$comp_name = $company->company_name;
+		if(strlen($comp_name) > 30){
+			echo '<span class="tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$comp_name.'">'.substr($comp_name,0,30).'...</span>';
 		}else{
-			$user_id = $this->session->userdata('user_id');
+			echo $comp_name;
 		}
 
+		$cmp_id = $company->company_id;
 
-		$pm_type = $this->pm_type($user_id); 
+		$last_year_q = $this->dashboard_m->get_company_sales('',$last_start_year,$base_year);
+		$last_year_sale = array_shift($last_year_q->result_array());
+		$lst_year_total = $last_year_sale['total_price'];
 
-		$fetch_user = $this->user_model->fetch_user($user_id);
-		$user_details = array_shift($fetch_user->result_array());
+		echo ' </div><div class="col-md-2 col-sm-4"><strong>'.number_format($percent,1).'%</strong></div>  <div class="col-md-3 col-sm-4 tooltip-test" title="" data-placement="left" data-original-title="Last Year : $ '.number_format($lst_year_total).'"><i class="fa fa-usd"></i> '.number_format($company->total_price).'</div><div class="col-sm-12"><hr class="block m-bottom-5 m-top-5"></div>';
+	}
+}
+
+
+public function focus_projects_by_type_widget_pm($assign_id='',$is_pie=''){
+
+	if(isset($assign_id) && $assign_id != ''){
+		$user_id = $assign_id;
+	}else{
+		$user_id = $this->session->userdata('user_id');
+	}
+
+
+	$pm_type = $this->pm_type($user_id); 
+
+	$fetch_user = $this->user_model->fetch_user($user_id);
+	$user_details = array_shift($fetch_user->result_array());
 
 		if($pm_type == 1){ // for director/pm
 			$direct_company = explode(',',$user_details['direct_company'] );
@@ -10150,7 +10320,7 @@ if($year_set != ''){
 		$last_year = intval(date("Y")) - 1;
 		$this_month = date("m");
 		$this_day = date("d");
- 
+
 		$date_a_last = "01/01/$last_year";
 		$date_b_last = "$this_day/$this_month/$last_year";
 
@@ -10160,7 +10330,7 @@ if($year_set != ''){
 			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id);
 			$vr_val = array_shift($q_vr_c->result_array());
 			$comp_name = $company->company_name_group;
-		
+
 			$q_vr_c_u = $this->dashboard_m->client_vr_value($date_a_last,$date_b_last,$company->client_id);
 			$vr_val_u = array_shift($q_vr_c_u->result_array());
 
@@ -10175,7 +10345,7 @@ if($year_set != ''){
 
 
 
-public function focus_top_ten_con_sup_donut($type){
+	public function focus_top_ten_con_sup_donut($type){
 		$current_date = date("d/m/Y");
 		$year = date("Y");
 
@@ -10223,7 +10393,7 @@ public function focus_top_ten_con_sup_donut($type){
 			$lst_year_total = $last_year_sale['total_price'];
 
 
-echo "['". str_replace("'","&apos;",$comp_name)."', ".$company->total_price."],";
+			echo "['". str_replace("'","&apos;",$comp_name)."', ".$company->total_price."],";
 
 		}
 	}
@@ -10267,13 +10437,13 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$company->total_price."],"
 		$last_year = intval(date("Y")) - 1;
 		$this_month = date("m");
 		$this_day = date("d");
- 
+
 		$date_a_last = "01/01/$last_year";
 		$date_b_last = "$this_day/$this_month/$last_year";
 
 		foreach ($client_details as $company) {
 			$percent = round(100/($list_total/$company->grand_total));
-			 
+
 			$q_vr_c = $this->dashboard_m->client_vr_value($current_start_year,$current_date,$company->client_id,$comp_q);
 			$vr_val = array_shift($q_vr_c->result_array());
 
@@ -10290,10 +10460,10 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$company->total_price."],"
 			$total_price = $company->grand_total+ $vr_val['total_variation'];
 
 
-echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
+			echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 
 
-}
+		}
 	}
 
 
@@ -10350,9 +10520,9 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 			$overall_cost = array_shift($q_clients_overall->result_array());
 			$grand_total = $overall_cost['total_price'];
 
-			 
+
 			$comp_name = $company->company_name;
-			 
+
 
 			$cmp_id = $company->company_id;
 
@@ -10365,12 +10535,12 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 			$total_price = $company->total_price;
 
 
-echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
+			echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 
 
 
 
-}
+		}
 	}
 
 
@@ -10445,7 +10615,7 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 		$date_a_last = "01/01/$last_year"; 
 
 		$date_b_last = "$n_day/$n_month/$last_year";
- 
+
 
 		$q_maintenance = $this->dashboard_m->get_maitenance_dates($date_a_last,$date_b_last);
 		$maintenance_details  = $q_maintenance->result();
@@ -10475,7 +10645,7 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 		} 
 
 
-  
+
 /*
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="('.$last_year.')'.round($average_old,2).'">'.number_format($average,2).' Days';
 		echo '<span class="pull-right">'.$short_day_day.'  <i class="fa fa-arrows-h" aria-hidden="true"></i> '.$long_day.'</span></p>';
@@ -10571,7 +10741,7 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 			$average_old = ' No Data Yet';
 		}
 
-  
+
 
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title=" ('.$last_year.') &nbsp; '.number_format($average_old,2).'  &nbsp; ['.$short_day_day_old.' - '.$long_day_old.'] ">'.number_format($average,2).' Days';
 		echo '<span class="pull-right">'.$short_day_day.'  <i class="fa fa-arrows-h" aria-hidden="true"></i> '.$long_day.'</span></p>';
@@ -10698,7 +10868,7 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 //---------------------------------------------
 
 		$grand_total_sales_cmp = 0;
-		 
+
 //$old_year 
 
 
@@ -10709,7 +10879,7 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 		$total_wip = 0;
 
 
-  
+
 		$pm_data = $this->dashboard_m->fetch_project_pm_nomore();
 		$pm_q = array_shift($pm_data->result_array());
 		$not_pm_arr = explode(',',$pm_q['user_id'] );
@@ -10718,9 +10888,9 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 
 		$project_manager = $this->dashboard_m->fetch_pms_year(date("Y")); // ****--___--***
 		$project_manager_list = $project_manager->result();
- 
- 
-				foreach ($project_manager_list as $pm ) {
+
+
+		foreach ($project_manager_list as $pm ) {
 	/*		$total_sales = 0;
 			$q_pm_sales = $this->dashboard_m->dash_total_pm_sales($pm->user_id,$c_year,'',$date_a,$date_b);
 
@@ -10749,11 +10919,11 @@ echo "['". str_replace("'","&apos;",$comp_name)."', ".$total_price."],";
 		}
 
 
-$q_get_sales_yearly = $this->dashboard_m->get_sales_focus($c_year);
-$get_sales_yearly = array_shift($q_get_sales_yearly->result_array());
+		$q_get_sales_yearly = $this->dashboard_m->get_sales_focus($c_year);
+		$get_sales_yearly = array_shift($q_get_sales_yearly->result_array());
 
 
-$grand_total_sales_cmp = $get_sales_yearly['total_sales'];
+		$grand_total_sales_cmp = $get_sales_yearly['total_sales'];
 
 
 
@@ -10771,8 +10941,8 @@ $grand_total_sales_cmp = $get_sales_yearly['total_sales'];
 
 //---------------------------------------------
 
- 
- 
+
+
 
 // --------------------------------------------
 
@@ -10967,7 +11137,7 @@ $grand_total_sales_cmp = $get_sales_yearly['total_sales'];
 		$q_focus_pm_forecast = $this->dashboard_m->get_pm_forecast($report_year,$pm_id);
 		$data['pm_forecast'] = array_shift($q_focus_pm_forecast->result_array());
 
-	  
+
 		$focus_data_forecast_p = $this->dashboard_m->get_focus_comp_forecast($report_year);
 		$q_focus_data_forecast_p = $focus_data_forecast_p->result();
 		$forecast_per_comp = array();
@@ -10986,11 +11156,11 @@ if($pm_id = 29){
 
 		$q_curr_maintenance_sales = $this->dashboard_m->fetch_pm_sales_year($report_year,29);
 		$data['pm_actual_sales'] = array_shift($q_curr_maintenance_sales->result_array());
-}else{*/
+	}else{*/
 
 		$pm_actual_sales_q = $this->dashboard_m->fetch_pm_sales_year($report_year,$pm_id);
 		$data['pm_actual_sales'] = array_shift($pm_actual_sales_q->result_array());
-/*}*/
+		/*}*/
 
 
 
@@ -11174,49 +11344,43 @@ if($pm_id = 29){
 
 
 
-	public function test_data_rep(){
+	public function test_data_uninvoiced_list(){
 
 
 
 
-$query = $this->db->query("SELECT `invoice`.`project_id`, `invoice`.`invoice_date_req`, `invoice`.`set_invoice_date`, `project`.`project_total`,`project_cost_total`.`variation_total`, `invoice`.`progress_percent`, `invoice`.`label` ,`project`.`focus_company_id`,`invoice`.`invoice_date_req`,`project`.`project_manager_id`, `project`.`job_category`
+		$query = $this->db->query("SELECT `invoice`.`project_id`, `invoice`.`invoice_date_req`, `invoice`.`set_invoice_date`, `project`.`project_total`,`project_cost_total`.`variation_total`, `invoice`.`progress_percent`, `invoice`.`label` ,`project`.`focus_company_id`,`invoice`.`invoice_date_req`,`project`.`project_manager_id`, `project`.`job_category`
 			FROM `invoice`
 			LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id`
 			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
 			WHERE `project`.`is_active` = '1' AND  `invoice`.`is_invoiced` = '0' 
- 
-
-		
 
 
-/*
-AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('01/07/2016', '%d/%m/%Y') )
-AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('31/08/2017', '%d/%m/%Y') )
-*/
-
-  ORDER BY `project`.`project_id` ASC ");
-
-$unvoiced_total = 0;
-$id_1 = 0;
-$unvoiced_total_init = 0;
- 
-$dash_unvoiced = $query->result();
-foreach ($dash_unvoiced as $unvoiced) {
-
-	if($unvoiced->label == 'VR'){
-		$unvoiced_total_init = $unvoiced->variation_total;
-	}else{
-		$unvoiced_total_init = $unvoiced->project_total*($unvoiced->progress_percent/100);
-	}
- 
 
 
-	echo "<p>$unvoiced->project_id".'_'."$unvoiced_total_init</p>";
+ORDER BY `project`.`project_id` ASC ");
+
+		$unvoiced_total = 0;
+		$id_1 = 0;
+		$unvoiced_total_init = 0;
+
+		$dash_unvoiced = $query->result();
+		foreach ($dash_unvoiced as $unvoiced) {
+
+			if($unvoiced->label == 'VR'){
+				$unvoiced_total_init = $unvoiced->variation_total;
+			}else{
+				$unvoiced_total_init = $unvoiced->project_total*($unvoiced->progress_percent/100);
+			}
+
+
+
+			echo "$unvoiced->project_id".'_'."$unvoiced_total_init<br/>";
 
 
 
 //	$unvoiced_grand_total = $unvoiced_grand_total + $unvoiced_total;
-}
+		}
 
 
 
@@ -11230,30 +11394,26 @@ foreach ($dash_unvoiced as $unvoiced) {
 
 
 
-$query = $this->db->query("SELECT `project`.`project_id`, `project`.`project_name`,`project`.`job_date`,`project`.`date_site_finish`,`project`.`project_total`,`project_cost_total`.`variation_total`,`notes`.`comments`
-,`company_details`.`company_name` , CONCAT( `users`.`user_first_name`,' ',`users`.`user_last_name`) AS `pm_name`
+		$query = $this->db->query("SELECT `project`.`project_id`, `project`.`project_name`,`project`.`job_date`,`project`.`date_site_finish`,`project`.`project_total`,`project_cost_total`.`variation_total`,`notes`.`comments`
+			,`company_details`.`company_name` , CONCAT( `users`.`user_first_name`,' ',`users`.`user_last_name`) AS `pm_name`
 
-FROM `project`
+			FROM `project`
 
-LEFT JOIN `notes` ON `notes`.`notes_id` = `project`.`notes_id`
-LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`focus_company_id`
-LEFT JOIN `users` ON `users`.`user_id` =  `project`.`project_manager_id`
-LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
-WHERE `project`.`is_active` = '1' 		
-
-/*
-AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('01/07/2016', '%d/%m/%Y') )
-AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('31/08/2017', '%d/%m/%Y') )
-*/
-
-
-			AND `project`.`is_active` = '1' 
-            
-            
-            
- ORDER BY `project`.`project_id` ASC");
+			LEFT JOIN `notes` ON `notes`.`notes_id` = `project`.`notes_id`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`focus_company_id`
+			LEFT JOIN `users` ON `users`.`user_id` =  `project`.`project_manager_id`
+			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			WHERE `project`.`is_active` = '1' 		
 
  
+
+ 
+
+
+
+ORDER BY `project`.`project_id` ASC");
+
+
 $result_q = $query->result();
 foreach ($result_q as $data) {
 
@@ -11261,10 +11421,10 @@ foreach ($result_q as $data) {
 
 
 	$prj_data = $this->projects->fetch_project_totals($data->project_id);
- 
 
 
-	echo "<p>$data->project_id-".$prj_data['gp']."</p>";
+
+	echo "$data->project_id-".$prj_data['gp']."<br/>";
 
 //	$unvoiced_grand_total = $unvoiced_grand_total + $unvoiced_total;
 }
@@ -11288,16 +11448,16 @@ public function test_send(){
 
 
 //$config['protocol'] = 'sendmail';
-$config['mailpath'] = '/usr/sbin/sendmail -t -i';
-$config['charset'] = 'iso-8859-1';
-$config['wordwrap'] = TRUE;
-$config['smtp_host'] = 'sojourn-focusshopfit-com-au.mail.protection.outlook.com';
-$config['smtp_user']     = '';
-$config['smtp_pass']     = '';
-$config['protocol']     = 'mail';
-$config['port'] = 587;
+	$config['mailpath'] = '/usr/sbin/sendmail -t -i';
+	$config['charset'] = 'iso-8859-1';
+	$config['wordwrap'] = TRUE;
+	$config['smtp_host'] = 'sojourn-focusshopfit-com-au.mail.protection.outlook.com';
+	$config['smtp_user']     = '';
+	$config['smtp_pass']     = '';
+	$config['protocol']     = 'mail';
+	$config['port'] = 587;
 
-$this->email->initialize($config);
+	$this->email->initialize($config);
 
 
 
@@ -11308,78 +11468,78 @@ $this->email->initialize($config);
 
 	$this->email->subject('Email Test');
 	$this->email->message('Testing the email class.');
- 
-
-if ( ! $this->email->send())
-{
-      echo "error";
-}else{
-	echo "email sent";
-}
 
 
+	if ( ! $this->email->send())
+	{
+		echo "error";
+	}else{
+		echo "email sent";
+	}
 
-$to = "jervy@focusshopfit.com.au, jervyezaballa@gmail.com";
-$subject = "HTML email";
 
-$message = "
-<html>
-<head>
-<title>HTML email</title>
-</head>
-<body>
-<p>This email contains HTML Tags!</p>
-<table>
-<tr>
-<th>Firstname</th>
-<th>Lastname</th>
-</tr>
-<tr>
-<td>John</td>
-<td>Doe</td>
-</tr>
-</table>
-</body>
-</html>
-";
+
+	$to = "jervy@focusshopfit.com.au, jervyezaballa@gmail.com";
+	$subject = "HTML email";
+
+	$message = "
+	<html>
+	<head>
+		<title>HTML email</title>
+	</head>
+	<body>
+		<p>This email contains HTML Tags!</p>
+		<table>
+			<tr>
+				<th>Firstname</th>
+				<th>Lastname</th>
+			</tr>
+			<tr>
+				<td>John</td>
+				<td>Doe</td>
+			</tr>
+		</table>
+	</body>
+	</html>
+	";
 
 // Always set content-type when sending HTML email
-$headers = "MIME-Version: 1.0" . "\r\n";
-$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+	$headers = "MIME-Version: 1.0" . "\r\n";
+	$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
 // More headers
-$headers .= 'From: <userconf@sojourn.focusshopfit.com.au>' . "\r\n";
-$headers .= 'Cc: jean@ausconnect.net.au' . "\r\n";
+	$headers .= 'From: <userconf@sojourn.focusshopfit.com.au>' . "\r\n";
+	$headers .= 'Cc: jean@ausconnect.net.au' . "\r\n";
 
-mail($to,$subject,$message,$headers);
-
-
+	mail($to,$subject,$message,$headers);
 
 
-require_once('PHPMailer/class.phpmailer.php');
-require_once('PHPMailer/PHPMailerAutoload.php');
 
 
-$mail = new phpmailer(true);
-$mail->host = "sojourn-focusshopfit-com-au.mail.protection.outlook.com";
-$mail->port = 587;
-$mail->setfrom('userconf@sojourn.focusshopfit.com.au', 'name');
-$mail->addreplyto('userconf@sojourn.focusshopfit.com.au', 'name');
-$mail->addaddress('jervy@focusshopfit.com.au', 'joe user');
-$mail->addcc('jean@ausconnect.net.au');
-$mail->smtpdebug = 2;
-$mail->ishtml(true);
-$mail->msghtml('this is a test');
+	require_once('PHPMailer/class.phpmailer.php');
+	require_once('PHPMailer/PHPMailerAutoload.php');
+
+
+	$mail = new phpmailer(true);
+	$mail->host = "sojourn-focusshopfit-com-au.mail.protection.outlook.com";
+	$mail->port = 587;
+	$mail->setfrom('userconf@sojourn.focusshopfit.com.au', 'name');
+	$mail->addreplyto('userconf@sojourn.focusshopfit.com.au', 'name');
+	$mail->addaddress('jervy@focusshopfit.com.au', 'joe user');
+	$mail->addcc('jean@ausconnect.net.au');
+	$mail->smtpdebug = 2;
+	$mail->ishtml(true);
+	$mail->msghtml('this is a test');
 //$mail->send();
 
 
 
-if(!$mail->send()) {
-    echo 'message could not be sent.';
-    echo 'mailer error: ' . $mail->errorinfo;
-} else {
-    echo 'message has been sent';
-}
+	if(!$mail->send()) {
+		echo 'message could not be sent.';
+		echo 'mailer error: ' . $mail->errorinfo;
+	} else {
+		echo 'message has been sent';
+	}
 
 
 

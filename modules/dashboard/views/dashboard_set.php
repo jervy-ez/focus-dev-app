@@ -37,7 +37,9 @@ foreach ($estimator_list as $est ) {
 	}
 }
 
+
 $estimator_colors['Danikka'] = $set_colors[4];
+$estimator_colors['Ernan'] = $set_colors[5];
 
 
 
@@ -153,7 +155,8 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 
 
 						<div class=" col-xs-12 box-widget pad-10">
-							<div class="progress no-m progress-termometer">
+							<div class="progress no-m progress-termometer  tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims." title="">							
+								<span style="    position: absolute;    left: 25px;    top:16px; font-size: 12px;    color: #fff;">ALL</span>
 								<div class="progress-bar progress-bar-danger active progress-bar-striped full_p tooltip-pb" title="" style="background-color: rgb(251, 25, 38); border-radius: 0px 10px 10px 0px;"></div> 
 								<script type="text/javascript">
 									$(window).load(function() {
@@ -178,12 +181,70 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 							</div>
 						</div>	
 
+
+
+						  <div class=" col-xs-12 col-md-6 box-widget pad-10">
+						 	<div class="progress no-m progress-termometer tooltip-enabled" id="progressBar_wa" data-html="true" data-placement="bottom" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims."  >
+						 		<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>
+						 	</div>
+						 </div>
+						 <script type="text/javascript">
+						 	pre_load_module('#progressBar_wa','dashboard/focus_company_sep_thermo/5/Focus Shopfit Pty Ltd',3025);			 	
+						 	setTimeout(function () { $('#progressBar_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 70200);
+						 </script>
+ 	
+						 <div class=" col-xs-12 col-md-6 box-widget pad-10">
+						 	<div class="progress no-m progress-termometer tooltip-enabled" id="progressBar_nsw" data-html="true" data-placement="bottom" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims."  >
+						 		<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>
+						 	</div>
+						 </div>
+						 <script type="text/javascript">
+						 	pre_load_module('#progressBar_nsw','dashboard/focus_company_sep_thermo/6/Focus Shopfit NSW Pty Ltd',3050); 
+						 	setTimeout(function () { $('#progressBar_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 70500);
+						 </script>
+
+
+
+
+
+
 						<div class=" col-xs-12 box-widget pad-10">
-							<script type="text/javascript"> pre_load_module('#progressBar_standing_area','dashboard/progressBar',3000); </script>
-							<div class="progress no-m progress-termometer" id="progressBar_standing_area">
-								<?php //echo $this->dashboard->progressBar(); ?>
-							</div>
-						</div>	
+							<div class="progress no-m progress-termometer" id="progressBar_standing_area"><span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">ALL</span></div>
+						</div>
+						<script type="text/javascript">
+						$(function() {
+							pre_load_module('#progressBar_standing_area','dashboard/progressBar',90000);
+						 	setTimeout(function () { $('#progressBar_standing_area').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">ALL</span>');}, 120000);
+						 	});
+						 </script>
+
+						<div class=" col-xs-12 col-md-6 box-widget pad-10 tip_side_mod">
+							<div class="progress no-m progress-termometer"  id="progressBar_standing_area_wa"><span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span></div>
+						</div>
+						<script type="text/javascript">
+						$(function() {
+							pre_load_module('#progressBar_standing_area_wa','dashboard/progressBar/5/1',120000);
+						 	setTimeout(function () { $('#progressBar_standing_area_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 150000);
+						 	});
+						 </script>
+
+						<div class=" col-xs-12 col-md-6 box-widget pad-10 tip_side_mod">
+							<div class="progress no-m progress-termometer"  id="progressBar_standing_area_nsw"><span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span></div>
+						</div>
+						<script type="text/javascript">
+						$(function() {
+							pre_load_module('#progressBar_standing_area_nsw','dashboard/progressBar/6/1',150000);
+						 	setTimeout(function () { $('#progressBar_standing_area_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 180000);
+						 	});
+						 </script>
+
+
+
+						<style type="text/css">
+						.tip_side_mod .tooltip.right, .tip_side_mod .tooltip.left{
+							width: 200px !important;
+						}
+						</style>
 
 						<style type="text/css">.progress .tooltip{ display: none !important; visibility: hidden !important;  }</style>
 
@@ -231,7 +292,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head pad-5 fill">
-									<strong>Project Completion Calendar</strong>
+									<strong>Project Completion Calendar</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the on-going projects completion dates ordered chronologically."></i></span>
 
 
 									<select class="pull-right input-control input-sm chart_data_selection_pmsgp" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 150px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
@@ -431,7 +492,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head pad-5 fill">
-									<strong>Quote Deadline Calendar</strong>
+									<strong>Quote Deadline Calendar</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the quoted projects in completion date order chronologically. The deadline day is shown as a target in the calendar."></i></span>
 
 									<select class="pull-right input-control input-sm chart_data_selection_est" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 120px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="all">Overall</option>
@@ -554,7 +615,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of days when the next deadline is occurring."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 
@@ -587,7 +648,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Project Estimator Quotes</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Project Estimator Quotes</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells each estimators current quoted projects for the year and compares to last year."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<script type="text/javascript"> pre_load_module('#estimators_quotes_completed_area','dashboard/estimators/estimators_quotes_completed',15500); </script>
@@ -621,7 +682,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 						<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 box-widget pad-10 pie_toggle_custom_a">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong><span class="pull-right"> <?php echo date('Y'); ?></span></div>
+								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="The total project costs per project category, only completed projects of the current year to date are included."></i></span><span class="pull-right"> <?php echo date('Y'); ?></span></div>
 								<div class="box-area clearfix" style="height:320px;">
 									<div class="widg-content clearfix">
 
@@ -950,7 +1011,7 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>
+									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week number and displays how many leaves taken place, the chart can be broken down into individual employees."></i></span>
 
 									<select class="pull-right input-control input-sm chart_data_selection_emps" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 100px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="all" selected="all">Overall</option>
@@ -1314,7 +1375,7 @@ $('.leave_type_selection').click(function(){
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5">
 									<i class="fa fa-map-marker fa-lg"></i> 
-									<strong>On-Going Projects in Australia</strong>
+									<strong>On-Going Projects in Australia</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Displays the map of Australia and plots down the location of all on-going projects."></i></span>
 								</div>
 								<div class="box-area clearfix  pad-0-imp" style="height:500px;">
 									<div class="widg-content clearfix pad-0-imp">
@@ -1331,7 +1392,7 @@ $('.leave_type_selection').click(function(){
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5">
 									<i class="fa fa-users  fa-lg"></i> 
-									<strong>Focus Employee Locations</strong>
+									<strong>Focus Employee Locations</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Displays a map where the office of each focus employees are located."></i></span>
 								</div>
 								<div class="box-area clearfix  pad-0-imp" style="height:500px;">
 									<div class="widg-content clearfix pad-0-imp">

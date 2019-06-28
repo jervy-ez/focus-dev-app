@@ -27,14 +27,23 @@ class Dashboard_m extends CI_Model{
 		return $query;
 	}
 
-	public function fetch_pm_forecast_details($year,$forecast_id,$pm_id){
+	public function fetch_pm_forecast_details($year,$forecast_id,$pm_id,$comp_id=''){
 		$query = $this->db->query("SELECT `revenue_forecast_individual`.* , `rev_for_indvl`.`forecast_percent` AS `f_comp_forecast_percent` , `rev_for_indvl`.`comp_id` 
 			FROM `revenue_forecast_individual` 
 			LEFT JOIN `revenue_forecast_individual` `rev_for_indvl` ON `rev_for_indvl`.`comp_id` = `revenue_forecast_individual`.`comp_id` 
 			
 			WHERE `revenue_forecast_individual`.`year` = '$year' 
 			AND `revenue_forecast_individual`.`revenue_forecast_id` = '$forecast_id' 
-			AND `revenue_forecast_individual`.`pm_id` = '$pm_id' 
+
+			
+
+
+			".($comp_id == '' ? " AND `revenue_forecast_individual`.`pm_id` = '$pm_id'  " :  " AND `revenue_forecast_individual`.`pm_id` = '0'    AND `revenue_forecast_individual`.`comp_id` = '$comp_id'   "  )."
+
+
+
+
+
 			AND `rev_for_indvl`.`year` = '$year' 
 			AND `rev_for_indvl`.`revenue_forecast_id` = '$forecast_id' 
 
@@ -287,6 +296,17 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `re
 			FROM `users` 
 			LEFT JOIN `company_details` ON `company_details`.`company_id` = `users`.`user_focus_company_id` 
 			WHERE `users`.`is_active` = '1'  AND `users`.`user_id` <> '29' AND   ( `users`.`user_role_id` = '3' OR  `users`.`user_role_id` = '20')  ORDER BY `users`.`user_focus_company_id` ASC");
+		return $query;
+	}
+
+	public function count_maintenance_projects($date_a,$date_b){
+		$query = $this->db->query("SELECT  COUNT( `project`.`project_id`) AS `prj_numbers` , SUM(`project`.`project_total`) + SUM( `project_cost_total`.`variation_total`)  AS `total_proj_exgst`
+			FROM `project`  
+			LEFT JOIN  `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			WHERE `project`.`job_category` = 'Maintenance'  
+			AND `project`.`job_date` != ''  
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) ");
 		return $query;
 	}
 
@@ -653,6 +673,8 @@ SELECT `project`.`project_id`,`users`.`user_first_name`,`users`.`user_last_name`
 		}
 
 	}
+
+
 
 	public function get_current_forecast($year,$id,$get_comp='',$is_maintenance = ''){
 
@@ -1122,7 +1144,15 @@ SELECT `invoice`.`project_id`, `invoice`.`progress_percent`,`project`.`project_t
 FROM `invoice` LEFT JOIN `project` ON `project`.`project_id` = `invoice`.`project_id` LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id` 
 WHERE `invoice`.`set_invoice_date` <> '' 
 AND `invoice`.`is_invoiced` = '1' AND `project`.`is_active` = '1' 
-AND `project`.`job_date` <> '' AND `project`.`project_manager_id` = '$proj_mngr_id' AND `project`.`focus_company_id` = '$comp_id' AND  `project`.`job_category` != 'Company'
+AND `project`.`job_date` <> '' 
+
+".($proj_mngr_id == '' ? '' :  " AND `project`.`project_manager_id` = '$proj_mngr_id'  " )."
+
+
+
+
+
+AND `project`.`focus_company_id` = '$comp_id' AND  `project`.`job_category` != 'Company'
 
 AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
 AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
@@ -1394,7 +1424,7 @@ ORDER BY `project`.`focus_company_id` ASC
 	}
 
 
-	public function get_personal_wip($date_a,$date_b,$id,$comp){
+	public function get_personal_wip($date_a,$date_b,$id='',$comp){
 		$query = $this->db->query(" SELECT * FROM `invoice`
 			LEFT JOIN `project` ON `project`.`project_id` =  `invoice`.`project_id`
 			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
@@ -1403,7 +1433,9 @@ ORDER BY `project`.`focus_company_id` ASC
 			AND `invoice`.`is_paid` = '0' AND `project`.`is_active` = '1' AND  `project`.`job_category` != 'Company'
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') ) 
-			AND `project`.`job_date` <> '' AND  `project`.`project_manager_id` = '$id' AND  `project`.`focus_company_id` = '$comp'  GROUP BY `invoice`.`invoice_id` ");
+			AND `project`.`job_date` <> '' 
+			".($id != '' ? " AND  `project`.`project_manager_id` = '$id'  " : '')."
+			AND  `project`.`focus_company_id` = '$comp'  GROUP BY `invoice`.`invoice_id` ");
 
 		return $query;
 	}
@@ -1420,7 +1452,7 @@ ORDER BY `project`.`focus_company_id` ASC
 		return $query;
 	}
 
-	public function fetch_current_total_invoices($year = '',$pm_id = ''){
+	public function fetch_current_total_invoices($year = '',$pm_id = '',$comp_id=''){
 		$this->db->flush_cache();
 		$query = $this->db->query("SELECT
 			SUM(`revenue_focus`.`rev_jan`) + SUM(`revenue_focus`.`rev_feb`) +
@@ -1432,7 +1464,12 @@ ORDER BY `project`.`focus_company_id` ASC
 
 			FROM `revenue_focus`
 			WHERE `revenue_focus`.`year` = '$year' 
-			".($pm_id != '' ? " AND  `revenue_focus`.`proj_mngr_id` = '$pm_id' " : "")."  ");
+			".($pm_id != '' ? " AND  `revenue_focus`.`proj_mngr_id` = '$pm_id' " : "")."
+			".($comp_id != '' ? " AND  `revenue_focus`.`focus_comp_id` = '$comp_id' " : "")."
+
+
+
+			  ");
 
 		return $query;
 	}

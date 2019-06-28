@@ -549,7 +549,7 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 			if($est->project_estiamator_id != '0'):
 				if($est->project_estiamator_id != '8'):
 
-				echo '<div class="m-bottom-5 clearfix" style="border-bottom: 1px solid #ecf0f5;padding: 5px 0px;">
+				echo '<div class="clearfix" style="border-bottom: 1px solid #ecf0f5;padding: 4px 0px;">
 						<div class="pull-left m-right-5" style="height: 50px; width:50px; border-radius:50px; overflow:hidden; border: 1px solid #999999;">
 							<img class="user_avatar img-responsive img-rounded" src="'.$base_url.'uploads/users/'.$est->user_profile_photo.'">
 						</div>
@@ -578,7 +578,7 @@ $total_past = 0;
 
 
 
-				echo '<div class="m-bottom-5 clearfix" style="border-bottom: 1px solid #ecf0f5;padding: 5px 0px;">		
+				echo '<div class="m-bottom-5 clearfix" style="border-bottom: 1px solid #ecf0f5;padding: 4px 0px;">		
 
 						<i class="fa fa-user" style="font-size: 42px;float: left;margin-left: 7px;margin-right: 10px;"></i>
 
@@ -603,7 +603,7 @@ $total_past = 0;
 
 
 
-	echo '<div class="clearfix" style="padding-top: 6px;    border-top: 1px solid #eee;">
+	echo '<div class="clearfix" style="padding-top: 5px;      padding-right: 5px;  border-top: 1px solid #eee;">
 	<i class="fa fa-briefcase" style="font-size: 42px;float: left;margin-left: 7px;margin-right: 10px;"></i>
 	<div class="" id="">
 		<p>

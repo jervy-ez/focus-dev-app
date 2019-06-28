@@ -34,7 +34,8 @@ foreach ($estimator_list as $est ) {
 	}
 }
 
-$estimator_colors['Danikka'] = $set_colors[5];
+$estimator_colors['Danikka'] = $set_colors[4];
+$estimator_colors['Ernan'] = $set_colors[5];
 ?>
 
 
@@ -185,7 +186,7 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 									<div class="widg-icon-inside col-xs-3 brown"><i class="fa fa-check-square-o text-center fa-3x"></i></div>
 									<div class="widg-content fill col-xs-9 clearfix brown">
 										<div class="pad-5">
-											<div class=" " id=""><p>Quotes <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<div class=" " id=""><p>Quotes <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many and how much is quoted this year and last year.<br />This is also broken down to each focus company, project manager and each estimator."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#wid_quoted_area','dashboard/wid_quoted/<?php echo $es_id; ?>',7000); </script>
 											<div class="pad-top-5" id="wid_quoted_area" >
@@ -208,7 +209,7 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 									<div class="widg-icon-inside col-xs-3 violet_b"><div id="" class=""><i class="fa  fa-indent text-center fa-3x"></i></div></div>
 									<div class="widg-content col-xs-9 clearfix fill violet_b">
 										<div class="pad-5">
-											<div class=" " id=""><p>Accepted WIP Projects</p></div>
+											<div class=" " id=""><p>Accepted WIP Projects  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much projects are been accepeted and now currenlty in WIP."></i></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#estimators_wip_area','dashboard/estimators/estimators_wip/<?php echo $es_id; ?>',2000); </script>
 											<div class="pad-top-5" id="estimators_wip_area">
@@ -228,7 +229,7 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-user-times text-center fa-3x"></i></div></div>
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Quotes Unaccepted <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<div class=" " id=""><p>Quotes Unaccepted <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much the un-accepted projects. This is being broken down to each focus company, each project manager and to each estimators."></i></span>  <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#pm_estimates_widget_area','dashboard/pm_estimates_widget/<?php echo $es_id; ?>',8000); </script>
 											<div class="pad-top-5" id="pm_estimates_widget_area" >
@@ -249,7 +250,7 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 
 									<div class="widg-content fill col-xs-9 clearfix d_blue">
 										<div class="pad-5">
-											<div class=" " id=""><p>Completed Projects  <span class="pull-right"><?php echo date('Y'); ?></span>  </p></div>
+											<div class=" " id=""><p>Completed Projects <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many projects is been completed per year and how much in total per estimator."></i></span>   <span class="pull-right"><?php echo date('Y'); ?></span>  </p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#completed_prjs_area','dashboard/estimators/completed_prjs/<?php echo $es_id; ?>',8500); </script>
 											<div class="pad-top-5" id="completed_prjs_area" >
@@ -284,11 +285,14 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 							</div>
 						</div>
  -->
+
 						<div class=" col-xs-12 box-widget pad-10">
-							<div class="progress no-m progress-termometer">
-								<div class="progress-bar progress-bar-danger active progress-bar-striped full_p tooltip-enabled tooltip-pb" data-original-title=""  style="background-color: rgb(251, 25, 38); border-radius: 0px 10px 10px 0px;"></div> 
+							<div class="progress no-m progress-termometer   tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims." title="" >
+								<span style="    position: absolute;    left: 25px;    top:16px; font-size: 12px;    color: #fff;">ALL</span>
+								<div class="progress-bar progress-bar-danger active progress-bar-striped full_p tooltip-pb" style="background-color: rgb(251, 25, 38); border-radius: 0px 10px 10px 0px;" ></div> 
 							</div>
-						</div>	
+						</div>
+
 						<script type="text/javascript">
 							$(window).load(function() {
 								setTimeout(function() {
@@ -310,11 +314,34 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 							});
 						</script>
 
+
+
+
+						 <div class=" col-xs-12 col-md-6 box-widget pad-10">
+						 	<div class="progress no-m progress-termometer tooltip-enabled" id="progressBar_wa" data-html="true" data-placement="bottom" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims."  >
+						 		<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>
+						 	</div>
+						 </div>
+						 <script type="text/javascript">
+						 	pre_load_module('#progressBar_wa','dashboard/focus_company_sep_thermo/5/Focus Shopfit Pty Ltd',3025);			 	
+						 	setTimeout(function () { $('#progressBar_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 30200);
+						 </script>
+ 	
+						 <div class=" col-xs-12 col-md-6 box-widget pad-10">
+						 	<div class="progress no-m progress-termometer tooltip-enabled" id="progressBar_nsw" data-html="true" data-placement="bottom" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims."  >
+						 		<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>
+						 	</div>
+						 </div>
+						 <script type="text/javascript">
+						 	pre_load_module('#progressBar_nsw','dashboard/focus_company_sep_thermo/6/Focus Shopfit NSW Pty Ltd',3050); 
+						 	setTimeout(function () { $('#progressBar_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 30500);
+						 </script>
+
 						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-6 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head pad-5 fill">
-									<strong>Quote Deadline Calendar</strong>
+									<strong>Quote Deadline Calendar</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the quoted projects in completion date order chronologically. The deadline day is shown as a target in the calendar."></i></span>
 
 									<select class="pull-right input-control input-sm chart_data_selection_est" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 120px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="all">Overall</option>
@@ -444,7 +471,7 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of days when the next deadline is occurring."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 
@@ -476,7 +503,7 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Project Estimator Quotes</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Project Estimator Quotes</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells each estimators current quoted projects for the year and compares to last year."></i></span>  <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<!-- <div class="loading_chart" style="height: 300px; text-align: center; padding: 100px 53px; color: #ccc; margin:0 auto;"><i class="fa fa-spin fa-refresh fa-4x"></i></div> -->											
@@ -507,7 +534,7 @@ if($this->session->userdata('is_admin') == 1   || $this->session->userdata('user
 						<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 box-widget pad-10 pie_toggle_custom_a">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong><span class="pull-right"> <?php echo date('Y'); ?></span></div>
+								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="The total project costs per project category, only completed projects of the current year to date are included."></i></span> <span class="pull-right"> <?php echo date('Y'); ?></span></div>
 								<div class="box-area clearfix" style="height:320px;">
 									<div class="widg-content clearfix">
 
@@ -808,11 +835,13 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 
  ?>
 
-						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
+						<div class="col-md-9 col-sm-8 col-xs-12 col-lg-10 box-widget pad-10">
+
+
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Maintenance Projects : Average Per Day - <?php echo date('Y'); ?></strong>
+									<strong>Maintenance Projects : Average Per Day - <?php echo date('Y'); ?></strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week numbers and tells how many in average a maintenance project has taken place and compares values to last year of the same week number."></i></span>
 
 
 									<span style="float: right;    font-weight: bold;">
@@ -952,6 +981,27 @@ chart.select();
 
 
 
+						<div class="col-md-3 col-sm-4 col-xs-12 col-lg-2 box-widget pad-10">
+							<div class="widget wid-type-c widg-head-styled" style="height: 364px;">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Maintenance Projects</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of projects undertaken year to date for maintenance and that compared to the same time the previous year."></i></span> </div>
+								<div class="box-area clearfix">
+									<div class="widg-content clearfix">
+
+										<div class="pad-10" style="position:relative;">
+										<?php echo $this->dashboard->get_count_maintenance(); ?>
+
+
+											<style type="text/css">.knob_box canvas{width: 100% !important;}.knob{font-size: 90px !important; }</style>
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+
+
 						<div class="clearfix"></div>
 
 
@@ -990,7 +1040,7 @@ chart.select();
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>
+									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week number and displays how many leaves taken place, the chart can be broken down into individual employees."></i></span>
 
 							
 								</div>
@@ -1176,7 +1226,7 @@ chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overal
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5">
 									<i class="fa fa-map-marker fa-lg"></i> 
-									<strong>On-Going Projects in Australia</strong>
+									<strong>On-Going Projects in Australia</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Displays the map of Australia and plots down the location of all on-going projects."></i></span>
 								</div>
 								<div class="box-area clearfix  pad-0-imp" style="height:500px;">
 									<div class="widg-content clearfix pad-0-imp">
@@ -1193,7 +1243,7 @@ chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overal
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5">
 									<i class="fa fa-users  fa-lg"></i> 
-									<strong>Focus Employee Locations</strong>
+									<strong>Focus Employee Locations</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Displays a map where the office of each focus employees are located."></i></span>
 								</div>
 								<div class="box-area clearfix  pad-0-imp" style="height:500px;">
 									<div class="widg-content clearfix pad-0-imp">

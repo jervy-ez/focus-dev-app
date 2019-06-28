@@ -37,7 +37,9 @@ foreach ($estimator_list as $est ) {
 	}
 }
 
-$estimator_colors['Danikka'] = $set_colors[5];
+
+$estimator_colors['Danikka'] = $set_colors[4];
+$estimator_colors['Ernan'] = $set_colors[5];
 
 
 	if(isset($assign_id) && $assign_id != ''){
@@ -148,7 +150,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 								<div class="widg-icon-inside col-xs-3"><i class="fa fa-list-alt text-center fa-3x"></i></div>
 								<div class="widg-content fill col-xs-9 clearfix">
 									<div class="pad-5">
-										<div class=" " id=""><p>Invoiced <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+										<div class=" " id=""><p>Invoiced  <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much is been invoiced from begining of the year to date."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 										<hr class="" style="margin: 5px 0px 0px;">
 										<script type="text/javascript"> pre_load_module('#sales_widget_area','dashboard/sales_widget',7000); </script>
 										<div class="pad-top-5" id="sales_widget_area" >
@@ -167,7 +169,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Uninvoiced <!-- <span class="pull-right"><?php // echo date('Y'); ?></span> --></p></div>
+											<div class=" " id=""><p>Uninvoiced <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much is still un-invoiced from the begining to date."></i></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#uninvoiced_widget_area','dashboard/uninvoiced_widget',7500); </script>
 											<div class="pad-top-5" id="uninvoiced_widget_area" >
@@ -186,7 +188,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Outstanding <!-- <span class="pull-right"><?php // echo date('Y'); ?></span> --></p></div>
+											<div class=" " id=""><p>Outstanding <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much outstainding invoices needs payment from the begining to date."></i></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#outstanding_payments_widget_area','dashboard/outstanding_payments_widget',8000); </script>
 											<div class="pad-top-5" id="outstanding_payments_widget_area" >
@@ -207,7 +209,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>WIP</p></div>
+											<div class=" " id=""><p>WIP <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much in total of current WIP projects."></i></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#wip_widget_area','dashboard/wip_widget',8500); </script>
 											<div class="pad-top-5" id="wip_widget_area" >
@@ -220,7 +222,8 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						</div>
 
 						<div class=" col-xs-12 box-widget pad-10">
-							<div class="progress no-m progress-termometer">
+							<div class="progress no-m progress-termometer   tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims." title="">
+								<span style="    position: absolute;    left: 25px;    top:16px; font-size: 12px;    color: #fff;">ALL</span>
 								<div class="progress-bar progress-bar-danger active progress-bar-striped full_p tooltip-pb" title="" style="background-color: rgb(251, 25, 38); border-radius: 0px 10px 10px 0px;"></div> 
 								<script type="text/javascript">
 									$(window).load(function() {
@@ -245,18 +248,72 @@ $estimator_colors['Danikka'] = $set_colors[5];
 							</div>
 						</div>	
 
+						 <div class=" col-xs-12 col-md-6 box-widget pad-10">
+						 	<div class="progress no-m progress-termometer tooltip-enabled" id="progressBar_wa" data-html="true" data-placement="bottom" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims."  >
+						 		<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>
+						 	</div>
+						 </div>
+						 <script type="text/javascript">
+						 	pre_load_module('#progressBar_wa','dashboard/focus_company_sep_thermo/5/Focus Shopfit Pty Ltd',3025);			 	
+						 	setTimeout(function () { $('#progressBar_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 30200);
+						 </script>
+ 	
+						 <div class=" col-xs-12 col-md-6 box-widget pad-10">
+						 	<div class="progress no-m progress-termometer tooltip-enabled" id="progressBar_nsw" data-html="true" data-placement="bottom" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims."  >
+						 		<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>
+						 	</div>
+						 </div>
+						 <script type="text/javascript">
+						 	pre_load_module('#progressBar_nsw','dashboard/focus_company_sep_thermo/6/Focus Shopfit NSW Pty Ltd',3050); 
+						 	setTimeout(function () { $('#progressBar_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 30500);
+						 </script>
+<!-- ddddddddd  -->
+
+						
 						<div class=" col-xs-12 box-widget pad-10">
-							<script type="text/javascript"> pre_load_module('#progressBar_standing_area','dashboard/progressBar',3000); </script>
-							<div class="progress no-m progress-termometer" id="progressBar_standing_area">
-								<?php //echo $this->dashboard->progressBar(); ?>
-							</div>
-						</div>	
+							<div class="progress no-m progress-termometer" id="progressBar_standing_area"><span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">ALL</span></div>
+						</div>
+						<script type="text/javascript">
+						$(function() {
+							pre_load_module('#progressBar_standing_area','dashboard/progressBar',90000);
+						 	setTimeout(function () { $('#progressBar_standing_area').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">ALL</span>');}, 120000);
+						 	});
+						 </script>
+
+						<div class=" col-xs-12 col-md-6 box-widget pad-10 tip_side_mod">
+							<div class="progress no-m progress-termometer"  id="progressBar_standing_area_wa"><span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span></div>
+						</div>
+						<script type="text/javascript">
+						$(function() {
+							pre_load_module('#progressBar_standing_area_wa','dashboard/progressBar/5/1',120000);
+						 	setTimeout(function () { $('#progressBar_standing_area_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 150000);
+						 	});
+						 </script>
+
+						<div class=" col-xs-12 col-md-6 box-widget pad-10 tip_side_mod">
+							<div class="progress no-m progress-termometer"  id="progressBar_standing_area_nsw"><span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span></div>
+						</div>
+						<script type="text/javascript">
+						$(function() {
+							pre_load_module('#progressBar_standing_area_nsw','dashboard/progressBar/6/1',150000);
+						 	setTimeout(function () { $('#progressBar_standing_area_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 180000);
+						 	});
+						 </script>
+
+						<style type="text/css">
+						.tip_side_mod .tooltip.right, .tip_side_mod .tooltip.left{
+							width: 200px !important;
+						}
+						</style>
+
+<!-- ddddddddd  -->
+
 
 						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-6 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Sales Forecast - <?php echo date('Y'); ?></strong>
+									<strong>Sales Forecast - <?php echo date('Y'); ?></strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells what is being forecasted per month along what is WIP and Invoiced."></i></span>
 									<select class="pull-right input-control input-sm chart_data_selection" style="background: #AAAAAA; padding: 0;margin: -8px 0 0 0;width: 175px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="Overall">Overall Sales Forecast</option>
 										<!-- <option value="Outstanding">Focus Outstanding</option> -->
@@ -332,7 +389,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Project Manager Sales</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Project Manager Sales</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much is the forecasted amounth per Project Manager along their Invoiced and WIP totals for the year."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<script type="text/javascript"> pre_load_module('#pm_sales_widget_area','dashboard/pm_sales_widget',10500); </script>
@@ -362,7 +419,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 box-widget pad-10 pie_toggle_custom_a">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong><span class="pull-right"> <?php echo date('Y'); ?></span></div>
+								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="The total project costs per project category, only completed projects of the current year to date are included."></i></span> <span class="pull-right"> <?php echo date('Y'); ?></span></div>
 								<div class="box-area clearfix" style="height:320px;">
 									<div class="widg-content clearfix">
 
@@ -680,7 +737,7 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>
+									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week number and displays how many leaves taken place, the chart can be broken down into individual employees."></i></span>
 
 									<select class="pull-right input-control input-sm chart_data_selection_emps" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 130px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										 
@@ -1041,7 +1098,7 @@ $('.leave_type_selection').click(function(){
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5">
 									<i class="fa fa-map-marker fa-lg"></i> 
-									<strong>On-Going Projects in Australia</strong>
+									<strong>On-Going Projects in Australia</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Displays the map of Australia and plots down the location of all on-going projects."></i></span>
 								</div>
 								<div class="box-area clearfix  pad-0-imp" style="height:500px;">
 									<div class="widg-content clearfix pad-0-imp">
@@ -1058,7 +1115,7 @@ $('.leave_type_selection').click(function(){
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head fill box-widg-head pad-5">
 									<i class="fa fa-users  fa-lg"></i> 
-									<strong>Focus Employee Locations</strong>
+									<strong>Focus Employee Locations</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Displays a map where the office of each focus employees are located."></i></span>
 								</div>
 								<div class="box-area clearfix  pad-0-imp" style="height:500px;">
 									<div class="widg-content clearfix pad-0-imp">

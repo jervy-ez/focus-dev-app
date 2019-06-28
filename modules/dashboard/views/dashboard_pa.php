@@ -39,7 +39,9 @@ foreach ($estimator_list as $est ) {
 	}
 }
 
-$estimator_colors['Danikka'] = $set_colors[5];
+
+$estimator_colors['Danikka'] = $set_colors[4];
+$estimator_colors['Ernan'] = $set_colors[5];
 
 ?>
 
@@ -153,7 +155,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 										<div class="widg-icon-inside col-xs-3"><i class="fa fa-list-alt text-center fa-3x"></i></div>
 										<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-5">
-												<div class=" " id=""><p>Invoiced <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+												<div class=" " id=""><p>Invoiced   <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much is been invoiced from begining of the year to date."></i></span>  <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
 												<script type="text/javascript"> pre_load_module('#invoiced_pa_area','dashboard/invoiced_pa',7000); </script>
 												<div class="pad-top-5" id="invoiced_pa_area" >
@@ -173,7 +175,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 
 										<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-5">
-												<div class=" " id=""><p>Uninvoiced</p></div>
+												<div class=" " id=""><p>Uninvoiced  <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much is still un-invoiced from the begining to date."></i></span></p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
 												<script type="text/javascript"> pre_load_module('#uninvoiced_widget_pa_area','dashboard/uninvoiced_widget_pa',7500); </script>
 												<div class="pad-top-5" id="uninvoiced_widget_pa_area" >
@@ -193,7 +195,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 
 										<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-5">
-												<div class=" " id=""><p>Outstanding</p></div>
+												<div class=" " id=""><p>Outstanding <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much outstainding invoices needs payment from the begining to date."></i></span></p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
 												<script type="text/javascript"> pre_load_module('#outstanding_payments_widget_pa_area','dashboard/outstanding_payments_widget_pa',8000); </script>
 												<div class="pad-top-5" id="outstanding_payments_widget_pa_area" >
@@ -215,7 +217,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 
 										<div class="widg-content fill col-xs-9 clearfix">
 											<div class="pad-5">
-												<div class=" " id=""><p>WIP</p></div>
+												<div class=" " id=""><p>WIP <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much in total of current WIP projects."></i></span></p></div>
 												<hr class="" style="margin: 5px 0px 0px;">
 												<script type="text/javascript"> pre_load_module('#wip_widget_pa_area','dashboard/wip_widget_pa',8500); </script>
 												<div class="pad-top-5" id="wip_widget_pa_area" >
@@ -229,7 +231,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 							</div>
 
 							<div class=" col-xs-12 box-widget pad-10">
-								<div class="progress no-m progress-termometer">
+								<div class="progress no-m progress-termometer   tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims.">
 									<div class="progress-bar progress-bar-danger active progress-bar-striped full_p tooltip-enabled tooltip-pb" title="" data-original-title="Overall Forecast Progress" style="background-color: rgb(251, 25, 38); border-radius: 0px 10px 10px 0px;"></div> 
 								</div>
 							</div>	
@@ -271,7 +273,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill pad-5">
-									<strong>Sales Forecast - <?php echo date('Y'); ?></strong>
+									<strong>Sales Forecast - <?php echo date('Y'); ?></strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells what is being forecasted per month along what is WIP and Invoiced."></i></span>
 									<select class="pull-right input-control input-sm chart_data_selection" style="background: #AAAAAA; padding: 0;margin: -8px 0 0 0;width: 175px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<?php  
 
@@ -348,7 +350,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head  box-widg-head fill pad-5"><strong>Average Final Invoice Days</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Average Final Invoice Days</strong> <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many days (average) a project been fully invoiced."></i></span>   <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<div class="pad-10" id="">
@@ -378,7 +380,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Project Manager Sales</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Project Manager Sales</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much is the forecasted amounth per Project Manager along their Invoiced and WIP totals for the year."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<script type="text/javascript"> pre_load_module('#pm_sales_widget_pa_area','dashboard/pm_sales_widget_pa',10500); </script>
@@ -399,7 +401,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-cube  text-center fa-3x"></i></div></div>
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-3">
-											<div class="pad-left-5 pad-top-3" id=""><p>Invoiced - WIP Count <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<div class="pad-left-5 pad-top-3" id=""><p>Invoiced - WIP Count <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many current wip count."></i></span>  <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<script type="text/javascript"> pre_load_module('#focus_projects_count_widget_pa_area','dashboard/focus_projects_count_widget_pa',11000); </script>
 											<hr class="" style="margin: 5px 0px 2px;">
 											<div class="pad-top-5" id="focus_projects_count_widget_pa_area" >
@@ -418,7 +420,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-user-times text-center fa-3x"></i></div></div>
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Quotes Unaccepted <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<div class=" " id=""><p>Quotes Unaccepted <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much the un-accepted projects. This is being broken down to each focus company, each project manager and to each estimators."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#pm_estimates_widget_pa_area','dashboard/pm_estimates_widget_pa',11500); </script>
 											<div class="pad-top-5" id="pm_estimates_widget_pa_area" >
@@ -437,7 +439,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-calendar  text-center fa-3x"></i></div></div>
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Maintenance AVG Days <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<div class=" " id=""><p>Maintenance AVG Days <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many days spent (average) for a Maintenance Project."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#maintanance_average_area','dashboard/maintanance_average',12000); </script>
 											<div class="pad-top-5" id="maintanance_average_area" >
@@ -458,7 +460,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 									<div class="widg-icon-inside col-xs-3"><i class="fa fa-list-alt text-center fa-3x"></i></div>
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Purchase Orders <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<div class=" " id=""><p>Purchase Orders <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much purchase orders is still outstainding on each Focus Company per year."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#focus_get_po_widget_pa_area','dashboard/focus_get_po_widget_pa',12500); </script>
 											<div class="pad-top-5" id="focus_get_po_widget_pa_area" >
@@ -584,6 +586,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head pad-5 fill">
 									<strong>Project Completion Calendar</strong>
+									<span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the on-going projects completion dates ordered chronologically."></i></span>
 
 
 									<select class="pull-right input-control input-sm chart_data_selection_pmsgp" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 150px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
@@ -731,6 +734,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head pad-5 fill">
 									<strong>Quote Deadline Calendar</strong>
+									 <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the quoted projects in completion date order chronologically. The deadline day is shown as a target in the calendar."></i></span>
 
 									<select class="pull-right input-control input-sm chart_data_selection_est" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 100px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="all">Overall</option>
@@ -854,7 +858,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of days when the next deadline is occurring."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 
@@ -886,7 +890,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Project Estimator Quotes</strong> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Project Estimator Quotes</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells each estimators current quoted projects for the year and compares to last year."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<script type="text/javascript"> pre_load_module('#estimators_quotes_completed_area','dashboard/estimators/estimators_quotes_completed',15500); </script>
@@ -924,7 +928,7 @@ $estimator_colors['Danikka'] = $set_colors[5];
 						<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 box-widget pad-10 pie_toggle_custom_a">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong><span class="pull-right"> <?php echo date('Y'); ?></span></div>
+								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="The total project costs per project category, only completed projects of the current year to date are included."></i></span> <span class="pull-right"> <?php echo date('Y'); ?></span></div>
 								<div class="box-area clearfix" style="height:320px;">
 									<div class="widg-content clearfix">
 
@@ -1229,11 +1233,13 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 
  ?>
 
-						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
+						<div class="col-md-9 col-sm-8 col-xs-12 col-lg-10 box-widget pad-10">
+
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
 									<strong>Maintenance Projects : Average Per Day - <?php echo date('Y'); ?></strong>
+									<span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week numbers and tells how many in average a maintenance project has taken place and compares values to last year of the same week number."></i></span>
 
 
 									<span style="float: right;    font-weight: bold;">
@@ -1370,6 +1376,25 @@ chart.select();
 
 						<!-- ************************ -->
 
+						<div class="col-md-3 col-sm-4 col-xs-12 col-lg-2 box-widget pad-10">
+							<div class="widget wid-type-c widg-head-styled" style="height: 364px;">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Maintenance Projects</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of projects undertaken year to date for maintenance and that compared to the same time the previous year."></i></span> </div>
+								<div class="box-area clearfix">
+									<div class="widg-content clearfix">
+
+										<div class="pad-10" style="position:relative;">
+										<?php echo $this->dashboard->get_count_maintenance(); ?>
+
+
+											<style type="text/css">.knob_box canvas{width: 100% !important;}.knob{font-size: 90px !important; }</style>
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>
+
+
 
 						<!-- ************************ -->
 						
@@ -1418,6 +1443,7 @@ chart.select();
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
 									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>
+									<span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week number and displays how many leaves taken place, the chart can be broken down into individual employees."></i></span>
 
 							
 								</div>
@@ -1604,7 +1630,9 @@ chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overal
 						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-a widg-head-styled ">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-map-marker fa-lg"></i> <strong>On-Going Projects in Australia</strong></div>
+								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-map-marker fa-lg"></i> <strong>On-Going Projects in Australia</strong>
+								 <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Displays the map of Australia and plots down the location of all on-going projects."></i></span>
+								 </div>
 								<div class="box-area clearfix  pad-0-imp" style="height:500px;">
 									<div class="widg-content clearfix pad-0-imp">
 										<div id="map"></div>									
@@ -1622,6 +1650,7 @@ chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overal
 								<div class="widg-head fill box-widg-head pad-5">
 									<i class="fa fa-users  fa-lg"></i> 
 									<strong>Focus Employee Locations</strong>
+									<span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Displays a map where the office of each focus employees are located."></i></span>
 								</div>
 								<div class="box-area clearfix  pad-0-imp" style="height:500px;">
 									<div class="widg-content clearfix pad-0-imp">

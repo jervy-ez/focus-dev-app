@@ -41,7 +41,9 @@ foreach ($estimator_list as $est ) {
 		$user_id = $assign_id;
 	}
 
-$estimator_colors['Danikka'] = $set_colors[5];
+
+$estimator_colors['Danikka'] = $set_colors[4];
+$estimator_colors['Ernan'] = $set_colors[5];
 ?>
 
 <style type="text/css">
@@ -737,7 +739,7 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 
  ?>
 
-						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
+ <div class="col-md-9 col-sm-8 col-xs-12 col-lg-10 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
@@ -876,6 +878,27 @@ chart.select();
 
 
 						<!-- ************************ -->
+
+
+
+
+						<div class="col-md-3 col-sm-4 col-xs-12 col-lg-2 box-widget pad-10">
+							<div class="widget wid-type-c widg-head-styled" style="height: 364px;">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Maintenance Projects</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of projects undertaken year to date for maintenance and that compared to the same time the previous year."></i></span> </div>
+								<div class="box-area clearfix">
+									<div class="widg-content clearfix">
+
+										<div class="pad-10" style="position:relative;">
+										<?php echo $this->dashboard->get_count_maintenance(); ?>
+
+
+											<style type="text/css">.knob_box canvas{width: 100% !important;}.knob{font-size: 90px !important; }</style>
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>
 
 
 
