@@ -37,24 +37,24 @@ foreach ($estimator_list as $est ) {
 	}
 }
 
+
 $estimator_colors['Danikka'] = $set_colors[4];
 $estimator_colors['Ernan'] = $set_colors[5];
 
 
-
-
 	if(isset($assign_id) && $assign_id != ''){
 		$user_id = $assign_id;
+	}else{
+		$user_id = $this->session->userdata('user_id');
 	}
 
 
-if($pm_setter != '' && isset($pm_setter)){
-	$pm_name = $pm_setter;
+	if(isset($pm_setter_focus_id)){
+		$user_focus_company_id = $pm_setter_focus_id;
+	}else{
+		$user_focus_company_id = $this->session->userdata("user_focus_company_id");
+	}					
 
-	  
-echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_name.'");</script>';
-	 
-}
 
 
 ?>
@@ -69,9 +69,9 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 	.red_deadline{       background-image: url( <?php echo $base_url; ?>img/grid-end.png);   background-repeat:no-repeat; }
 </style>
 
+
 <script src="<?php echo base_url(); ?>js/jquery.fn.gantt.js"></script>
 <link href="<?php echo base_url(); ?>css/gant-style.css" type="text/css" rel="stylesheet"> 
-
 
 <style type="text/css">body{background: #ECF0F5 !important;}</style>
 
@@ -153,275 +153,184 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 			<div class="clearfix pad-10">
 				<div class="widget_area row pad-0-imp no-m-imp">
 
+ 
 
-					<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-						<div class="widget wid-type-e small-widget">
-							<div class="box-area clearfix">
-								<div class="widg-icon-inside col-xs-3">
-									<i class="fa fa-list-alt text-center fa-3x"></i>
-								</div>
-										<div class="widg-content fill col-xs-9 clearfix">
-											<div class="pad-5">
-												<div class=" " id="">
-													<p>Invoiced  <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much is been invoiced from begining of the year to date."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p>
-												</div>
-												<hr class="" style="margin: 5px 0px 0px;">
-												<script type="text/javascript"> pre_load_module('#sales_widget_area','dashboard/sales_widget',7000); </script>
-												<div class="pad-top-5" id="sales_widget_area" >
-													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-													<?php //$this->dashboard->sales_widget(); ?>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
+
+
 
 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-a small-widget">
+							<div class="widget wid-type-e small-widget">
 								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3"><i class="fa fa-list  text-center fa-3x"></i></div>
+									<div class="widg-icon-inside col-xs-3"><i class="fa fa-code  text-center fa-3x"></i></div>
 
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Uninvoiced <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much is still un-invoiced from the begining to date."></i></span></p></div>
+											<div class=" " id=""><p>Blank <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="This is a temporary placeholder"></i></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#uninvoiced_widget_area','dashboard/uninvoiced_widget',7500); </script>
-											<div class="pad-top-5" id="uninvoiced_widget_area" >
-											<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-											<?php //$this->dashboard->uninvoiced_widget(); ?></div>
+
+											<div class="pad-top-5" id="" >
+												<p class="value"><i class="fa fa-usd"></i><strong> 00.00</strong></p>
+											</div>	
 										</div>							
 									</div>
 								</div>
 							</div>
 						</div>  
 
+
 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-f small-widget">
+							<div class="widget wid-type-a small-widget">
 								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3"><i class="fa fa-server text-center fa-3x"></i></div>
+									<div class="widg-icon-inside col-xs-3"><i class="fa fa-code  text-center fa-3x"></i></div>
 
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Outstanding  <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much outstainding invoices needs payment from the begining to date."></i></span></p></div>
+											<div class=" " id=""><p>Blank <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="This is a temporary placeholder"></i></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#outstanding_payments_widget_area','dashboard/outstanding_payments_widget',8000); </script>
-											<div class="pad-top-5" id="outstanding_payments_widget_area" >
-											<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-											<?php //$this->dashboard->outstanding_payments_widget(); ?></div>
+
+											<div class="pad-top-5" id="" >
+												<p class="value"><i class="fa fa-usd"></i><strong> 00.00</strong></p>
+											</div>	
 										</div>							
 									</div>
 								</div>
 							</div>
-						</div>
+						</div>  
+
+
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-f small-widget">
+								<div class="box-area clearfix">
+									<div class="widg-icon-inside col-xs-3"><i class="fa fa-code  text-center fa-3x"></i></div>
+
+									<div class="widg-content fill col-xs-9 clearfix">
+										<div class="pad-5">
+											<div class=" " id=""><p>Blank <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="This is a temporary placeholder"></i></span></p></div>
+											<hr class="" style="margin: 5px 0px 0px;">
+
+											<div class="pad-top-5" id="" >
+												<p class="value"><i class="fa fa-usd"></i><strong> 00.00</strong></p>
+											</div>	
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>  
 
 
 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-b small-widget">
 								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3"><i class="fa fa-tasks  text-center fa-3x"></i></div>
-
+									<div class="widg-icon-inside col-xs-3"><i class="fa fa-code  text-center fa-3x"></i></div>
 
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>WIP <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much in total of current WIP projects."></i></span></p></div>
+											<div class=" " id=""><p>Blank <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="This is a temporary placeholder"></i></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#wip_widget_area','dashboard/wip_widget',8500); </script>
-											<div class="pad-top-5" id="wip_widget_area" >
-											<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-											<?php //$this->dashboard->wip_widget(); ?></div>
+
+											<div class="pad-top-5" id="" >
+												<p class="value"><i class="fa fa-usd"></i><strong> 00.00</strong></p>
+											</div>	
 										</div>							
 									</div>
 								</div>
 							</div>
-						</div>
+						</div>  
 
-						<!-- Main Red Thermometer Here -->
-						<div class=" col-xs-12 box-widget pad-10">
-							<div class="progress no-m progress-termometer   tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims." title="" >
-								<span style="    position: absolute;    left: 25px;    top:16px; font-size: 12px;    color: #fff;">ALL</span>
-								<div class="progress-bar progress-bar-danger active progress-bar-striped full_p tooltip-pb" style="background-color: rgb(251, 25, 38); border-radius: 0px 10px 10px 0px;" ></div> 
+
+
+
+ 
+						
+						<div class="clearfix"></div>
+
+
+
+						<?php if($user_focus_company_id == 5): ?>
+
+							<div class=" col-xs-12 col-md-12 box-widget pad-10">
+								<div class="progress no-m progress-termometer tooltip-enabled" id="progressBar_wa" data-html="true" data-placement="bottom" data-original-title="Total progress on annual forecast sales. Total WIP plus current invoiced progress claims."  >
+									<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA &nbsp; &nbsp;  &nbsp; <span style="color:#000;"> <i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</span></span> 
+								</div>
 							</div>
-						</div>
-						<script type="text/javascript">
-							$(window).load(function() {
-								setTimeout(function() {
-									$.ajax({
-										'url' : base_url+'dashboard/pm_sales_widget/1',
-										'type' : 'GET',
-										'success' : function(result){
-											var raw_overall = result;
-											var overall_arr =  raw_overall.split('_');
-											var overall_progress = parseInt(overall_arr[0]);
-											var status_forecast = overall_arr[1];
-											$('.full_p').css('width',overall_progress+'%');
-											$('.full_p').html(overall_progress+'%');
-											$('.full_p').prop('title','$'+status_forecast+' - Overall Progress');
-											$('.full_p').prop('data-original-title','$'+status_forecast+' - Overall Progress');
-											$('.tooltip-pb').tooltip();				 
-										}
-									});
-								}, 9000);
-							});
-						</script>
-						<!-- Main Red Thermometer Here -->
+							<script type="text/javascript">
+								pre_load_module('#progressBar_wa','dashboard/focus_company_sep_thermo/5/Focus Shopfit Pty Ltd',3025);			 	
+								setTimeout(function () { $('#progressBar_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 15000);
+							</script>
+						<?php endif; ?>
 
 
-						 <div class=" col-xs-12 col-md-6 box-widget pad-10">
-						 	<div class="progress no-m progress-termometer tooltip-enabled" id="progressBar_wa" data-html="true" data-placement="bottom" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims."  >
-						 		<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>
-						 	</div>
-						 </div>
-						 <script type="text/javascript">
-						 	pre_load_module('#progressBar_wa','dashboard/focus_company_sep_thermo/5/Focus Shopfit Pty Ltd',3025);			 	
-						 	setTimeout(function () { $('#progressBar_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 30200);
-						 </script>
- 	
-						 <div class=" col-xs-12 col-md-6 box-widget pad-10">
-						 	<div class="progress no-m progress-termometer tooltip-enabled" id="progressBar_nsw" data-html="true" data-placement="bottom" data-original-title="Tells the progress made for reaching the target sales. WIP todate plus current invoiced progress claims."  >
-						 		<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>
-						 	</div>
-						 </div>
-						 <script type="text/javascript">
-						 	pre_load_module('#progressBar_nsw','dashboard/focus_company_sep_thermo/6/Focus Shopfit NSW Pty Ltd',3050); 
-						 	setTimeout(function () { $('#progressBar_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 30500);
-						 </script>
- 	
-<!-- ddddddddd  -->
 
-						<div class=" col-xs-12 box-widget pad-10">
-							<div class="progress no-m progress-termometer" id="progressBar_standing_area"><span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">ALL</span></div>
-						</div>
-						<script type="text/javascript">
-						$(function() {
-							pre_load_module('#progressBar_standing_area','dashboard/progressBar',50000);
-						 	setTimeout(function () { $('#progressBar_standing_area').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">ALL</span>');}, 70000);
-						 	});
-						 </script>
+						<?php if($user_focus_company_id == 6): ?>
+							<div class=" col-xs-12 col-md-12 box-widget pad-10">
+								<div class="progress no-m progress-termometer tooltip-enabled" id="progressBar_nsw" data-html="true" data-placement="bottom" data-original-title="Total progress on annual forecast sales. Total WIP plus current invoiced progress claims."  >
+									<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW &nbsp; &nbsp; <span style="color:#000;"> <i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</span></span> 
+								</div>
+							</div>
+							<script type="text/javascript">
+								pre_load_module('#progressBar_nsw','dashboard/focus_company_sep_thermo/6/Focus Shopfit NSW Pty Ltd',3025); 
+								setTimeout(function () { $('#progressBar_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 15000);
+							</script>
+						<?php endif; ?>
 
-						<div class=" col-xs-12 col-md-6 box-widget pad-10 tip_side_mod">
-							<div class="progress no-m progress-termometer"  id="progressBar_standing_area_wa"><span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span></div>
-						</div>
-						<script type="text/javascript">
-						$(function() {
-							pre_load_module('#progressBar_standing_area_wa','dashboard/progressBar/5/1',60000);
-						 	setTimeout(function () { $('#progressBar_standing_area_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 80000);
-						 	});
-						 </script>
+						<!-- ddddddddd  -->
 
-						<div class=" col-xs-12 col-md-6 box-widget pad-10 tip_side_mod">
-							<div class="progress no-m progress-termometer"  id="progressBar_standing_area_nsw"><span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span></div>
-						</div>
-						<script type="text/javascript">
-						$(function() {
-							pre_load_module('#progressBar_standing_area_nsw','dashboard/progressBar/6/1',70000);
-						 	setTimeout(function () { $('#progressBar_standing_area_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 90000);
-						 	});
-						 </script>
+
+
+
+
+
+
+
+						<?php if($user_focus_company_id == 5): ?>
+							<div class=" col-xs-12 col-md-12 box-widget pad-10 tip_side_mod">
+								<div class="progress no-m progress-termometer tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Cumulative Forecast to end of current month."  id="progressBar_standing_area_wa">
+									<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA
+										&nbsp; &nbsp; &nbsp; <span style="color:#000;"> <i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</span>
+									</span>
+								</div>
+							</div>
+							<script type="text/javascript">
+								$(function() {
+									pre_load_module('#progressBar_standing_area_wa','dashboard/progressBar/5/1',4000);
+									setTimeout(function () { $('#progressBar_standing_area_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 9000);
+								});
+							</script>
+						<?php endif; ?>
+
+
+						<?php if($user_focus_company_id == 6): ?>
+							<div class=" col-xs-12 col-md-12 box-widget pad-10 tip_side_mod">
+								<div class="progress no-m progress-termometer tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Cumulative Forecast to end of current month."  id="progressBar_standing_area_nsw">
+									<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW
+										&nbsp; &nbsp; <span style="color:#000;"> <i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</span>
+									</span>
+								</div>
+							</div>
+							<script type="text/javascript">
+								$(function() {
+									pre_load_module('#progressBar_standing_area_nsw','dashboard/progressBar/6/1',4000);
+									setTimeout(function () { $('#progressBar_standing_area_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 9000);
+								});
+							</script>
+						<?php endif; ?>
+
+
 
 						<style type="text/css">
 						.tip_side_mod .tooltip.right, .tip_side_mod .tooltip.left{
 							width: 200px !important;
 						}
 						</style>
-
-
+						<style type="text/css">.progress .tooltip{ display: none !important; visibility: hidden !important;  }</style>
 
 <!-- ddddddddd  -->
 
-						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-6 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Sales Forecast - <?php echo date('Y'); ?></strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells what is being forecasted per month along what is WIP and Invoiced."></i></span>
-									<select class="pull-right input-control input-sm chart_data_selection" style="background: #AAAAAA; padding: 0;margin: -8px 0 0 0;width: 175px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
-										<option value="Overall">Overall Sales Forecast</option>
-										<!-- <option value="Outstanding">Focus Outstanding</option> -->
-										<!-- <option value="Pm_Outstanding">PM Outstanding</option> -->
-										<option value="FWA">Focus WA</option>
-										<option value="FNSW">Focus NSW</option>
 
-										<?php 
-										$project_manager_q = $this->user_model->fetch_user_by_role(3);
-										$project_manager = $project_manager_q->result();    ?>
-										<?php foreach ($project_manager as $pm) {
-											echo '<option value="'.$pm->user_first_name.' '.$pm->user_last_name.'">'.$pm->user_first_name.' '.$pm->user_last_name.'</option>';
-										} ?>
-
-										<?php 
-										$project_manager_q = $this->user_model->fetch_user_by_role(20);
-										$project_manager = $project_manager_q->result();    ?>
-										<?php foreach ($project_manager as $pm) {
-											echo '<option value="'.$pm->user_first_name.' '.$pm->user_last_name.'">'.$pm->user_first_name.' '.$pm->user_last_name.'</option>';
-										} ?>
-									</select>
-								</div>
-
-								<div class="box-area clearfix row pad-right-10 pad-left-10">									
-									<div class="widg-content col-md-12 col-xs-12 clearfix">
-										<div class="loading_chart" style="height: 457px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
-										<div class id="job_book_area">
-											<div id="chart"></div></div> 	
-									</div> 
-
-
-								</div>
+						<div class="clearfix"></div>
 
 
 
-							</div>
-						</div>
-
-
-						<!-- ************************ -->
-
-
-
-
-
-
-						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
-							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head  box-widg-head  fill pad-5"><strong>Average Final Invoice Days</strong> <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many days (average) a project been fully invoiced."></i></span>  <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
-								<div class="box-area clearfix">
-									<div class="widg-content clearfix">
-										<div class="pad-10" id="">
-											<script type="text/javascript"> pre_load_module('#average_date_invoice_area','dashboard/average_date_invoice',10000); </script>
-											<div class="clearfix center knob_box pad-10 small-widget" id="average_date_invoice_area">
-												<p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php  //echo $this->dashboard->average_date_invoice(); ?>
-											</div>
-											<style type="text/css">.knob_box canvas{width: 100% !important;}</style>											 
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-
-
-
-
-						<!-- ************************ -->
-
-
-						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Project Manager Sales</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much is the forecasted amounth per Project Manager along their Invoiced and WIP totals for the year."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
-								<div class="box-area clearfix">
-									<div class="widg-content clearfix">
-										<script type="text/javascript"> pre_load_module('#pm_sales_widget_area','dashboard/pm_sales_widget',10500); </script>
-										<div class="" id="pm_sales_widget_area">
-											<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-										</div>												
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<!-- ************************ -->
 
 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-b small-widget">
@@ -431,12 +340,12 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 										<div class="pad-3">
 											<div class="pad-left-5 pad-top-3" id="">
 											<p>
-												<span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many projects invoiced based from completion date starting of year to current date."></i></span>  Invoiced - WIP Count <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many current wip count."></i></span> 
+												<span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Provides the total number of projects invoiced based from completion date for the current year."></i></span>  Invoiced - WIP Count <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Provides the total number of projects in WIP"></i></span> 
 												<span class="pull-right"><?php echo date('Y'); ?></span>
 											</p>
 											</div>
 											<hr class="" style="margin: 5px 0px 2px;">
-											<script type="text/javascript"> pre_load_module('#focus_projects_count_widget_area','dashboard/focus_projects_count_widget',11000); </script>
+											<script type="text/javascript"> pre_load_module('#focus_projects_count_widget_area','dashboard/focus_projects_count_widget/<?php echo $user_focus_company_id; ?>',11000); </script>
 											<div class="pad-top-5" id="focus_projects_count_widget_area" >
 												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 												<?php //$this->dashboard->focus_projects_count_widget(); ?>
@@ -455,9 +364,9 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 									<div class="widg-icon-inside col-xs-3 purple"><i class="fa fa-clock-o text-center fa-3x"></i></div>
 									<div class="widg-content fill col-xs-9 clearfix purple">
 										<div class="pad-5">
-											<div class=" " id=""><p>Site Labour Hours <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many Site Hours spent for labor for (Joinery Only, Kiosk, Full Fitout, Refurbishment, Strip Out) projects only."></i></span></p></div>
+											<div class=" " id=""><p>Site Labour Hours <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Provides the total Site Hours required for all current (Kiosk, Full Fitout, Refurbishment, Strip Out) projects only."></i></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#wid_site_labour_hrs_area','dashboard/wid_site_labour_hrs',11500); </script>
+											<script type="text/javascript"> pre_load_module('#wid_site_labour_hrs_area','dashboard/wid_site_labour_hrs/<?php echo $user_focus_company_id; ?>',11500); </script>
 											<div class="pad-top-5" id="wid_site_labour_hrs_area" >
 												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 												<?php //$this->dashboard->wid_site_labour_hrs(); ?>
@@ -475,7 +384,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa fa-calendar  text-center fa-3x"></i></div></div>
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Maintenance AVG Days <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many days spent (average) for a Maintenance Project."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<div class=" " id=""><p>Maintenance AVG Days <span class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Total average days from entering project to issuing final invoice."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
 											<script type="text/javascript"> pre_load_module('#maintanance_average_area','dashboard/maintanance_average',12000); </script>
 											<div class="pad-top-5" id="maintanance_average_area" >
@@ -495,9 +404,9 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 									<div class="widg-icon-inside col-xs-3"><i class="fa fa-list-alt text-center fa-3x"></i></div>
 									<div class="widg-content fill col-xs-9 clearfix">
 										<div class="pad-5">
-											<div class=" " id=""><p>Purchase Orders <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much purchase orders is still outstainding on each Focus Company per year."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
+											<div class=" " id=""><p>Purchase Orders <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Total current Purchase Order value currently unreconciled."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
 											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#focus_get_po_widget_area','dashboard/focus_get_po_widget',12500); </script>
+											<script type="text/javascript"> pre_load_module('#focus_get_po_widget_area','dashboard/focus_get_po_widget/<?php echo $user_focus_company_id; ?>',12500); </script>
 											<div class="pad-top-5" id="focus_get_po_widget_area" >
 												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 												<?php //$this->dashboard->focus_get_po_widget(); ?></div>
@@ -515,111 +424,6 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 
 
 
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-0 small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3" ><div id="" class=""><i class="fa  fa-user-times text-center fa-3x"></i></div></div>
-									<div class="widg-content fill col-xs-9 clearfix">
-										<div class="pad-5">
-											<div class=" " id=""><p>Quotes Unaccepted <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much the un-accepted projects. This is being broken down to each focus company, each project manager and to each estimators."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#pm_estimates_widget_area','dashboard/pm_estimates_widget',13000); </script>
-											<div class="pad-top-5" id="pm_estimates_widget_area" >
-												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php //$this->dashboard->pm_estimates_widget(); ?>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-						
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-d small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3 brown"><i class="fa fa-check-square-o text-center fa-3x"></i></div>
-									<div class="widg-content fill col-xs-9 clearfix brown">
-										<div class="pad-5">
-											<div class=" " id=""><p>Quotes <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many and how much is quoted this year and last year.<br />This is also broken down to each focus company, project manager and each estimator."></i></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#wid_quoted_area','dashboard/wid_quoted',13500); </script>
-											<div class="pad-top-5" id="wid_quoted_area" >
-												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-											<?php //$this->dashboard->wid_quoted(); ?></div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-						
-
-						
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-0 small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3 violet_b"><div id="" class=""><i class="fa  fa-indent text-center fa-3x"></i></div></div>
-									<div class="widg-content col-xs-9 clearfix fill violet_b">
-										<div class="pad-5">
-											<div class=" " id=""><p>Accepted WIP Projects <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how much projects are been accepeted and now currenlty in WIP."></i></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#estimators_wip_area','dashboard/estimators/estimators_wip',14000); </script>
-											<div class="pad-top-5" id="estimators_wip_area">
-												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<?php //$this->estimators->estimators_wip(); ?>												
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-
-						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10">
-							<div class="widget wid-type-f small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3 d_blue"><i class="fa fa-server text-center fa-3x"></i></div>
-
-									<div class="widg-content fill col-xs-9 clearfix d_blue">
-										<div class="pad-5">
-											<div class=" " id=""><p>Completed Projects <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells how many projects is been completed per year and how much in total per estimator."></i></span> <span class="pull-right"><?php echo date('Y'); ?></span>  </p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<script type="text/javascript"> pre_load_module('#completed_prjs_area','dashboard/estimators/completed_prjs',14500); </script>
-											<div class="pad-top-5" id="completed_prjs_area" >
-												<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-												<!-- <p style="padding: 5px 5px 6px; text-align: center;	"><i class="fa fa-spin fa-refresh fa-lg"></i></p> -->
-												<?php //$this->estimators->completed_prjs(); ?>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-<!-- 						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12 box-widget pad-10 hide">
-							<div class="widget wid-type-0 small-widget">
-								<div class="box-area clearfix">
-									<div class="widg-icon-inside col-xs-3 violet" ><div id="" class=""><i class="fa  fa-code text-center fa-3x"></i></div></div>
-									<div class="widg-content col-xs-9 clearfix fill violet">
-										<div class="pad-5">
-											<div class=" " id=""><p>Widget <span class="pull-right"><?php echo date('Y'); ?></span></p></div>
-											<hr class="" style="margin: 5px 0px 0px;">
-											<div class="pad-top-5" id="">
-												<p class="value"> <strong> &nbsp; </strong></p>
-											</div>
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div> -->
-
-						<!-- ************************ -->
-
-
-
-							<!-- ************************ -->
-						
-						<div class="clearfix"></div>
 
 <?php 
 		$project_manager = $this->dashboard_m->fetch_pms_year(date("Y"));
@@ -631,26 +435,8 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head pad-5 fill">
-									<strong>Project Completion Calendar</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the on-going projects completion dates ordered chronologically."></i></span>
+									<strong>Project Completion Calendar</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Displays the on-going projects start and completion dates ordered chronologically."></i></span>
 
-
-									<select class="pull-right input-control input-sm chart_data_selection_pmsgp" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 150px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
-										<option value="ongoingwip">Overall</option>
-										<option value="ongoingwip_wa">Focus WA</option>
-										<option value="ongoingwip_nsw">Focus NSW</option>
-										<?php  
-											foreach ($project_manager_list as $pmj ) {
-
-
-												$pm_name_sltc = 'ongoingwip_'.strtolower( str_replace(' ','_',  $pmj->user_first_name   )   ).'_'.strtolower( str_replace(' ','_',  $pmj->user_last_name   )   );  
-
-
-
-												echo '<option value="'.$pm_name_sltc.'">'.$pmj->user_first_name.' '.$pmj->user_last_name.'</option>';
-
-											} 
-										?>
-									</select>
 
 									<div class="clearfix pull-right m-right-10">
 
@@ -664,38 +450,6 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 
 
 
-
-									<script type="text/javascript">
-
-										$('select.chart_data_selection_pmsgp').on("change", function(e) {
-											$('.gantt_chart_grp').hide();
-											var data = $(this).val(); 
-											$('#'+data).show();
-
-
-
-										//	document.getElementById('project_completion_calendar_area_scrol').scrollTop = 0;
-											//$('#project_completion_calendar_area_scrol').scrollLeft(0);
-
-
-										//	$("#project_completion_calendar_area_scrol").scrollLeft(0);
-
-
-
-/*
-	setTimeout(function () {
-											$('#project_completion_calendar_area_scrol').scrollLeft(0);
-	}, 1);
-*/
-
-
-										//	$("#project_completion_calendar_area_scrol").scrollTop(0);
-
-
-
-										});
-
-									</script>
 								</div>
 
 								<div class="box-area clearfix row pad-right-10 pad-left-10">									
@@ -703,30 +457,9 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 										<?php //echo $this->estimators->load_calendar_planner(); ?>
  
 
+<?php if($user_focus_company_id == 5): ?>
 
-<div class="gantt_chart_grp" id="ongoingwip"></div>
-<script>
-        $(function() {
-            $("#ongoingwip").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress(); ?> ],
-                navigate: "scroll",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 50,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	//$('#est_deadline_all').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-
-
-
-<div class="gantt_chart_grp gnt_onload_hide" id="ongoingwip_wa" ></div>
+<div class="gantt_chart_grp" id="ongoingwip_wa" ></div>
 <script>
         $(function() {
             $("#ongoingwip_wa").gantt({
@@ -745,9 +478,10 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
             }); 
         });
 </script>
+											<?php endif; ?>
 
-
-<div class="gantt_chart_grp gnt_onload_hide" id="ongoingwip_nsw" ></div>
+<?php if($user_focus_company_id == 6): ?>
+<div class="gantt_chart_grp" id="ongoingwip_nsw" ></div>
 <script>
         $(function() {
             $("#ongoingwip_nsw").gantt({
@@ -766,40 +500,8 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
             }); 
         });
 </script>
-  
-
-<?php  foreach ($project_manager_list as $pm ): ?>
-			
-
-			<?php $pm_name_grp = strtolower( str_replace(' ','_',  $pm->user_first_name   )   ).'_'.strtolower( str_replace(' ','_',  $pm->user_last_name   )   ); ?>
-
-
-
-<div class="gantt_chart_grp gnt_onload_hide" id="ongoingwip_<?php echo $pm_name_grp; ?>"  ></div>
-<script>
-        $(function() {
-            $("#ongoingwip_<?php echo $pm_name_grp; ?>").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress($pm->project_manager_id); ?>  ],
-                navigate: "buttons",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 50,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	//$('#est_deadline_all').hide();
-					$('#ongoingwip_<?php echo $pm_name_grp; ?>').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
-
-
-
-
-<?php endforeach; ?>
+<?php endif; ?>
+ 
 
 
  
@@ -823,6 +525,165 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 
 
 
+						<!-- ************************ -->
+
+
+<style type="text/css">
+    .navigate,.nav-link.nav-zoomIn,.nav-link.nav-zoomOut,.page-number,.nav-link.nav-page-back,.nav-link.nav-page-next,.nav-link.nav-now,.nav-link.nav-prev-week,.nav-link.nav-prev-day,.nav-link.nav-next-day,.nav-link.nav-next-week{ display: none; visibility: hidden; width: 0; height: 0; }
+    .gantt .tooltip,.gantt .tooltip .tooltip-inner{ width: 350px !important; max-width: 350px !important;	}
+    .fn-gantt .leftPanel{width: 75px !important; overflow: visible !important;}
+    .bar.curr_date { background: #fff8da; border-top: 3px solid #fff8da; border-bottom: 2px solid #fff8da; height: 23px; margin-top: -3px; border-radius: 0; box-shadow: none; z-index: 9;}
+    .fn-gantt .rightPanel {overflow-x: scroll !important;    overflow-y: hidden !important; }
+    .fn-gantt .fn-content {background: #f1f1f1 !important;}
+
+
+	.fullfitout{ background:#D9534F !important; }
+	.refurbishment{ background:#5E2971 !important; }
+	.kiosk{ background:#4DAB4D !important; }
+	.bar.maintenance{ background:#F7901E !important; }
+</style>
+
+<script type="text/javascript"> 
+
+	setTimeout(function () {
+		$('p.qdc_loading_text').hide();
+	}, 5000);
+
+
+
+	$('select.chart_data_selection_est').on("change", function(e) {
+		var data = $(this).val();
+		$('.gantt').hide();
+		$('.gantt#est_deadline_'+data).show();
+	});
+</script>
+
+
+
+
+						<!-- ************************ -->
+						
+						<div class="clearfix"></div>
+
+						<!-- ************************ -->
+
+
+
+
+
+
+
+
+											<script type="text/javascript"> //pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline',15000); </script>
+
+						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
+							<div class="widget wid-type-b widg-head-styled" style="height: 501px;">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Joinery on WIP</strong>
+								<span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the projects having joinery in the works. Ordered by CPO date, oldest first."></i></span> 
+ 
+
+ <select class="pull-right input-control input-sm chart_data_join_tbl" onchange="setSortJoinTbl(this.value)" style="background: #62a762;padding: 2px 0 0 0;margin: -8px 0 0 30px; font-size: 15px;width: 130px;height: 35px;border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+    <option value="0_asc">Project ID Asc</option>    
+    <option value="0_desc">Project ID Desc</option>  
+
+    <option value="1_asc">PO ID Asc</option>    
+    <option value="1_desc">PO ID Desc</option>  
+
+    <option value="6_asc" selected>CPO Date Asc</option>
+    <option value="6_desc">CPO Date Desc</option> 
+</select>
+
+
+
+<span class="badges  "> <span class="pull-right">  Total Amount $  &nbsp; 
+							 <?php  echo $this->dashboard->po_joinery_list(1); ?></span> </span>
+
+								</div>
+								<div class="box-area clearfix">
+									<div class="widg-content clearfix">
+
+
+  
+
+
+<div id="" class="" style=" height: 452px;    padding: 0 5px 0;    overflow: scroll;    overflow-x: hidden; ">
+											<div class="clearfix center knob_box   small-widget" id="joinery_in_wip">
+												<!-- <p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p> -->
+											
+<table id="po_wip_join" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead><tr><!--<th>Brand/Shopping Centre Group</th>--><th style="border-right: none;">Project Number</th><th style="border-right: none;">PO Number</th><th style="border-right: none;">Delivery</th><th style="border-right: none;">CPO Date</th><th>Amount Ex-GST</th><th class="hide">unix_delivery</th><th class="hide">unix_cpo</th></tr></thead>
+										<tbody>
+											<?php $custom = "  AND `project`.`focus_company_id` = '".$user_focus_company_id."'  "; ?>
+											<?php echo $this->dashboard->po_joinery_list(0,$custom); ?>
+										</tbody>
+									</table>
+
+									</div>
+
+
+ 
+
+
+
+ 
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<style type="text/css">
+#po_wip_join_filter,#po_wip_join_info{
+	display: none; visibility: hidden;
+}
+
+
+						</style>
+
+
+<script type="text/javascript">
+
+setTimeout(function() {
+
+	$('#po_wip_join_filter').parent().parent().remove();
+	$('#po_wip_join_info').parent().parent().remove();
+
+
+
+	}, 2000);
+
+ 
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+						<!-- ************************ -->
+						
+						<div class="clearfix"></div>
+
+						<!-- ************************ -->
+
+
+
+
+
+
+
+						<!-- ************************ -->
+
+
+
 						
 						<div class="clearfix"></div>
 
@@ -831,7 +692,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head pad-5 fill">
-									<strong>Quote Deadline Calendar</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the quoted projects in completion date order chronologically. The deadline day is shown as a target in the calendar."></i></span>
+									<strong>Quote Deadline Calendar</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists projects to be quoted in completion date order chronologically. The deadline day is shown as a target in the calendar."></i></span>
 
 									<select class="pull-right input-control input-sm chart_data_selection_est" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 120px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="all">Overall</option>
@@ -954,7 +815,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of days when the next deadline is occurring."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of days to when the next quote deadline is due."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 
@@ -987,7 +848,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Project Estimator Quotes</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells each estimators current quoted projects for the year and compares to last year."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head fill box-widg-head pad-5"><strong>Project Estimator Quotes</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Displays each estimators current quoted projects for the year and compares to the previous year."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 										<script type="text/javascript"> pre_load_module('#estimators_quotes_completed_area','dashboard/estimators/estimators_quotes_completed',15500); </script>
@@ -1014,297 +875,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 
 
 
-
-						<!-- ************************ -->
-
-
-						<div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 box-widget pad-10 pie_toggle_custom_a">
-							<div class="widget wid-type-0 widg-head-styled">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Projects by Type </strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="The total project costs per project category, only completed projects of the current year to date are included."></i></span><span class="pull-right"> <?php echo date('Y'); ?></span></div>
-								<div class="box-area clearfix" style="height:320px;">
-									<div class="widg-content clearfix">
-
-										<div id="" class="pad-5" style="">
-											<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 box-widget pie_display_dyn">
-												<div class="" id="donut_prj_bt" style="text-align: center;"></div>
-											</div>
-											<script type="text/javascript"> pre_load_module('#focus_projects_by_type_widget_area_x','dashboard/focus_projects_by_type_widget',16000); </script>
-									<div id="" class="text_display_dyn_tq" style="display:none; float:right;">
-																				<div class="col-xs-12 box-widget m-top-10 " id="focus_projects_by_type_widget_area_x">
-																					<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-																					<?php //echo $this->dashboard->focus_projects_by_type_widget(); ?>
-																				</div>
-									
-									</div>
-										</div>
-										<p class="m-top-10 pad-top-10 clearfix"><div class="clearfix"></div><button class="btn btn-xs btn-primary toggle_pie_text m-top-10 m-left-15" style="display:none;">Toggle Display</button></p>
-
-										<script type="text/javascript">
-
-											//	alert( $(window).width() );
-
-										
-setTimeout(function () {
-
-	if (    $(window).width() >= 1180 && $(window).width() <= 1680    ){
-
-	$('.text_display_dyn_tq').removeAttr("style");
-	$('.pie_display_dyn').css('width','100%');
- 	$('.text_display_dyn_tq').css('display','none');
-	$('.text_display_dyn_tq').css('width','100%');
-	$('.toggle_pie_text').show();
-
-												//		$('.text_display_dyn').hide();	
-												//		$('.pie_display_dyn').hide();	
-												//		$('.toggle_pie_text').show();	
-
-}else{
-	$('.text_display_dyn_tq').removeAttr("style");
- 	$('.text_display_dyn_tq').show();	
-
- 	
-
-
-	$('.pie_display_dyn').css('width','50%');
-	$('.text_display_dyn_tq').css('width','50%');
-	$('.text_display_dyn_tq').css('float','right');
-	$('.toggle_pie_text').hide();
-}
-
-
-}, 16005);
-
-
-
-											$(window).resize(function() {
-											//	alert( $(window).width() );
-
-
-
-if (    $(window).width() >= 1180 && $(window).width() <= 1680    ){
-
-	$('.text_display_dyn_tq').removeAttr("style");
-	$('.pie_display_dyn').css('width','100%');
- 	$('.text_display_dyn_tq').css('display','none');
-	$('.text_display_dyn_tq').css('width','100%');
-	$('.toggle_pie_text').show();
-
-												//		$('.text_display_dyn').hide();	
-												//		$('.pie_display_dyn').hide();	
-												//		$('.toggle_pie_text').show();	
-
-}else{
-
-	$('.text_display_dyn_tq').removeAttr("style");
- 	$('.text_display_dyn_tq').show();	
-	$('.pie_display_dyn').css('width','50%');
-	$('.text_display_dyn_tq').css('width','50%');
-	$('.text_display_dyn_tq').css('float','right');
-	$('.toggle_pie_text').hide();
-}
-
-/*
-
-if ($(window).width() >= 1400 && $(window).width() <= 1660) {
-														alert('Less than 960');
-														$('.text_display_dyn').show();	
-														$('.pie_display_dyn').show();	
-														$('.toggle_pie_text').show();	
-													}else {
-														alert('More than 960');
-														$('.text_display_dyn').hide();	
-														$('.pie_display_dyn').show();	
-														$('.toggle_pie_text').hide();	
-													}
-*/
-												});
  
-
-											$('.toggle_pie_text').click(function(){
-												$('.text_display_dyn_tq').toggle();	
-												$('.pie_display_dyn').toggle();	
-
-
-										 	//  $('.text_display_dyn').css('width','100%');
-											//	$('.text_display_dyn').css('display','block');
-
-											}); 
-
-
-										</script>
-
-										<style type="text/css">
-
- 
-
-											@media (min-width: 1180px) and (max-width: 1680px) {
- 
-												.pie_toggle_custom_a{
-													width: 25%;
-												}
-
-
-												.pie_toggle_custom_b{
-													width: 75%;
-												}
-
-											}
- 
-
-
-										</style>
-
-									</div>
-								</div>
-							</div>
-						</div>
-
-
-						<style type="text/css">
-							@media (min-width: 1200px) and (max-width: 1500px) {
-								.knob {
-									font-size: 50px !important;
-								}
-							}
-
-
-							@media (min-width: 1510px) and (max-width: 1800px) {
-								.knob {
-									font-size: 75px !important;
-								}
-							}
-						</style>
-<!-- 
-
-						<div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 box-widget pad-10 hide">
-							<div class="widget wid-type-b widg-head-styled">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><i class="fa fa-tags  text-center "></i> <strong>Pie View </strong></div>
-								<div class="box-area clearfix" style="height:320px;">
-									<div class="widg-content clearfix">
-
-									</div>
-								</div>
-							</div>
-						</div>
- -->
-
-
-						<div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 box-widget pad-10 pie_toggle_custom_b">
-							<div class="widget wid-type-e widg-head-styled">
-								<div class="  fill box-widg-head pad-right-10 pad-left-10 m-left-15 pull-right pad-top-3 m-3">
-									<a href="#clients_mtnc" class="view_main_swtch btn btn-xs btn-default" role="tab" data-toggle="tab"  >View Maintenance</a> &nbsp;
-									<strong>
-										<?php echo date('Y'); ?> <span  data-placement="left" class="pointer" ><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="left" data-original-title="Top 20 Clients/Contractors/Suppliers having the highest job cost for the year <?php echo date('Y'); ?>."></i></span>
-									</strong>
-								</div>
-								<div class="tabs_widget" >
-									<ul  class="nav nav-tabs" role="tablist" style="height: 32px;">
-										<li role="presentation" class="active"><a href="#clients" class="tab_btn_dhb" role="tab" id="clients-tab_a" data-toggle="tab" >Clients</a></li>
-										<li role="presentation" class=""><a href="#contractors" class="tab_btn_dhb" role="tab" id="contractors-tab_a" data-toggle="tab" >Contractors</a></li>
-										<li role="presentation" class=""><a href="#suppliers" class="tab_btn_dhb" role="tab" id="suppliers-tab_a" data-toggle="tab" >Suppliers</a></li>
-
-
-										<li role="presentation" class="active"><a href="#clients_mtnc" style="display:none;" class="tab_btn_dhb_mntnc" role="tab" id="clients-tab_b" data-toggle="tab" >Clients</a></li>
-										<li role="presentation" class=""><a href="#contractors_mtnc" style="display:none;" class="tab_btn_dhb_mntnc" role="tab" id="contractors-tab_b" data-toggle="tab" >Contractors</a></li>
-										<li role="presentation" class=""><a href="#suppliers_mtnc" style="display:none;" class="tab_btn_dhb_mntnc" role="tab" id="suppliers-tab_b" data-toggle="tab" >Suppliers</a></li>
-
-
-									</ul>
-
-
-									<div id="myTabContent" class="tab-content pad-10 clearfix"> 
-										
-										<div role="tabpanel" class="tab-pane active fade in" id="clients" >
-											<div id="" class="col-lg-5">
-												<div class="loading_chart" style="height: 300px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
-												<div class="" id="donut_a" style="text-align: center;"></div>
-											</div>
-											<div id="" class="col-lg-7">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_clients_area','dashboard/focus_top_ten_clients',16500); </script>
-												<div id="focus_top_ten_clients_area" class="" style="height: 300px; overflow: auto;">
-													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-													<?php //echo $this->dashboard->focus_top_ten_clients(); ?>
-												</div>
-											</div>
-										</div>
-
-										<div role="tabpanel" class="tab-pane fade in" id="contractors">
-											<div id="" class="center col-lg-5 clearfix">
-												<div class="" id="donut_b" style="text-align: center;"></div>
-											</div>
-											<div id="" class="col-lg-7 clearfix">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_area_b','dashboard/focus_top_ten_con_sup/2',17000); </script>
-												<div id="focus_top_ten_con_sup_area_b" class="clearfix" style="height: 300px; overflow: auto;">
-													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-													<?php //echo $this->dashboard->focus_top_ten_con_sup('2'); ?>
-												</div>
-											</div>
-										</div>
-
-										<div role="tabpanel" class="tab-pane fade in" id="suppliers">
-											<div id="" class="center col-lg-5 clearfix">
-												<div class="" id="donut_c" style="text-align: center;"></div>
-											</div>
-											<div id="" class="col-lg-7 clearfix">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_area_c','dashboard/focus_top_ten_con_sup/3',17500); </script>
-												<div id="focus_top_ten_con_sup_area_c" class="clearfix" style="height: 300px; overflow: auto;">
-													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-													<?php //echo $this->dashboard->focus_top_ten_con_sup('3'); ?>
-												</div>
-											</div>
-										</div>
-
-										<div role="tabpanel" class="tab-pane fade in" id="clients_mtnc">
-											<div id="" class="center col-lg-5 clearfix">
-												<div class="" id="donut_d" style="text-align: center;"></div>
-											</div>
-											<div id="" class="col-lg-7 clearfix">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_clients_mn_area','dashboard/focus_top_ten_clients_mn',18000); </script>
-												<div id="focus_top_ten_clients_mn_area" class="clearfix" style="height: 300px; overflow: auto;">
-													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-													<?php //echo $this->dashboard->focus_top_ten_clients_mn(); ?>
-												</div>
-											</div>
-										</div>
-										
-										<div role="tabpanel" class="tab-pane fade in" id="contractors_mtnc">
-											<div id="" class="center col-lg-5 clearfix">
-												<div class="" id="donut_e" style="text-align: center;"></div>
-											</div>
-											<div id="" class="col-lg-7 clearfix">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_mn_area_b','dashboard/focus_top_ten_con_sup_mn/2',18500); </script>
-												<div id="focus_top_ten_con_sup_mn_area_b" class="clearfix" style="height: 300px; overflow: auto;">
-													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-													<?php //echo $this->dashboard->focus_top_ten_con_sup_mn('2'); ?>
-												</div>
-											</div>
-										</div>
-										
-										<div role="tabpanel" class="tab-pane fade in" id="suppliers_mtnc">
-											<div id="" class="center col-lg-5 clearfix">
-												<div class="" id="donut_f" style="text-align: center;"></div>
-											</div>
-											<div id="" class="col-lg-7 clearfix">
-												<script type="text/javascript"> pre_load_module('#focus_top_ten_con_sup_mn_area_c','dashboard/focus_top_ten_con_sup_mn/3',19000); </script>
-												<div id="focus_top_ten_con_sup_mn_area_c" class="clearfix" style="height: 300px; overflow: auto;">
-													<p style=" padding: 2px 0px 3px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
-													<?php //echo $this->dashboard->focus_top_ten_con_sup_mn('3'); ?>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-
-
-
-
-						<div class="clearfix"></div>
-
 
 						<!-- ************************ -->
 
@@ -1336,7 +907,7 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Maintenance Projects : Average Per Day - <?php echo date('Y'); ?></strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week numbers and tells how many in average a maintenance project has taken place and compares values to last year of the same week number."></i></span>
+									<strong>Maintenance Projects : Average Per Day - <?php echo date('Y'); ?></strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the number of projects per week, displays the average and also the number of projects for the previous year."></i></span>
 
 
 									<span style="float: right;    font-weight: bold;">
@@ -1508,6 +1079,15 @@ chart.select();
 						<!-- ************************ -->
 
 
+ 
+
+
+ 
+ 
+
+
+
+						<!-- ************   LEAVE CHART   ************ -->
 
 
 
@@ -1527,9 +1107,9 @@ chart.select();
 							array_push($leave_types, $added_data);
 
 
-
-							$leave_totals =  $this->dashboard->get_count_per_week(2);
-							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year);
+							$leave_totals =  $this->dashboard->get_count_per_week(2,'',$user_id   );
+							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,$user_id);
+							$custom_q = " AND ( `users`.`user_role_id` = '11' OR `users`.`user_role_id` = '15' ) AND `users`.`is_active` = '1' AND `users`.`user_focus_company_id` = '".$user_focus_company_id."'  ";
 
 							?>
 						</div>
@@ -1538,14 +1118,13 @@ chart.select();
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week number and displays how many leaves taken place, the chart can be broken down into individual employees."></i></span>
+									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the number of leaves taken place each week, the chart can be broken down into individual employees."></i></span>
 
-									<select class="pull-right input-control input-sm chart_data_selection_emps" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 100px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
-										<option value="all" selected="all">Overall</option>
-										<option value="grouped"  >Grouped</option>
+									<select class="pull-right input-control input-sm chart_data_selection_emps" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 130px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+										 <option value="grouped"  >Grouped</option>
 
 										<?php 
-											$user_list_q = $this->user_model->list_user_short();
+											$user_list_q = $this->user_model->list_user_short($custom_q);
 											$user_list= $user_list_q->result();
 										?>
 
@@ -1574,7 +1153,6 @@ $leave_type_list[4] = 'Personal (Comp. Leave)';
 
 
 
-
 								<div class="box-area clearfix row pad-right-10 pad-left-10 pad-bottom-10">									
 									<div class="widg-content col-md-12 col-xs-12 clearfix">
 										<div class="chart_main_leave_loading_chart" style="height: 457px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
@@ -1598,22 +1176,8 @@ $leave_type_list[4] = 'Personal (Comp. Leave)';
 													<div class="" style="padding:2px; float:left; display:block; width: 14%;  background: <?php echo $color_leave_type[$leave_data_id];  ?>;">
 														<p class="pointer leave_type_selection tooltip-enabled type_label_<?php echo $leave_data_id; ?>" title="" data-html="true" data-placement="top" data-original-title="Total Applied: <?php echo $leave_totals[$leave_data_id]; ?><br />Last Year:  <?php echo $last_year_leave[$leave_data_id]; ?>" id="<?php echo $leave_name_value; ?>" style="color: #fff;   font-size: 12px;  text-align: center;"><?php echo $leave_name_value; ?></p>
 													</div>
-
-													<?php 
-														$current_total_leaves .= $leave_data_id.'-'.$leave_totals[$leave_data_id].'|';
-														$previou_total_leaves .= $leave_data_id.'-'.$last_year_leave[$leave_data_id].'|';
-													 ?>
-												<?php endforeach; ?>	
-
-
+												<?php endforeach; ?>
 											</div>
-
-											<div id="" class="hide hidden">
-												<p class="current_total_leaves" ><?php echo "$current_total_leaves"; ?></p>
-												<p class="previou_total_leaves" ><?php echo "$previou_total_leaves"; ?></p>
-											</div>
-
-
 
 											<style type="text/css">.mos {    float: left;    width: 8.1%;    text-align: center;}</style>
 										</div> 	
@@ -1622,7 +1186,7 @@ $leave_type_list[4] = 'Personal (Comp. Leave)';
 
 							</div>
 						</div>
-
+ 
 
 						<script type="text/javascript">
 
@@ -1650,10 +1214,10 @@ var chart_emply = c3.generate({
 
           ?> ], // months labels
 
-
+ // employees
           <?php 
 
-          echo $this->dashboard->get_count_per_week(1);
+          echo $this->dashboard->get_count_per_week(1,'','',$custom_q);
 
            ?>
 
@@ -1670,9 +1234,9 @@ colors: {
 	'Last Year': '#9467BD',*/
 
 
-	<?php foreach ($leave_types as $leave_data): ?>
+	<?php /*foreach ($leave_types as $leave_data): ?>
 		'<?php echo "Overall ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id];  ?>',
-	<?php endforeach; ?>
+	<?php endforeach;*/ ?>
 
 <?php foreach ($user_list as $key => $value): ?> 
 	<?php foreach ($leave_types as $leave_data): ?>
@@ -1694,9 +1258,9 @@ groups: [
 
 
 [
-	<?php foreach ($leave_types as $leave_data): ?>
+	<?php /* foreach ($leave_types as $leave_data): ?>
 		'<?php echo "Overall ".$leave_data->leave_type; ?>',
-	<?php endforeach; ?>
+	<?php endforeach;*/ ?>
 ],
 
 
@@ -1749,7 +1313,7 @@ tooltip: {
 chart_emply.hide(); 
 
 
-chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
+//chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
 
 
 
@@ -1896,6 +1460,36 @@ $('.leave_type_selection').click(function(){
 
 
 						<div class="clearfix"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 						<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 box-widget pad-10">
 							<div class="widget wid-type-a widg-head-styled ">
@@ -2500,236 +2094,45 @@ endforeach; ?>
 
 
 // use this donut
-
-var donuta = c3.generate({
-	size: {
-		height: 300,
-		width: 300
-	},data: {
-		columns: [ <?php $this->dashboard->focus_top_ten_clients_donut(); ?> ],
-		type : 'pie',
-		onclick: function (d, i) { console.log("onclick", d, i); },
-		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-	},
-	legend: {
-		show: false //hides label
-	},
-	bindto: "#donut_a",
-	donut: {
-		title: '<?php echo date('Y'); ?> Projects by Type'
-	},tooltip: {
-		format: {
-			value: function (value, ratio, id) {
-				var format = d3.format(',');
-				var rounded_percent = Math.round( ratio * 1000 ) / 10;
-				var mod_value = Math.round(value);
-			return '$ '+format(mod_value)+' '+rounded_percent+'%';
-		}
-	} 
-}
-});
-
-
-var donutb = c3.generate({
-	size: {
-		height: 300,
-		width: 300
-	},data: {
-		columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_donut('2'); ?> ],
-		type : 'pie',
-		onclick: function (d, i) { console.log("onclick", d, i); },
-		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-	},
-	legend: {
-		show: false //hides label
-	},
-	bindto: "#donut_b",
-	tooltip: {
-		format: {
-			value: function (value, ratio, id) {
-				var format = d3.format(',');
-				var rounded_percent = Math.round( ratio * 1000 ) / 10;
-				var mod_value = Math.round(value);
-			return '$ '+format(mod_value)+' '+rounded_percent+'%';
-		}
-	} 
-}
-});
-
-
-var donutc= c3.generate({
-	size: {
-		height: 300,
-		width: 300
-	},data: {
-		columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_donut('3'); ?> ],
-		type : 'pie',
-		onclick: function (d, i) { console.log("onclick", d, i); },
-		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-	},
-	legend: {
-		show: false //hides label
-	},
-	bindto: "#donut_c",
-	tooltip: {
-		format: {
-			value: function (value, ratio, id) {
-				var format = d3.format(',');
-				var rounded_percent = Math.round( ratio * 1000 ) / 10;
-				var mod_value = Math.round(value);
-			return '$ '+format(mod_value)+' '+rounded_percent+'%';
-		}
-	} 
-}
-});
-
-var donutd= c3.generate({
-	size: {
-		height: 300,
-		width: 300
-	},data: {
-		columns: [ <?php echo $this->dashboard->focus_top_ten_clients_mn_donut(); ?> ],
-		type : 'pie',
-		onclick: function (d, i) { console.log("onclick", d, i); },
-		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-	},
-	legend: {
-		show: false //hides label
-	},
-	bindto: "#donut_d",
-	tooltip: {
-		format: {
-			value: function (value, ratio, id) {
-				var format = d3.format(',');
-				var rounded_percent = Math.round( ratio * 1000 ) / 10;
-				var mod_value = Math.round(value);
-			return '$ '+format(mod_value)+' '+rounded_percent+'%';
-		}
-	} 
-}
-});
-
-
-
-var donute= c3.generate({
-	size: {
-		height: 300,
-		width: 300
-	},data: {
-		columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_mn_donut(2); ?> ],
-		type : 'pie',
-		onclick: function (d, i) { console.log("onclick", d, i); },
-		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-	},
-	legend: {
-		show: false //hides label
-	},
-	bindto: "#donut_e",
-	tooltip: {
-		format: {
-			value: function (value, ratio, id) {
-				var format = d3.format(',');
-				var rounded_percent = Math.round( ratio * 1000 ) / 10;
-				var mod_value = Math.round(value);
-			return '$ '+format(mod_value)+' '+rounded_percent+'%';
-		}
-	} 
-}
-});
-
-
-
-var donutf= c3.generate({
-	size: {
-		height: 300,
-		width: 300
-	},data: {
-		columns: [ <?php echo $this->dashboard->focus_top_ten_con_sup_mn_donut(3); ?> ],
-		type : 'pie',
-		onclick: function (d, i) { console.log("onclick", d, i); },
-		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-	},
-	legend: {
-		show: false //hides label
-	},
-	bindto: "#donut_f",
-	tooltip: {
-		format: {
-			value: function (value, ratio, id) {
-				var format = d3.format(',');
-				var rounded_percent = Math.round( ratio * 1000 ) / 10;
-				var mod_value = Math.round(value);
-			return '$ '+format(mod_value)+' '+rounded_percent+'%';
-		}
-	} 
-}
-});
-
-
-
-
-
-
-
-
-
-var donutg = c3.generate({
-	size: {
-		height: 250,
-		width: 250
-	},data: {
-		columns: [ <?php echo $this->dashboard->focus_projects_by_type_widget(1); ?> ],
-		type : 'pie',
-		onclick: function (d, i) { console.log("onclick", d, i); },
-		onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-		onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-	},
-	legend: {
-		show: false //hides label
-	},
-	bindto: "#donut_prj_bt",
-	tooltip: {
-		format: {
-			value: function (value, ratio, id) {
-				var format = d3.format(',');
-				var rounded_percent = Math.round( ratio * 1000 ) / 10;
-				var mod_value = Math.round(value);
-			return '$ '+format(mod_value)+' '+rounded_percent+'%';
-		}
-	} 
-}
-});
-
-
-
-
-$(function() {
-
-    		setTimeout(function () {
-
-    			    $('.gnt_onload_hide').hide();
-
-
-	}, 1000);
-
-});
+ 
 
 
 
 </script>
  
 
+<?php 
+
+if($pm_setter != '' && isset($pm_setter)){
+	$pm_name = $pm_setter;
+	echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_name.'");</script>';
+}else{
+	$pm_name = $this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name'); 
+}
+
+?>
+
+<script type="text/javascript">
+
+
+	setTimeout(function() {
+		$("select.chart_data_selection_emps").val('grouped');
+
+
+		chart_emply.show();
+		chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
+
+
+
+	//	chart_emply.show(['<?php echo $pm_name; ?> Annual Leave','<?php echo $pm_name; ?> Personal (Sick Leave)','<?php echo $pm_name; ?> Personal (Carers Leave)','<?php echo $pm_name; ?> Personal (Compassionate Leave)','<?php echo $pm_name; ?> Unpaid Leave','<?php echo $pm_name; ?> Philippines Public Holiday','<?php echo $pm_name; ?> RDO (Rostered Day Off)']);
+
+	}, 10000);
 
 
 
 
 
+</script>
 
 <!-- maps api js -->
 

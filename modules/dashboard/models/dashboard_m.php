@@ -354,7 +354,7 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `re
 	}
 
 
-	public function get_site_labour_hrs($currect_date,$date_project_created = ''){
+	public function get_site_labour_hrs($currect_date,$date_project_created = '',$custom=''){
 
 		$query = $this->db->query("SELECT  UNIX_TIMESTAMP( STR_TO_DATE(`project_labour_sched`.`labour_sched_date`, '%Y-%m-%d') ) AS `date_set`, SUM(`project_labour_sched`.`number_of_hrs`) AS `time` , `project`.`focus_company_id`,`states`.`shortname`,`address_general`.`state_id`
 			FROM `project_labour_sched`
@@ -379,6 +379,9 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `re
 			 AND `project`.`job_category` != 'Minor Works'
 			 AND `project`.`job_category` != 'Maintenance'
 			 AND `project`.`job_category` != 'Company'
+			 AND `project`.`job_category` != 'Joinery Only'
+
+			 ".$custom."
 
 
 			GROUP BY `project`.`project_id`");
@@ -1005,7 +1008,7 @@ ORDER BY  `invoice`.`project_id` ASC,   `payment`.`payment_id` DESC ");
 	}
 
 
-	public function get_joinery_list($is_reconciled_control=''){
+	public function get_joinery_list($is_reconciled_control='',$custom=''){
 		$query = $this->db->query(" SELECT 
 
 
@@ -1040,15 +1043,9 @@ CONCAT( `users`.`user_first_name`,' ',`users`.`user_last_name`) AS `pm_name`,
 
 			LEFT JOIN `work_contractors` ON `work_contractors`.`works_id` = `works`.`works_id`  
 			LEFT JOIN `project` ON `project`.`project_id`  =  `works`.`project_id`     
-			  LEFT JOIN `brand` ON `brand`.`brand_id` =  `project`.`brand_id`
-
+			 LEFT JOIN `brand` ON `brand`.`brand_id` =  `project`.`brand_id`
 			LEFT JOIN `company_details` ON `company_details`.`company_id` =  `works`.`company_client_id` 
-
-
 			LEFT JOIN `contact_person_company` ON `contact_person_company`.`company_id` = `works`.`company_client_id` 
-
-
-
 			LEFT JOIN `contact_person` ON `contact_person`.`contact_person_id` = `work_contractors`.`contact_person_id`
 
 
@@ -1056,7 +1053,7 @@ CONCAT( `users`.`user_first_name`,' ',`users`.`user_last_name`) AS `pm_name`,
 
 
 			LEFT JOIN `contact_number` ON `contact_number`.`contact_number_id` = `contact_person`.`contact_number_id`
-	LEFT JOIN `users` ON `users`.`user_id` = `project`.`project_manager_id`
+			LEFT JOIN `users` ON `users`.`user_id` = `project`.`project_manager_id`
 
 			WHERE `works`.`other_work_desc` LIKE '%Joinery%'  AND `company_details`.`active` = '1' 
 			AND `works`.`is_active` = '1'   AND  `project`.`is_active` = '1' AND `project`.`job_date`  != ''
@@ -1070,6 +1067,8 @@ CONCAT( `users`.`user_first_name`,' ',`users`.`user_last_name`) AS `pm_name`,
 			AND `work_contractors`.`is_selected` = '1'
 			AND `company_details`.`activity_id`  = '20'  
 			AND `company_details`.`company_type_id` = '3'  
+
+			".$custom."
 			GROUP BY `works`.`works_id` 
 			ORDER BY UNIX_TIMESTAMP( STR_TO_DATE(`works`.`work_cpo_date`, '%d/%m/%Y') ) ASC   ");
 return $query; 

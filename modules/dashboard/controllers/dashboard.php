@@ -98,6 +98,7 @@ class Dashboard extends MY_Controller{
 				$user_department_id = $this->session->userdata('user_department_id');
 		//Grant acess to Operations Manager
 				$data['pm_setter'] = '';
+				$data['pm_setter_focus_id'] = '';
 
 				if($this->session->userdata('is_admin') == 1 || $user_role_id == 16 || $this->session->userdata('user_id') == 9 || $this->session->userdata('user_id') == 6):
 
@@ -109,6 +110,7 @@ class Dashboard extends MY_Controller{
 					$fetch_user = $this->user_model->fetch_user($dash_details[0]);
 					$user_details = array_shift($fetch_user->result_array());
 					$data['pm_setter'] = $user_details['user_first_name'].' '.$user_details['user_last_name']; 
+					$data['pm_setter_focus_id'] = $user_details['user_focus_company_id']; 
 
 
 					if($dash_details[1] == 'pm'){
@@ -125,6 +127,8 @@ class Dashboard extends MY_Controller{
 						$data['main_content'] = 'dashboard_joinery_procurement';
 					}elseif($dash_details[1] == 'acnt'){
 						$data['main_content'] = 'dashboard_accnt';
+					}elseif($dash_details[1] == 'const'){
+						$data['main_content'] = 'dashboard_const';
 					}elseif($dash_details[1] == 'set'){
 						$data['main_content'] = 'dashboard_set';
 					}else{
@@ -137,9 +141,6 @@ class Dashboard extends MY_Controller{
 
 				elseif($user_role_id == 3 || $user_role_id == 20):
 
-
-
-
 					$dash_type = $this->input->get('dash_view', TRUE);
 				if( isset($dash_type) && $dash_type != ''){
 					if($this->session->userdata('user_id') == 15 ){
@@ -150,6 +151,7 @@ class Dashboard extends MY_Controller{
 						$fetch_user = $this->user_model->fetch_user($dash_details[0]);
 						$user_details = array_shift($fetch_user->result_array());
 						$data['pm_setter'] = $user_details['user_first_name'].' '.$user_details['user_last_name']; 
+					$data['pm_setter_focus_id'] = $user_details['user_focus_company_id']; 
 
 						if($dash_details[1] == 'pm'){
 							$data['main_content'] = 'dashboard_pm';
@@ -163,6 +165,8 @@ class Dashboard extends MY_Controller{
 							$data['main_content'] = 'dashboard_joinery_procurement';
 						}elseif($dash_details[1] == 'acnt'){
 							$data['main_content'] = 'dashboard_accnt';
+						}elseif($dash_details[1] == 'const'){
+							$data['main_content'] = 'dashboard_const';
 						}elseif($dash_details[1] == 'set'){
 							$data['main_content'] = 'dashboard_set';
 						}elseif($dash_details[1] == 'es'){
@@ -200,6 +204,8 @@ class Dashboard extends MY_Controller{
 					$data['main_content'] = 'dashboard_accnt';
 				elseif($user_role_id == 12):
 					$data['main_content'] = 'dashboard_set';
+				elseif($user_role_id == 11):
+					$data['main_content'] = 'dashboard_const';
 				elseif( $this->session->userdata('user_id') == 72 ):
 					$data['main_content'] = 'dashboard_general_hammond';
 				elseif( $this->session->userdata('dashboard') == 1 ):
@@ -436,7 +442,7 @@ class Dashboard extends MY_Controller{
 
 
 
-	public function get_count_per_week($return_total = 0, $set_year = '', $set_emp_id = '' ){
+	public function get_count_per_week($return_total = 0, $set_year = '', $set_emp_id = '', $custom_data = '' ){
 
 
 		$q_leave_types = $this->user_model->fetch_leave_type();
@@ -467,7 +473,12 @@ class Dashboard extends MY_Controller{
 		$leave_typess_arr[] = array();
 
 
-		if(isset($set_emp_id) && $set_emp_id != '' ){
+		if( isset($custom_data) && $custom_data != ''   ){
+
+			$list_user_short_q = $this->user_model->list_user_short($custom_data);
+			$user_list = $list_user_short_q->result();
+
+		}elseif(isset($set_emp_id) && $set_emp_id != '' ){
 
 			$list_user_short_q = $this->user_model->fetch_user($set_emp_id);
 			$user_list = $list_user_short_q->result();
@@ -542,6 +553,8 @@ class Dashboard extends MY_Controller{
 
 
 		}
+
+
 
 
 
@@ -1216,11 +1229,11 @@ class Dashboard extends MY_Controller{
 		}
 	}
 
-	public function po_joinery_list($return_val=0){
+	public function po_joinery_list($return_val=0,$custom=''){
 
 
 
-		$q_get_joinery_list = $this->dashboard_m->get_joinery_list();
+		$q_get_joinery_list = $this->dashboard_m->get_joinery_list(0,$custom);
 		$get_joinery_list = $q_get_joinery_list->result();
 
 		$val_amount = 0;
@@ -3141,15 +3154,22 @@ public function progressBar($assign_id='',$comp_id=''){
 	}
 
 
-	public function wid_site_labour_hrs(){
+	public function wid_site_labour_hrs($comp_id_set=''){
 		$current_date = date("Y-m-d");
 		$total_string = '';
 		$display_total = 0;
+		$custom = '';
+		$custom_a = '';
 
 		$current_year = date("Y");
 		$total_string .= '<div class=\'row\'>&nbsp; ('.$current_year.')</div>';
 
-		$all_focus_company = $this->admin_m->fetch_all_company_focus();
+		if(isset($comp_id_set) && $comp_id_set != ''){
+			$custom = " AND `company_details`.`company_id` = '".$comp_id_set."' ";
+			$custom_a = " AND `project`.`focus_company_id` = '".$comp_id_set."' ";
+		} 
+
+		$all_focus_company = $this->admin_m->fetch_all_company_focus($custom);
 		$focus_company = $all_focus_company->result();
 		$focus_company_hrs = array();
 		foreach ($focus_company as $company){
@@ -3166,7 +3186,7 @@ public function progressBar($assign_id='',$comp_id=''){
 			$states_name[$sts->id] = $sts->shortname;
 		}
 
-		$days_q = $this->dashboard_m->get_site_labour_hrs($current_date);
+		$days_q = $this->dashboard_m->get_site_labour_hrs($current_date,'',$custom_a);
 		foreach ($days_q->result_array() as $labor_hrs) {
 
 			$comp_id = $labor_hrs['focus_company_id'];
@@ -3211,7 +3231,7 @@ public function progressBar($assign_id='',$comp_id=''){
 		$old_year = $old_year_set.'-'.date('m-d');
 		$old_year_limit = "$old_year_set-$old_month-".date('d');
 
-		$days_q = $this->dashboard_m->get_site_labour_hrs($old_year,$old_year_limit);
+		$days_q = $this->dashboard_m->get_site_labour_hrs($old_year,$old_year_limit,$custom_a);
 		foreach ($days_q->result_array() as $labor_hrs) {
 
 			$comp_id = $labor_hrs['focus_company_id'];
@@ -9058,14 +9078,20 @@ $n_month = date("m");
 
 
 
-	public function focus_projects_count_widget(){
+	public function focus_projects_count_widget($comp_id_set=''){
 		$current_date = date("d/m/Y");
 		$year = date("Y");
 		$next_year_date = '01/01/'.($year+1);
 		$current_start_year = '01/01/'.$year;
 		$last_start_year = '01/01/'.($year-1);
+		$custom = '';
 
-		$all_focus_company = $this->admin_m->fetch_all_company_focus();
+
+		if(isset($comp_id_set) && $comp_id_set != ''){
+			$custom = " AND `company_details`.`company_id` = '".$comp_id_set."' ";
+		} 
+
+		$all_focus_company = $this->admin_m->fetch_all_company_focus($custom);
 		$focus_company = $all_focus_company->result();
 
 		$focus_arr = array();
@@ -9147,9 +9173,32 @@ $n_month = date("m");
 
 		//$proj_t = $this->wip_m->display_all_wip_projects();
 		foreach ($q_maps->result_array() as $row){
-			$comp_id = $row['focus_company_id'];
-			$focus_comp_wip_count[$comp_id]++;
+
+				$comp_id = $row['focus_company_id'];
+
+
+			if(isset($comp_id_set) && $comp_id_set != ''){
+
+				if($comp_id_set == $comp_id  ){
+					$focus_comp_wip_count[$comp_id_set]++;
+
+				}
+
+
+			}else{
+
+
+				$focus_comp_wip_count[$comp_id]++;
+
+
+			}
+
+
+
+
 		}
+
+		
 
 
 
@@ -9243,16 +9292,26 @@ $n_month = date("m");
 	}
 
 
-	public function focus_get_po_widget(){ 
+	public function focus_get_po_widget($comp_id_set=''){ 
 		$year = date("Y");
 		$current_date = date("d/m/Y");
 		$current_start_year = '01/01/2014';
 		$set_cpo = array();
+		$custom = '';
+		$custom_a = '';
+
+
+		if(isset($comp_id_set) && $comp_id_set != ''){
+			$custom = " AND `company_details`.`company_id` = '".$comp_id_set."' ";
+			$custom_a = " AND `project`.`focus_company_id` = '".$comp_id_set."' ";
+		} 
+
+
 
 		$set_date_a = '01/01/'.$year;
 
 		$focus_arr = array();
-		$all_focus_company = $this->admin_m->fetch_all_company_focus();
+		$all_focus_company = $this->admin_m->fetch_all_company_focus($custom);
 		$focus_company = $all_focus_company->result();
 
 		foreach ($focus_company as $company){
@@ -9300,7 +9359,7 @@ $n_month = date("m");
 
 
 
-		$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($set_date_b,$date_last_year_today);
+		$po_list_ordered = $this->purchase_order_m->get_po_list_order_by_project($set_date_b,$date_last_year_today,$custom_a);
 		foreach ($po_list_ordered->result_array() as $row){
 			$work_id = $row['works_id'];
 
