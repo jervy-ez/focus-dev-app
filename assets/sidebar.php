@@ -55,6 +55,11 @@
 						<a href="<?php echo base_url(); ?>referrals"> <i class="fa fa-share-alt fa-3x"></i> <label class="control-label">Referrals</label></a>
 					</li>
 				<?php endif; ?>		*/ ?>	
+				<?php if($this->session->userdata('is_admin') ==  1): ?>
+					<li>
+						<a href="<?php echo base_url(); ?>incident_report"> <i class="fa fa-ambulance fa-3x"></i> <label class="control-label">Incident Report</label></a>
+					</li>	
+				<?php endif; ?>
 				<?php if($this->session->userdata('users') > 0 || $this->session->userdata('is_admin') ==  1): ?>		
 					<li>
 						<a href="<?php echo base_url(); ?>users/availability"> <i class="fa fa-tags fa-3x"></i> <label class="control-label">Availability</label></a>

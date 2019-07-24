@@ -48,6 +48,13 @@
  	$estimator_q = $this->user_model->fetch_user_by_role(8);
  	$estimator = $estimator_q->result();
 
+ 	$set_out_q = $this->user_model->fetch_user_by_role(12);
+ 	$set_out = $set_out_q->result();;
+
+ 	$const_mng_q = $this->user_model->fetch_user_by_role(11);
+ 	$const_mng = $const_mng_q->result();
+
+
  	$fetch_user_details = $this->users->fetch_user($this->session->userdata('user_id')); 
 ?><div class="navbar navbar-inverse navbar-fixed-top top-nav" role="navigation">
 	<div class="container-fluid">
@@ -511,8 +518,17 @@
 
 							<?php foreach ($estimator as $row){	
 									if($row->user_id != 26){ echo '<option value="'.$row->user_id.'-es">'.$row->user_first_name.' '.$row->user_last_name.'</option>'; }
+							}?>			
+
+							<?php foreach ($set_out as $row){	
+									if($row->user_id != 26){ echo '<option value="'.$row->user_id.'-set">'.$row->user_first_name.' '.$row->user_last_name.'</option>'; }
 							}?>
-							<option value="72-ch">Chris Hammond</option>
+
+							<?php foreach ($const_mng as $row){	
+									echo '<option value="'.$row->user_id.'-const">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
+							}?>
+
+							<option value="74-acnt">Jayvin Santos</option>
 							<option value="21-acnt">Lesley Waller</option>
 							<option value="22-jp">Marcus Dell</option>
 							<option value="9-ad">Trevor Gamble</option>

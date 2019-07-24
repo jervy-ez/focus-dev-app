@@ -1204,6 +1204,8 @@ endif;
 					$data['user_profile_photo'] = $userdata->user_profile_photo;
 					$data['user_department_id'] = $userdata->user_department_id;
 					$data['user_focus_company_id'] = $userdata->user_focus_company_id;
+					$data['set_view_company_project'] = $userdata->user_focus_company_id;
+
 					$data['is_active'] = $userdata->is_active;
 					$data['logged_in'] = true;
 					$data['logged_in_user'] = 1;

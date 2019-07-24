@@ -52,15 +52,29 @@
         <link href="<?php echo base_url(); ?>css/bsPhotoGallery/jquery.bsPhotoGallery.css" rel="stylesheet">
         <link href="<?php echo base_url(); ?>css/Jcrop/Jcrop.css" rel="stylesheet">
         <script src="<?php echo base_url(); ?>js/tinymce/js/tinymce/tinymce.min.js" charset="utf-8"></script>
+
         <script>
             tinymce.init({ 
                 selector:'#sendpdf_body',
                 height: '300px',
                 toolbar: false,
                 menubar: false,
-                plugins: false
+                plugins: false,
+                forced_root_block : ''
             });
         </script>
+
+        <script>
+            tinymce.init({ 
+                selector:'#declinedCommentsBox',
+                height: '300px',
+                toolbar: false,
+                menubar: false,
+                plugins: false,
+                forced_root_block : ''
+            });
+        </script>
+
     </head>
     <body>
 

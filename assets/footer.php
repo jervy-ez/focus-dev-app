@@ -103,95 +103,6 @@
 
 
 
-<div class="toggle_project_amendments dynmc_sb" style="display:none; width: 35%; overflow-y: auto; height: 100%;background-color: #0E283C;position: fixed;top: 0px;right: -35%;color: #fff;z-index: 1040;">
-
-
-  <div class="prj_amnd_side_area pad-10">
-
-
-    <input type="hidden" class="prjamnd_user_id" value="<?php echo $this->session->userdata('user_id'); ?>" />
-    <input type="hidden" class="prjamnd_user_first_name" value="<?php echo ucfirst($this->session->userdata('user_first_name')); ?>" />
-    <input type="hidden" class="prjamnd_user_last_name" value="<?php echo ucfirst($this->session->userdata('user_last_name')); ?>" />
-    <input type="hidden" class="prjamnd_project_id" value="0" />
-    <input type="hidden" class="prjamnd_btn_clck_id" value="" />
-
-    <!--  <span class="project_title_amnd">PRJID</span>  -->
-
-    <?php $this->load->module('projects'); ?>
-    <?php $this->load->model('projects_m'); ?>
-    <?php $projects_q = $this->projects_m->display_all_projects(); ?>
-
-      <div class="notes_init_search"><strong class="side_bar_label">Project Amendments</strong>  <strong class="pointer close_toggle_amnds pull-right"><i class="fa-times-circle fa"></i> Close</strong> 
-    <?php if(!isset($project_id) ): ?> 
-
-        <div class="clearfix m-top-15" style="padding: 0px; color: #555 !important;">                       
-
-          <select class="amnds_project_id form-control pull-left" id="amnds_project_id" style="width:100%;">
-            <option value="" style="display:none;">Select Project</option>
-            <?php $date_today_tmpstp = strtotime("now"); ?>
-
-            <?php foreach ($projects_q->result_array() as $project_info): ?>
-              <?php echo'<option value="'.$project_info['project_id'].'"';
-
-              echo ' class=" '. ($project_info['unix_start_date'] <=  $date_today_tmpstp ? 'prj_disabled_amnd' : '').' " >'.$project_info['project_id'].' '.$project_info['project_name'].'</option>'; ?>
-            <?php endforeach;   ?>
-          </select>    
-
-          <div class="btn btn-default proj_amnds_search_bttn m-left-5" id=""  style="    position: absolute;    right:5px;">Search</div>
-
-        </div>      
-      </div>
-    <?php else: ?>
-      <select class="amnds_project_id form-control" id="amnds_project_id" style="width:235px; display:none;">
-        <option value="<?php echo $project_id; ?>" selected="selected" ><?php echo $project_id; ?></option>       
-      </select>
-          <div class="btn btn-default proj_amnds_search_bttn m-left-5" id=""  style="    display:none; position: absolute;    right:5px;">Search</div>
-
-          <script type="text/javascript">
-
-
-
-              setTimeout(function(){
-
- 
-          $('.proj_amnds_search_bttn').trigger('click');
-
-
-          $('.sb-open-right, .submit_notes_prj').click(function(){
-            $('.proj_comments_search_bttn').trigger('click');
-          });
-
-          $('.prj_amndnts_bttn').click(function(){
-            $('.proj_amnd_reload_bttn').trigger('click');
-          });
-
-
-
-
-
-          
-
-
-            },100);
-
-
-
-          </script>
-    <?php endif; ?>
-
-
-    <div class="amnds_side_form m-top-15 clearfix" style="display:none; margin-bottom: -30px;">
-      <textarea class="form-control amnds_comment_text " rows="5" id="amnds_comment_text" placeholder="Details" style="resize: vertical; min-height: 100px;"></textarea>
-      <div class="btn btn-primary btn-sm m-top-10 pull-right submit_amnds_prj">Submit</div>
-      <div class="btn btn-warning btn-md m-top-10 m-right-5 pull-right proj_amnd_reload_bttn" id=""><i class="fa fa-refresh"></i> </div>
-    </div>
-
-    <div class="amnds_line_select_project"  style="padding-top: 10px;   margin-bottom: 10px; font-weight:bold;"><p style="padding-top:10px; clear: both;">Please Select Project.</p></div>
-    <div class="amnds_side_content  clearfix"  style=" margin-top:10px;  clear: both; "></div>
-
-  </div>
-</div>
-
 <script type="text/javascript">
   
    $('.dynmc_sb').hide();
@@ -448,10 +359,10 @@ if ($("input.quick_input#site_start").length){
     display: block !important;
 }
 
-.notes_line.comment_type_2 {
-    background-color: #fff;
+.notes_line.comment_type_2, .notes_line.comment_type_2 small {
+        background-color: #9E9E9E;
     padding: 5px;
-    color: red !important;
+    color: #000 !important;
 }
 
 .deleted.notes_line{
@@ -679,6 +590,8 @@ function saving_more_details(){
     $("#edit_more_details").show();
     $('.more_details_group').show();
     $('.more_details_group_data').hide();
+
+    location.reload();
   }
 }
 
@@ -1040,9 +953,153 @@ if(can_add_contact == 1){
 
     dynamic_value_ajax(type_val[1],'company_by_type','#parent');
  	});
- 
 
+  /* ======== OH&S ======== */
+  $("#workplace_health_safety_save_btn").click(function(){
+    var company_id = $('#company_id_data').val();
+    var workplace_health_safety = $("input[name='workplace_health_safety']:checked").val();
+    var workplace_health_safety_notes = $('#workplace_health_safety_notes').val();
 
+    var data = company_id+'|'+workplace_health_safety+'|'+workplace_health_safety_notes;
+
+    $('span.workplace_health_safety_notes-data').empty().text(workplace_health_safety_notes);
+
+    if (workplace_health_safety == 1){
+      $("span.workplace_health_safety-yes-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+      $("span.workplace_health_safety-no-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+    } else {
+      $("span.workplace_health_safety-yes-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+      $("span.workplace_health_safety-no-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+    }
+
+    // alert('<?php //echo $workplace_health_safety; ?>');
+
+    dynamic_value_ajax(data,'update_workplace_health_safety');
+
+    // location.reload(true);
+
+  });
+
+  $("#swms_save_btn").click(function(){
+    var company_id = $('#company_id_data').val();
+    var swms = $('input[name=swms]:checked').val();
+    var swms_notes = $('#swms_notes').val();
+   
+    var data = company_id+'|'+swms+'|'+swms_notes;
+
+    $('span.swms_notes-data').empty().text(swms_notes);
+
+    if (swms == 1){
+      $("span.swms-yes-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+      $("span.swms-no-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+    } else {
+      $("span.swms-yes-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+      $("span.swms-no-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+    }
+
+    dynamic_value_ajax(data,'update_swms');
+
+    // location.reload(true);
+
+  });
+
+  $("#jsa_save_btn").click(function(){
+    var company_id = $('#company_id_data').val();
+    var jsa = $('input[name=jsa]:checked').val();
+    var jsa_notes = $('#jsa_notes').val();
+
+    var data = company_id+'|'+jsa+'|'+jsa_notes;
+
+    $('span.jsa_notes-data').empty().text(jsa_notes);
+
+    if (jsa == 1){
+      $("span.jsa-yes-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+      $("span.jsa-no-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+    } else {
+      $("span.jsa-yes-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+      $("span.jsa-no-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+    }
+
+    dynamic_value_ajax(data,'update_jsa');
+
+    // location.reload(true);
+
+  });
+
+  $("#reviewed_swms_save_btn").click(function(){
+    var company_id = $('#company_id_data').val();
+    var reviewed_swms = $('input[name=reviewed_swms]:checked').val();
+    var reviewed_swms_notes = $('#reviewed_swms_notes').val();
+
+    var data = company_id+'|'+reviewed_swms+'|'+reviewed_swms_notes;
+
+    $('span.reviewed_swms_notes-data').empty().text(reviewed_swms_notes);
+
+    if (reviewed_swms == 1){
+      $("span.reviewed_swms-yes-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+      $("span.reviewed_swms-no-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+    } else {
+      $("span.reviewed_swms-yes-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+      $("span.reviewed_swms-no-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+    }
+
+    dynamic_value_ajax(data,'update_reviewed_swms');
+
+    // location.reload(true);
+
+  });
+
+  $("#safety_related_convictions_save_btn").click(function(){
+    var company_id = $('#company_id_data').val();
+    var safety_related_convictions = $('input[name=safety_related_convictions]:checked').val();
+    var safety_related_convictions_notes = $('#safety_related_convictions_notes').val();
+
+    var data = company_id+'|'+safety_related_convictions+'|'+safety_related_convictions_notes;
+
+    $('span.safety_related_convictions_notes-data').empty().text(safety_related_convictions_notes);
+
+    if (safety_related_convictions == 1){
+      $("span.safety_related_convictions-yes-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+      $("span.safety_related_convictions-no-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+
+      $(".safety_related_convictions_details_wrap").show();
+
+    } else {
+      $("span.safety_related_convictions-yes-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+      $("span.safety_related_convictions-no-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+
+      $(".safety_related_convictions_details_wrap").hide();
+    }
+
+    dynamic_value_ajax(data,'update_safety_related_convictions');
+
+    // location.reload(true);
+
+  });
+
+  $("#confirm_licences_certifications_save_btn").click(function(){
+    var company_id = $('#company_id_data').val();
+    var confirm_licences_certifications = $('input[name=confirm_licences_certifications]:checked').val();
+    var confirm_licences_certifications_notes = $('#confirm_licences_certifications_notes').val();
+
+    var data = company_id+'|'+confirm_licences_certifications+'|'+confirm_licences_certifications_notes;
+
+    $('span.confirm_licences_certifications_notes-data').empty().text(confirm_licences_certifications_notes);
+
+    if (confirm_licences_certifications == 1){
+      $("span.confirm_licences_certifications-yes-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+      $("span.confirm_licences_certifications-no-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+    } else {
+      $("span.confirm_licences_certifications-yes-icon").html('<i class="fa fa-times fa-lg" style="color: #d9534f;"></i>');
+      $("span.confirm_licences_certifications-no-icon").html('<i class="fa fa-check fa-lg" style="color: #5cb85c;"></i>');
+    }
+
+    dynamic_value_ajax(data,'update_confirm_licences_certifications');
+
+    // location.reload(true);
+
+  });
+  /* ======== OH&S ======== */
 
  	$('#contactperson').on("change", function(e){   		
  		if($(this).val() == 'add'){
