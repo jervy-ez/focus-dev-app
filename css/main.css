@@ -2568,6 +2568,18 @@ i.fa.fa-question-circle.fa-lg.tooltip-test.info_time_data, i.fa.fa-question-circ
 	background-color: #d9edf7 !important;
 }
 
+.box.orange-border{
+	border-color: #ffb686 !important;
+}
+
+.orange-bg{
+	background: none !important;
+	background-color: #ffce85 !important;
+	background: rgb(255,174,53) !important;
+background: linear-gradient(0deg, rgba(255,174,53,1) 0%, rgba(255,194,103,1) 43%) !important;
+}
+
+
 label.blue-title {
 	color: #31708f;
 }
