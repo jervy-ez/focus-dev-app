@@ -1460,7 +1460,7 @@
 						if (is_offshore == 1){
 
 							$('h4#myModalLabel.modal-title.msgbox').html("Confirmation");
-							$('#confirmText').html('Is this Philippine Public Holiday?');
+							$('#confirmText').html('Is this Philippines Public Holiday?');
 						    $('#confirmButtons').html('<button type="button" class="btn btn-warning" onclick="minusHolidays_half('+leave_type_id+');">Yes</button>' +
 						    			              '<button type="button" class="btn btn-success" onclick="clearPH_holiday();">No</button>');
 						    $('#confirmModal').modal({backdrop: true, keyboard: false, show: true});
@@ -1473,7 +1473,7 @@
 						if (user_id_page_is_offshore == 1){
 
 							$('h4#myModalLabel.modal-title.msgbox').html("Confirmation");
-							$('#confirmText').html('Is this Philippine Public Holiday?');
+							$('#confirmText').html('Is this Philippines Public Holiday?');
 						    $('#confirmButtons').html('<button type="button" class="btn btn-warning" onclick="minusHolidays_half('+leave_type_id+');">Yes</button>' +
 						    			              '<button type="button" class="btn btn-success" onclick="clearPH_holiday();">No</button>');
 						    $('#confirmModal').modal({backdrop: true, keyboard: false, show: true});
@@ -1641,14 +1641,14 @@
 
 									if (s == convertDate(e.date)){
 										$('h4#myModalLabel.modal-title.msgbox').html("Confirmation");
-										$('#confirmText').html('Is this Philippine Public Holiday?');
+										$('#confirmText').html('Is this Philippines Public Holiday?');
 									    $('#confirmButtons').html('<button type="button" class="btn btn-warning" onclick="minusPH_holidays_one('+leave_type_id+');">Yes</button>' +
 									    			              '<button type="button" class="btn btn-success" onclick="clearPH_holiday();">No</button>');
 									    $('#confirmModal').modal({backdrop: true, keyboard: false, show: true});
 										$('#confirmModal').data('bs.modal').options.backdrop = 'static';
 									} else {
 										$('h4#myModalLabel.modal-title.msgbox').html("Confirmation");
-										$('#confirmText').text('Does this include any Philippine/Australian Public Holidays?');
+										$('#confirmText').text('Does this include any Philippines/Australian Public Holidays?');
 									    $('#confirmButtons').html('<button type="button" class="btn btn-warning" onclick="PH_holiday();">Yes</button>' +
 									    			              '<button type="button" class="btn btn-success" onclick="clearPH_holiday();">No</button>');
 									    $('#confirmModal').modal({backdrop: true, keyboard: false, show: true});
@@ -1719,14 +1719,14 @@
 
 									if (s == convertDate(e.date)){
 										$('h4#myModalLabel.modal-title.msgbox').html("Confirmation");
-										$('#confirmText').html('Is this Philippine Public Holiday?');
+										$('#confirmText').html('Is this Philippines Public Holiday?');
 									    $('#confirmButtons').html('<button type="button" class="btn btn-warning" onclick="minusPH_holidays_one('+leave_type_id+');">Yes</button>' +
 									    			              '<button type="button" class="btn btn-success" onclick="clearPH_holiday();">No</button>');
 									    $('#confirmModal').modal({backdrop: true, keyboard: false, show: true});
 										$('#confirmModal').data('bs.modal').options.backdrop = 'static';
 									} else {
 										$('h4#myModalLabel.modal-title.msgbox').html("Confirmation");
-										$('#confirmText').text('Does this include any Philippine/Australian Public Holidays?');
+										$('#confirmText').text('Does this include any Philippines/Australian Public Holidays?');
 									    $('#confirmButtons').html('<button type="button" class="btn btn-warning" onclick="PH_holiday();">Yes</button>' +
 									    			              '<button type="button" class="btn btn-success" onclick="clearPH_holiday();">No</button>');
 									    $('#confirmModal').modal({backdrop: true, keyboard: false, show: true});
@@ -1793,7 +1793,7 @@
 
 								if (s != convertDate(e.date)){
 									$('h4#myModalLabel.modal-title.msgbox').html("Confirmation");
-									$('#confirmText').text('Does this include any Philippine/Australian Public Holidays?');
+									$('#confirmText').text('Does this include any Philippines/Australian Public Holidays?');
 								    $('#confirmButtons').html('<button type="button" class="btn btn-warning" onclick="PH_holiday();">Yes</button>' +
 								    			              '<button type="button" class="btn btn-success" onclick="clearPH_holiday();">No</button>');
 								    $('#confirmModal').modal({backdrop: true, keyboard: false, show: true});

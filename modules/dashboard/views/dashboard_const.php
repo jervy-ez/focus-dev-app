@@ -1076,20 +1076,10 @@ chart.select();
 						<div class="clearfix"></div>
 
 
-						<!-- ************************ -->
-
-
- 
-<?php /*
-
- 
- 
-
 
 
 						<!-- ************   LEAVE CHART   ************ -->
-
-
+						<?php $custom_q = ''; //$user_id = $this->session->userdata('user_id'); ?>
 
 						<div id="" class="hide hidden">
 							
@@ -1100,16 +1090,23 @@ chart.select();
 
 							$added_data = new StdClass();
 							$added_data->{"leave_type_id"} = '0';
-							$added_data->{"leave_type"} = 'Philippines Public Holiday';
+							$added_data->{"leave_type"} = 'Public Holiday';
 							$added_data->{"remarks"} = '';
 
 
 							array_push($leave_types, $added_data);
 
 
-							$leave_totals =  $this->dashboard->get_count_per_week(2,'',$user_id   );
+
+
+							$leave_totals =  $this->dashboard->get_count_per_week(2,$current_year,$user_id);
 							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,$user_id);
-							$custom_q = " AND ( `users`.`user_role_id` = '11' OR `users`.`user_role_id` = '15' ) AND `users`.`is_active` = '1' AND `users`.`user_focus_company_id` = '".$user_focus_company_id."'  ";
+
+
+								$user_list_q = $this->user_model->list_user_short(" AND `users`.`user_id` = '$user_id' ");
+								$user_list= $user_list_q->result();
+
+	
 
 							?>
 						</div>
@@ -1118,20 +1115,8 @@ chart.select();
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
-									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the number of leaves taken place each week, the chart can be broken down into individual employees."></i></span>
+									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week number and displays how many leaves taken place, the chart can be broken down into individual employees."></i></span>
 
-									<select class="pull-right input-control input-sm chart_data_selection_emps" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 130px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
-										 <option value="grouped"  >Grouped</option>
-
-										<?php 
-											$user_list_q = $this->user_model->list_user_short($custom_q);
-											$user_list= $user_list_q->result();
-										?>
-
-										<?php foreach ($user_list as $key => $value): ?> 
-												<option class="emp_opy_select"  value="<?php echo $value->user_first_name.' '.$value->user_last_name.'|'.$value->primary_user_id; ?>" ><?php echo $value->user_first_name.' '.$value->user_last_name; ?></option>
-										<?php endforeach; ?>
-									</select>
 							
 								</div>
 
@@ -1145,7 +1130,7 @@ $leave_type_list[1] = 'Annual Leave';
 $leave_type_list[5] = 'Unpaid Leave';
 $leave_type_list[2] = 'Personal (Sick Leave)';
 $leave_type_list[6] = 'RDO (Rostered Day Off)';
-$leave_type_list[0] = 'Philippines Public Holiday';
+$leave_type_list[0] = 'Public Holiday';
 $leave_type_list[3] = 'Personal (Carers Leave)';
 $leave_type_list[4] = 'Personal (Comp. Leave)';
 
@@ -1176,7 +1161,21 @@ $leave_type_list[4] = 'Personal (Comp. Leave)';
 													<div class="" style="padding:2px; float:left; display:block; width: 14%;  background: <?php echo $color_leave_type[$leave_data_id];  ?>;">
 														<p class="pointer leave_type_selection tooltip-enabled type_label_<?php echo $leave_data_id; ?>" title="" data-html="true" data-placement="top" data-original-title="Total Applied: <?php echo $leave_totals[$leave_data_id]; ?><br />Last Year:  <?php echo $last_year_leave[$leave_data_id]; ?>" id="<?php echo $leave_name_value; ?>" style="color: #fff;   font-size: 12px;  text-align: center;"><?php echo $leave_name_value; ?></p>
 													</div>
+
+ 
+
+													<?php 
+														$current_total_leaves .= $leave_data_id.'-'.$leave_totals[$leave_data_id].'|';
+														$previou_total_leaves .= $leave_data_id.'-'.$last_year_leave[$leave_data_id].'|';
+													 ?>
+
+
 												<?php endforeach; ?>
+											</div>
+
+											<div id="" class="hide hidden">
+												<p class="current_total_leaves" ><?php echo "$current_total_leaves"; ?></p>
+												<p class="previou_total_leaves" ><?php echo "$previou_total_leaves"; ?></p>
 											</div>
 
 											<style type="text/css">.mos {    float: left;    width: 8.1%;    text-align: center;}</style>
@@ -1186,7 +1185,9 @@ $leave_type_list[4] = 'Personal (Comp. Leave)';
 
 							</div>
 						</div>
- 
+
+
+
 
 						<script type="text/javascript">
 
@@ -1214,14 +1215,19 @@ var chart_emply = c3.generate({
 
           ?> ], // months labels
 
- // employees
+
           <?php 
 
-          echo $this->dashboard->get_count_per_week(1,'','',$custom_q);
+
+	
+          	echo $this->dashboard->get_count_per_week(3,$current_year,$user_id);
+
+      
+
 
            ?>
 
-
+ 
 
 
 ],
@@ -1229,38 +1235,43 @@ selection: {enabled: true},
 type: 'bar', 
  
 colors: {
-/	/*'Average': '#FF7F0E',
+	//*'Average': '#FF7F0E',
 	//'Current': '#2CA02C',
-	//'Last Year': '#9467BD',
+//	'Last Year': '#9467BD',
 
+	<?php /*foreach ($leave_types as $leave_data): ?>
+		'<?php echo $this->session->userdata("user_first_name")." ".$this->session->userdata("user_last_name")." ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id];  ?>',
+	<?php endforeach; */?>
 
-	<?php //*foreach ($leave_types as $leave_data): ?>
-		'<?php // echo "Overall ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id];  ?>',
-	<?php //endforeach; ?>
-
-<?php foreach ($user_list as $key => $value): ?> 
-	<?php foreach ($leave_types as $leave_data): ?>
+	
+	<?php foreach ($user_list as $key => $value): ?> 
+		<?php foreach ($leave_types as $leave_data): ?>
 		'<?php echo $value->user_first_name.' '.$value->user_last_name." ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id]; ?>',
 	<?php endforeach; ?>
 <?php endforeach; ?>
+
 
         },
 
 groups: [
 
+
+
 [
+	<?php /*foreach ($leave_types as $leave_data): ?>
+		'<?php echo $this->session->userdata("user_first_name")." ".$this->session->userdata("user_last_name")." ".$leave_data->leave_type; ?>',
+	<?php endforeach;*/ ?>
+
+
+	 
 <?php foreach ($user_list as $key => $value): ?> 
 	<?php foreach ($leave_types as $leave_data): ?>
 		'<?php echo $value->user_first_name.' '.$value->user_last_name.' '.$leave_data->leave_type; ?>',
 	<?php endforeach; ?>
 <?php endforeach; ?>
-],
 
 
-[
-	<?php //* foreach ($leave_types as $leave_data): ?>
-		'<?php //echo "Overall ".$leave_data->leave_type; ?>',
-	<?php //endforeach; ?>
+
 ],
 
 
@@ -1280,13 +1291,12 @@ tooltip: {
 
 
 
+
    },
 //zoom: {enabled: true, rescale: true,extent: [1, 7]},
 legend: { show: false },
 
 axis: {x: {type: 'category', tick: {rotate: 0,multiline: false}, height: 0}, y: {       tick: {          format: d3.format('.2f')        }      } }, 
-
-
 
 tooltip: {
 	format: {
@@ -1303,157 +1313,33 @@ tooltip: {
 
             //   var mod_value = parseFloat(Math.round(value * 100) / 100).toFixed(2);
                //return '$ '+format(mod_value);
-               return format(mod_value);
+            //   return format(mod_value);
+
+
+               if(mod_value > 0){
+               	 return format(mod_value);
+               }
+
+
            }//
        } 
 
    }
 });
 
-chart_emply.hide(); 
+//chart_emply.hide();
 
 
-//chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
-
-
-
-
-
-$('select.chart_data_selection_emps').on("change", function(e) {
-
-	$('#loading_modal').modal({"backdrop": "static", "show" : true} );
-
-	var data = $(this).val();
-
-	var current_total_leaves = $('p.current_total_leaves').text().split('|');
-	var previou_total_leaves = $('p.previou_total_leaves').text().split('|');
-
-
-
-	setTimeout(function(){
-
-
-		chart_emply.hide(); 
-		chart_emply.unselect();
-
-		if(data == 'all'){
-			setTimeout(function () { 
-				chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
-			}, 500);
-
-
-
-			for (var i = 0; i < current_total_leaves.length; i++) {
-				var data_thisYear = current_total_leaves[i].split('-');
-				var data_lastYear = previou_total_leaves[i].split('-');
-				$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
-			}
-
-
-
-
-		}else if(data == 'grouped'){
-			setTimeout(function () {
 				chart_emply.show();
-				chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
-			}, 500);
+				//chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Public Holiday','Overall RDO (Rostered Day Off)']);
+	
 
 
-			for (var i = 0; i < current_total_leaves.length; i++) {
-				var data_thisYear = current_total_leaves[i].split('-');
-				var data_lastYear = previou_total_leaves[i].split('-');
-				$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
-			}
-
-
-
-		}else{
-
-			var user_data_selected = data.split('|');
-
-//alert(user_data_selected[1]);
-			setTimeout(function () {
-//get_count_per_week($return_total = 0, $set_year = '', $set_emp_id = '' )
-
-				$.ajax({
-					'url' : base_url+'dashboard/get_count_per_week/2/<?php echo $current_year; ?>/'+user_data_selected[1],
-					'type' : 'GET',
-					'success' : function(dataValCurr){
-						var data_arr_curr_dataVal = dataValCurr.split('|');
-						
-						$.ajax({
-							'url' : base_url+'dashboard/get_count_per_week/2/<?php echo $last_year; ?>/'+user_data_selected[1],
-							'type' : 'GET',
-							'success' : function(dataVal){
-
-								var data_arr_dataVal = dataVal.split('|');
-
-								for (var i = 0; i < data_arr_curr_dataVal.length; i++) {
-
-									var data_thisYear = data_arr_curr_dataVal[i].split('-');
-									var data_lastYear = data_arr_dataVal[i].split('-');
-
-									//alert(data_thisYear[0]+' **** '+data_thisYear[1]);
-									//alert(data_lastYear[0]+' **** '+data_lastYear[1]);
-
-									$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
-								}
-
-							}
-						});
-					}
-				});
-
-
-
-				chart_emply.show([user_data_selected[0]+' Annual Leave',user_data_selected[0]+' Personal (Sick Leave)',user_data_selected[0]+' Personal (Carers Leave)',user_data_selected[0]+' Personal (Compassionate Leave)',user_data_selected[0]+' Unpaid Leave',user_data_selected[0]+' Philippines Public Holiday',user_data_selected[0]+' RDO (Rostered Day Off)']);
-			}, 500);
-		}
-
-	//	chart_emply.select();
-
-	 
-	},500);	
-
-	setTimeout(function(){
-		$('#loading_modal').modal('hide');
-	},5000);	
-
-	});
-
-
-$('.leave_type_selection').click(function(){
-	$('#loading_modal').modal({"backdrop": "static", "show" : true} );
-	var leave_type = $(this).attr('id');
-
-	//$('select.chart_data_selection_emps').val('grouped');
-
-	setTimeout(function () {
-		chart_emply.hide(); 
-		chart_emply.unselect();
-	}, 500);
- 
-	setTimeout(function () {
-		chart_emply.show([
-
-			<?php foreach ($user_list as $key => $value): ?>  
-				'<?php echo $value->user_first_name.' '.$value->user_last_name.' '; ?>'+leave_type,
-			<?php endforeach; ?> 
-
-		]);
-	}, 1000);
-
-	setTimeout(function(){
-		//chart_emply.select();
-		$('#loading_modal').modal('hide');
-	},3000);
-
-});
 
 </script>
- */?>
-
 						<!-- ************************ -->
+
+						<!-- ************   LEAVE CHART   ************ -->
 
 						<!-- ************   LEAVE CHART   ************ -->
 

@@ -222,7 +222,7 @@ class Dashboard extends MY_Controller{
 		
 		$data['project_manager'] = $project_manager->result();
 
-		$all_focus_company = $this->admin_m->fetch_all_company_focus();
+		$all_focus_company = $this->admin_m->fetch_all_company_focus(" AND `company_details`.`company_id` != '4' ");
 		$data['focus_company'] = $all_focus_company->result();
 
 		$post_months = array("jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec");
@@ -281,7 +281,7 @@ class Dashboard extends MY_Controller{
 			$focus_wip_overall[$key] = $this->get_wip_value_permonth($wip_date_a,$wip_date_b);
 		}
 
-		$all_focus_company = $this->admin_m->fetch_all_company_focus();
+		$all_focus_company = $this->admin_m->fetch_all_company_focus(" AND `company_details`.`company_id` != '4' ");
 		$focus_company = $all_focus_company->result();
 
 		foreach ($focus_company as $company){
@@ -444,7 +444,6 @@ class Dashboard extends MY_Controller{
 
 	public function get_count_per_week($return_total = 0, $set_year = '', $set_emp_id = '', $custom_data = '' ){
 
-
 		$q_leave_types = $this->user_model->fetch_leave_type();
 		$leave_types = $q_leave_types->result();
 		$this_year = date("Y");
@@ -452,392 +451,273 @@ class Dashboard extends MY_Controller{
 		if(isset($set_year) && $set_year != ''){
 			$this_year = $set_year;
 		}
+
+		// if return total == 4, only return string
+
 		$custom_q = '';
+		$custom_r = '';
 
 		$added_data = new StdClass();
 		$added_data->{"leave_type_id"} = '0';
-		$added_data->{"leave_type"} = 'Philippines Public Holiday';
+		$added_data->{"leave_type"} = 'Public Holiday';
 		$added_data->{"remarks"} = '';
 
 
 		array_push($leave_types, $added_data);
 
 
-
-		$leave_typess_arr = array('');
-
-		$user_id_logger = '';
-
-
-
-		$leave_typess_arr[] = array();
-
-
-		if( isset($custom_data) && $custom_data != ''   ){
-
-			$list_user_short_q = $this->user_model->list_user_short($custom_data);
-			$user_list = $list_user_short_q->result();
-
-		}elseif(isset($set_emp_id) && $set_emp_id != '' ){
-
-			$list_user_short_q = $this->user_model->fetch_user($set_emp_id);
-			$user_list = $list_user_short_q->result();
-			$user_id_logger = $set_emp_id;
-
-		}else{
-
-			$list_user_short_q = $this->user_model->list_user_short();
-			$user_list = $list_user_short_q->result();
+		if( isset($set_emp_id) && $set_emp_id!='' ){
+			$custom_q .= " AND `leave_request`.`user_id` = '$set_emp_id' ";
 		}
 
 
+		$leaves_arr = array();
+		$this_year_date = '01/01/'.$this_year;
+		$next_year_date = '01/01/'.($this_year+1);
+		$enter_days = 0;
 
-		if(isset($user_id_logger) && $user_id_logger != '' ){
-			$set_emp_id = '';
+		$custom_q .= $custom_data;
 
-			if($user_id_logger == 72){
-				$custom_q = " AND `users`.`user_department_id` = '10' ";
+
+
+		$get_weekly_leaves_q = $this->dashboard_m->get_weekly_leaves($this_year_date,$next_year_date,$custom_q);
+
+		foreach ($get_weekly_leaves_q->result() as $leave_numbers){
+			$actual_days_away = 0;
+
+			$start_week_no = date("W", $leave_numbers->start_day_of_leave);
+			$ending_week_no = date("W", $leave_numbers->end_day_of_leave);
+
+			if($leave_numbers->partial_day == 1){
+				$actual_days_away = round( $leave_numbers->total_days_away / $leave_numbers->no_hrs_of_work ,2);
+			}else{
+				$actual_days_away = round($leave_numbers->total_days_away,2) / $leave_numbers->no_hrs_of_work;
 			}
 
-			if($user_id_logger == 16){
-				$custom_q = " AND `users`.`user_focus_company_id` = '6' ";
-			}
+			$is_diff = ($ending_week_no - $start_week_no) + 1;
 
-			if($user_id_logger == 15){
-				$custom_q = " AND `users`.`user_focus_company_id` = '5' ";
-			}
-
-			if($user_id_logger == 72 || $user_id_logger == 16 || $user_id_logger == 15){
-				$list_user_short_q = $this->user_model->list_user_short($custom_q);
-				$user_list = $list_user_short_q->result();
-			}
-
-			if($user_id_logger == 21){
-				$custom_q = " AND `users`.`user_department_id` = '3' ";
-				$list_user_short_q = $this->user_model->list_user_short($custom_q);
-				$user_list = $list_user_short_q->result();
-			}
-
-			if($return_total == 2){
-				$list_user_short_q = $this->user_model->fetch_user($user_id_logger);
-				$user_list = $list_user_short_q->result();
-
-			}
-
-			if($return_total == 3){
-
-				if($user_id_logger == 72){
-					$custom_q = " AND `users`.`user_department_id` = '10' ";
-				}
-
-				if($user_id_logger == 16){
-					$custom_q = " AND `users`.`user_focus_company_id` = '6' ";
-				}
-
-				if($user_id_logger == 15){
-					$custom_q = " AND `users`.`user_focus_company_id` = '5' ";
-				}
-
-				if($user_id_logger == 72 || $user_id_logger == 16 || $user_id_logger == 15){
-					$list_user_short_q = $this->user_model->list_user_short($custom_q);
-					$user_list = $list_user_short_q->result();
-				}
-
-				if($user_id_logger == 21){
-					$custom_q = " AND `users`.`user_department_id` = '3' ";
-					$list_user_short_q = $this->user_model->list_user_short($custom_q);
-					$user_list = $list_user_short_q->result();
-				}
-
-			}
+			$starter = intval($start_week_no);
 
 
-		}
+			if($actual_days_away > 1){
 
 
 
 
+				if($start_week_no == $ending_week_no){ 
+
+					if ( isset($leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] ) && $leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] != ''  ){
+						$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter]+$actual_days_away;
 
 
-		foreach ($user_list as $users_data){
-
-			$user_name = $users_data->user_first_name.' '.$users_data->user_last_name;
-
-			foreach ($leave_types as $leave_data) {
-
-				$leave_type_id = $leave_data->leave_type_id;
+			//	echo "<p>$actual_days_away [] $start_week_no</p>";
 
 
+					}else{
+						$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $actual_days_away;
 
 
-				if($return_total == 1){
+							//			echo "<p>$actual_days_away ** $start_week_no</p>";
 
-					echo "['$user_name $leave_data->leave_type',";
-				}
+					}
 
 
-				$total_days_away = 0;
-				$days_numbr = 0;
-				for($x=1;$x<=52;$x++){
-
-					$year = $this_year;
-					$week_no = $x;
-
-					$date = new DateTime();
-					$date->setISODate($year,$week_no);
+				}else{
 
 
 
-					$dateParam =  $date->format('Y-m-d');
-					$date_a =  $date->format('d/m/Y');
+
+					if( $start_week_no!= 52 ){
+						$counter = 0; 
+						$starter = intval($start_week_no);
+						$date_set_val = 0;
+
+						while($is_diff > 0){					
+ 
+							$stamp_week_friday = strtotime($this_year.'W'.sprintf("%02d", $starter).' + 4Days');
+							$stamp_week_monday = strtotime($this_year.'W'.sprintf("%02d", $starter));
+
+  
+							if($stamp_week_monday <= $leave_numbers->start_day_of_leave  && $leave_numbers->start_day_of_leave <= $stamp_week_friday ){
+
+								$stamp_difference = abs($leave_numbers->start_day_of_leave - $stamp_week_friday);
+								$diff_val = floor($stamp_difference / (60*60*24) );
+
+								$actual_days_away = $diff_val+1;
+								//$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $actual_days_away;
 
 
-					$week = date('w', strtotime($dateParam));
-					$date_mod = new DateTime($dateParam);
-
-					$date_a_x = $date_mod->modify("-".$week." day")->format("d/m/Y");
-					$date_b = $date_mod->modify("+5 day")->format("d/m/Y");
-
-					$stamp_a = strtotime($date->format('Y-m-d') );
-					$stamp_b = strtotime($date_mod->format('Y-m-d') );
-
-
-
-	//	echo "<p> $date_a,$date_b,$users_data->primary_user_id,****$leave_type_id**$x**</p>";
-
-					$get_weekly_leaves_q = $this->dashboard_m->get_weekly_leaves($date_a,$date_b,$users_data->primary_user_id,$leave_type_id );
-				//	$leave_data = $get_weekly_leaves_q->result();
-
-					$days_count = 'null';
-
-
-
-					if($get_weekly_leaves_q->num_rows() ){
-
-
-
-					//foreach ($leave_data as $leave_numbers){
-
-						foreach ($get_weekly_leaves_q->result() as $leave_numbers){
-
-							if($leave_numbers->partial_day == 1){
-
-								$days_numbr =  number_format( ($leave_numbers->total_days_away / 8) , 2 );
-
-							}else{
-
-								if($leave_numbers->total_days_away == 8){
-									$days_numbr = 1;
+								if ( isset($leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] ) && $leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] != ''  ){
+									$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] + $actual_days_away;
 								}else{
-
-									$start_day_of_leave =   new DateTime (date("Y-m-d", $leave_numbers->start_day_of_leave) );
-									$end_day_of_leave =   new DateTime (date("Y-m-d", $leave_numbers->end_day_of_leave) );
-
-									$data_stamp_a =  new DateTime (date("Y-m-d", $stamp_a) );
-									$data_stamp_b =  new DateTime (date("Y-m-d", $stamp_b) );
-									$total_days_away = $leave_numbers->total_days_away;
+									$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $actual_days_away;
+								}
 
 
-									if($total_days_away > 80){
+							}elseif($stamp_week_monday <= $leave_numbers->end_day_of_leave  && $leave_numbers->end_day_of_leave <= $stamp_week_friday){
 
 
+								$stamp_difference = abs($leave_numbers->end_day_of_leave - $stamp_week_monday);
+								$diff_val = floor($stamp_difference / (60*60*24) );
 
-
-										if($stamp_b <=  $leave_numbers->start_day_of_leave ){
-											$days_numbr = abs($start_day_of_leave->diff($data_stamp_b)->format("%a")) + 1;
-
-										}elseif($stamp_a <=  $leave_numbers->end_day_of_leave ){
-											$days_numbr = abs($end_day_of_leave->diff($data_stamp_a)->format("%a")) + 1;
-											$total_days_away = 0;
-										//$days_numbr = $days_numbr + 
-										}else{
-											$days_numbr = 5;
-										}
+								$actual_days_away = $diff_val+1;
+								//$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $actual_days_away;
 
 
 
 
-									}else{
-										if($stamp_a <=  $leave_numbers->start_day_of_leave && $stamp_b >=  $leave_numbers->end_day_of_leave ){
-											$days_numbr = abs($start_day_of_leave->diff($end_day_of_leave)->format("%a"))+1;
-										}
-
-
-										elseif($stamp_a <=  $leave_numbers->start_day_of_leave){
-											$days_numbr =  (abs( $stamp_b - $leave_numbers->start_day_of_leave) / 86400) + 1;
-										}else{
-											$days_numbr = (abs($leave_numbers->end_day_of_leave - $stamp_a ) / 86400) + 1;
-										}
-
-
-
-/*
-									elseif($stamp_a <=  $leave_numbers->end_day_of_leave){
-
-										$days_numbr = abs($end_day_of_leave->diff($data_stamp_a)->format("%a"))+50;
-									//$days_numbr = $days_numbr + 
-									}
-
-									elseif($stamp_b >=  $leave_numbers->start_day_of_leave){
-										$days_numbr = abs($start_day_of_leave->diff($data_stamp_b)->format("%a")) + 1;
-									//$days_numbr = $days_numbr + 
-									}*/
-
-
+								if ( isset($leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] ) && $leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] != ''  ){
+									$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] + $actual_days_away;
+								}else{
+									$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $actual_days_away;
 								}
 
 
 
 
 
+							}else{
+
+								$actual_days_away = 5;
+
+
+								if ( isset($leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] ) && $leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] != ''  ){
+									$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] + $actual_days_away;
+								}else{
+									$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $actual_days_away;
+								}
+
+
+
+
 							}
+
+							$is_diff--;
+							$starter++;
 
 						}
 
-
-						$days_count = $days_count + $days_numbr;
-						$days_count = floatval($days_count);
 					}
-
-				}else{
-
-					if($total_days_away > 80){
-						$days_count = 5;
-						$total_days_away = 0;
-					//	echo "<p>TEST</p>";
-
-					}
-
 				}
 
-					// if($total_days_away > 80){
-					// 	$days_count = 5;
-					// }
+			}else{
 
-				if($x > 2){
+				if ( isset($leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] ) && $leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] != ''  ){
+					$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter]+$actual_days_away;
 
-					if($return_total == 1){
-						echo $days_count.",";
-					}
-				} 
-
-
-
-
-
-
-
-				$key_loop = $x-1;
-
-						// if (   	isset($leave_typess_arr[$key_loop]) && array_key_exists($leave_type_id,$leave_typess_arr[$key_loop])) {
-
-				if(isset($leave_typess_arr[$key_loop][$leave_type_id])){
-
-					$leave_typess_arr[$key_loop][$leave_type_id] = $leave_typess_arr[$key_loop][$leave_type_id] + floatval($days_count);
 				}else{
+					$leaves_arr[$leave_numbers->user_id][$leave_numbers->emp_leave_type_id][$starter] = $actual_days_away;					
+				}
+			}
+		}
 
-					$leave_typess_arr[$key_loop][$leave_type_id] = floatval($days_count);
+ 
+		if(isset($set_emp_id) && $set_emp_id != '' ){
+			$custom_r .= " AND `users`.`user_id` = '$set_emp_id' ";
+		}
+
+		$custom_r .= $custom_data;
+
+
+		$list_user_short_q = $this->user_model->list_user_short($custom_r);
+		$user_list = $list_user_short_q->result();
+
+
+		$overall_leave_data = array();
+
+
+		foreach ($user_list as $users_data){
+			$user_name = $users_data->user_first_name.' '.$users_data->user_last_name;
+
+			foreach ($leave_types as $leave_data) {
+
+				if($return_total == 1 || $return_total == 3){
+					echo "['$user_name $leave_data->leave_type',";
 				}
 
+				for($x=3;$x<=52;$x++){
+				//	echo $x.',';
 
-				$days_count = 'null';
 
+					if ( isset( $leaves_arr[$users_data->primary_user_id][$leave_data->leave_type_id][$x]) &&  $leaves_arr[$users_data->primary_user_id][$leave_data->leave_type_id][$x] != ''  ){
+						if($return_total == 1 || $return_total == 3){
+							echo $leaves_arr[$users_data->primary_user_id][$leave_data->leave_type_id][$x].',';
+						}
 
+						if ( isset( $overall_leave_data[$leave_data->leave_type_id][$x]) &&  $overall_leave_data[$leave_data->leave_type_id][$x] != ''  ){
+
+							$overall_leave_data[$leave_data->leave_type_id][$x] = $overall_leave_data[$leave_data->leave_type_id][$x] + $leaves_arr[$users_data->primary_user_id][$leave_data->leave_type_id][$x];
+						}else{
+							$overall_leave_data[$leave_data->leave_type_id][$x] = $leaves_arr[$users_data->primary_user_id][$leave_data->leave_type_id][$x];
+						}
+
+					}else{
+						if($return_total == 1 || $return_total == 3){
+							echo "0,";
+						}
+						if ( isset( $overall_leave_data[$leave_data->leave_type_id][$x]) &&  $overall_leave_data[$leave_data->leave_type_id][$x] != ''  ){
+
+							$overall_leave_data[$leave_data->leave_type_id][$x] = $overall_leave_data[$leave_data->leave_type_id][$x] + 0;
+						}else{
+							$overall_leave_data[$leave_data->leave_type_id][$x] = 0;
+						}
+					}
+				}
+
+				if($return_total == 1 || $return_total == 3){
+					echo "],
+					";
+				}
 			}
 
 
-
-			if($return_total == 1){
-
-				echo "],";
-			}
 		}
 
 
 
 
+				$return_arr = array('');
+				$iteam_leave_total = 0;
+				$last_value = '';
 
-
-
-
-	} 
-	//	echo "<p>----------------</p>";
-
-	//	$test_looper=1;
-
-	$return_arr = array('');
-	$iteam_leave_total = 0;
-	$last_value_arr = '';
-
-
-	foreach ($leave_types as $leave_data ) {
-
-
-
-		$ounter_loop = 0;
-
-
-		if($return_total == 1){
-			echo "['Overall $leave_data->leave_type',";
-		}
-
-		foreach ($leave_typess_arr as $row => $value) {
-
-		 	//var_dump($value);
-			$ounter_loop++;
-
-				//	echo "<p>".$leave_data->leave_type_id."</p>";
-
-			if($return_total == 1){
-
-				if($ounter_loop > 2){
-					echo  ($value[$leave_data->leave_type_id] == 0 ? 'null,' : $value[$leave_data->leave_type_id]."," );
-				}
-			}
-
-			if($return_total == 2 || $return_total == 3){
-							//echo ($value[$leave_data->leave_type_id] == 0 ? 0 : $value[$leave_data->leave_type_id]."," );
-				$iteam_leave_total = $iteam_leave_total +  ($value[$leave_data->leave_type_id] == 0 ? 0 : $value[$leave_data->leave_type_id] );
-			}
-
-					/*if($set_emp_id != ''){
-							$iteam_leave_total = $iteam_leave_total +  ($value[$leave_data->leave_type_id] == 0 ? 0 : $value[$leave_data->leave_type_id] );
-						}*/
-
-					}
-
-
+				foreach ($leave_types as $leave_data ) {
 
 					if($return_total == 1){
+						echo "['Overall $leave_data->leave_type',"; 
+						echo implode(',', $overall_leave_data[$leave_data->leave_type_id]); 
 						echo "],";
 					}
 
+					if($return_total == 2){
+						//return $return_arr;
+						$return_arr[$leave_data->leave_type_id] = array_sum($overall_leave_data[$leave_data->leave_type_id]);
 
-					if($return_total == 2 || $return_total == 3){
-//echo "<p> $leave_data->leave_type -  $iteam_leave_total</p>";
-
-						$return_arr[$leave_data->leave_type_id] = $iteam_leave_total;
-						$last_value_arr .= $leave_data->leave_type_id.'-'.$iteam_leave_total.'|';
-						$iteam_leave_total = 0;
+						//	$last_value_arr .= $leave_data->emp_leave_type_id.'-'.$iteam_leave_total.'|';
 					}
 
 				}
 
 
 
+				if($return_total == 2){
+					
+					foreach ($leave_types as $leave_data) {
 
-				if( isset($set_year) ){
-					echo substr($last_value_arr, 0, -1);
+						$last_value .= $leave_data->leave_type_id.'-'.$return_arr[$leave_data->leave_type_id].'|';
+
+					}
 				}
 
-				if($return_total == 2 || $return_total == 3){
+
+				if( $return_total == 2  ){
+					echo substr($last_value, 0, -1);
 					return $return_arr;
 				}
 
 
-
-
 			}
+
+
 
 
 			public function get_count_maint_per_week($this_year,$is_ave=0){
@@ -904,123 +784,6 @@ class Dashboard extends MY_Controller{
 			}
 
 
-
-
-
-/*
-
-			public function get_count_maint_per_week($this_year,$is_ave=0){
-
-				$counter_loop = 0;
-
-				$ave_year = 0;
-
-				if($is_ave == 1){
-					$counter_loop = date("Y") - $this_year; 
-					$ave_year = $counter_loop;
-			// $counter_loop--;
-				}
-
-
-
-
-
-
-//echo "***$counter_loop<br /><br />";
-
-
-
-				$list_data = array(0);
-
-				while($counter_loop >= 0){
-
-//echo "<br />$counter_loop<br /><br />";
-
-					for($x=1;$x<=52;$x++){
-		//	echo "<br/>";
-
-
-
-						$year = $this_year;
-						$week_no = $x;
-
-						$date = new DateTime();
-						$date->setISODate($year,$week_no);
-	//echo $date->format('d-M-Y');
-
-
-						$dateParam =  $date->format('Y-m-d');
-						$date_a =  $date->format('d/m/Y');
-
-
-						$week = date('w', strtotime($dateParam));
-						$date_mod = new DateTime($dateParam);
-
-						$date_a_x = $date_mod->modify("-".$week." day")->format("d/m/Y");
-						$date_b = $date_mod->modify("+5 day")->format("d/m/Y");
-
-
-			//	$date_gg = $date_mod->modify("+6 day")->format("d/m/Y");
-
-
-						$query = $this->dashboard_m->get_maintenance_counts($date_a,$date_b);
-						$result_q = $query->result();
-
-//echo "<p>$testD ----- $date_b  ******</p>";
-
-
-						if(array_key_exists( $x-1, $list_data )){
-							$list_data[$x-1] =  $list_data[$x-1] + $result_q[0]->num_projects;
-
-						}else{
-							$list_data[$x-1] =   $result_q[0]->num_projects ;
-
-						}
-
-
-
-			//	 echo "<p>$date_a ______ $date_b ____ ".$result_q[0]->num_projects." </p>";
-
-				 //array_push($list_data, $result_q[0]->num_projects);
-
-
-					}
-
-//var_dump($list_data);
-
-
-					$counter_loop--;
-					$this_year++;
-				}
-
-
-
-
-
-
-				for($x=0;$x<52;$x++){
-
-					if($is_ave == 1){
-
-						$list_data[$x] =    ( ($list_data[$x]  / $ave_year )   ) /5 ;
-
-					} else{
-
-
-						$list_data[$x] =     ($list_data[$x]  )  / 5;
-
-					}
-
-				}
-
-//var_dump($list_data);
-
-				return implode(',', $list_data);
-
-
-			}
-
-*/
 
 			function get_wip_personal($date_a,$date_b,$pm_id,$comp){
 				$q_wip_vales = $this->dashboard_m->get_personal_wip($date_a,$date_b,$pm_id, $comp);
@@ -11559,6 +11322,12 @@ foreach ($result_q as $data) {
 
 
 
+}
+
+
+public function force_logout($id){
+	$query = $this->db->query("UPDATE `users` SET `user_login_status` = '0', `time_log` = '' WHERE `users`.`user_id` = '$id' ");
+	$this->session->sess_destroy();
 }
 
 

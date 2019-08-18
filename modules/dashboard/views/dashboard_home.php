@@ -333,8 +333,9 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 										<option value="Overall">Overall Sales Forecast</option>
 										<!-- <option value="Outstanding">Focus Outstanding</option> -->
 										<!-- <option value="Pm_Outstanding">PM Outstanding</option> -->
-										<option value="FWA">Focus WA</option>
-										<option value="FNSW">Focus NSW</option>
+										<?php foreach ($focus_company as $key => $value): ?>
+											<option value="F<?php echo $value->shortname; ?>">Focus <?php echo $value->shortname; ?></option>
+										<?php endforeach; ?>
 
 										<?php 
 										$project_manager_q = $this->user_model->fetch_user_by_role(3);
@@ -631,8 +632,12 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 
 									<select class="pull-right input-control input-sm chart_data_selection_pmsgp" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 150px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="ongoingwip">Overall</option>
-										<option value="ongoingwip_wa">Focus WA</option>
-										<option value="ongoingwip_nsw">Focus NSW</option>
+
+										<?php foreach ($focus_company as $key => $value): ?>          
+											<option value="ongoingwip_<?php echo strtolower($value->shortname); ?>">Focus <?php echo $value->shortname; ?></option>
+										<?php endforeach; ?>
+
+
 										<?php  
 											foreach ($project_manager_list as $pmj ) {
 
@@ -721,11 +726,15 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 
 
 
-<div class="gantt_chart_grp gnt_onload_hide" id="ongoingwip_wa" ></div>
+
+<?php foreach ($focus_company as $key => $value): ?>                         
+                          
+
+<div class="gantt_chart_grp gnt_onload_hide" id="ongoingwip_<?php echo strtolower($value->shortname); ?>" ></div>
 <script>
         $(function() {
-            $("#ongoingwip_wa").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress('',' AND `project`.`focus_company_id` = "5" '); ?> ],
+            $("#ongoingwip_<?php echo strtolower($value->shortname); ?>").gantt({
+                source: [ <?php echo $this->dashboard->list_projects_progress('',' AND `project`.`focus_company_id` = "'.$value->company_id.'" '); ?> ],
                 navigate: "scroll",
                 scale: "days",
                 maxScale: "days",
@@ -742,25 +751,12 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 </script>
 
 
-<div class="gantt_chart_grp gnt_onload_hide" id="ongoingwip_nsw" ></div>
-<script>
-        $(function() {
-            $("#ongoingwip_nsw").gantt({
-                source: [ <?php echo $this->dashboard->list_projects_progress('',' AND `project`.`focus_company_id` = "6" '); ?> ],
-                navigate: "scroll",
-                scale: "days",
-                maxScale: "days",
-                minScale: "days",
-                itemsPerPage: 50,
-                useCookie: true,
-                scrollToToday: true,
-                onRender: function() {
-                	//$('#est_deadline_all').hide();
-                    //$('[data-toggle="tooltip"]').tooltip(); 
-                }
-            }); 
-        });
-</script>
+
+<?php endforeach; ?>
+
+
+
+
   
 
 <?php  foreach ($project_manager_list as $pm ): ?>
@@ -1501,9 +1497,6 @@ chart.select();
 
 
 						<!-- ************************ -->
-<?php /*
-
-
 
 
 						<div id="" class="hide hidden">
@@ -1515,7 +1508,7 @@ chart.select();
 
 							$added_data = new StdClass();
 							$added_data->{"leave_type_id"} = '0';
-							$added_data->{"leave_type"} = 'Philippines Public Holiday';
+							$added_data->{"leave_type"} = 'Public Holiday';
 							$added_data->{"remarks"} = '';
 
 
@@ -1536,6 +1529,8 @@ chart.select();
 									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week number and displays how many leaves taken place, the chart can be broken down into individual employees."></i></span>
 
 									<select class="pull-right input-control input-sm chart_data_selection_emps" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 100px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+										
+										<option disabled="" value="0">Select View</option>
 										<option value="all" selected="all">Overall</option>
 										<option value="grouped"  >Grouped</option>
 
@@ -1561,7 +1556,7 @@ $leave_type_list[1] = 'Annual Leave';
 $leave_type_list[5] = 'Unpaid Leave';
 $leave_type_list[2] = 'Personal (Sick Leave)';
 $leave_type_list[6] = 'RDO (Rostered Day Off)';
-$leave_type_list[0] = 'Philippines Public Holiday';
+$leave_type_list[0] = 'Public Holiday';
 $leave_type_list[3] = 'Personal (Carers Leave)';
 $leave_type_list[4] = 'Personal (Comp. Leave)';
 
@@ -1728,13 +1723,17 @@ tooltip: {
 
                var mod_value =  value.toFixed(2); //Math.ceil(value,2)  // need to get 2 decimal places
 
+               if(mod_value > 0){
+               	 return format(mod_value);
+               }
+
            //    var mod_value_x = parseFloat(Math.round(mod_value * Math.pow(10, 2)) /Math.pow(10,2)).toFixed(2);
 
             // var mod_value_y =   d3.format('.2f')
 
             //   var mod_value = parseFloat(Math.round(value * 100) / 100).toFixed(2);
                //return '$ '+format(mod_value);
-               return format(mod_value);
+              
            }//
        } 
 
@@ -1744,7 +1743,7 @@ tooltip: {
 chart_emply.hide(); 
 
 
-chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
+chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Public Holiday','Overall RDO (Rostered Day Off)']);
 
 
 
@@ -1769,7 +1768,7 @@ $('select.chart_data_selection_emps').on("change", function(e) {
 
 		if(data == 'all'){
 			setTimeout(function () { 
-				chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
+				chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Public Holiday','Overall RDO (Rostered Day Off)']);
 			}, 500);
 
 
@@ -1786,7 +1785,7 @@ $('select.chart_data_selection_emps').on("change", function(e) {
 		}else if(data == 'grouped'){
 			setTimeout(function () {
 				chart_emply.show();
-				chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Philippines Public Holiday','Overall RDO (Rostered Day Off)']);
+				chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Public Holiday','Overall RDO (Rostered Day Off)']);
 			}, 500);
 
 
@@ -1837,7 +1836,7 @@ $('select.chart_data_selection_emps').on("change", function(e) {
 
 
 
-				chart_emply.show([user_data_selected[0]+' Annual Leave',user_data_selected[0]+' Personal (Sick Leave)',user_data_selected[0]+' Personal (Carers Leave)',user_data_selected[0]+' Personal (Compassionate Leave)',user_data_selected[0]+' Unpaid Leave',user_data_selected[0]+' Philippines Public Holiday',user_data_selected[0]+' RDO (Rostered Day Off)']);
+				chart_emply.show([user_data_selected[0]+' Annual Leave',user_data_selected[0]+' Personal (Sick Leave)',user_data_selected[0]+' Personal (Carers Leave)',user_data_selected[0]+' Personal (Compassionate Leave)',user_data_selected[0]+' Unpaid Leave',user_data_selected[0]+' Public Holiday',user_data_selected[0]+' RDO (Rostered Day Off)']);
 			}, 500);
 		}
 
@@ -1854,10 +1853,10 @@ $('select.chart_data_selection_emps').on("change", function(e) {
 
 
 $('.leave_type_selection').click(function(){
+	$('select.chart_data_selection_emps').val('0');
 	$('#loading_modal').modal({"backdrop": "static", "show" : true} );
 	var leave_type = $(this).attr('id');
 
-	//$('select.chart_data_selection_emps').val('grouped');
 
 	setTimeout(function () {
 		chart_emply.hide(); 
@@ -1884,7 +1883,6 @@ $('.leave_type_selection').click(function(){
 </script>
 
 
-*/ ?>
 
 						<!-- ************************ -->
 
@@ -2313,15 +2311,25 @@ colors: {
 	'Focus Overall WIP': '#009E73',
 	'Last Year Sales': '#AAAAAA',
 
-	'Focus Shopfit Pty Ltd Forecast': '#CC79A7',
-	'Focus Shopfit Pty Ltd Last Year': '#AAAAAA',
-	'Focus Shopfit Pty Ltd WIP': '#009E73',
-	'Focus Shopfit Pty Ltd': '#E69F00',
 
-	'Focus Shopfit NSW Pty Ltd Forecast': '#CC79A7',
-	'Focus Shopfit NSW Pty Ltd Last Year': '#AAAAAA',
-	'Focus Shopfit NSW Pty Ltd WIP': '#009E73',
-	'Focus Shopfit NSW Pty Ltd': '#E69F00',
+
+                          <?php foreach ($focus_company as $key => $value): ?>    
+
+
+
+	'<?php echo $value->company_name; ?> Forecast': '#CC79A7',
+	'<?php echo $value->company_name; ?> Last Year': '#AAAAAA',
+	'<?php echo $value->company_name; ?> WIP': '#009E73',
+	'<?php echo $value->company_name; ?>': '#E69F00',
+
+
+                          <?php endforeach; ?>
+
+
+
+
+
+
 
 <?php $project_manager_q = $this->user_model->fetch_user_by_role(3); $project_manager = $project_manager_q->result(); ?>
 <?php foreach ($project_manager as $pm):
@@ -2367,7 +2375,24 @@ endforeach; ?>
     }?>
 
 },
-groups: [ ['Focus Overall WIP','Overall Sales'],['Focus Shopfit Pty Ltd','Focus Shopfit Pty Ltd WIP'],['Focus Shopfit NSW Pty Ltd','Focus Shopfit NSW Pty Ltd WIP'],
+groups: [ ['Focus Overall WIP','Overall Sales'],
+
+
+
+
+<?php foreach ($focus_company as $key => $value): ?>                         
+	
+
+
+	['<?php echo $value->company_name; ?>','<?php echo $value->company_name; ?> WIP'],
+
+
+<?php endforeach; ?>
+
+
+
+
+
 
 
 <?php $project_manager_q = $this->user_model->fetch_user_by_role(3); $project_manager = $project_manager_q->result(); ?>
@@ -2446,19 +2471,25 @@ $('select.chart_data_selection').on("change", function(e) {
 	}
 
 
-	if(data == 'FWA'){
+
+
+                          <?php foreach ($focus_company as $key => $value): ?>  
+
+
+	if(data == 'F<?php echo $value->shortname; ?>'){ 
 		chart.hide(); 
 		setTimeout(function () {
-			chart.show(['Focus Shopfit Pty Ltd Forecast', 'Focus Shopfit Pty Ltd Last Year', 'Focus Shopfit Pty Ltd' ,'Focus Shopfit Pty Ltd WIP']);
+			chart.show(['<?php echo $value->company_name; ?> Forecast', '<?php echo $value->company_name; ?> Last Year', '<?php echo $value->company_name; ?>' ,'<?php echo $value->company_name; ?> WIP']);
 		}, 500);
 	}
 
-	if(data == 'FNSW'){ 
-		chart.hide(); 
-		setTimeout(function () {
-			chart.show(['Focus Shopfit NSW Pty Ltd Forecast', 'Focus Shopfit NSW Pty Ltd Last Year', 'Focus Shopfit NSW Pty Ltd' ,'Focus Shopfit NSW Pty Ltd WIP']);
-		}, 500);
-	}
+
+                          <?php endforeach; ?>
+
+
+
+
+
 
 <?php $project_manager_q = $this->user_model->fetch_user_by_role(3); $project_manager = $project_manager_q->result(); ?>
 <?php foreach ($project_manager as $pm):
@@ -2714,6 +2745,7 @@ $(function() {
 
 	}, 1000);
 
+ 
 });
 
 
