@@ -1023,7 +1023,7 @@ chart.select();
  
 
 						<!-- ************   LEAVE CHART   ************ -->
-						<?php $custom_q = ''; $user_id = $this->session->userdata('user_id'); ?>
+						<?php $custom_q = ''; $user_id = 8; ?>
 
 						<div id="" class="hide hidden">
 							
@@ -1614,12 +1614,14 @@ foreach ($focus_pm_wip as $key => $value) {
 
 // PM Project Manager Forecast
 <?php foreach ($focus_pm_forecast as $pm_fct){
-
+/*
 	if($pm_fct->pm_id == 29){
 		$amount = $amount_for_maintenance;
 	}else{
 		$amount = $focus_data_forecast_p[$pm_fct->comp_id] * ($pm_fct->forecast_percent / 100);
 	}
+*/
+$amount = $focus_data_forecast_p[$pm_fct->comp_id] * ($pm_fct->forecast_percent / 100);
 
 	echo "['$pm_fct->user_pm_name Forecast',";
 	echo $amount * ( $pm_fct->forecast_jan / 100 ).','.

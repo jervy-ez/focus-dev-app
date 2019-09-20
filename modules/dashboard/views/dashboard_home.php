@@ -58,7 +58,10 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 
 
 ?>
-
+<?php 
+		$project_manager = $this->dashboard_m->fetch_pms_year(date("Y"));
+		$project_manager_list = $project_manager->result();
+	 ?>
 <style type="text/css">
 	<?php 
 		foreach ($estimator_colors as $key => $value) {
@@ -268,8 +271,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 						 	</div>
 						 </div>
 						 <script type="text/javascript">
-						 	pre_load_module('#progressBar_wa','dashboard/focus_company_sep_thermo/5/Focus Shopfit Pty Ltd',3025);			 	
-						 	setTimeout(function () { $('#progressBar_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 30200);
+						 	pre_load_module('#progressBar_wa','dashboard/focus_company_sep_thermo/5/Focus Shopfit Pty Ltd/WA',3025);			 	
 						 </script>
  	
 						 <div class=" col-xs-12 col-md-6 box-widget pad-10">
@@ -278,8 +280,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 						 	</div>
 						 </div>
 						 <script type="text/javascript">
-						 	pre_load_module('#progressBar_nsw','dashboard/focus_company_sep_thermo/6/Focus Shopfit NSW Pty Ltd',3050); 
-						 	setTimeout(function () { $('#progressBar_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 30500);
+						 	pre_load_module('#progressBar_nsw','dashboard/focus_company_sep_thermo/6/Focus Shopfit NSW Pty Ltd/NSW',3050); 
 						 </script>
  	
 <!-- ddddddddd  -->
@@ -287,32 +288,17 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 						<div class=" col-xs-12 box-widget pad-10">
 							<div class="progress no-m progress-termometer" id="progressBar_standing_area"><span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">ALL</span></div>
 						</div>
-						<script type="text/javascript">
-						$(function() {
-							pre_load_module('#progressBar_standing_area','dashboard/progressBar',50000);
-						 	setTimeout(function () { $('#progressBar_standing_area').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">ALL</span>');}, 70000);
-						 	});
-						 </script>
+						<script type="text/javascript"> pre_load_module('#progressBar_standing_area','dashboard/progressBar/0/0/ALL',4000); </script>
 
 						<div class=" col-xs-12 col-md-6 box-widget pad-10 tip_side_mod">
 							<div class="progress no-m progress-termometer"  id="progressBar_standing_area_wa"><span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span></div>
 						</div>
-						<script type="text/javascript">
-						$(function() {
-							pre_load_module('#progressBar_standing_area_wa','dashboard/progressBar/5/1',60000);
-						 	setTimeout(function () { $('#progressBar_standing_area_wa').append('<span style=" position: absolute;    left: 25px;   top:16px; font-size: 12px;   color: #fff;">WA</span>');}, 80000);
-						 	});
-						 </script>
+						<script type="text/javascript"> pre_load_module('#progressBar_standing_area_wa','dashboard/progressBar/5/1/WA',4025); </script>
 
 						<div class=" col-xs-12 col-md-6 box-widget pad-10 tip_side_mod">
 							<div class="progress no-m progress-termometer"  id="progressBar_standing_area_nsw"><span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span></div>
 						</div>
-						<script type="text/javascript">
-						$(function() {
-							pre_load_module('#progressBar_standing_area_nsw','dashboard/progressBar/6/1',70000);
-						 	setTimeout(function () { $('#progressBar_standing_area_nsw').append('<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">NSW</span>');}, 90000);
-						 	});
-						 </script>
+						<script type="text/javascript"> pre_load_module('#progressBar_standing_area_nsw','dashboard/progressBar/6/1/NSW',4050); </script>
 
 						<style type="text/css">
 						.tip_side_mod .tooltip.right, .tip_side_mod .tooltip.left{
@@ -329,27 +315,27 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head fill  pad-5">
 									<strong>Sales Forecast - <?php echo date('Y'); ?></strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells what is being forecasted per month along what is WIP and Invoiced."></i></span>
-									<select class="pull-right input-control input-sm chart_data_selection" style="background: #AAAAAA; padding: 0;margin: -8px 0 0 0;width: 175px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+									<select class="pull-right input-control input-sm chart_data_selection" style="background: #AAAAAA; padding: 0;margin: -8px 0 0 0;width: 210px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="Overall">Overall Sales Forecast</option>
 										<!-- <option value="Outstanding">Focus Outstanding</option> -->
 										<!-- <option value="Pm_Outstanding">PM Outstanding</option> -->
 										<?php foreach ($focus_company as $key => $value): ?>
-											<option value="F<?php echo $value->shortname; ?>">Focus <?php echo $value->shortname; ?></option>
+											<option value="F<?php echo $value->company_id; ?>">Focus <?php echo $value->company_name; ?></option>
 										<?php endforeach; ?>
 
 										<?php 
-										$project_manager_q = $this->user_model->fetch_user_by_role(3);
-										$project_manager = $project_manager_q->result();    ?>
-										<?php foreach ($project_manager as $pm) {
-											echo '<option value="'.$pm->user_first_name.' '.$pm->user_last_name.'">'.$pm->user_first_name.' '.$pm->user_last_name.'</option>';
+										//$project_manager_q = $this->user_model->fetch_user_by_role(' 3" OR  `users`.`user_role_id` = "20 ');
+										//$project_manager = $project_manager_q->result();    ?>
+										<?php foreach ($project_manager_list as $pm) {
+											echo '<option class="optn_pm_slct" value="'.$pm->user_first_name.' '.$pm->user_last_name.'">'.$pm->user_first_name.' '.$pm->user_last_name.'</option>';
 										} ?>
 
-										<?php 
+										<?php /*
 										$project_manager_q = $this->user_model->fetch_user_by_role(20);
 										$project_manager = $project_manager_q->result();    ?>
 										<?php foreach ($project_manager as $pm) {
-											echo '<option value="'.$pm->user_first_name.' '.$pm->user_last_name.'">'.$pm->user_first_name.' '.$pm->user_last_name.'</option>';
-										} ?>
+											echo '<option class="optn_pm_slct" value="'.$pm->user_first_name.' '.$pm->user_last_name.'">'.$pm->user_first_name.' '.$pm->user_last_name.'</option>';
+										}*/ ?>
 									</select>
 								</div>
 
@@ -617,10 +603,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 						
 						<div class="clearfix"></div>
 
-<?php 
-		$project_manager = $this->dashboard_m->fetch_pms_year(date("Y"));
-		$project_manager_list = $project_manager->result();
-	 ?>
+
  
 
 						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
@@ -630,11 +613,11 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 									<strong>Project Completion Calendar</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the on-going projects completion dates ordered chronologically."></i></span>
 
 
-									<select class="pull-right input-control input-sm chart_data_selection_pmsgp" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 150px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+									<select class="pull-right input-control input-sm chart_data_selection_pmsgp" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 210px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="ongoingwip">Overall</option>
 
 										<?php foreach ($focus_company as $key => $value): ?>          
-											<option value="ongoingwip_<?php echo strtolower($value->shortname); ?>">Focus <?php echo $value->shortname; ?></option>
+											<option value="ongoingwip_<?php echo strtolower($value->company_id); ?>">Focus <?php echo $value->company_name; ?></option>
 										<?php endforeach; ?>
 
 
@@ -646,7 +629,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 
 
 
-												echo '<option value="'.$pm_name_sltc.'">'.$pmj->user_first_name.' '.$pmj->user_last_name.'</option>';
+												echo '<option class="optn_pm_slct" value="'.$pm_name_sltc.'">'.$pmj->user_first_name.' '.$pmj->user_last_name.'</option>';
 
 											} 
 										?>
@@ -727,13 +710,39 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 
 
 
-<?php foreach ($focus_company as $key => $value): ?>                         
-                          
+<?php foreach ($focus_company as $key => $value): ?>   
 
-<div class="gantt_chart_grp gnt_onload_hide" id="ongoingwip_<?php echo strtolower($value->shortname); ?>" ></div>
+<?php if($value->company_id == 3197): ?>
+                
+
+<div class="gantt_chart_grp gnt_onload_hide  mainte" id="ongoingwip_<?php echo strtolower($value->company_id); ?>" ></div>
 <script>
         $(function() {
-            $("#ongoingwip_<?php echo strtolower($value->shortname); ?>").gantt({
+            $("#ongoingwip_<?php echo strtolower($value->company_id); ?>").gantt({
+                source: [ <?php echo $this->dashboard->list_projects_progress(29); ?> ],
+                navigate: "scroll",
+                scale: "days",
+                maxScale: "days",
+                minScale: "days",
+                itemsPerPage: 50,
+                useCookie: true,
+                scrollToToday: true,
+                onRender: function() {
+                	//$('#est_deadline_all').hide();
+                    //$('[data-toggle="tooltip"]').tooltip(); 
+                }
+            }); 
+        });
+</script>
+
+
+<?php  else: ?>                 
+                          
+
+<div class="gantt_chart_grp gnt_onload_hide" id="ongoingwip_<?php echo strtolower($value->company_id); ?>" ></div>
+<script>
+        $(function() {
+            $("#ongoingwip_<?php echo strtolower($value->company_id); ?>").gantt({
                 source: [ <?php echo $this->dashboard->list_projects_progress('',' AND `project`.`focus_company_id` = "'.$value->company_id.'" '); ?> ],
                 navigate: "scroll",
                 scale: "days",
@@ -749,6 +758,14 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
             }); 
         });
 </script>
+
+<?php endif; ?>
+
+
+
+
+
+
 
 
 
@@ -2277,12 +2294,14 @@ for($i=0; $i < 12 ; $i++){
 
 // PM Project Manager Forecast
 <?php foreach ($focus_pm_forecast as $pm_fct){
-
+/*
 	if($pm_fct->pm_id == 29){
 		$amount = $amount_for_maintenance;
 	}else{
 		$amount = $focus_data_forecast_p[$pm_fct->comp_id] * ($pm_fct->forecast_percent / 100);
 	}
+*/
+	$amount = $focus_data_forecast_p[$pm_fct->comp_id] * ($pm_fct->forecast_percent / 100);
 
 	echo "['$pm_fct->user_pm_name Forecast',";
 	echo $amount * ( $pm_fct->forecast_jan / 100 ).','.
@@ -2476,7 +2495,7 @@ $('select.chart_data_selection').on("change", function(e) {
                           <?php foreach ($focus_company as $key => $value): ?>  
 
 
-	if(data == 'F<?php echo $value->shortname; ?>'){ 
+	if(data == 'F<?php echo $value->company_id; ?>'){ 
 		chart.hide(); 
 		setTimeout(function () {
 			chart.show(['<?php echo $value->company_name; ?> Forecast', '<?php echo $value->company_name; ?> Last Year', '<?php echo $value->company_name; ?>' ,'<?php echo $value->company_name; ?> WIP']);
@@ -2748,11 +2767,24 @@ $(function() {
  
 });
 
+/*
+var select = $('select.chart_data_selection');
+select.html(select.find('option.optn_pm_slct').sort(function(x, y) {
+	return $(x).text() > $(y).text() ? 1 : ;
+}));
+
+
+/*
+var select = $('select.chart_data_selection_pmsgp');
+select.html(select.find('option.optn_pm_slct').sort(function(x, y) {
+	return $(x).text() > $(y).text() ? 1 : -1;
+}));
+*/
+
+
 
 
 </script>
- 
-
 
 
 

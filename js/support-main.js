@@ -1824,8 +1824,9 @@ $('#var_update').click(function(){
 
     if(variation != variation_total_raw){
       alert('Alert! Variation Totals is been updated, Page is reloading.');
-      var file_path = baseurl+"projects/view/"+proj_id+"?curr_tab=variations";
-      window.open(file_path,"_self");
+      window.location = '?curr_tab=variations';
+      // var file_path = baseurl+"projects/view/"+proj_id+"?curr_tab=variations";
+      // window.open(file_path,"_self");
       //location.reload();
     }
   },800);

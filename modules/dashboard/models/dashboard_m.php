@@ -38,16 +38,16 @@ class Dashboard_m extends CI_Model{
 			
 
 
-			".($comp_id == '' ? " AND `revenue_forecast_individual`.`pm_id` = '$pm_id'  " :  " AND `revenue_forecast_individual`.`pm_id` = '0'    AND `revenue_forecast_individual`.`comp_id` = '$comp_id'   "  )."
-
-
-
-
 
 			AND `rev_for_indvl`.`year` = '$year' 
 			AND `rev_for_indvl`.`revenue_forecast_id` = '$forecast_id' 
 
-			GROUP BY `rev_for_indvl`.`comp_id` ORDER BY `revenue_forecast_individual`.`pm_id` ASC");
+
+			".($comp_id == '' ? " AND `revenue_forecast_individual`.`pm_id` = '$pm_id'  LIMIT 1,1 " :  " AND `revenue_forecast_individual`.`pm_id` = '0'    AND `revenue_forecast_individual`.`comp_id` = '$comp_id' GROUP BY `rev_for_indvl`.`comp_id` ORDER BY `revenue_forecast_individual`.`pm_id` ASC   "  )."
+
+
+
+			");
 
 		return $query;
 	}
@@ -212,6 +212,7 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nov`,SUM(`revenue_focus`.`rev_dec`) AS `r
 				FROM `revenue_focus` 
 				LEFT JOIN `users` ON `users`.`user_id` = `revenue_focus`.`proj_mngr_id`
 				WHERE `revenue_focus`.`year` = '$year' 
+				GROUP BY `revenue_focus`.`proj_mngr_id`
 				ORDER BY `revenue_focus`.`proj_mngr_id` ASC  ");
 		}
 
@@ -414,9 +415,52 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `re
 
 				WHERE `project`.`is_active` = '1' AND  `project`.`project_date` LIKE '%$year' AND `project`.`job_category` <> 'Company'
 				".$custom."
-				".($is_active == 1 ? " AND `users`.`is_active` = '1' " : " ")." GROUP BY `project`.`project_manager_id` ");
+				".($is_active == 1 ? " AND `users`.`is_active` = '1' " : " ")." GROUP BY `project`.`project_manager_id` ORDER BY `users`.`user_first_name` ASC  ");
 			return $query;
 		}
+
+
+
+	public function get_current_wip_remaining($focus_company_id='',$date_a,$date_b,$pm_id=''){
+		$query = $this->db->query("SELECT `invoice`.`progress_percent`, `invoice`.`label`  , `project`.`project_total`  ,`project_cost_total`.`variation_total` , `invoice`.`project_id`,`invoice`.`order_invoice` ,
+
+			SUM( IF(`invoice`.`label` = 'VR' , `project_cost_total`.`variation_total`,  ( IF( `project`.`project_total` > 0 , `project`.`project_total` ,`project`.`budget_estimate_total` ) * (`invoice`.`progress_percent`/100) ) ) ) AS `un_invoiced` 
+
+				FROM `invoice`  
+				INNER JOIN  `project` ON `project`.`project_id` = `invoice`.`project_id`
+				INNER JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+				WHERE `invoice`.`is_invoiced` = '0'  AND `invoice`.`is_paid` = '0'  
+				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+				AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`invoice_date_req`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+				AND `project`.`is_active` = '1' 
+
+				".($focus_company_id != '' ? " AND `project`.`focus_company_id` = '$focus_company_id'  " : " ")."
+				".($pm_id != '' ? " AND `project`.`project_manager_id` = '$pm_id'  " : " ")."
+
+
+				AND `project`.`job_date` != ''"); 
+		return $query;
+	}
+
+
+	public function get_current_invoiced($focus_company_id='',$date_a,$date_b,$pm_id=''){
+
+		$query = $this->db->query("SELECT `invoice`.`progress_percent`, `invoice`.`label`  , `project`.`project_total`  ,`project_cost_total`.`variation_total` , `invoice`.`project_id`,`invoice`.`order_invoice` ,
+			SUM( IF(`invoice`.`label` = 'VR' , `project_cost_total`.`variation_total`,  `invoice`.`invoiced_amount` ) ) AS `curr_invoiced` 
+			FROM `invoice`  
+			INNER JOIN  `project` ON `project`.`project_id` = `invoice`.`project_id`
+			INNER JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `invoice`.`project_id`
+			WHERE `invoice`.`is_invoiced` = '1'  
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') ) 
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`invoice`.`set_invoice_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+			AND `project`.`is_active` = '1' 
+
+			".($focus_company_id != '' ? " AND `project`.`focus_company_id` = '$focus_company_id'  " : " ")."	
+			".($pm_id != '' ? " AND `project`.`project_manager_id` = '$pm_id'  " : " ")."	
+
+			AND `project`.`job_date` != ''"); 
+		return $query;
+	}
 
 	public function get_all_active_projects($old_date='',$old_date_b='',$est_id = ''){
 
@@ -425,12 +469,12 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `re
 
 			$query = $this->db->query("SELECT `project`.`project_id`,`states`.`shortname`,`address_general`.`state_id`,`project`.`unaccepted_date`,`project`.`date_site_commencement`,`project`.`job_date`,`project`.`is_paid`,`project`.`job_category`,`project`.`project_estiamator_id`,`project`.`project_manager_id`,`project_cost_total`.`work_estimated_total`,`project`.`focus_company_id`,`project_cost_total`.`variation_total`,`project`.`install_time_hrs`,`project`.`project_total`,`project`.`budget_estimate_total`   
 			FROM `project` 
-			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
-			LEFT JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
-			LEFT JOIN `address_general` ON `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
-			LEFT JOIN `states` ON `states`.`id` = `address_general`.`state_id`
+			INNER JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			INNER JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
+			INNER JOIN `address_general` ON `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
+			INNER JOIN `states` ON `states`.`id` = `address_general`.`state_id`
 			WHERE `project`.`is_active` = '1' AND  `project`.`job_category` != 'Company'
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$old_date', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`job_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$old_date_b', '%d/%m/%Y') )
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) > UNIX_TIMESTAMP( STR_TO_DATE('$old_date', '%d/%m/%Y') )
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$old_date_b', '%d/%m/%Y') ) "); 
 
@@ -441,10 +485,10 @@ SUM(`revenue_focus`.`rev_nov`) AS `rev_nv`,SUM(`revenue_focus`.`rev_dec`) AS `re
 		}else{
 			$query = $this->db->query("SELECT `project`.`project_id`,`states`.`shortname`,`address_general`.`state_id`,`project`.`unaccepted_date`,`project`.`date_site_commencement`,`project`.`job_date`,`project`.`is_paid`,`project`.`job_category`,`project`.`project_estiamator_id`,`project`.`project_manager_id`,`project_cost_total`.`work_estimated_total`,`project`.`focus_company_id`,`project_cost_total`.`variation_total`,`project`.`install_time_hrs`,`project`.`project_total`,`project`.`budget_estimate_total`   
 			FROM `project` 
-			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
-			LEFT JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
-			LEFT JOIN `address_general` ON `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
-			LEFT JOIN `states` ON `states`.`id` = `address_general`.`state_id`
+			INNER JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			INNER JOIN `address_detail` ON `address_detail`.`address_detail_id` = `project`.`address_id`
+			INNER JOIN `address_general` ON `address_general`.`general_address_id` =  `address_detail`.`general_address_id`
+			INNER JOIN `states` ON `states`.`id` = `address_general`.`state_id`
 			WHERE `project`.`is_active` = '1' AND  `project`.`job_category` != 'Company' ".$est_id." ");
 		}
 

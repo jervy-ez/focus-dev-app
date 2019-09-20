@@ -43,6 +43,16 @@ foreach ($estimator_list as $est ) {
 $estimator_colors['Danikka'] = $set_colors[4];
 $estimator_colors['Ernan'] = $set_colors[5];
 
+
+$user_id = $this->session->userdata('user_id');
+$fetch_user = $this->user_model->fetch_user($user_id);
+$user_details = array_shift($fetch_user->result_array());
+
+$focus_company_location = $user_details['user_focus_company_id'];
+
+ 
+
+
 ?>
 
 <style type="text/css">
@@ -571,7 +581,7 @@ $estimator_colors['Ernan'] = $set_colors[5];
 						  $pm_list_query = substr($pm_list_query, 0, -3)." )	 ";
  
  
-						//	$focus_company_location = $user_details['user_focus_company_id'];
+						
 							$project_manager = $this->dashboard_m->fetch_pms_year(date("Y"),0 ,$pm_list_query );
 							$project_manager_list = $project_manager->result();
 						?>
@@ -724,6 +734,12 @@ $estimator_colors['Ernan'] = $set_colors[5];
 
 
 
+
+
+
+
+
+
 						<div class="clearfix"></div>
 
 
@@ -733,8 +749,7 @@ $estimator_colors['Ernan'] = $set_colors[5];
 							<div class="widget wid-type-0 widg-head-styled">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head box-widg-head pad-5 fill">
-									<strong>Quote Deadline Calendar</strong>
-									 <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the quoted projects in completion date order chronologically. The deadline day is shown as a target in the calendar."></i></span>
+									<strong>Quote Deadline Calendar</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the quoted projects in completion date order chronologically. The deadline day is shown as a target in the calendar."></i></span>
 
 									<select class="pull-right input-control input-sm chart_data_selection_est" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 100px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 										<option value="all">Overall</option>
@@ -757,13 +772,13 @@ $estimator_colors['Ernan'] = $set_colors[5];
 <script src="<?php echo base_url(); ?>js/jquery.fn.gantt.js"></script>
 <link href="<?php echo base_url(); ?>css/gant-style.css" type="text/css" rel="stylesheet"> 
 
-
+<?php $custom_q = " AND `project`.`focus_company_id` = '$focus_company_location' "; ?>
 
 <div class="gantt" id="est_deadline_all"></div>
 <script>
         $(function() {
             $("#est_deadline_all").gantt({
-                source: [ <?php echo $this->estimators->list_deadlines(); ?> {name: "",dataObj: "",values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 35 days')); ?>", "desc": " ",customClass: "curr_date"}]}, ],
+                source: [ <?php echo $this->estimators->list_deadlines('',$custom_q); ?> {name: "",dataObj: "",values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 35 days')); ?>", "desc": " ",customClass: "curr_date"}]}, ],
                 navigate: "buttons",
                 scale: "days",
                 maxScale: "days",
@@ -790,7 +805,7 @@ $estimator_colors['Ernan'] = $set_colors[5];
 <script>
         $(function() {
             $("#est_deadline_<?php echo $est_name_list; ?>").gantt({
-                source: [ <?php echo $this->estimators->list_deadlines($est_id_list); ?> ],
+                source: [ <?php echo $this->estimators->list_deadlines($est_id_list,$custom_q); ?> ],
                 navigate: "buttons",
                 scale: "days",
                 maxScale: "days",
@@ -858,7 +873,7 @@ $estimator_colors['Ernan'] = $set_colors[5];
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of days when the next deadline is occurring."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of days when the next deadline is occurring."></i></span>  <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 
@@ -866,12 +881,12 @@ $estimator_colors['Ernan'] = $set_colors[5];
  
 										<div class="pad-10" id="">
 
-											<script type="text/javascript"> pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline',15000); </script>
+											<script type="text/javascript"> pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline/0/<?php echo $focus_company_location; ?>',15000); </script>
 											<div class="clearfix center knob_box pad-10 small-widget" id="up_coming_deadline_area">
 												<p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 												<?php //echo $this->estimators->up_coming_deadline(); ?>
 											</div>
-											<style type="text/css">.knob_box canvas{width: 100% !important;}.knob{font-size: 90px !important; }</style>
+											<style type="text/css">.knob_box canvas{width: 100% !important;}.knob{font-size: 75px !important; }</style>
 
 
 										</div>							
@@ -879,6 +894,7 @@ $estimator_colors['Ernan'] = $set_colors[5];
 								</div>
 							</div>
 						</div>
+
 
 
 

@@ -78,13 +78,13 @@ endif;
 
 
 
-	function list_deadlines($estimator_id=''){
+	function list_deadlines($estimator_id='',$custom=''){
 
 		//$this_year = date("d/m/Y");
 
 		$this_year =  date("d/m/Y", strtotime("- 5 days"));
  
-		$estimator_dlq = $this->dashboard_m_es->fetch_upcoming_deadline($this_year,$estimator_id);
+		$estimator_dlq = $this->dashboard_m_es->fetch_upcoming_deadline($this_year,$estimator_id,$custom);
 		$num_result = $estimator_dlq->num_rows();
 		$estimator_dl = $estimator_dlq->result();
 	 
@@ -176,7 +176,7 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 
 
 
-	public function up_coming_deadline($estimator_id = ''){
+	public function up_coming_deadline($estimator_id = '',$custom=''){
 		// $c_year = date("Y");		
 		// $date_a = "01/01/$c_year";
 		// $date_b = date("d/m/Y");
@@ -192,12 +192,24 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 			$estimators_val[$est->project_estiamator_id] = 0;
 		}
 
+		if($estimator_id == 0 || $estimator_id == '' ){
+			$estimator_id_set = '';
+		}else{
+			$estimator_id_set = $estimator_id;
+		}
+
 		$diff_a = 0;
 		$diff_b = 0;
 
 		$this_year = date("d/m/Y");
 
-		$estimator_dlq = $this->dashboard_m_es->fetch_upcoming_deadline($this_year);
+		if(isset($custom) && $custom!=''){
+			$custom_q = " AND `project`.`focus_company_id` = '$custom' ";
+		}else{
+			$custom_q = " ";
+		}
+
+		$estimator_dlq = $this->dashboard_m_es->fetch_upcoming_deadline($this_year,'',$custom_q);
 		$estimator_dl = $estimator_dlq->result();
 
 		$current_day_line = date('Y/m/d');
@@ -208,7 +220,7 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 
 		foreach ($estimator_dl as $est ) {
 
-			if(   array_key_exists($est->project_estiamator_id, $estimators_val) ){
+			if( array_key_exists($est->project_estiamator_id, $estimators_val) ){
 				if( $estimators_val[$est->project_estiamator_id] == 0  ){
 
 					$quote_deadline_date_replaced = str_replace('/', '-', $est->quote_deadline_date);
@@ -227,27 +239,24 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 					$pdEnd = new DateTime( date('Y-m-d', strtotime("$project_date_date_replaced")));
 					$pdDiff = $dEnd->diff($pdEnd);
 
-					if($est->project_estiamator_id == $estimator_id){
+					if($est->project_estiamator_id == $estimator_id_set){
 						$diff_a = intval($dDiff->days) - 1;
 						$diff_b = $pdDiff->days;
 					}
 
 					$days_remains = intval($dDiff->days) - 1;
 
-					if($days_remains > 0){	
+					if($days_remains > 0){
 
-
-						if($estimator_id == '' && $no_selected == 0){
+						if($estimator_id_set == '' && $no_selected == 0){
 							$diff_a = intval($dDiff->days) - 1;
 							$diff_b = $pdDiff->days;
 							$no_selected = 1;
 						}			
 
-
 						$estimators_val[$est->project_estiamator_id] = 1;
 						$total_string .= '<div class=\'row\'><span class=\'col-xs-4\'>'.$est->user_first_name.'</span><span class=\'col-xs-8\'>'.$days_remains.' day(s) before dealine.</span></div>';
 					}
-
 				}
 			}
 		}
@@ -269,6 +278,7 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 		$quoted_focus_company = array();
 		$cost_focus = array();
 		$cost_focus_b = array();
+
 		foreach ($focus_company as $company){
 			$focus_arr[$company->company_id] = $company->company_name;
 			$quoted_focus_company[$company->company_id] = 0;
@@ -282,102 +292,21 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 		$quoted_estimator_name = array();
 		$cost_estimator = array();
 		$cost_estimator_b = array();
+		
 		foreach ($estimator_list as $est ) {
 			$quoted_estimator[$est->project_estiamator_id] = 0;
 			$cost_estimator[$est->project_estiamator_id] = 0;
 			$cost_estimator_b[$est->project_estiamator_id] = 0;
 			$quoted_estimator_name[$est->project_estiamator_id] = $est->user_first_name;
 		}
+
+
 		$quoted_estimator_name[0] = '';
 
 		$is_restricted = 0;
 
-		$admin_defaults = $this->admin_m->fetch_admin_defaults(1);
-		foreach ($admin_defaults->result() as $row){
-			$unaccepted_date_categories = $row->unaccepted_date_categories;
-			$unaccepted_no_days = $row->unaccepted_no_days;
-		}
 
 
-		$all_projects_q = $this->dashboard_m->get_all_active_projects();
-		foreach ($all_projects_q->result_array() as $row){
-			if($row['project_estiamator_id'] != '0'){
-
-				if($row['project_estiamator_id'] != '8'){
-
-					$project_cost = 0;
-					$unaccepted_date = $row['unaccepted_date'];
-					if($unaccepted_date !== ""){
-						$unaccepted_date_arr = explode('/',$unaccepted_date);
-						$u_date_day = $unaccepted_date_arr[0];
-						$u_date_month = $unaccepted_date_arr[1];
-						$u_date_year = $unaccepted_date_arr[2];
-						$unaccepted_date = $u_date_year.'-'.$u_date_month.'-'.$u_date_day;
-					}
-
-					$start_date = $row['date_site_commencement'];
-					if($start_date !== ""){
-						$start_date_arr = explode('/',$start_date);
-						$s_date_day = $start_date_arr[0];
-						$s_date_month = $start_date_arr[1];
-						$s_date_year = $start_date_arr[2];
-						$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
-					}
-
-					$status = '';
-					if($row['job_date'] == '' && $row['is_paid'] == 0){
-						$job_category_arr = explode(",",$unaccepted_date_categories);
-						foreach ($job_category_arr as $value) {
-							if($value ==  $row['job_category']){
-								$is_restricted = 1;
-							}
-						}
-
-						$today = date('Y-m-d');
-						$unaccepteddate =strtotime ( '-'.$unaccepted_no_days.' day' , strtotime ( $start_date ) ) ;
-						$unaccepteddate = date ( 'Y-m-d' , $unaccepteddate );
-
-						if(strtotime($unaccepteddate) < strtotime($today)){
-							if($is_restricted == 1 && $unaccepted_date == ""){
-								$status = 'quote';
-							}
-						}elseif($unaccepted_date == ""){
-							$status = 'quote';
-						}else{
-
-						}
-					}
-
-					if($status == 'quote'){
-						//$quoted_estimator[$row['project_estiamator_id']]++;
-		 				//$quoted_focus_company[$row['focus_company_id']]++;
-
-						if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
-							$project_cost = $row['project_total'] + $row['variation_total'];
-						}else{
-							$project_cost = $row['budget_estimate_total'];
-						}
-
-						//$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-						//$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-
-
-
-
-						if ( array_key_exists($row['focus_company_id'], $cost_focus) ) {
-							$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-						}
-
-						if ( array_key_exists($row['project_estiamator_id'], $cost_estimator) ) {
-							$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost;
-						}
-
-
-
-					}
-				}
-			}
-		}
 
 		$current_year = intval(date("Y"));
 		$last_year = intval(date("Y"))-1; 
@@ -407,120 +336,20 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 		//echo "<p>$date_last_year_today_exx,$date_last_year_today_err</p>";
 
 
-		foreach ($estimator_list as $est ) {
 
+		$fetch_quoted_per_comp_q = $this->dashboard_m_es->fetch_quoted_per_comp();
+		$quoted_prj_amnt = $fetch_quoted_per_comp_q->result();
 
-			if($est->project_estiamator_id != '0'){
-				if($est->project_estiamator_id != '8'){
-
-
-
-
-			if( $cost_estimator[$est->project_estiamator_id] == 0){
-
-
-				$est_q_cst = "  AND `project`.`project_estiamator_id` = '$est->project_estiamator_id' ";
-
-
-
-
-
-		$all_projects_q = $this->dashboard_m->get_all_active_projects($date_last_year_today_exx,$date_last_year_today_err,$est_q_cst);
-		foreach ($all_projects_q->result_array() as $row){
-
-			if($row['project_estiamator_id'] != '0'){
-				if($row['project_estiamator_id'] != '8'){
-
-					$project_cost = 0;
-
-					$quoted_estimator[$row['project_estiamator_id']]++; 
-					$quoted_focus_company[$row['focus_company_id']]++;
-
-					if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
-						$project_cost = $row['project_total'] + $row['variation_total'];
-					}else{
-						$project_cost = $row['budget_estimate_total'];
-					}
-
-					$cost_focus[$row['focus_company_id']] = $cost_focus[$row['focus_company_id']] + $project_cost;
-					$cost_estimator[$row['project_estiamator_id']] = $cost_estimator[$row['project_estiamator_id']] + $project_cost; 
-				}
-			}
+		foreach ($quoted_prj_amnt as $es_qutd){
+			$cost_estimator[$es_qutd->project_estiamator_id] = $cost_estimator[$es_qutd->project_estiamator_id] + $es_qutd->quote_total;
+			$cost_focus[$es_qutd->focus_company_id] = $cost_focus[$es_qutd->focus_company_id] + $es_qutd->quote_total;
 		}
-
-
-
-
-			}
-
-		} 
-
-
-
-			}
-
-		} 
-
 
 
 		$all_projects_q = $this->dashboard_m->get_all_active_projects($date_last_year_today,$date_last_year_next);
 		foreach ($all_projects_q->result_array() as $row){
-
 			if($row['project_estiamator_id'] != '0'){
 				if($row['project_estiamator_id'] != '8'){
-
-					$project_cost = 0;
-					$unaccepted_date = $row['unaccepted_date'];
-					if($unaccepted_date !== ""){
-						$unaccepted_date_arr = explode('/',$unaccepted_date);
-						$u_date_day = $unaccepted_date_arr[0];
-						$u_date_month = $unaccepted_date_arr[1];
-						$u_date_year = $unaccepted_date_arr[2];
-						$unaccepted_date = $u_date_year.'-'.$u_date_month.'-'.$u_date_day;
-					}
-
-					$start_date = $row['date_site_commencement'];
-					if($start_date !== ""){
-						$start_date_arr = explode('/',$start_date);
-						$s_date_day = $start_date_arr[0];
-						$s_date_month = $start_date_arr[1];
-						$s_date_year = $start_date_arr[2];
-						$start_date = $s_date_year.'-'.$s_date_month.'-'.$s_date_day;
-					}
-
-					$status = '';
-					if($row['job_date'] == '' && $row['is_paid'] == 0){
-						$job_category_arr = explode(",",$unaccepted_date_categories);
-						foreach ($job_category_arr as $value) {
-							if($value ==  $row['job_category']){
-								$is_restricted = 1;
-							}
-						}
-
-						$today = date('Y-m-d');
-						$unaccepteddate =strtotime ( '-'.$unaccepted_no_days.' day' , strtotime ( $start_date ) ) ;
-						$unaccepteddate = date ( 'Y-m-d' , $unaccepteddate );
-
-						if(strtotime($unaccepteddate) < strtotime($today)){
-							if($is_restricted == 1 && $unaccepted_date == ""){
-								$status = 'quote';
-							}
-						}elseif($unaccepted_date == ""){
-							$status = 'quote';
-						}else{
-
-						}
-					}
-
-
-					if ( array_key_exists($row['project_estiamator_id'], $quoted_estimator) ) {
-						$quoted_estimator[$row['project_estiamator_id']]++;
-					}
-
-					if ( array_key_exists($row['focus_company_id'], $quoted_focus_company) ) {
-						$quoted_focus_company[$row['focus_company_id']]++;
-					}
-
 
 					if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
 						$project_cost = $row['project_total'] + $row['variation_total'];
@@ -528,17 +357,14 @@ $quote_deadline_date_reformated = date('Y/m/d', strtotime("$quote_deadline_date_
 						$project_cost = $row['budget_estimate_total'];
 					}
 
+
 					$cost_focus_b[$row['focus_company_id']] = $cost_focus_b[$row['focus_company_id']] + $project_cost;
-
-
-					if ( array_key_exists($row['project_estiamator_id'], $cost_estimator_b) ) {
-						$cost_estimator_b[$row['project_estiamator_id']] = $cost_estimator_b[$row['project_estiamator_id']] + $project_cost; 
-					}
-
-
+					$cost_estimator_b[$row['project_estiamator_id']] = $cost_estimator_b[$row['project_estiamator_id']] + $project_cost; 
 				}
 			}
 		}
+
+
 
 		$base_url = base_url();
 

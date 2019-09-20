@@ -58,6 +58,10 @@ $estimator_colors['Ernan'] = $set_colors[5];
 
 
 $focus_company_location = $user_focus_company_id;
+
+
+ 
+
 ?>
 
 <style type="text/css">
@@ -419,7 +423,6 @@ $focus_company_location = $user_focus_company_id;
 
 						<!-- ************************ -->
 						
-					
 						<div class="clearfix"></div>
 
 						<!-- ************************ -->
@@ -498,7 +501,6 @@ $focus_company_location = $user_focus_company_id;
 						<div class="clearfix"></div>
 
 
-
 						<!-- ************************ -->
 
 
@@ -552,22 +554,6 @@ $focus_company_location = $user_focus_company_id;
 
 
 
-						<!-- ************************ -->
-						
-						<div class="clearfix"></div>
-
-						<!-- ************************ -->
-
-
-
-
-
-
-						<!-- ************************ -->
-
-
-
-
 
 											<script type="text/javascript"> //pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline',15000); </script>
 
@@ -580,13 +566,7 @@ $focus_company_location = $user_focus_company_id;
 
  <select class="pull-right input-control input-sm chart_data_join_tbl" onchange="setSortJoinTbl(this.value)" style="background: #62a762;padding: 2px 0 0 0;margin: -8px 0 0 30px; font-size: 15px;width: 130px;height: 35px;border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
     <option value=''>Sort Option</option>
-      <option value="0_asc">Project ID Asc</option>    
-    <option value="0_desc">Project ID Desc</option>  
-
-    <option value="1_asc">PO ID Asc</option>    
-    <option value="1_desc">PO ID Desc</option>  
-
-    <option value="6_asc" selected>CPO Date Asc</option>
+    <option value="6_asc">CPO Date Asc</option>
     <option value="6_desc">CPO Date Desc</option> 
 </select>
 
@@ -609,8 +589,7 @@ $focus_company_location = $user_focus_company_id;
 											
 <table id="po_wip_join" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead><tr><!--<th>Brand/Shopping Centre Group</th>--><th style="border-right: none;">Project Number</th><th style="border-right: none;">PO Number</th><th style="border-right: none;">Delivery</th><th style="border-right: none;">CPO Date</th><th>Amount Ex-GST</th><th class="hide">unix_delivery</th><th class="hide">unix_cpo</th></tr></thead>
 										<tbody>
-											<?php $custom = "  AND `project`.`focus_company_id` = '".$user_focus_company_id."'  "; ?>
-											<?php echo $this->dashboard->po_joinery_list(0,$custom); ?>
+											<?php echo $this->dashboard->po_joinery_list(); ?>
 										</tbody>
 									</table>
 
@@ -658,11 +637,12 @@ setTimeout(function() {
 </script>
 
 
- 
 
 
 
 						<!-- ************************ -->
+
+
 
 
 
@@ -824,7 +804,6 @@ setTimeout(function() {
 								</div>
 							</div>
 						</div>
-
 
 
 

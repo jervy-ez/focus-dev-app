@@ -72,17 +72,19 @@ class Dashboard extends MY_Controller{
 
 	//	for ($my_year = 2015; $my_year <= $c_year; $my_year++){
 		for ($month=1; $month < 13; $month++) { 
-			//	if($month > $c_month && $c_year == $c_year){
-			//	}else{
-				//	echo "$my_year,$month<br />";
-					$this->_check_sales($c_year,$month); // automatically updates sales of the current month
-				}
+			if($month > $c_month && $c_year == $c_year){
+
+			}else{
+				//	echo "$my_year,$month<br />";					
+				$this->_check_sales($c_year,$month); // automatically updates sales of the current month
+			}
 		//	}
 	//		$this->check_outstanding($my_year);
 	//		$this->check_estimates($my_year);
 	//	}
 
 			}
+		}
 
 			public function d_estimators_wip($es_id=''){
 		//$this->dashboard('estimators')->estimators_wip($es_id='');
@@ -131,6 +133,8 @@ class Dashboard extends MY_Controller{
 						$data['main_content'] = 'dashboard_const';
 					}elseif($dash_details[1] == 'set'){
 						$data['main_content'] = 'dashboard_set';
+					}elseif($dash_details[1] == 'logis'){
+						$data['main_content'] = 'dashboard_logis';
 					}else{
 						$data['main_content'] = 'dashboard_home';
 					}
@@ -169,6 +173,8 @@ class Dashboard extends MY_Controller{
 							$data['main_content'] = 'dashboard_const';
 						}elseif($dash_details[1] == 'set'){
 							$data['main_content'] = 'dashboard_set';
+						}elseif($dash_details[1] == 'logis'){
+							$data['main_content'] = 'dashboard_logis';
 						}elseif($dash_details[1] == 'es'){
 							redirect('/dashboard/estimators?dash_view='.$dash_details[0].'-es');
 						}else{
@@ -206,6 +212,8 @@ class Dashboard extends MY_Controller{
 					$data['main_content'] = 'dashboard_set';
 				elseif($user_role_id == 11):
 					$data['main_content'] = 'dashboard_const';
+				elseif($user_role_id == 10):
+					$data['main_content'] = 'dashboard_logis';
 				elseif( $this->session->userdata('user_id') == 72 ):
 					$data['main_content'] = 'dashboard_general_hammond';
 				elseif( $this->session->userdata('dashboard') == 1 ):
@@ -1494,7 +1502,7 @@ public function sales_forecast_settings(){
 
 
 
-public function progressBar($assign_id='',$comp_id=''){
+public function progressBar($assign_id='',$comp_id='',$initials=''){
 	$user_id = '';
 	$type = '';
 	$init_f_total = 0;
@@ -1523,16 +1531,37 @@ public function progressBar($assign_id='',$comp_id=''){
 
 	$months = array("jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec");
 
-		$focus_wip_overall = $this->get_wip_value_permonth($date_a,$date_c,$user_id,$type);   //--------------------
+		//$focus_wip_overall = $this->get_wip_value_permonth($date_a,$date_c,$user_id,$type);   //--------------------
+
+ 
 
 
-		if(isset($comp_id) && $comp_id != '' && $comp_id != 0){
-			$q_current_invoiced_amount = $this->dashboard_m->fetch_current_total_invoices($c_year,'',$user_id);   //--------------------
-		}else{
-			$q_current_invoiced_amount = $this->dashboard_m->fetch_current_total_invoices($c_year,$user_id);   //--------------------
-		}
+	if(isset($comp_id) && $comp_id != '' && $comp_id != 0){
+		$q_curr_wip_rem = $this->dashboard_m->get_current_wip_remaining($assign_id,$date_a,$date_b);
+		$q_current_invoiced_amount = $this->dashboard_m->get_current_invoiced($assign_id,$date_a,$date_b); 
+
+	}else{
+		$q_curr_wip_rem = $this->dashboard_m->get_current_wip_remaining('',$date_a,$date_b,$user_id);
+		$q_current_invoiced_amount = $this->dashboard_m->get_current_invoiced('',$date_a,$date_b,$user_id); 
+	}
+
+
+
+
+		$curr_wip_rem =  array_shift($q_curr_wip_rem->result_array());
+
+
+		//var_dump($curr_wip_rem);
+
+		$focus_wip_overall = $curr_wip_rem['un_invoiced'];
+
+
 
 		$current_invoiced_amount =  array_shift($q_current_invoiced_amount->result_array());
+
+
+
+
 
  	//	var_dump($current_invoiced_amount);
 		//var_dump($q_current_invoiced_amount );
@@ -1555,11 +1584,13 @@ public function progressBar($assign_id='',$comp_id=''){
 		}
 
  //	var_dump($focus_wip_overall);
+		//echo "<p>$focus_wip_overall ***</p>";
+		//echo "<p>".$current_invoiced_amount['curr_invoiced']." ---</p>";
 
 
-		$current_standing = floatval($focus_wip_overall)+floatval($current_invoiced_amount['current_sales']);
+		$current_standing = floatval($focus_wip_overall)+floatval($current_invoiced_amount['curr_invoiced']);
 
-	//	echo "<p>$current_standing</p>";
+		///echo "<p>$current_standing</p>";
 
 		if(isset($assign_id) && $assign_id != '' && $assign_id != 0){
 
@@ -1571,7 +1602,9 @@ public function progressBar($assign_id='',$comp_id=''){
 			}
 
 
+
 			$pm_forecast = $q_pm_forecast->result();
+
 
 			foreach ($pm_forecast as $pm_val_forecast){
 
@@ -1592,6 +1625,7 @@ public function progressBar($assign_id='',$comp_id=''){
 			//	$init_f_total = $init_f_total + ( $forecast['total'] * ($pm_val_forecast->f_comp_forecast_percent/100) ) * ($pm_val_forecast->forecast_percent/100);
 			}
 
+
 				// 			echo "<p>----</p>";
 				// var_dump($init_f_total);
 
@@ -1600,6 +1634,8 @@ public function progressBar($assign_id='',$comp_id=''){
 
 
 			$forecasted_amount = $init_c_total * ($percent_total/100);
+
+
 
 			if($current_standing > 0 && $forecasted_amount > 0){
 				$current_progress = 100 / ( $forecasted_amount / $current_standing );
@@ -1616,6 +1652,14 @@ public function progressBar($assign_id='',$comp_id=''){
 // 			echo "<p>----</p>";
 		}else{
 			$forecasted_amount = $forecast['total'] * ($percent_total/100);
+
+
+
+			$forecasted_amount = ($forecasted_amount <= 1 ? 1 : $forecasted_amount);
+			$current_standing = ($current_standing <= 1 ? 1 : $current_standing);
+
+
+
 			$current_progress = 100 / ( $forecasted_amount / $current_standing );
 		}
 
@@ -1709,7 +1753,9 @@ public function progressBar($assign_id='',$comp_id=''){
 			<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-enabled" data-html="true" data-placement="bottom" data-original-title="Cumulative Forecast YTD<br />$'.number_format($forecasted_amount).'" style="position: absolute; width: '.$dyn_wth_z.'%; background-color: #002C8F; border-radius: 20px; height: 30px; text-align: right; padding-right: 10px; ">Cumulative Forecast YTD</div> ';
 		}
 
-
+		if(isset($initials) && $initials != ''){
+			echo '<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">'.$initials.'</span>';
+		}
 	}
 
 
@@ -4440,7 +4486,7 @@ public function average_date_invoice_pa(){
 		}
 
 
-		$direct_company = array('5','6');
+		$direct_company = array('5','6','3197');
 
 
 		foreach ($direct_company as $key => $comp_id) {
@@ -8333,7 +8379,7 @@ $n_month = date("m");
 		echo '<p class="value tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="'.$total_string.'"><i class="fa fa-usd"></i> <strong>'.number_format($total_outstanding_all_time,2).'</strong></p>';
 	}
 
-	public function focus_company_sep_thermo($company_id='',$focus_company=''){
+	public function focus_company_sep_thermo($company_id='',$focus_company='',$initials=''){
 
 		$c_year = date("Y");		
 		$date_a = "01/01/$c_year";
@@ -8390,6 +8436,10 @@ $n_month = date("m");
 			<div class="progress-bar progress-bar-danger active progress-bar-striped tooltip-pb" style="background-color: rgb(251, 25, 38);width: '.$percent_progess.'%;border-radius: 0px 10px 10px 0px;"   data-original-title="'.$focus_company.' &nbsp;  $'.number_format($current_sales).' - Overall Progress" >'.number_format($percent_progess).'%</div> 
 		
 		';
+
+		if(isset($initials) && $initials!= ''){
+			echo '<span style=" position: absolute;    left: 23px;   top:16px; font-size: 12px;   color: #fff;">'.$initials.'</span>';
+		}
 
 
 
@@ -8511,7 +8561,7 @@ $n_month = date("m");
 
 			$q_current_forecast_comp = $this->dashboard_m->get_current_forecast($c_year,$comp_id_pm,'1');
 			$comp_forecast = array_shift($q_current_forecast_comp->result_array());
-
+/*
 			if($pm_id == '29'){
 				$q_current_forecast_q = $this->dashboard_m->get_current_forecast($c_year,$pm_id,'',$pm_id);
 				$pm_forecast = array_shift($q_current_forecast_q->result_array());
@@ -8520,10 +8570,11 @@ $n_month = date("m");
 				$total_forecast = $total_forecast + ( $comp_forecast['total'] * (  $pm_forecast['nws_fct']  /100  ) *  ($pm_forecast['nws_fct_b']/100) );
 
 			}else{
+*/
 				$q_current_forecast = $this->dashboard_m->get_current_forecast($c_year,$pm_id);
 				$pm_forecast = array_shift($q_current_forecast->result_array());
 				$total_forecast = ( $comp_forecast['total'] * (  $comp_forecast['forecast_percent']  /100  ) *  ($pm_forecast['forecast_percent']/100) );
-			}
+//			}
 
 
 
@@ -8558,8 +8609,14 @@ $n_month = date("m");
 		$total_wip = ($total_wip <= 1 ? 1 : $total_wip);
 		$forecast_focus_total = ($forecast_focus_total <= 1 ? 1 : $comp_forecast['total']);
 
+
+		$forecast_focus_total = ($forecast_focus_total <= 1 ? 1 : $forecast_focus_total);
+
+
+
 		$status_forecast = round(100/($forecast_focus_total/ ($total_wip + $total_invoiced) ));
 
+ 
 
 		if($termo_val == ''):
 			echo '<div class="clearfix" style="padding-top: 6px;    border-top: 1px solid #eee;"><i class="fa fa-briefcase" style="font-size: 42px;float: left;margin-left: 7px;margin-right: 10px;"></i>';
@@ -11324,194 +11381,11 @@ foreach ($result_q as $data) {
 
 }
 
-
-public function force_logout($id){
-	$query = $this->db->query("UPDATE `users` SET `user_login_status` = '0', `time_log` = '' WHERE `users`.`user_id` = '$id' ");
-	$this->session->sess_destroy();
+/*
+public function force_query(){
+	$query = $this->db->query(" UPDATE `admin_company` SET `parent` = '4' WHERE `admin_company`.`admin_company_id` = 7 ");
 }
-
-
-public function test_send(){ 
-
-	$send_to = 'jervyezaballa@gmail.com';
-	$cc_mail = 'jean@ausconnect.net.au';
-	$from = 'userconf@sojourn.focusshopfit.com.au';
-	$another_email = 'jervy@focusshopfit.com.au';
-
-
-	$this->load->library('email');
-
-
-//$config['protocol'] = 'sendmail';
-	$config['mailpath'] = '/usr/sbin/sendmail -t -i';
-	$config['charset'] = 'iso-8859-1';
-	$config['wordwrap'] = TRUE;
-	$config['smtp_host'] = 'sojourn-focusshopfit-com-au.mail.protection.outlook.com';
-	$config['smtp_user']     = '';
-	$config['smtp_pass']     = '';
-	$config['protocol']     = 'mail';
-	$config['port'] = 587;
-
-	$this->email->initialize($config);
-
-
-
-	$this->email->from('no-reply@focusshopfit.com.au');
-	$this->email->to($another_email);
-	$this->email->cc($cc_mail);
-	$this->email->bcc($send_to);
-
-	$this->email->subject('Email Test');
-	$this->email->message('Testing the email class.');
-
-
-	if ( ! $this->email->send())
-	{
-		echo "error";
-	}else{
-		echo "email sent";
-	}
-
-
-
-	$to = "jervy@focusshopfit.com.au, jervyezaballa@gmail.com";
-	$subject = "HTML email";
-
-	$message = "
-	<html>
-	<head>
-		<title>HTML email</title>
-	</head>
-	<body>
-		<p>This email contains HTML Tags!</p>
-		<table>
-			<tr>
-				<th>Firstname</th>
-				<th>Lastname</th>
-			</tr>
-			<tr>
-				<td>John</td>
-				<td>Doe</td>
-			</tr>
-		</table>
-	</body>
-	</html>
-	";
-
-// Always set content-type when sending HTML email
-	$headers = "MIME-Version: 1.0" . "\r\n";
-	$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-
-// More headers
-	$headers .= 'From: <userconf@sojourn.focusshopfit.com.au>' . "\r\n";
-	$headers .= 'Cc: jean@ausconnect.net.au' . "\r\n";
-
-	mail($to,$subject,$message,$headers);
-
-
-
-
-	require_once('PHPMailer/class.phpmailer.php');
-	require_once('PHPMailer/PHPMailerAutoload.php');
-
-
-	$mail = new phpmailer(true);
-	$mail->host = "sojourn-focusshopfit-com-au.mail.protection.outlook.com";
-	$mail->port = 587;
-	$mail->setfrom('userconf@sojourn.focusshopfit.com.au', 'name');
-	$mail->addreplyto('userconf@sojourn.focusshopfit.com.au', 'name');
-	$mail->addaddress('jervy@focusshopfit.com.au', 'joe user');
-	$mail->addcc('jean@ausconnect.net.au');
-	$mail->smtpdebug = 2;
-	$mail->ishtml(true);
-	$mail->msghtml('this is a test');
-//$mail->send();
-
-
-
-	if(!$mail->send()) {
-		echo 'message could not be sent.';
-		echo 'mailer error: ' . $mail->errorinfo;
-	} else {
-		echo 'message has been sent';
-	}
-
-
-
-
-
-/*
-
-
-
-
-require_once('PHPMailer/class.phpmailer.php');
-require_once('PHPMailer/PHPMailerAutoload.php');
-
-$mail = new PHPMailer;
-
-$mail->isSMTP();                                      
-$mail->Host = 'sojourn-focusshopfit-com-au.mail.protection.outlook.com';  
-//$mail->Username = '';                 						
-//$mail->Password = '';                          
-$mail->Port = 25;                                    
-$mail->SMTPDebug = 3;
-$mail->SMTPAuth = false;
-$mail->SMTPSecure = false;
-$mail->protocol = 'sendmail';
-$mail->mailpath = '/usr/sbin/sendmail -t -i';
-
-
-
-$mail->setFrom($from, 'Mailer');
-$mail->addAddress($another_email, 'Joe User');     // Add a recipient
-$mail->addAddress($send_to);               // Name is optional
-$mail->addReplyTo('no-reply@example.com', 'Information');
-$mail->addCC($cc_mail);
-//$mail->addBCC('bcc@example.com');
-/*
-$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
 */
-/*
-$mail->isHTML(true);                                  // Set email format to HTML
-
-$mail->Subject = 'Here is the subject';
-$mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
-if(!$mail->send()) {
-    echo 'Message could not be sent.';
-    echo 'Mailer Error: ' . $mail->ErrorInfo;
-} else {
-    echo 'Message has been sent';
-}
-
-
-
-
-
-
-
-
-
-// another test email
-
-
-
-$to = $another_email;
-$subject = "My subject";
-$txt = "Hello world!";
-$headers = "From: webmaster@example.com" . "\r\n" .
-"CC: $cc_mail";
-
-mail($to,$subject,$txt,$headers);
-
-		
- 
-*/
-
-}
 
 
 

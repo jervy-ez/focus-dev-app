@@ -61,7 +61,11 @@ $estimator_colors['Ernan'] = $set_colors[5];
 	}
 
 
- 
+  
+
+$fetch_user = $this->user_model->fetch_user($user_id);
+$user_details = array_shift($fetch_user->result_array());
+$focus_company_location = $user_details['user_focus_company_id'];
 
 ?>
 
@@ -373,8 +377,8 @@ $estimator_colors['Ernan'] = $set_colors[5];
 
 											<script type="text/javascript"> //pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline',15000); </script>
 
-						<div class="col-md-9 col-sm-12 col-xs-12 col-lg-9 box-widget pad-10">
-							<div class="widget wid-type-b widg-head-styled" style="height: 501px;">
+						<div class="col-sm-12 col-xs-12 box-widget pad-10">
+							<div class="widget wid-type-b widg-head-styled" style="max-height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
 								<div class="widg-head  box-widg-head fill pad-5"><strong>Joinery on WIP</strong>
 								<span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists the projects having joinery in the works. Ordered by CPO date, oldest first."></i></span> 
@@ -399,8 +403,8 @@ $estimator_colors['Ernan'] = $set_colors[5];
   
 
 
-<div id="" class="" style=" height: 452px;    padding: 0 5px 0;    overflow: scroll;    overflow-x: hidden; ">
-											<div class="clearfix center knob_box   small-widget" id="joinery_in_wip">
+<div id="" class="" style=" max-height: 452px;    padding: 0 5px 0;    overflow: scroll;    overflow-x: hidden; ">
+											<div class="clearfix center " id="joinery_in_wip">
 												<!-- <p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p> -->
 											
 <table id="po_wip_join" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead><tr><!--<th>Brand/Shopping Centre Group</th>--><th style="border-right: none;">Project Number</th><th style="border-right: none;">PO Number</th><th style="border-right: none;">Delivery</th><th style="border-right: none;">CPO Date</th><th>Amount Ex-GST</th><th class="hide">unix_delivery</th><th class="hide">unix_cpo</th></tr></thead>
@@ -424,11 +428,11 @@ $estimator_colors['Ernan'] = $set_colors[5];
 						</div>
 
 						<style type="text/css">
-#po_wip_join_filter,#po_wip_join_info{
-	display: none; visibility: hidden;
-}
+							#po_wip_join_filter,#po_wip_join_info{
+								display: none; visibility: hidden;
+							}
 
-
+ 
 						</style>
 
 
@@ -436,10 +440,14 @@ $estimator_colors['Ernan'] = $set_colors[5];
 
 setTimeout(function() {
 
+	$('#po_wip_join_wrapper .dataTables_scrollBody').css('height','100%').css('overflow','hidden');
+
 	$('#po_wip_join_filter').parent().parent().remove();
 	$('#po_wip_join_info').parent().parent().remove();
 
 
+
+	$('select.chart_data_join_tbl').val('6_asc').trigger('change');
 
 	}, 2000);
 
@@ -448,27 +456,6 @@ setTimeout(function() {
 
 </script>
 
-
-						<!-- ************************ -->
-
-
-						<div class="col-md-3 col-sm-3 col-xs-12 col-lg-3 box-widget pad-10">
-							<div class="widget wid-type-0 widg-head-styled" style="height: 501px;">
-								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head fill box-widg-head pad-5"><strong>Sojourn</strong> 
-								<span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="This is a temporary place holder for future updates."></i></span>  <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
-								<div class="box-area clearfix">
-									<div class="widg-content clearfix">
-										<?php //<script type="text/javascript"> pre_load_module('#estimators_quotes_completed_area','dashboard/estimators/estimators_quotes_completed',15500); </script> ?>
-										<div class="" id="" style="background-image: url(<?php echo base_url(); ?>uploads/login_bg/bg_login_10521003262018.png) !important; height: 99.9%; margin-top: 0px !important; background-size: cover; }">
-											 
-										</div>							
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<!-- ************************ -->
 
  
 
@@ -518,7 +505,7 @@ setTimeout(function() {
 <script>
         $(function() {
             $("#ongoingwip").gantt({ 
-                source: [ <?php echo $this->dashboard->list_projects_progress('','  '); ?> ],
+                source: [ <?php echo $this->dashboard->list_projects_progress('',' AND `project`.`focus_company_id` = "'.$focus_company_location.'" '); ?> ],
                 navigate: "buttons",
                 scale: "days",
                 maxScale: "days",
@@ -533,6 +520,9 @@ setTimeout(function() {
             }); 
         });
 </script>
+
+
+
   
  
  
@@ -563,8 +553,10 @@ setTimeout(function() {
 						<!-- ************************ -->
  
  
- 
-						
+
+
+
+
 						<div class="clearfix"></div>
 
 
@@ -594,14 +586,16 @@ setTimeout(function() {
 								<div class="box-area clearfix row pad-right-10 pad-left-10">									
 									<div class="widg-content col-md-12 col-xs-12 clearfix" style="    overflow: auto;    height: 465px;    overflow: hidden;">	
 										<?php //echo $this->estimators->load_calendar_planner(); ?>
- 
+<script src="<?php echo base_url(); ?>js/jquery.fn.gantt.js"></script>
+<link href="<?php echo base_url(); ?>css/gant-style.css" type="text/css" rel="stylesheet"> 
 
+<?php $custom_q = " AND `project`.`focus_company_id` = '$focus_company_location' "; ?>
 
 <div class="gantt" id="est_deadline_all"></div>
 <script>
         $(function() {
             $("#est_deadline_all").gantt({
-                source: [ <?php echo $this->estimators->list_deadlines(); ?> ],
+                source: [ <?php echo $this->estimators->list_deadlines('',$custom_q); ?> {name: "",dataObj: "",values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 35 days')); ?>", "desc": " ",customClass: "curr_date"}]}, ],
                 navigate: "buttons",
                 scale: "days",
                 maxScale: "days",
@@ -628,7 +622,7 @@ setTimeout(function() {
 <script>
         $(function() {
             $("#est_deadline_<?php echo $est_name_list; ?>").gantt({
-                source: [ <?php echo $this->estimators->list_deadlines($est_id_list); ?>{ values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 20 days')); ?>",  customClass: "hide"},{from: "<?php echo date('Y/m/d'); ?>", to: "<?php echo date('Y/m/d'); ?>" ,customClass: "curr_date"}]}, ],
+                source: [ <?php echo $this->estimators->list_deadlines($est_id_list,$custom_q); ?> ],
                 navigate: "buttons",
                 scale: "days",
                 maxScale: "days",
@@ -686,33 +680,30 @@ setTimeout(function() {
 						</div>
 
 
-
-
 						<!-- ************************ -->
 
 
 
 
-						<!-- ************************ -->
+
 
 						<div class="col-md-6 col-sm-6 col-xs-12 col-lg-3 box-widget pad-10">
 							<div class="widget wid-type-c widg-head-styled" style="height: 501px;">
 								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
-								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of days when the next deadline is occurring."></i></span> <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
+								<div class="widg-head  box-widg-head fill pad-5"><strong>Up-coming Deadline</strong> <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Tells the number of days when the next deadline is occurring."></i></span>  <span class="badges pull-right"> <span class="pull-right"><?php echo date('Y'); ?></span> </span></div>
 								<div class="box-area clearfix">
 									<div class="widg-content clearfix">
 
 
  
-										<div class="pad-10">
+										<div class="pad-10" id="">
 
-											<script type="text/javascript"> pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline',15000); </script>
-
+											<script type="text/javascript"> pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline/0/<?php echo $focus_company_location; ?>',15000); </script>
 											<div class="clearfix center knob_box pad-10 small-widget" id="up_coming_deadline_area">
 												<p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 												<?php //echo $this->estimators->up_coming_deadline(); ?>
 											</div>
-											<style type="text/css">.knob_box canvas{width: 100% !important;}.knob{font-size: 90px !important; }</style>
+											<style type="text/css">.knob_box canvas{width: 100% !important;}.knob{font-size: 75px !important; }</style>
 
 
 										</div>							
@@ -720,6 +711,7 @@ setTimeout(function() {
 								</div>
 							</div>
 						</div>
+
 
 
 

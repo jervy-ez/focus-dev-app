@@ -115,8 +115,10 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 	$pm_name = $this->session->userdata('user_first_name').' '.$this->session->userdata('user_last_name'); 
 }
 
-
+ 
 ?>
+
+
 
  <!-- maps api js -->
 
@@ -358,28 +360,33 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 									<select class="pull-right input-control input-sm chart_data_selection" style="background: #AAAAAA; padding: 0;margin: -8px 0 0 0;width: 175px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
 
 										<?php echo '<option value="'.$pm_name.'">'.$pm_name.'</option>'; ?>
-										<?php 
-											if($pm_type == 2 && count($direct_company) > 1){ // director with more company
-											//	echo '<option value="Overall">Overall Sales Forecast</option>';
-											}
 
-											if($pm_type == 2 || count($direct_company) === 1){
 
-											}else{
-												echo '<option value="Overall">Overall Sales Forecast</option>';
-											}
-										?>
-										<?php
-											if( in_array('5', $direct_company) ){
-												echo '<option value="FWA">Focus WA</option>';
-											}
+										<?php if($pm_type == 1): ?>
+											<?php
+												$custom_q_uses_lst = " AND `users`.`user_focus_company_id` = '$focus_company_location' AND (`users`.`user_role_id` = '20' OR `users`.`user_role_id` = '3') ";
+												$user_list_selection_q = $this->user_model->list_user_short($custom_q_uses_lst);
+												$user_list_select = $user_list_selection_q->result();
+											?>
+											<?php foreach ($user_list_select  as $key => $value): ?> 
+												<option value="<?php echo $value->user_first_name.' '.$value->user_last_name; ?>" ><?php echo $value->user_first_name.' '.$value->user_last_name; ?></option>
+											<?php endforeach; ?>
+										<?php endif; ?>
 
-											if( in_array('6', $direct_company) ){
-												echo '<option value="FNSW">Focus NSW</option>';
-											}
-										?>
+
+ 
+
+										<?php foreach ($focus_company as $key => $value): ?>
+
+											<?php 
+												if( in_array($value->company_id, $direct_company) ){
+													echo '<option value="F'.$value->shortname.'">Focus '.$value->shortname.'</option>';
+												}
+											?>
+										<?php endforeach; ?>
+
 									</select>
-									<script type="text/javascript"> $('select.chart_data_selection').val('<?php echo $pm_name; ?>');</script>
+									<script type="text/javascript"> $('select.chart_data_selection').val('<?php echo $pm_name; ?>').trigger('change');</script>
 								</div>
 
 								<?php //var_dump($project_manager); ?>
@@ -755,13 +762,13 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 <script src="<?php echo base_url(); ?>js/jquery.fn.gantt.js"></script>
 <link href="<?php echo base_url(); ?>css/gant-style.css" type="text/css" rel="stylesheet"> 
 
-
+<?php $custom_q = " AND `project`.`focus_company_id` = '$focus_company_location' "; ?>
 
 <div class="gantt" id="est_deadline_all"></div>
 <script>
         $(function() {
             $("#est_deadline_all").gantt({
-                source: [ <?php echo $this->estimators->list_deadlines(); ?> {name: "",dataObj: "",values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 35 days')); ?>", "desc": " ",customClass: "curr_date"}]}, ],
+                source: [ <?php echo $this->estimators->list_deadlines('',$custom_q); ?> {name: "",dataObj: "",values: [{from: "<?php echo date('Y/m/d', strtotime('- 5 days')); ?>", to: "<?php echo date('Y/m/d', strtotime('+ 35 days')); ?>", "desc": " ",customClass: "curr_date"}]}, ],
                 navigate: "buttons",
                 scale: "days",
                 maxScale: "days",
@@ -788,7 +795,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
 <script>
         $(function() {
             $("#est_deadline_<?php echo $est_name_list; ?>").gantt({
-                source: [ <?php echo $this->estimators->list_deadlines($est_id_list); ?> ],
+                source: [ <?php echo $this->estimators->list_deadlines($est_id_list,$custom_q); ?> ],
                 navigate: "buttons",
                 scale: "days",
                 maxScale: "days",
@@ -864,7 +871,7 @@ echo '<script type="text/javascript">$("span#simulation_pm_name").text("'.$pm_na
  
 										<div class="pad-10" id="">
 
-											<script type="text/javascript"> pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline',15000); </script>
+											<script type="text/javascript"> pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline/0/<?php echo $focus_company_location; ?>',15000); </script>
 											<div class="clearfix center knob_box pad-10 small-widget" id="up_coming_deadline_area">
 												<p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p>
 												<?php //echo $this->estimators->up_coming_deadline(); ?>
@@ -1409,30 +1416,30 @@ chart.select();
 
 
 						<!-- ************   LEAVE CHART   ************ -->
-						<?php 
-
-							$custom_q = '';
-
-
-
-							if($pm_type == 1){
-
-
-								$custom_q = " AND `users`.`user_focus_company_id` = '$focus_company_location' ";
-
-								$user_list_q = $this->user_model->list_user_short($custom_q);
-								$user_list= $user_list_q->result();
-							}else{
-
-							//	$custom_q = " AND `users`.`user_id` = '$user_id' ";
-
-								$user_list_q = $this->user_model->list_user_short(" AND `users`.`user_id` = '$user_id' ");
-								$user_list= $user_list_q->result();
-							}
-
-						?>
+						
 
 						<div id="" class="hide hidden">
+
+
+<?php
+	$custom_q = '';
+	if($pm_type == 1){
+		$custom_q = " AND `users`.`user_focus_company_id` = '$focus_company_location' ";
+		$user_list_q = $this->user_model->list_user_short($custom_q);
+		$user_list= $user_list_q->result();
+	}else{
+								//	$custom_q = " AND `users`.`user_id` = '$user_id' ";
+		$user_list_q = $this->user_model->list_user_short(" AND `users`.`user_id` = '$user_id' ");
+		$user_list= $user_list_q->result();
+	}
+?>
+
+<?php 
+	$user_list_q = $this->user_model->list_user_short($custom_q);
+	$user_list= $user_list_q->result();
+?>
+
+
 							
 							<?php 
 
@@ -1446,19 +1453,18 @@ chart.select();
 
 
 							array_push($leave_types, $added_data);
+ 
 
 
+							if($pm_type == 1){
 
-		
-          	if($pm_type == 1){
+								$leave_totals =  $this->dashboard->get_count_per_week(2,'','',$custom_q);
+								$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,'',$custom_q);
+							}else{
 
-							$leave_totals =  $this->dashboard->get_count_per_week(2,'','',$custom_q);
-							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,'',$custom_q);
-		}else{
-
-							$leave_totals =  $this->dashboard->get_count_per_week(2,'',$user_id);
-							$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,$user_id);
-		}
+								$leave_totals =  $this->dashboard->get_count_per_week(2,'',$user_id);
+								$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,$user_id);
+							}
 
 							?>
 						</div>
@@ -1476,10 +1482,6 @@ chart.select();
 										<option disabled="" value="0">Select View</option>
 										<option value="grouped"  selected="all">Grouped</option>
 
-										<?php 
-											$user_list_q = $this->user_model->list_user_short($custom_q);
-											$user_list= $user_list_q->result();
-										?>
 
 										<?php foreach ($user_list as $key => $value): ?> 
 												<option class="emp_opy_select"  value="<?php echo $value->user_first_name.' '.$value->user_last_name.'|'.$value->primary_user_id; ?>" ><?php echo $value->user_first_name.' '.$value->user_last_name; ?></option>
