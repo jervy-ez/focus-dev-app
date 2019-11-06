@@ -571,7 +571,7 @@
 
 
 
-<?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 16 || $this->session->userdata('is_admin') == 1 ): ?>
+<?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 16 || $this->session->userdata('user_id') == 15 ): ?>
 	<div class="modal fade" id="management_report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
@@ -582,27 +582,38 @@
 				<form method="post" >
 					<div class="modal-body pad-10">
 
-						<div id="" class=""><select id="management_report_year" class="form-control m-bottom-10">
-							<option selected value="">Select Year</option>
-							<?php
-							for ($starting_count=2015; $starting_count <= date('Y'); $starting_count++) { 
-								echo '<option value="'.$starting_count.'">'.$starting_count.'</option>';
-							}
-							?>
+						<div class="input-group m-bottom-10">
+							<span id="" class="input-group-addon"><i class="fa fa-calendar"></i> Year</span>
+							<select id="management_report_year" class="form-control m-bottom-10">
+								<option selected value="">Year</option>
+								<?php for ($starting_count=2015; $starting_count <= date('Y'); $starting_count++) { echo '<option value="'.$starting_count.'">'.$starting_count.'</option>'; } ?>
+							</select>
+						</div>
 
-						</select></div>
+						<div class="input-group m-bottom-10">
+							<span id="" class="input-group-addon"><i class="fa fa-user"></i> Source</span>
+							<select id="management_report_pm" class="form-control m-bottom-10">
+								<option selected value="">Select</option>
 
-						<div id="" class=""><select id="management_report_pm" class="form-control m-bottom-10">
-							<option selected value="">Select Project Manager</option>
-							<?php foreach ($project_manager as $row){							
-									echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
-							}?>
-							
+								<option value="0F">Overall Focus Report</option>
+								<option value="5F">Focus Shopfit Pty Ltd</option>
+								<option value="6F">Focus Shopfit NSW Pty Ltd</option>
+								<option value="3197F">Focus Maintenance</option>
 
-							<?php foreach ($account_manager as $row){	
-									echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>';
-							}?>		
-						</select></div>
+								<?php foreach ($project_manager as $row){ echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>'; }?>
+								<?php foreach ($account_manager as $row){ echo '<option value="'.$row->user_id.'">'.$row->user_first_name.' '.$row->user_last_name.'</option>'; }?>		
+							</select>
+						</div>
+
+						<div class="input-group m-bottom-10">
+							<span id="" class="input-group-addon"><i class="fa fa-calendar-check-o"></i> Type</span>
+							<select id="report_year_view" class="form-control m-bottom-10">
+								<option value="1">Calendar Year</option>
+								<option value="2">Financial Year</option>s
+							</select>
+						</div>
+
+
 
 					</div>
 					<div class="modal-footer">

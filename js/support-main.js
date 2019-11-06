@@ -3563,6 +3563,8 @@ $('#payment_amount_value').keyup(function( event ) {
 $('.set_management_report').click(function(){
   var management_report_year = $('select#management_report_year').val();
   var management_report_pm = $('select#management_report_pm').val();
+  var report_year_view = $('select#report_year_view').val();
+
   var has_error = 0;
 
   if(management_report_year == '' ){
@@ -3582,7 +3584,15 @@ $('.set_management_report').click(function(){
 
   if(has_error == 0){
 
-    var link_page_to = base_url+'dashboard/management_report/'+management_report_year+'_'+management_report_pm;
+
+    if(report_year_view == 1){
+      var link_page_to = base_url+'dashboard/management_report/'+management_report_year+'_'+management_report_pm;
+    }else{
+      var link_page_to = base_url+'dashboard/management_financial_year_report/'+management_report_year+'_'+management_report_pm;
+    }
+
+
+  //  alert(link_page_to);
 
     //console.log();
     //alert(base_url);
