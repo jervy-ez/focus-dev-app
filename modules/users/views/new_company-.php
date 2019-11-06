@@ -19,14 +19,11 @@
 					<li>
 						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
 					</li>
-					<li>
+					<li <?php if($screen=='Client'){ echo 'class="active"';} ?> >
 						<a href="<?php echo base_url(); ?>admin" class="btn-small">Defaults</a>
 					</li>
-					<li>
+					<li <?php if($screen=='Contractor'){ echo 'class="active"';} ?> >
 						<a href="<?php echo base_url(); ?>admin/company" class="btn-small">Company</a>
-					</li>
-					<li>
-						<a href="<?php echo base_url(); ?>users" class="btn-small">Users</a>
 					</li>
 					<!-- <li>
 						<a href="" class="btn-small"><i class="fa fa-magic"></i> Tour</a>
@@ -406,7 +403,7 @@
 											<div class="col-md-6 col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('acn')){ echo 'has-error has-feedback';} ?>">
 												<label for="acn" class="col-sm-3 control-label">ACN*</label>
 												<div class="col-sm-9">
-													<input type="text" class="form-control" id="acn" placeholder="ACN"    name="acn" value="<?php echo $this->input->post('acn'); ?>">
+													<input type="text" class="form-control" id="acn" readonly="readonly" placeholder="ACN"    name="acn" value="<?php echo $this->input->post('acn'); ?>">
 												</div>
 											</div>
 
