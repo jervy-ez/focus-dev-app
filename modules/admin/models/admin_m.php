@@ -84,11 +84,12 @@ class Admin_m extends CI_Model{
 	}
 
 	public function get_assigned_warehouse(){
-		$query = $this->db->query(" SELECT `client_storage`.*, `brand`.`brand_name`, `company_details`.`company_name`,`warehouse`.`location`
+		$query = $this->db->query(" SELECT `client_storage`.*, `client`.`company_name` AS `client_name`,`client`.`company_id` AS `client_id`, `f_company`.`company_name`,`warehouse`.`location`
 			FROM `client_storage`
-			INNER JOIN `brand` ON `brand`.`brand_id` = `client_storage`.`client_brand_id`
+			INNER JOIN `company_details` `client` ON `client`.`company_id` = `client_storage`.`client_brand_id`
 			INNER JOIN `warehouse` ON `warehouse`.`warehouse_id` = `client_storage`.`warehouse_id`
-			INNER JOIN `company_details` ON `company_details`.`company_id` = `warehouse`.`focus_company_id` WHERE `client_storage`.`is_active` = '1' ORDER BY `brand`.`brand_name` ASC ");
+			INNER JOIN `company_details` `f_company` ON `f_company`.`company_id` = `warehouse`.`focus_company_id` WHERE `client_storage`.`is_active` = '1'
+			ORDER BY `client_name` ASC ");
 		return $query;
 	}
 
@@ -113,8 +114,8 @@ class Admin_m extends CI_Model{
 		return $query;
 	}
 
-	public function update_employee_supply_reminder($user_id,$reminder_lead_days,$client_supply_settings_id){
-		$this->db->query("  UPDATE `client_supply_settings` SET `user_id` = '$user_id', `reminder_lead_days` = '$reminder_lead_days' WHERE `client_supply_settings`.`client_supply_settings_id` = '$client_supply_settings_id' ");
+	public function update_employee_supply_reminder($user_id,$reminder_lead_days,$client_supply_settings_id,$cc_email){
+		$this->db->query("  UPDATE `client_supply_settings` SET `user_id` = '$user_id', `reminder_lead_days` = '$reminder_lead_days', `cc_email` = '$cc_email' WHERE `client_supply_settings`.`client_supply_settings_id` = '$client_supply_settings_id' ");
 	}
 
 	public function add_archive_doc($registry_type){

@@ -81,8 +81,9 @@ class Admin extends MY_Controller{
 			$remind_emp_csup_user = $_POST['remind_emp_csup_user'];
 			$days_lead_reminder = $_POST['days_lead_reminder'];
 			$client_supply_settings_id = $_POST['client_supply_settings_id'];
+			$cc_email = $_POST['cc_email'];
 
-			$this->admin_m->update_employee_supply_reminder($remind_emp_csup_user,$days_lead_reminder,$client_supply_settings_id);
+			$this->admin_m->update_employee_supply_reminder($remind_emp_csup_user,$days_lead_reminder,$client_supply_settings_id,$cc_email);
 		 	redirect('/admin#client_supply_settings');
 		}
 
@@ -131,7 +132,18 @@ class Admin extends MY_Controller{
 			return  $this->projects->list_all_brands($form);
 		}
 
+		public function get_client_companies($type,$display='select'){
+			$company_q = $this->company_m->display_company_by_type($type);
+			 
 
+			if($display == 'select'){ 
+
+				foreach ($company_q->result() as $client_company){
+					//var_dump($client_company);
+					echo '<option value="'.$client_company->company_id.'">'.$client_company->company_name.'</option>';
+				}
+			}
+		} 
 
 		public function delete_archive_type($archive_type_id){
 			$this->admin_m->remove_archive_name($archive_type_id);

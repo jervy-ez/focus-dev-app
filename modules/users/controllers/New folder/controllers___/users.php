@@ -67,6 +67,7 @@ class Users extends MY_Controller{
 	//	}else{
 
 
+echo '<div id="" class="col-lg-2"><p>&nbsp;</p></div>';
 
 			$admin_company_group_q = $this->user_model->fetch_company_group($company_id);
 
@@ -347,7 +348,6 @@ endif;
 		$labour_schedule = $_POST['labour_schedule'];
 		$company_project = $_POST['company_project'];
 		$shopping_center = $_POST['shopping_center'];
-		$client_supply = $_POST['client_supply'];
 
 		$site_labour = $_POST['site_labour'];
 		$site_labour_app = $_POST['site_labour_app'];
@@ -362,11 +362,10 @@ endif;
 		$role_raw = $_POST['role'];
 		$role_arr = explode('|',$role_raw);
 		$role_id = $role_arr[0];
-		$incident_report = $_POST['incident_report_access'];
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$client_supply,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access,$purchase_order_access, $progress_report_set, $onboarding_set,$incident_report);
+		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access,$purchase_order_access, $progress_report_set, $onboarding_set);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
 
@@ -464,20 +463,7 @@ endif;
 			$access = $access."/".$row['app_access_type'];
 		}
 
-		$travel_access = 0;
-		$plate_no = "";
-		$taccess_query = $this->user_model->fetch_app_travel_access($user_id);
-		if($taccess_query->num_rows == 1){
-			$travel_access = 1;
-			foreach ($taccess_query->result_array() as $row){
-				$plate_no = $row['plate_no'];
-			}
-		}
-
 		$data['access'] = $access;
-
-		$data['travel_access'] = $travel_access;
-		$data['plate_no'] = $plate_no;
 
 		$used_annual_total = $this->user_model->get_total_leave_annual($user_id);
 		$data['used_annual_total'] = $used_annual_total->row();
@@ -485,11 +471,11 @@ endif;
 		$used_personal_total = $this->user_model->get_total_leave_personal($user_id);
 		$data['used_personal_total'] = $used_personal_total->row();
 
-		$q_annual_holidays = $this->user_model->get_annual_holidays($user_id);
-		$data['annual_holidays'] = $q_annual_holidays->row();
+		$q_annual_ph_holidays = $this->user_model->get_annual_ph_holidays($user_id);
+		$data['annual_ph_holidays'] = $q_annual_ph_holidays->row();
 
-		$q_sick_holidays = $this->user_model->get_sick_holidays($user_id);
-		$data['sick_holidays'] = $q_sick_holidays->row();
+		$q_sick_ph_holidays = $this->user_model->get_sick_ph_holidays($user_id);
+		$data['sick_ph_holidays'] = $q_sick_ph_holidays->row();
 
 		$fetch_user = $this->user_model->fetch_user($user_id);
 		$data['user'] = $fetch_user->result();
@@ -1122,20 +1108,10 @@ endif;
 
 	//	var_dump($this->session->userdata);
 		$this->clear_apost();
-		$has_archvie_access = 0;
-		$archive_exp = '';
 
 		$data['page_title'] = 'Sign In';
 
-		$bg_photo = $this->display_login_bg();
-
-		$mail = new PHPMailer;                                		
-		$mail->Host = 'sojourn-focusshopfit-com-au.mail.protection.outlook.com';
-		$mail->Port = 587;
-
-		$mail->setFrom('noreply@focusshopfit.com.au', 'Sojourn Reminder - PO Review');
-		$mail->addReplyTo('noreply@focusshopfit.com.au', 'Do Not Reply');
-		$mail->isHTML(true);  
+	 $bg_photo = $this->display_login_bg();
 
 	// echo $bg_photo;
 
@@ -1241,20 +1217,6 @@ endif;
 					$data['user_supervisor_id'] = $userdata->supervisor_id;
 
 
-					$fetch_user_has_archive_upload = $this->user_model->fetch_archive_assigned_to_emp($userdata->user_id);
-
-					if($fetch_user_has_archive_upload->num_rows > 0){
-						$data['induction_archive_upload'] = 1;	$has_archvie_access = 1;
-					}else{
-						$data['induction_archive_upload'] = 0;		$has_archvie_access = 0;
-					}
-
-
-
-
-
-
-
 					if( $userdata->is_active == 0){
 						$this->logout_user();
 						redirect('');
@@ -1269,115 +1231,6 @@ endif;
 					$this->session->set_userdata('default_projects_landing', $userdata->projects_load_view ); 
 					$this->session->set_userdata('default_projects_view_personal', $userdata->projects_load_view_personal ); 
  
-
-
-if($userdata->user_id == 2):
-// client supply
-					$check_user_supply_q = $this->user_model->check_for_user_supply($userdata->user_id);
-					if ($check_user_supply_q->num_rows === 1 || $userdata->user_id == 2) {
-
-
-							$check_user_supply = array_shift($check_user_supply_q->result_array());
-
-							$user_general_email = $check_user_supply['general_email'];
-							$reminder_lead_days = $check_user_supply['reminder_lead_days'];
-							$cc_email = $check_user_supply['cc_email'];
-
-
-$reminder_lead_days = 5;
-
-
-						$supply_list = '';
-						$date_a = date("d/m/Y");
-
-
-
-						$date_b_name = date('D', strtotime("today +$reminder_lead_days days"));
-
-
-						if($date_b_name == 'SUN'){
-
-							$reminder_lead_days = $check_user_supply['reminder_lead_days']-2;
-							$date_b = date('d/m/Y', strtotime("today +$reminder_lead_days days"));
-
-						}elseif($date_b_name == 'SAT'){
-
-							$reminder_lead_days = $check_user_supply['reminder_lead_days']-1;
-							$date_b = date('d/m/Y', strtotime("today +$reminder_lead_days days"));
-
-						}else{
-							
-							$date_b = date('d/m/Y', strtotime("today +$reminder_lead_days days"));
-						}
-
-
-						$comp_id = $userdata->user_focus_company_id;
-						$comp_id = 5;
-
-						echo "$comp_id,$date_a,$date_b  ___ $reminder_lead_days";
-
-
-						$supply_for_email_q = $this->user_model->supply_for_email($comp_id,$date_a,$date_b);
-
-						if ($supply_for_email_q->num_rows > 0 || $userdata->user_id == 2) {
-
-							foreach ($supply_for_email_q->result() as $supply){
-
-								$supply_list .= '<p><strong>'.ucwords($supply->supply_name).'</strong>';
-								$supply_list .= '<br />Delivery To Site Date: '.$supply->delivery_date.'';
-								$supply_list .= '<br />Warehouse: '.$supply->warehouse.'';
-								$supply_list .= '<br /></p>';
-
-								$this->user_model->set_reminded_supply($supply->client_supply_id,$date_a);
-
-							}
-
-
-
-							$mail->setFrom('noreply@focusshopfit.com.au', 'Sojourn Client Supply');
-						// remove user ID here for testing only  /*  ( && $userdata->user_id == 2 ) ||  ( $has_archvie_access == 1 && $userdata->user_id == 48 ) */ 
-
-							$content = '';
-
-
-
-							$mail->Subject = 'Client Supply';
- 
-
-							//$mail->addAddress($user_general_email);
-							$mail->addAddress('jervyezaballa@gmail.com');
-
-							$cc_email = 'jervy@focusshopfit.com.au';
-
-							if(isset($cc_email) && $cc_email != ''  ){
-								$mail->addCC($cc_email);	
-							}
-
-
-
-
-							$content = '<p>Please be advised that there are suppies that needs to be delivered, please see the following below.</p>'.$supply_list;
-
-							$mail->Body = $content.'<br /><br />Sent via Sojourn auto-email service.<br />Please log-in to Sojourn and check the client supplies as per details above.<br /><br />&copy; FSF Group '.date('Y').'</p>';
-
-							$mail->send();
-
-
-
-
-
-						}
-					}
-// client supply
-endif;
-
-
-
-
-
-
-
-
 
 
 
@@ -1437,208 +1290,43 @@ endif;
 				//	if( $userdata->user_role_id == 6){
 				//	if( $userdata->user_id == 2){
 
-						if($date_today_m != $stat_def_day_sent[1] && $date_sent_totime < $date_today_totime && $po_rev_day <= $date_today_d){							
+						if($date_today_m != $stat_def_day_sent[1] && $date_sent_totime < $date_today_totime && $po_rev_day <= $date_today_d){
+
+							$mail = new PHPMailer;                                		
+							$mail->Host = 'sojourn-focusshopfit-com-au.mail.protection.outlook.com';
+							$mail->Port = 587;
+
+							$mail->setFrom('noreply@focusshopfit.com.au', 'Sojourn Reminder - PO Review');
+							$mail->addReplyTo('noreply@focusshopfit.com.au', 'Do Not Reply');
 
 						//	$mail->addAddress($send_to);
 
 							foreach ($q_po_review_users->result_array() as $row){
 								$mail->addAddress($row['general_email']);
 							}
-                             
+
+							$mail->isHTML(true);                               
 
 							$content = '<p>Hi this is an automated email reminder for your purchase orders to settle in Sojourn.<br />You can click <a href="https://sojourn.focusshopfit.com.au/purchase_order?po_rev=1" target="_blank" title="Go to Sojourn - Purchase Orders"><strong>this link</strong></a> to go to the purchase order screen.';
 
 							$mail->Subject = 'Sojourn Reminder - PO Review';
-							$mail->Body    = $content.'<br /><br />Sent via Sojourn auto-email service, you have a purchase order that needs action.<br />Please log-in to Sojourn and apply the necessary changes as per details above.<br /><br />&copy; FSF Group '.date('Y');
+							$mail->Body    = $content.'<br /><br />Sent via Sojourn auto-email service, you have a purchase order that needs action.<br />Please log-in to Sojourn and apply the necessary changes as per details above.<br /><br />&copy; FSF Group '.date('Y');;
 
 							$this->user_model->set_sent_po_reminder($date_today);
 							$mail->send();
 							
 						}
+							redirect('', 'refresh'); 
+/*
 
+					}else{
+						redirect('', 'refresh'); 
+					}
 
+*/
 
 
-						if( $has_archvie_access == 1){  
-
-
-							$mail->setFrom('noreply@focusshopfit.com.au', 'Sojourn Archive Documents');
-						// remove user ID here for testing only  /*  ( && $userdata->user_id == 2 ) ||  ( $has_archvie_access == 1 && $userdata->user_id == 48 ) */ 
-
-							$content = '';
-
-
-							$date_today_log = date('m-d-Y');
-							$date_today_frmttd = DateTime::createFromFormat('m-d-Y', $date_today_log);
-
-							$no_of_weeks_arch = $static_defaults['no_of_weeks'];						
-							$day_remind_arch = $static_defaults['day_remind'];
-
-							$archive_user_data = $fetch_user_has_archive_upload->result();
-
-
-							foreach($archive_user_data as $key => $archive_data){
-
-
-
-
-								$date_expiry_set = date_format(date_create_from_format('d/m/Y', $archive_data->expiry), 'm-d-Y');
-								$date_expiry_frmttd = DateTime::createFromFormat('m-d-Y', $date_expiry_set);
-
-								$weeks_diff = floor($date_today_frmttd->diff($date_expiry_frmttd)->days/7);
-
-
-
-								if( $date_today_frmttd->format('U')  >=  $date_expiry_frmttd->format('U')){
-
-									if($archive_data->is_exp_notified == 0){
-
-									//	echo "<p>EXPIRED ".$archive_data->expiry.' __ '.$weeks_diff.' __ '.$date_today_log." </p>";
-
-
-
-									// SEND TO IAN ADMIN
-
-										$mail->Subject = 'Document Registry';
-
-										$q_expired_notify = $this->user_model->fetch_email_user($static_defaults['remind_late_email']);
-										$expired_notify = array_shift($q_expired_notify->result_array());
-
-										$mail->addAddress($expired_notify['general_email']);
-
-										if(isset($static_defaults['remind_cc_email']) && $static_defaults['remind_cc_email'] != ''  ){
-											$mail->addCC($static_defaults['remind_cc_email']);	
-										}
-
-										$content = '<p>Please be advised that the archive '.$archive_data->registry_name.' assigned to '.$userdata->user_first_name.' '.$userdata->user_last_name.' has expired ('.$archive_data->expiry.')<br />';
-
-										$mail->Body = $content.'<br /><br />Sent via Sojourn auto-email service, you have a document that needs action.<br />Please log-in to Sojourn and apply the necessary changes as per details above.<br /><br />&copy; FSF Group '.date('Y').'</p>';
-
-										$this->user_model->set_sent_po_reminder($date_today);
-										$mail->send();
-
-										$this->user_model->set_exp_arch($archive_data->archive_registry_id);
-
-
-											//	echo 'send mail v <br />';
-
-
-									}else{
-
-
-										//		echo ' no mail w <br />';
-									}
-
-								}else{
-
-									if($weeks_diff <= $no_of_weeks_arch && $date_today_frmttd->format('l') == $day_remind_arch ){
-
-										if($archive_data->is_reminder_sent == 0){
-											// send email here
-											$this->user_model->set_exp_arch_doc($archive_data->archive_registry_id,$date_today);
-
-
-
-										//	echo "<p>Notify User".$date_today_frmttd->format('l').'______'.$day_remind_arch."</p>";
-										//	echo 'send mail x <br />';
-
-
-
-
-
-
-										$mail->Subject = 'Document Registry';
-
-										$q_expired_notify = $this->user_model->fetch_email_user($userdata->user_id);
-										$expired_notify = array_shift($q_expired_notify->result_array());
-
-										$mail->addAddress($expired_notify['general_email']);
-
-
-										//$content = '<p>Please be advised that the archive '.$archive_data->registry_name.' assigned to '.$userdata->user_first_name.' '.$userdata->user_last_name.' has expired ('.$archive_data->expiry.')<br />';
-
-										$content = '<p>Please be advised that the archive '.$archive_data->registry_name.' will expire on '.$archive_data->expiry.'.  It is required that this is maintained up to date, can you please arrange for this to be completed and uploaded.  You can upload the new document at <a href="'.base_url().'induction_health_safety/archive_documents" target="_blank" title="Induction,Health and Safety - Archive Documents" >Induction,Health and Safety - Archive Documents</a>.<br />If there are any issues, please let Ian Gamble know, many thanks again for your assistance.</p>';
-
-
-										$mail->Body = $content.'<br /><br />Sent via Sojourn auto-email service, you have a document that needs action.<br />Please log-in to Sojourn and apply the necessary changes as per details above.<br /><br />&copy; FSF Group '.date('Y').'</p>';
-
-										$this->user_model->set_sent_po_reminder($date_today);
-										$mail->send();
-
-										$this->user_model->set_exp_arch($archive_data->archive_registry_id);
-
-
-
-
-
-										}else{
-
-
-										//	echo "<p>".$archive_data->is_reminder_sent.' ______ '.$date_today."</p>";
-
-
-											if($archive_data->is_reminder_sent != $date_today    ){
-												$this->user_model->set_exp_arch_doc($archive_data->archive_registry_id,$date_today);
-												// send email here
-
-
-
-
-
-										$mail->Subject = 'Document Registry';
-
-										$q_expired_notify = $this->user_model->fetch_email_user($userdata->user_id);
-										$expired_notify = array_shift($q_expired_notify->result_array());
-
-										$mail->addAddress($expired_notify['general_email']);
-
-
-										//$content = '<p>Please be advised that the archive '.$archive_data->registry_name.' assigned to '.$userdata->user_first_name.' '.$userdata->user_last_name.' has expired ('.$archive_data->expiry.')<br />';
-
-										$content = '<p>Please be advised that the archive '.$archive_data->registry_name.' will expire on '.$archive_data->expiry.'.  It is required that this is maintained up to date, can you please arrange for this to be completed and uploaded.  You can upload the new document at <a href="'.base_url().'induction_health_safety/archive_documents" target="_blank" title="Induction,Health and Safety - Archive Documents" >Induction,Health and Safety - Archive Documents</a>.<br />If there are any issues, please let Ian Gamble know, many thanks again for your assistance.</p>';
-
-
-										$mail->Body = $content.'<br /><br />Sent via Sojourn auto-email service, you have a document that needs action.<br />Please log-in to Sojourn and apply the necessary changes as per details above.<br /><br />&copy; FSF Group '.date('Y').'</p>';
-
-										$this->user_model->set_sent_po_reminder($date_today);
-										$mail->send();
-
-										$this->user_model->set_exp_arch($archive_data->archive_registry_id);
-
-
-										//		echo 'send mail y <br />';
-											}else{
-										//		echo ' no mail  u <br />';
-
-											}
- 
-
-											
-
-										}
-
-
-
-									}else{
-								//		echo ' no mail  z <br />';
-
-									}
-								}
-							}
-						}
-
-
-					//	else{ // remove else after
-							// HIDE THIS DURING DEBUG
-	if($userdata->user_id != 2){ 
-		redirect('', 'refresh'); 
-	}
-
-							// HIDE THIS DURING DEBUG
-					//	} // remove else after
-
-
-				break;
+					break;
 			}
 		}
 	}
@@ -1704,9 +1392,9 @@ endif;
 					$current_password_raw = $this->input->post('current_password', true);
 					$current_password = md5($current_password_raw);
 
+
 					$static_defaults_q = $this->user_model->select_static_defaults();
 					$static_defaults = array_shift($static_defaults_q->result_array());
-
 
 					if($new_password == $confirm_password && $new_password != $this->session->userdata('re_pass_curr')){	
 
@@ -3383,16 +3071,6 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 	public function add_leave_alloc($user_id_page){
 		$this->clear_apost();
 
-		// $this->form_validation->set_rules('leave_rate_type', 'Leave Rate Type','trim|required|xss_clean');
-		// $this->form_validation->set_rules('no_hrs_of_work', 'No Hrs of Work','trim|required|xss_clean');
-
-		// if($this->form_validation->run() === false){
-
-		// 	$data['error'] = validation_errors();
-		// 	$this->load->view('page', $data);
-
-		// } else {
-
 		$current_date = date("d-m-Y");
 		$timestamp_current = strtotime($current_date);
 		$yesterday_date = strtotime($current_date."-1 days");
@@ -3400,7 +3078,6 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		$personal_manual_entry = $this->input->post('personal_manual_entry', true);
 		$checked_sched = $this->input->post('sched');
 		$no_hrs_of_work = $this->input->post('no_hrs_of_work');
-		$leave_rate_type = $this->input->post('leave_rate_type');
 
 		if (isset($checked_sched)){
 			$checked_sched = implode(',', $checked_sched);
@@ -3418,7 +3095,7 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		$num_rows = $leave_alloc->num_rows();
 
 		if ($num_rows == 0){
-			$result = $this->user_model->add_leave_alloc($timestamp_current, $user_id_page, $annual_manual_entry, $personal_manual_entry, $checked_sched, $no_hrs_of_work, $timestamp_current, $leave_rate_type);	
+			$result = $this->user_model->add_leave_alloc($timestamp_current, $user_id_page, $annual_manual_entry, $personal_manual_entry, $checked_sched, $no_hrs_of_work, $timestamp_current);	
 
 			$update_success = 'User account is now updated.';
 			$this->session->set_flashdata('total_leave', $update_success);
@@ -3428,9 +3105,6 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 			$this->session->set_flashdata('total_leave', $update_success);
 			redirect('/users/account/'.$user_id_page);
 		}
-
-		// }
-		
 	}
 
 	public function update_leave_alloc($user_id_page){
@@ -3440,7 +3114,6 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		$personal_manual_entry = $this->input->post('personal_manual_entry', true);
 		$checked_sched = $this->input->post('sched');
 		$no_hrs_of_work = $this->input->post('no_hrs_of_work');
-		$leave_rate_type = $this->input->post('leave_rate_type');
 
 		$is_offshore_update = $this->input->post('is_offshore_update');
 
@@ -3467,7 +3140,7 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 			$last_personal_accumulated = $personal_accumulated + $last_personal_accumulated;
 
 			$this->user_model->update_approved_leave_to_inactive($user_id_page);
-			$result = $this->user_model->update_leave_alloc_sched($user_id_page, $annual_manual_entry, $personal_manual_entry, $checked_sched, $no_hrs_of_work, $timestamp_current, $last_annual_accumulated, $last_personal_accumulated, $leave_rate_type);
+			$result = $this->user_model->update_leave_alloc_sched($user_id_page, $annual_manual_entry, $personal_manual_entry, $checked_sched, $no_hrs_of_work, $timestamp_current, $last_annual_accumulated, $last_personal_accumulated);
 		} else {
 
 			if ($is_offshore_update == '1'){
@@ -3475,7 +3148,7 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 			}
 
 			$this->user_model->update_approved_leave_to_inactive($user_id_page);
-			$result = $this->user_model->update_leave_alloc($user_id_page, $annual_manual_entry, $personal_manual_entry, $no_hrs_of_work, $timestamp_current, $leave_rate_type);
+			$result = $this->user_model->update_leave_alloc($user_id_page, $annual_manual_entry, $personal_manual_entry, $no_hrs_of_work, $timestamp_current);
 		}
 
 		$update_success = 'User account is now updated.';
@@ -3581,9 +3254,7 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		$details = $row->details;
 		$partial_day = $row->partial_day;
 		$partial_part = $row->partial_part;
-
-		// $partial_time = $row->partial_time;
-
+		$partial_time = $row->partial_time;
 		$superv_first_name = $row->superv_first_name;
 		$superv_last_name = $row->superv_last_name;
 		$total_annual = $row->total_annual;
@@ -3613,49 +3284,43 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 
 		if ($partial_day == 1){
 
-			// $get_hrs = substr($total_days_away, 0, 1);
-			// $get_mins = substr($total_days_away, 1, 3);
+			$get_hrs = substr($total_days_away, 0, 1);
+			$get_mins = substr($total_days_away, 1, 3);
 
-			// switch ($get_mins) {
-			// 	case '.25':
-			// 		$total_days_away = $get_hrs.' hrs & 15 mins';
-			// 		break;
-			// 	case '.50':
-			// 		$total_days_away = $get_hrs.' hrs & 30 mins';
-			// 		break;
-			// 	case '.75':
-			// 		$total_days_away = $get_hrs.' hrs & 45 mins';
-			// 		break;
-			// 	default:
-			// 		$total_days_away = $get_hrs.' hrs';
-			// 		break;
-			// }
+			switch ($get_mins) {
+				case '.25':
+					$total_days_away = $get_hrs.' hrs & 15 mins';
+					break;
+				case '.50':
+					$total_days_away = $get_hrs.' hrs & 30 mins';
+					break;
+				case '.75':
+					$total_days_away = $get_hrs.' hrs & 45 mins';
+					break;
+				default:
+					$total_days_away = $get_hrs.' hrs';
+					break;
+			}
 
 
-			// $total_leave_pdf = $total_days_away.' ('.$part_of_day.', '.$partial_time.')';
-
-			$total_leave_pdf = $total_days_away;
+			$total_leave_pdf = $total_days_away.' ('.$part_of_day.', '.$partial_time.')';
 		} else {
 
 			if ($leave_type_id >= 5){
 
-				// if(!isset($no_hrs_of_work)){
-				// 	$total_leave_pdf = $total_days_away / 8 .' day(s)';
-				// } else {
-				// 	$total_leave_pdf = $total_days_away / $no_hrs_of_work.' day(s)';
-				// }
-
-				$total_leave_pdf = $total_days_away;
+				if(!isset($no_hrs_of_work)){
+					$total_leave_pdf = $total_days_away / 8 .' day(s)';
+				} else {
+					$total_leave_pdf = $total_days_away / $no_hrs_of_work.' day(s)';
+				}
 
 			} else {
 
-				// if(!isset($no_hrs_of_work)){
-				// 	$total_leave_pdf = $total_days_away / 8 .' day(s)';
-				// } else {
-				// 	$total_leave_pdf = $total_days_away / $no_hrs_of_work.' day(s)';
-				// }
-
-				$total_leave_pdf = $total_days_away;
+				if(!isset($no_hrs_of_work)){
+					$total_leave_pdf = $total_days_away / 8 .' day(s)';
+				} else {
+					$total_leave_pdf = $total_days_away / $no_hrs_of_work.' day(s)';
+				}
 				
 			}
 		}
@@ -3691,20 +3356,15 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 
 			if ($holiday_leave == 0){
 				$content .= '<span class="leave-info">'.$leave_type.' Remaining: </span>';
-				// $content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.round($total_leave / $no_hrs_of_work, 2).' days ('.$total_leave.' hrs)</span><br><br>';
-
-				$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.$total_leave.' days</span><br><br>';
-
+				$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.round($total_leave / $no_hrs_of_work, 2).' days ('.$total_leave.' hrs)</span><br><br>';
 			} else {
 
-				// $total_leave_holiday_days = round($total_leave / $no_hrs_of_work, 2);
-				// $holiday_hrs = $holiday_leave * $no_hrs_of_work;
-				// $total_leave_holiday_hrs = $total_leave;
-
-				$total_leave_holiday_days = $total_leave - $holiday_hrs;
+				$total_leave_holiday_days = round($total_leave / $no_hrs_of_work, 2);
+				$holiday_hrs = $holiday_leave * $no_hrs_of_work;
+				$total_leave_holiday_hrs = $total_leave;
 
 				$content .= '<span class="leave-info">'.$leave_type.' Remaining: </span>';
-				$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.$total_leave_holiday_days.' days</span><br><br>'; // ('.$total_leave_holiday_hrs.' hrs)</span><br><br>
+				$content .= '<span class="leave-info-data" style="position: absolute; left: 400px;">'.$total_leave_holiday_days.' days ('.$total_leave_holiday_hrs.' hrs)</span><br><br>';
 			}
 		}
 
@@ -3889,14 +3549,14 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 
 		// var_dump($leave_alloc_all);
 
-		// $static_defaults = $this->user_model->select_static_defaults();
-		// $static_defaults = $static_defaults->result();	
+		$static_defaults = $this->user_model->select_static_defaults();
+		$static_defaults = $static_defaults->result();	
 
-		// $annual_default_points = $static_defaults[0]->annual_leave_daily_rate;
-		// $personal_default_points = $static_defaults[0]->personal_leave_daily_rate;
+		$annual_default_points = $static_defaults[0]->annual_leave_daily_rate;
+		$personal_default_points = $static_defaults[0]->personal_leave_daily_rate;
 
-		// $vacation_default_points = $static_defaults[0]->vacation_leave_daily_rate;
-		// $sick_default_points = $static_defaults[0]->sick_leave_daily_rate;
+		$vacation_default_points = $static_defaults[0]->vacation_leave_daily_rate;
+		$sick_default_points = $static_defaults[0]->sick_leave_daily_rate;
 
 		foreach ($leave_alloc_all as $row) {
 
@@ -3907,13 +3567,10 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 			$last_personal_accumulated = $row->personal_accumulated;
 			$sched_work = $row->sched_of_work;
 			$no_hrs_of_work = $row->no_hrs_of_work;
-			$leave_rate_type = $row->leave_rate_type;
 			$date_log = date('Y-m-d', $row->date_log);
 			$today = date('Y-m-d');
 			$day_yesterday = date('Y-m-d',strtotime("-1 days"));
 			//$day_yesterday = date('Y-m-d',strtotime("2017-06-14"));
-
-			$last_week_update_local = $row->last_week_update_local;
 			
 			$annual_consumed = $this->user_model->get_total_leave_annual($user_id);
 			$annual_consumed = $annual_consumed->row();
@@ -3921,599 +3578,116 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 			$personal_consumed = $this->user_model->get_total_leave_personal($user_id);
 			$personal_consumed = $personal_consumed->row();
 
-			$q_annual_holidays = $this->user_model->get_annual_holidays($user_id);
-			$annual_holidays = $q_annual_holidays->row();
+			$q_annual_ph_holidays = $this->user_model->get_annual_ph_holidays($user_id);
+			$annual_ph_holidays = $q_annual_ph_holidays->row();
 
-			$q_sick_holidays = $this->user_model->get_sick_holidays($user_id);
-			$sick_holidays = $q_sick_holidays->row();	
+			$q_sick_ph_holidays = $this->user_model->get_sick_ph_holidays($user_id);
+			$sick_ph_holidays = $q_sick_ph_holidays->row();	
 
-			$q_fetch_leave_total_rates = $this->user_model->fetch_leave_total_rates($leave_rate_type);
-			$fetch_leave_total_rates = $q_fetch_leave_total_rates->result();	
+			if (strtotime($date_log) <= strtotime($day_yesterday)){
+				$days = (strtotime($date_log) - strtotime($day_yesterday)) / (60 * 60 * 24);
+			} else {
+				$days = 0;
+			}
 
-			$q_count_sched_of_work = $this->user_model->count_sched_of_work($user_id);
-			$count_sched_of_work = $q_count_sched_of_work->result();	
+			$date_diff_converted = abs($days);
+			$counted_days = 0;
 
-			// $annual_default_points = $static_defaults[0]->annual_leave_daily_rate;
+			//echo '<script>alert("'.$date_diff_converted.'");</script>';
 
-			// if (strtotime($date_log) <= strtotime($day_yesterday)){
-			// 	$days = (strtotime($date_log) - strtotime($day_yesterday)) / (60 * 60 * 24);
-			// } else {
-			// 	$days = 0;
-			// }
+			for ($i=0; $i <= $date_diff_converted; $i++) { 				
+				$day_in_week = date('w', strtotime($date_log));
+				$check_sched_day = strpos($sched_work, $day_in_week);
 
-			// $date_diff_converted = abs($days);
-			// $counted_days = 0;
-
-			// //echo '<script>alert("'.$date_diff_converted.'");</script>';
-
-			// for ($i=0; $i <= $date_diff_converted; $i++) { 				
-			// 	$day_in_week = date('w', strtotime($date_log));
-			// 	$check_sched_day = strpos($sched_work, $day_in_week);
-
-			// 	if ($check_sched_day !== false && $date_diff_converted != 0){					
-			// 		$counted_days = $counted_days + 1;								
-			// 	}
-			// 	$date_log = date('Y-m-d', strtotime('+1 day', strtotime($date_log)));	
-			// }
+				if ($check_sched_day !== false && $date_diff_converted != 0){					
+					$counted_days = $counted_days + 1;								
+				}
+				$date_log = date('Y-m-d', strtotime('+1 day', strtotime($date_log)));	
+			}
 
 			//echo '<script>alert("'.$counted_days.'");</script>';
 
 			$fetch_user = $this->user_model->fetch_user($user_id);
 			$data['user'] = $fetch_user->result();
 
-			if( $data['user'][0]->is_offshore == 0){	
+			if( $data['user'][0]->is_offshore == 0){		
+				//echo '<script>alert("local");</script>';
 
-				$date_today = date('Y-m-d');
-				$date = date_create($date_today);
-				date_modify($date, '-1 week');
-				$last_week = date_format($date,"W");
-				$current_week = date('W');
-				$work_sched_count = $count_sched_of_work[0]->total;
+				$annual_ph_holidays_count = $annual_ph_holidays->ph_holidays * $no_hrs_of_work;
+				$sick_ph_holidays_count = $sick_ph_holidays->ph_holidays * $no_hrs_of_work;
 
-				// $current_week = '1';
+				$starting_annual_hrs = $annual_manual_entry * $no_hrs_of_work;
+				$starting_personal_hrs = $personal_manual_entry * $no_hrs_of_work;
 
-				if ($leave_rate_type == 1){
+				$annual_accumulated = $counted_days * $annual_default_points;
+				$personal_accumulated = $counted_days * $personal_default_points;
+				
+				$total_annual = $annual_accumulated + $starting_annual_hrs;
+				$total_personal = $personal_accumulated + $starting_personal_hrs;
 
-					if ($last_week_update_local == 0){
+				$total_annual_final = $total_annual - $annual_consumed->used_annual + $annual_ph_holidays_count;
+				$total_personal_final = $total_personal - $personal_consumed->used_personal + $sick_ph_holidays_count;
 
-						$annual_holidays_count = $annual_holidays->holidays;
-						$sick_holidays_count = $sick_holidays->holidays;
-
-						$annual_leave_rate = $fetch_leave_total_rates[0]->annual_leave / 52;
-						$personal_leave_rate = $fetch_leave_total_rates[0]->personal_leave / 52;
-
-						$annual_leave_rate_rounded = round($annual_leave_rate, 6);
-						$personal_leave_rate_rounded = round($personal_leave_rate, 6);
-
-						switch ($work_sched_count) {
-							case '1':
-								
-								$percentage = 20;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '2':
-								
-								$percentage = 40;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '3':
-								
-								$percentage = 60;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '4':
-								
-								$percentage = 80;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '5':
-								
-								$percentage = 100;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							default:
-
-								$annual_leave_rate_percentage = 0;
-								$personal_leave_rate_percentage = 0;
-
-								break;
-						}
-
-						$total_annual = $annual_leave_rate_percentage + $annual_manual_entry;
-						$total_personal = $personal_leave_rate_percentage + $personal_manual_entry;
-
-						$total_annual_final = $total_annual - $annual_consumed->used_annual + $annual_holidays_count;
-						$total_personal_final = $total_personal - $personal_consumed->used_personal + $sick_holidays_count;
-
-						// $total_annual_converted = $total_annual_final * $no_hrs_of_work;
-						// $total_personal_converted = $total_personal_final * $no_hrs_of_work;
-
-						$this->user_model->update_current_week($current_week, $user_id);
-						$this->user_model->update_earned_points($annual_leave_rate_percentage, $personal_leave_rate_percentage, $user_id);
-						$this->user_model->update_total_leave(round($total_annual_final, 2), round($total_personal_final, 2), $user_id);
-
-					} 
-
-					if ($last_week_update_local != 0 && $last_week_update_local != 52 && $last_week_update_local < $current_week) {
-
-						$annual_holidays_count = $annual_holidays->holidays;
-						$sick_holidays_count = $sick_holidays->holidays;
-
-						$annual_leave_rate = $fetch_leave_total_rates[0]->annual_leave / 52;
-						$personal_leave_rate = $fetch_leave_total_rates[0]->personal_leave / 52;
-
-						$annual_leave_rate_rounded = round($annual_leave_rate, 6);
-						$personal_leave_rate_rounded = round($personal_leave_rate, 6);
-
-						switch ($work_sched_count) {
-							case '1':
-								
-								$percentage = 20;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '2':
-								
-								$percentage = 40;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '3':
-								
-								$percentage = 60;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '4':
-								
-								$percentage = 80;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '5':
-								
-								$percentage = 100;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							default:
-
-								$annual_leave_rate_percentage = 0;
-								$personal_leave_rate_percentage = 0;
-
-								break;
-						}
-
-						$total_annual_earnings = $annual_leave_rate_percentage + $last_annual_accumulated;
-						$total_personal_earnings = $personal_leave_rate_percentage + $last_personal_accumulated;
-
-						$total_annual = $total_annual_earnings + $annual_manual_entry;
-						$total_personal = $total_personal_earnings + $personal_manual_entry;
-
-						$total_annual_final = $total_annual - $annual_consumed->used_annual + $annual_holidays_count;
-						$total_personal_final = $total_personal - $personal_consumed->used_personal + $sick_holidays_count;
-
-						$this->user_model->update_current_week($current_week, $user_id);
-						$this->user_model->update_earned_points($total_annual_earnings, $total_personal_earnings, $user_id);
-						$this->user_model->update_total_leave(round($total_annual_final, 2), round($total_personal_final, 2), $user_id);
-
-					}
-
-					if ($current_week == 1 && $last_week_update_local == 52){
-
-						$annual_holidays_count = $annual_holidays->holidays;
-						$sick_holidays_count = $sick_holidays->holidays;
-
-						$annual_leave_rate = $fetch_leave_total_rates[0]->annual_leave / 52;
-						$personal_leave_rate = $fetch_leave_total_rates[0]->personal_leave / 52;
-
-						$annual_leave_rate_rounded = round($annual_leave_rate, 6);
-						$personal_leave_rate_rounded = round($personal_leave_rate, 6);
-
-						switch ($work_sched_count) {
-							case '1':
-								
-								$percentage = 20;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '2':
-								
-								$percentage = 40;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '3':
-								
-								$percentage = 60;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '4':
-								
-								$percentage = 80;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '5':
-								
-								$percentage = 100;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							default:
-
-								$annual_leave_rate_percentage = 0;
-								$personal_leave_rate_percentage = 0;
-
-								break;
-						}
-
-						$total_annual_earnings = $annual_leave_rate_percentage + $last_annual_accumulated;
-						$total_personal_earnings = $personal_leave_rate_percentage + $last_personal_accumulated;
-
-						$total_annual = $total_annual_earnings + $annual_manual_entry;
-						$total_personal = $total_personal_earnings + $personal_manual_entry;
-
-						$total_annual_final = $total_annual - $annual_consumed->used_annual + $annual_holidays_count;
-						$total_personal_final = $total_personal - $personal_consumed->used_personal + $sick_holidays_count;
-
-						$this->user_model->update_current_week($current_week, $user_id);
-						$this->user_model->update_earned_points($total_annual_earnings, $total_personal_earnings, $user_id);
-						$this->user_model->update_total_leave(round($total_annual_final, 2), round($total_personal_final, 2), $user_id);
-
-					}
-
-					
-					if ($last_week_update_local == $current_week){
-
-						$annual_holidays_count = $annual_holidays->holidays;
-						$sick_holidays_count = $sick_holidays->holidays;
-
-						$annual_leave_plus_rate = $annual_manual_entry + $last_annual_accumulated;
-						$personal_leave_plus_rate = $personal_manual_entry  + $last_personal_accumulated;
-
-						$total_annual_final = $annual_leave_plus_rate - $annual_consumed->used_annual + $annual_holidays_count;
-						$total_personal_final = $personal_leave_plus_rate - $personal_consumed->used_personal + $sick_holidays_count;
-
-						$this->user_model->update_total_leave(round($total_annual_final, 2), round($total_personal_final, 2), $user_id);
-
-					}
-				}
-
-				if ($leave_rate_type == 2){
-
-					if ($last_week_update_local == 0){
-
-						$annual_holidays_count = $annual_holidays->holidays;
-						$sick_holidays_count = $sick_holidays->holidays;
-
-						$annual_leave_rate = $fetch_leave_total_rates[0]->annual_leave / 52;
-						$personal_leave_rate = $fetch_leave_total_rates[0]->personal_leave / 52;
-
-						$annual_leave_rate_rounded = round($annual_leave_rate, 6);
-						$personal_leave_rate_rounded = round($personal_leave_rate, 6);
-
-						switch ($work_sched_count) {
-							case '1':
-								
-								$percentage = 20;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '2':
-								
-								$percentage = 40;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '3':
-								
-								$percentage = 60;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '4':
-								
-								$percentage = 80;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '5':
-								
-								$percentage = 100;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							default:
-
-								$annual_leave_rate_percentage = 0;
-								$personal_leave_rate_percentage = 0;
-
-								break;
-						}
-
-						$total_annual = $annual_leave_rate_percentage + $annual_manual_entry;
-						$total_personal = $personal_leave_rate_percentage + $personal_manual_entry;
-
-						$total_annual_final = $total_annual - $annual_consumed->used_annual + $annual_holidays_count;
-						$total_personal_final = $total_personal - $personal_consumed->used_personal + $sick_holidays_count;
-
-						// $total_annual_converted = $total_annual_final * $no_hrs_of_work;
-						// $total_personal_converted = $total_personal_final * $no_hrs_of_work;
-
-						$this->user_model->update_current_week($current_week, $user_id);
-						$this->user_model->update_earned_points($annual_leave_rate_percentage, $personal_leave_rate_percentage, $user_id);
-						$this->user_model->update_total_leave(round($total_annual_final, 2), round($total_personal_final, 2), $user_id);
-
-					} 
-
-					if ($last_week_update_local != 0 && $last_week_update_local != 52 && $last_week_update_local < $current_week) {
-
-						$annual_holidays_count = $annual_holidays->holidays;
-						$sick_holidays_count = $sick_holidays->holidays;
-
-						$annual_leave_rate = $fetch_leave_total_rates[0]->annual_leave / 52;
-						$personal_leave_rate = $fetch_leave_total_rates[0]->personal_leave / 52;
-
-						$annual_leave_rate_rounded = round($annual_leave_rate, 6);
-						$personal_leave_rate_rounded = round($personal_leave_rate, 6);
-
-						switch ($work_sched_count) {
-							case '1':
-								
-								$percentage = 20;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '2':
-								
-								$percentage = 40;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '3':
-								
-								$percentage = 60;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '4':
-								
-								$percentage = 80;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '5':
-								
-								$percentage = 100;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							default:
-
-								$annual_leave_rate_percentage = 0;
-								$personal_leave_rate_percentage = 0;
-
-								break;
-						}
-
-						$total_annual_earnings = $annual_leave_rate_percentage + $last_annual_accumulated;
-						$total_personal_earnings = $personal_leave_rate_percentage + $last_personal_accumulated;
-
-						$total_annual = $total_annual_earnings + $annual_manual_entry;
-						$total_personal = $total_personal_earnings + $personal_manual_entry;
-
-						$total_annual_final = $total_annual - $annual_consumed->used_annual + $annual_holidays_count;
-						$total_personal_final = $total_personal - $personal_consumed->used_personal + $sick_holidays_count;
-
-						$this->user_model->update_current_week($current_week, $user_id);
-						$this->user_model->update_earned_points($total_annual_earnings, $total_personal_earnings, $user_id);
-						$this->user_model->update_total_leave(round($total_annual_final, 2), round($total_personal_final, 2), $user_id);
-
-					}
-
-					if ($current_week == 1 && $last_week_update_local == 52){
-
-						$annual_holidays_count = $annual_holidays->holidays;
-						$sick_holidays_count = $sick_holidays->holidays;
-
-						$annual_leave_rate = $fetch_leave_total_rates[0]->annual_leave / 52;
-						$personal_leave_rate = $fetch_leave_total_rates[0]->personal_leave / 52;
-
-						$annual_leave_rate_rounded = round($annual_leave_rate, 6);
-						$personal_leave_rate_rounded = round($personal_leave_rate, 6);
-
-						switch ($work_sched_count) {
-							case '1':
-								
-								$percentage = 20;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '2':
-								
-								$percentage = 40;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '3':
-								
-								$percentage = 60;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '4':
-								
-								$percentage = 80;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							case '5':
-								
-								$percentage = 100;
-								$annual_leave_rate_percentage = ($percentage / 100) * $annual_leave_rate_rounded;
-								$personal_leave_rate_percentage = ($percentage / 100) * $personal_leave_rate_rounded;
-
-								break;
-							default:
-
-								$annual_leave_rate_percentage = 0;
-								$personal_leave_rate_percentage = 0;
-
-								break;
-						}
-
-						$total_annual_earnings = $annual_leave_rate_percentage + $last_annual_accumulated;
-						$total_personal_earnings = $personal_leave_rate_percentage + $last_personal_accumulated;
-
-						$total_annual = $total_annual_earnings + $annual_manual_entry;
-						$total_personal = $total_personal_earnings + $personal_manual_entry;
-
-						$total_annual_final = $total_annual - $annual_consumed->used_annual + $annual_holidays_count;
-						$total_personal_final = $total_personal - $personal_consumed->used_personal + $sick_holidays_count;
-
-						$this->user_model->update_current_week($current_week, $user_id);
-						$this->user_model->update_earned_points($total_annual_earnings, $total_personal_earnings, $user_id);
-						$this->user_model->update_total_leave(round($total_annual_final, 2), round($total_personal_final, 2), $user_id);
-
-					}
-
-					if ($last_week_update_local == $current_week){
-
-						$annual_holidays_count = $annual_holidays->holidays;
-						$sick_holidays_count = $sick_holidays->holidays;
-
-						$annual_leave_plus_rate = $annual_manual_entry + $last_annual_accumulated;
-						$personal_leave_plus_rate = $personal_manual_entry  + $last_personal_accumulated;
-						
-						$total_annual_final = $annual_leave_plus_rate - $annual_consumed->used_annual + $annual_holidays_count;
-						$total_personal_final = $personal_leave_plus_rate - $personal_consumed->used_personal + $sick_holidays_count;
-						$this->user_model->update_total_leave(round($total_annual_final, 2), round($total_personal_final, 2), $user_id);
-
-					}
-
-				}
+				$this->user_model->update_earned_points($annual_accumulated, $personal_accumulated, $user_id);
+				$this->user_model->update_total_leave(round($total_annual_final, 2), round($total_personal_final, 2), $user_id);
 
 			} else {
 				// echo '<script>alert("offshore");</script>';
 
-				if ($leave_rate_type == 3){
+				$last_month_update_offshore = $row->last_month_update_offshore;
+				$annual_earned_offshore = $row->annual_earned_offshore;			
+				$personal_earned_offshore = $row->personal_earned_offshore;
 
-					$last_month_update_offshore = $row->last_month_update_offshore;
-					$annual_earned_offshore = $row->annual_earned_offshore;			
-					$personal_earned_offshore = $row->personal_earned_offshore;
+				$annual_ph_holidays_count = $annual_ph_holidays->ph_holidays * $no_hrs_of_work;
+				$sick_ph_holidays_count = $sick_ph_holidays->ph_holidays * $no_hrs_of_work;
 
-					$annual_holidays_count = $annual_holidays->holidays;
-					$sick_holidays_count = $sick_holidays->holidays;
+				// print_r($user_id.'|'.$annual_ph_holidays->ph_holidays.'<br><br>');
 
-					$annual_leave_rate = round($fetch_leave_total_rates[0]->annual_leave / 12, '2');
-					$personal_leave_rate = round($fetch_leave_total_rates[0]->personal_leave / 12, '2');
+				// $date_today = date('2018-07-01');
+				$date_today = date('Y-m-d');
+				$date = date_create($date_today);
+				date_modify($date, '-1 month');
+				$last_month = date_format($date,"m");
 
-					// print_r($user_id.'|'.$annual_holidays->ph_holidays.'<br><br>');
+				$current_month = date('m');
+				// $current_month = '10';
 
-					// $date_today = date('2020-03-01');
-					$date_today = date('Y-m-d');
-					$date = date_create($date_today);
-					date_modify($date, '-1 month');
-					$last_month = date_format($date,"m");
+				if (ltrim($current_month, '0') != $last_month_update_offshore){
+					if ($last_month < $current_month){
+						$annual_earned_offshore = $annual_earned_offshore + $no_hrs_of_work;
+						$personal_earned_offshore = $personal_earned_offshore + $no_hrs_of_work * 0.58;
 
-					$current_month = date('m');
-					// $current_month = '1';
+						$total_annual_points = ($annual_manual_entry * $no_hrs_of_work) + $annual_earned_offshore + $annual_ph_holidays_count;
+						$total_annual = $total_annual_points - $annual_consumed->used_annual;
 
-					if ($last_month_update_offshore == 0){
-						$total_annual_points = $annual_manual_entry + $annual_earned_offshore;
-						$total_annual = $total_annual_points - $annual_consumed->used_annual + $annual_holidays_count;
-
-						$total_personal_points = $personal_manual_entry + $personal_earned_offshore;
-						$total_personal = $total_personal_points - $personal_consumed->used_personal + $sick_holidays_count;
+						$total_personal_points = ($personal_manual_entry * $no_hrs_of_work) + $personal_earned_offshore + $sick_ph_holidays_count;
+						$total_personal = $total_personal_points - $personal_consumed->used_personal;
 
 						if (!empty($sched_work)){
 							$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
-							$this->user_model->update_earned_offshore(0, 0, $current_month, $user_id);
+							$this->user_model->update_earned_offshore($annual_earned_offshore, $personal_earned_offshore, $current_month, $user_id);
 						}
 					} else {
+						$total_annual_points = ($annual_manual_entry * $no_hrs_of_work) + $annual_earned_offshore + $annual_ph_holidays_count;
+						$total_annual = $total_annual_points - $annual_consumed->used_annual;
 
-						if ($current_month == '01'){
-							if (!empty($sched_work)){
-								$this->user_model->update_starting_leave(0, 0, $user_id);
-								$this->user_model->update_total_leave($annual_leave_rate, $personal_leave_rate, $user_id);
-								$this->user_model->update_earned_offshore($annual_leave_rate, $personal_leave_rate, $current_month, $user_id);
-							}
+						$total_personal_points = ($personal_manual_entry * $no_hrs_of_work) + $personal_earned_offshore + $sick_ph_holidays_count;
+						$total_personal = $total_personal_points - $personal_consumed->used_personal;
+
+						if (!empty($sched_work)){
+							$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
 						}
+					}
+				} else {
+						
+					$total_annual_points = ($annual_manual_entry * $no_hrs_of_work) + $annual_earned_offshore + $annual_ph_holidays_count;
+					$total_annual = $total_annual_points - $annual_consumed->used_annual;
 
-						if (ltrim($current_month, '0') != $last_month_update_offshore){
-							if ($last_month < $current_month){
-								$annual_earned_offshore = $annual_earned_offshore + $annual_leave_rate;
-								$personal_earned_offshore = $personal_earned_offshore + $personal_leave_rate;
+					$total_personal_points = ($personal_manual_entry * $no_hrs_of_work) + $personal_earned_offshore + $sick_ph_holidays_count;
+					$total_personal = $total_personal_points - $personal_consumed->used_personal;
 
-								$total_annual_points = $annual_manual_entry + $annual_earned_offshore;
-								$total_annual = $total_annual_points - $annual_consumed->used_annual + $annual_holidays_count;
-
-								$total_personal_points = $personal_manual_entry + $personal_earned_offshore;
-								$total_personal = $total_personal_points - $personal_consumed->used_personal + $sick_holidays_count;
-
-								if (!empty($sched_work)){
-									$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
-									$this->user_model->update_earned_offshore($annual_earned_offshore, $personal_earned_offshore, $current_month, $user_id);
-								}
-							} else {
-								$total_annual_points = $annual_manual_entry + $annual_earned_offshore;
-								$total_annual = $total_annual_points - $annual_consumed->used_annual + $annual_holidays_count;
-
-								$total_personal_points = $personal_manual_entry + $personal_earned_offshore;
-								$total_personal = $total_personal_points - $personal_consumed->used_personal + $sick_holidays_count;
-
-								if (!empty($sched_work)){
-									$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
-								}
-							}
-						} else {
-	
-							$total_annual_points = $annual_manual_entry + $annual_earned_offshore;
-							$total_annual = $total_annual_points - $annual_consumed->used_annual + $annual_holidays_count;
-
-							$total_personal_points = $personal_manual_entry + $personal_earned_offshore;
-							$total_personal = $total_personal_points - $personal_consumed->used_personal + $sick_holidays_count;
-
-							if (!empty($sched_work)){
-								$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
-							}
-						}
+					if (!empty($sched_work)){
+						$this->user_model->update_total_leave($total_annual, $total_personal, $user_id);
 					}
 				}
 			}
@@ -4527,6 +3701,8 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 		$sl = $_POST['sl'];
 		$pr = $_POST['pr'];
 		$ind = $_POST['ind'];
+
+		echo $ind;
 
 		if($access == "0" ){
 			$this->user_model->insert_access($access,$user_id);
@@ -4554,23 +3730,6 @@ $date_end = date("l jS \of F h:iA",$reoccur_ave['date_range_b']);
 			}
 		}
 		
-	}
-
-	public function save_app_travel_access(){
-		$user_id = $_POST['user_id'];
-		$has_travel_access = $_POST['has_travel_access'];
-		$plate_no = $_POST['plate_no'];
-
-		if($has_travel_access == 1){
-			$taccess_query = $this->user_model->fetch_app_travel_access($user_id);
-			if($taccess_query->num_rows == 1){
-				$this->user_model->update_app_travel_access($user_id,$plate_no);
-			}else{
-				$this->user_model->insert_app_travel_access($user_id,$plate_no);
-			}
-		}else{
-			$this->user_model->remove_app_travel_access($user_id);
-		}
 		
 	}
 

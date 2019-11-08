@@ -1709,8 +1709,17 @@
 
 										<input placeholder="Number of Days" name="days_lead_reminder" autocomplete="off" class="form-control" value="<?php echo $wa_emp_assnmt['reminder_lead_days']; ?>"> 
 										<span class="input-group-addon"> Default <?php echo $static_defaults[0]->client_supply_reminder_dys; ?> Days </span> 
+									</div>
+
+
+									<div class="input-group m-bottom-10">
+										<span class="input-group-addon"><i class="fa fa-envelop"></i> CC Email</span>
+										<input type="email" placeholder="cc email" name="cc_email" autocomplete="off" class="form-control" value="<?php echo $wa_emp_assnmt['cc_email']; ?>">  
 										<span class="input-group-btn"><input type="submit" value="Save" class="btn btn-primary"></span>
 									</div>
+
+
+
 								</form>
 
 								<p><hr style="margin: 0px; padding:5px 0px 8px;"></p>
@@ -1752,8 +1761,18 @@
 
 										<input placeholder="Number of Days" name="days_lead_reminder" autocomplete="off" class="form-control" value="<?php echo $nsw_emp_assnmt['reminder_lead_days']; ?>"> 
 										<span class="input-group-addon"> Default <?php echo $static_defaults[0]->client_supply_reminder_dys; ?> Days</span> 
+									</div>
+
+
+
+									<div class="input-group m-bottom-10">
+										<span class="input-group-addon"><i class="fa fa-envelop"></i> CC Email</span>
+										<input type="email" placeholder="cc email" name="cc_email" autocomplete="off" class="form-control" value="<?php echo $nsw_emp_assnmt['cc_email']; ?>">  
 										<span class="input-group-btn"><input type="submit" value="Save" class="btn btn-primary"></span>
 									</div>
+
+
+
 								</form>
 
  
@@ -1803,7 +1822,7 @@
 										<span class="input-group-addon"><i class="fa fa-user"></i> Company </span>
 										<select class="form-control" id="company_brand_name" name="company_brand_name"  tabindex="-1">
 											<option value="" disabled="" selected="1"> Select</option>							
-											<?php echo $this->admin->get_brands('select'); ?>
+											<?php echo $this->admin->get_client_companies(1); ?>
 										</select>
 									</div>
 									<div class="input-group m-bottom-10">
@@ -1846,7 +1865,7 @@
 
 
 								<?php foreach ($assigned_warehouse as $key => $assgn_wh_data) {
-									echo '<p> <em class="fa fa-chevron-circle-right"></em> <strong>'.$assgn_wh_data->brand_name.'</strong> - '.$assgn_wh_data->company_name.', '.$assgn_wh_data->location.' <a id="xxxx" class="btn btn-xs btn-danger pull-right" href="?delcs='.$assgn_wh_data->client_storage_id.'"><em class="fa fa-trash-o"></em></a></p>';
+									echo '<p> <em class="fa fa-chevron-circle-right"></em> <strong>'.$assgn_wh_data->client_name.'</strong> - '.$assgn_wh_data->company_name.', '.$assgn_wh_data->location.' <a id="xxxx" class="btn btn-xs btn-danger pull-right" href="?delcs='.$assgn_wh_data->client_storage_id.'"><em class="fa fa-trash-o"></em></a></p>';
 								} ?>
 
 
