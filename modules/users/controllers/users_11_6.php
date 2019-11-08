@@ -347,7 +347,6 @@ endif;
 		$labour_schedule = $_POST['labour_schedule'];
 		$company_project = $_POST['company_project'];
 		$shopping_center = $_POST['shopping_center'];
-		$client_supply = $_POST['client_supply'];
 
 		$site_labour = $_POST['site_labour'];
 		$site_labour_app = $_POST['site_labour_app'];
@@ -362,11 +361,10 @@ endif;
 		$role_raw = $_POST['role'];
 		$role_arr = explode('|',$role_raw);
 		$role_id = $role_arr[0];
-		$incident_report = $_POST['incident_report_access'];
 
 		//echo "$user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users";
 
-		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$client_supply,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access,$purchase_order_access, $progress_report_set, $onboarding_set,$incident_report);
+		$this->user_model->update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access,$purchase_order_access, $progress_report_set, $onboarding_set);
 		$this->session->set_flashdata('user_access', 'User Access is now updated.');
 
 
@@ -1271,98 +1269,6 @@ endif;
  
 
 
-//if($userdata->user_id == 2):
-// client supply
-					$check_user_supply_q = $this->user_model->check_for_user_supply($userdata->user_id);
-					if ($check_user_supply_q->num_rows === 1) {
-
-
-							$check_user_supply = array_shift($check_user_supply_q->result_array());
-
-							$user_general_email = $check_user_supply['general_email'];
-							$reminder_lead_days = $check_user_supply['reminder_lead_days'];
-
-
-
-						$supply_list = '';
-						$date_a = date("d/m/Y");
-
-
-
-						$date_b_name = date('D', strtotime("today +$reminder_lead_days days"));
-
-
-						if($date_b_name == 'SUN'){
-
-							$reminder_lead_days = $check_user_supply['reminder_lead_days']-2;
-							$date_b = date('d/m/Y', strtotime("today +$reminder_lead_days days"));
-
-						}elseif($date_b_name == 'SAT'){
-
-							$reminder_lead_days = $check_user_supply['reminder_lead_days']-1;
-							$date_b = date('d/m/Y', strtotime("today +$reminder_lead_days days"));
-
-						}else{
-							
-							$date_b = date('d/m/Y', strtotime("today +$reminder_lead_days days"));
-						}
-
-
-						$supply_for_email_q = $this->user_model->supply_for_email($userdata->user_focus_company_id,$date_a,$date_b);
-
-						if ($supply_for_email_q->num_rows > 0) {
-
-							foreach ($supply_for_email_q->result() as $supply){
-
-								$supply_list .= '<p><strong>'.ucwords($supply->supply_name).'</strong>';
-								$supply_list .= '<br />Delivery To Site Date: '.$supply->delivery_date.'';
-								$supply_list .= '<br />Warehouse: '.$supply->warehouse.'';
-								$supply_list .= '<br /></p>';
-
-								$this->user_model->set_reminded_supply($supply->client_supply_id,$date_a);
-
-							}
-
-
-
-
-
-							$mail->setFrom('noreply@focusshopfit.com.au', 'Sojourn Client Supply');
-						// remove user ID here for testing only  /*  ( && $userdata->user_id == 2 ) ||  ( $has_archvie_access == 1 && $userdata->user_id == 48 ) */ 
-
-							$content = '';
-
-
-
-							$mail->Subject = 'Client Supply';
- 
-
-							$mail->addAddress($user_general_email);
-
-							$content = '<p>Please be advised that there are suppies that needs to be delivered, please see the following below.</p>'.$supply_list;
-
-							$mail->Body = $content.'<br /><br />Sent via Sojourn auto-email service.<br />Please log-in to Sojourn and check the client supplies as per details above.<br /><br />&copy; FSF Group '.date('Y').'</p>';
-
-							$mail->send();
-
-
-
-
-
-						}
-					}
-// client supply
-//endif;
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1613,10 +1519,7 @@ endif;
 
 					//	else{ // remove else after
 							// HIDE THIS DURING DEBUG
-							//if($userdata->user_id != 2){ 
 							redirect('', 'refresh'); 
-					//	}
-
 							// HIDE THIS DURING DEBUG
 					//	} // remove else after
 

@@ -736,6 +736,43 @@ $('#dataTable_noCustom_dnotes').dataTable({
         "aoColumnDefs": [{ "bVisible": false, "aTargets":[0] }]
 });
 
+
+
+
+
+$('#dataTable_client_supply').dataTable({
+    "order": [[ 0, "asc" ]],
+    "iDisplayLength": 20,
+    "aLengthMenu": [[20, 30, 40, 50, -1], [20, 30, 40, 50, "All"]],   
+        "aoColumnDefs": [{ "bVisible": false, "aTargets":[0] },{"targets": 5,"orderable": false},{"targets": 6,"orderable": false},{ "width": "20%", "targets": 3 },{ "width": "7%", "targets": 5 },{ "width": "35%", "targets": 4 },{ "width": "3%", "targets": 6 },{ "width": "5%", "targets": 1 },{ "width": "25%", "targets": 2 }]
+});
+
+
+ 
+function client_supply_tble(valSelect){
+   //alert('test');
+    var table = $('#dataTable_client_supply').DataTable();
+    var sort = valSelect;
+
+
+    if(sort == 1){
+        table.order( [ 0, 'asc' ] ).draw();
+    }
+
+    if(sort == 2){
+        table.order( [ 0, 'desc' ] ).draw();
+    }
+
+}
+
+
+
+
+
+
+
+
+
 var table = $('#dataTable_development').dataTable();
 table.fnFilter('Outstanding','3');
 

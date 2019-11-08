@@ -1454,16 +1454,16 @@
 							<?php endif; ?>
 
 
-							<?php $bulletin_board_set = $user_access_arr['11'];  ?>
+							<?php $dashboard_access_set = $user_access_arr['3'];  ?>
 
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Bulletin Board</label>											 
+								<label class="col-sm-3 control-label m-top-5">Dashboard</label>											 
 								<div class="col-sm-9">										
-									<div class="bulletin_board">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($bulletin_board_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($bulletin_board_set == 2 ? 'checked="true"' : ''); ?>>
+									<div class="dashboard_access">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($dashboard_access_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($dashboard_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
-									<input type="hidden" class="" id="bulletin_board" name="bulletin_board" value="<?php echo $bulletin_board_set; ?>">
+									<input type="hidden" class="" id="dashboard_access" name="dashboard_access" value="<?php echo $dashboard_access_set; ?>">
 								</div>
 							</div>
 
@@ -1480,119 +1480,6 @@
 								</div>
 							</div>
 
-<!-- For Company Project -->
-
-							<?php $company_project_set = $user_access_arr['15'];  ?>
-							
-							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-4 control-label m-top-5">Company Project</label>											 
-								<div class="col-sm-8">										
-									<div class="company_project">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Enabled" <?php echo ($company_project_set >= 1 ? 'checked="true"' : ''); ?>>
-									</div>
-									<input type="hidden" class="" id="company_project" name="company_project" value="<?php echo $company_project_set; ?>">
-								</div>
-							</div>
-
-<!-- For Company Project -->
-
-							<?php $dashboard_access_set = $user_access_arr['3'];  ?>
-
-							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Dashboard</label>											 
-								<div class="col-sm-9">										
-									<div class="dashboard_access">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($dashboard_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($dashboard_access_set == 2 ? 'checked="true"' : ''); ?>>
-									</div>
-									<input type="hidden" class="" id="dashboard_access" name="dashboard_access" value="<?php echo $dashboard_access_set; ?>">
-								</div>
-							</div>
-
-							<?php $incident_report_access_set = $user_access_arr['26'];  ?>
-
-							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Incident Report</label>											 
-								<div class="col-sm-9">										
-									<div class="incident_report_access">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($incident_report_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($incident_report_access_set == 2 ? 'checked="true"' : ''); ?>>
-									</div>
-									<input type="hidden" class="" id="incident_report_access" name="incident_report_access" value="<?php echo $incident_report_access_set; ?>">
-								</div>
-							</div>
-
-							<?php $invoice_access_set = $user_access_arr['8'];  ?>
-
-							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Invoice</label>											 
-								<div class="col-sm-9">										
-									<div class="invoice_access">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($invoice_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($invoice_access_set == 2 ? 'checked="true"' : ''); ?>>
-									</div>
-									<input type="hidden" class="" id="invoice_access" name="invoice_access" value="<?php echo $invoice_access_set; ?>">
-								</div>
-							</div>
-
-							<?php $job_date_access = $user_access_arr['20'];  ?> 
-							
-							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-4 control-label m-top-5">Job Date</label>											 
-								<div class="col-sm-8">										
-									<div class="job_date_access">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Control" <?php echo ($job_date_access == 1 ? 'checked="true"' : ''); ?>>
-									</div>
-									<input type="hidden" class="" id="job_date_access" name="job_date_access" value="<?php echo $job_date_access; ?>">
-								</div>
-							</div>
-
-							<?php $labour_schedule_set = $user_access_arr['14'];  ?>
-							
-							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Labour Schedule</label>											 
-								<div class="col-sm-9">										
-									<div class="labour_schedule">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($labour_schedule_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($labour_schedule_set == 2 ? 'checked="true"' : ''); ?>>
-									</div>
-									<input type="hidden" class="" id="labour_schedule" name="labour_schedule" value="<?php echo $labour_schedule_set; ?>">
-								</div>
-							</div>
-
-							<?php $leave_requests = $user_access_arr['19'];  ?> 
-							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-4 control-label m-top-5">Leave Requests</label>											 
-								<div class="col-sm-8">										
-									<div class="leave_requests">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($leave_requests == 1? 'checked="true"' : ''); ?>>
-									</div>
-									<input type="hidden" class="" id="leave_requests" name="leave_requests" value="<?php echo $leave_requests; ?>">
-								</div>
-							</div>
-
-							<?php $onboarding_set = $user_access_arr['24'];  ?> 
-							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-4 control-label m-top-5">Onboarding</label>											 
-								<div class="col-sm-8">										
-									<div class="onboarding_set">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($onboarding_set == 1? 'checked="true"' : ''); ?>>
-									</div>
-									<input type="hidden" class="" id="onboarding_set" name="onboarding_set" value="<?php echo $onboarding_set; ?>">
-								</div>
-							</div>
-
-							<?php $progress_report_set = $user_access_arr['22'];  ?> 
-							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-4 control-label m-top-5">Progress Report</label>											 
-								<div class="col-sm-8">										
-									<div class="progress_report_set">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($progress_report_set == 1? 'checked="true"' : ''); ?>>
-									</div>
-									<input type="hidden" class="" id="progress_report_set" name="progress_report_set" value="<?php echo $progress_report_set; ?>">
-								</div>
-							</div>
-
 							<?php $projects_access_set = $user_access_arr['5'];  ?>
 
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
@@ -1606,28 +1493,16 @@
 								</div>
 							</div>
 
-							<?php $project_schedule_set = $user_access_arr['12'];  ?>
+							<?php $wip_access_set = $user_access_arr['6'];  ?>
 
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Project Schedule</label>											 
+								<label class="col-sm-3 control-label m-top-5">WIP</label>											 
 								<div class="col-sm-9">										
-									<div class="project_schedule">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($project_schedule_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($project_schedule_set == 2 ? 'checked="true"' : ''); ?>>
+									<div class="wip_access">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($wip_access_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($wip_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
-									<input type="hidden" class="" id="project_schedule" name="project_schedule" value="<?php echo $project_schedule_set; ?>">
-								</div>
-							</div>
-
-							<?php $purchase_order_access = $user_access_arr['21'];  ?> 
-							
-							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-4 control-label m-top-5">Purchase Order</label>											 
-								<div class="col-sm-8  tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="Enables user to Reconcile a PO to a Contractor with incomplete insurance.">										
-									<div class="purchase_order_access">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Control" <?php echo ($purchase_order_access == 1 ? 'checked="true"' : ''); ?>>
-									</div>
-									<input type="hidden" class="" id="purchase_order_access" name="purchase_order_access" value="<?php echo $purchase_order_access; ?>">
+									<input type="hidden" class="" id="wip_access" name="wip_access" value="<?php echo $wip_access_set; ?>">
 								</div>
 							</div>
 
@@ -1644,27 +1519,58 @@
 								</div>
 							</div>
 
-							<?php $quick_quote_set = $user_access_arr['17'];  ?> 
+							<?php $invoice_access_set = $user_access_arr['8'];  ?>
+
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-4 control-label m-top-5">Quick Quote</label>											 
-								<div class="col-sm-8">										
-									<div class="quick_quote">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($quick_quote_set == 1? 'checked="true"' : ''); ?>>
+								<label class="col-sm-3 control-label m-top-5">Invoice</label>											 
+								<div class="col-sm-9">										
+									<div class="invoice_access">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($invoice_access_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($invoice_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
-									<input type="hidden" class="" id="quick_quote" name="quick_quote" value="<?php echo $quick_quote_set; ?>">
+									<input type="hidden" class="" id="invoice_access" name="invoice_access" value="<?php echo $invoice_access_set; ?>">
 								</div>
 							</div>
 
-							<?php $quote_deadline = $user_access_arr['18'];  ?> 
+							<?php $users_access_set = $user_access_arr['9'];  ?>
+
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-4 control-label m-top-5">Quote Deadline</label>											 
-								<div class="col-sm-8">										
-									<div class="quote_deadline">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($quote_deadline == 1? 'checked="true"' : ''); ?>>
+								<label class="col-sm-3 control-label m-top-5">Users</label>											 
+								<div class="col-sm-9">										
+									<div class="users_access">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($users_access_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($users_access_set == 2 ? 'checked="true"' : ''); ?>>
 									</div>
-									<input type="hidden" class="" id="quote_deadline" name="quote_deadline" value="<?php echo $quote_deadline; ?>">
+									<input type="hidden" class="" id="users_access" name="users_access" value="<?php echo $users_access_set; ?>">
 								</div>
 							</div>
+
+							<?php $bulletin_board_set = $user_access_arr['11'];  ?>
+
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Bulletin Board</label>											 
+								<div class="col-sm-9">										
+									<div class="bulletin_board">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($bulletin_board_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($bulletin_board_set == 2 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="bulletin_board" name="bulletin_board" value="<?php echo $bulletin_board_set; ?>">
+								</div>
+							</div>
+
+							<?php $project_schedule_set = $user_access_arr['12'];  ?>
+
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Project Schedule</label>											 
+								<div class="col-sm-9">										
+									<div class="project_schedule">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($project_schedule_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($project_schedule_set == 2 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="project_schedule" name="project_schedule" value="<?php echo $project_schedule_set; ?>">
+								</div>
+							</div>
+
 
 							<?php $shopping_center_set = $user_access_arr['13'];  ?>
 							
@@ -1678,6 +1584,48 @@
 									<input type="hidden" class="" id="shopping_center" name="shopping_center" value="<?php echo $shopping_center_set; ?>">
 								</div>
 							</div>
+
+
+
+							<?php $labour_schedule_set = $user_access_arr['14'];  ?>
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Labour Schedule</label>											 
+								<div class="col-sm-9">										
+									<div class="labour_schedule">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($labour_schedule_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($labour_schedule_set == 2 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="labour_schedule" name="labour_schedule" value="<?php echo $labour_schedule_set; ?>">
+								</div>
+							</div>
+
+
+
+
+
+<!-- For Company Project -->
+
+
+
+
+							<?php $company_project_set = $user_access_arr['15'];  ?>
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-4 control-label m-top-5">Company Project</label>											 
+								<div class="col-sm-8">										
+									<div class="company_project">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Enabled" <?php echo ($company_project_set >= 1 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="company_project" name="company_project" value="<?php echo $company_project_set; ?>">
+								</div>
+							</div>
+
+
+
+
+<!-- For Company Project -->
+
 <!-- For Site Labour -->
 
 							<?php $site_labour_set = $user_access_arr['16'];  ?>
@@ -1923,29 +1871,94 @@
 							</div>
 
 <!-- For Site Labour -->
-							<?php $users_access_set = $user_access_arr['9'];  ?>
 
+
+
+ 
+							<?php $quick_quote_set = $user_access_arr['17'];  ?> 
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">Users</label>											 
-								<div class="col-sm-9">										
-									<div class="users_access">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($users_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($users_access_set == 2 ? 'checked="true"' : ''); ?>>
+								<label class="col-sm-4 control-label m-top-5">Quick Quote</label>											 
+								<div class="col-sm-8">										
+									<div class="quick_quote">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($quick_quote_set == 1? 'checked="true"' : ''); ?>>
 									</div>
-									<input type="hidden" class="" id="users_access" name="users_access" value="<?php echo $users_access_set; ?>">
+									<input type="hidden" class="" id="quick_quote" name="quick_quote" value="<?php echo $quick_quote_set; ?>">
 								</div>
 							</div>
 
-							<?php $wip_access_set = $user_access_arr['6'];  ?>
 
+
+ 
+							<?php $quote_deadline = $user_access_arr['18'];  ?> 
 							<div class="col-xs-12 m-bottom-10 clearfix">										 
-								<label class="col-sm-3 control-label m-top-5">WIP</label>											 
-								<div class="col-sm-9">										
-									<div class="wip_access">
-										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($wip_access_set >= 1 ? 'checked="true"' : ''); ?>>
-										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($wip_access_set == 2 ? 'checked="true"' : ''); ?>>
+								<label class="col-sm-4 control-label m-top-5">Quote Deadline</label>											 
+								<div class="col-sm-8">										
+									<div class="quote_deadline">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($quote_deadline == 1? 'checked="true"' : ''); ?>>
 									</div>
-									<input type="hidden" class="" id="wip_access" name="wip_access" value="<?php echo $wip_access_set; ?>">
+									<input type="hidden" class="" id="quote_deadline" name="quote_deadline" value="<?php echo $quote_deadline; ?>">
+								</div>
+							</div>
+
+							<?php $leave_requests = $user_access_arr['19'];  ?> 
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-4 control-label m-top-5">Leave Requests</label>											 
+								<div class="col-sm-8">										
+									<div class="leave_requests">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($leave_requests == 1? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="leave_requests" name="leave_requests" value="<?php echo $leave_requests; ?>">
+								</div>
+							</div>
+
+
+
+							<?php $job_date_access = $user_access_arr['20'];  ?> 
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-4 control-label m-top-5">Job Date</label>											 
+								<div class="col-sm-8">										
+									<div class="job_date_access">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Control" <?php echo ($job_date_access == 1 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="job_date_access" name="job_date_access" value="<?php echo $job_date_access; ?>">
+								</div>
+							</div>
+
+
+
+
+							<?php $purchase_order_access = $user_access_arr['21'];  ?> 
+							
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-4 control-label m-top-5">Purchase Order</label>											 
+								<div class="col-sm-8  tooltip-enabled" title="" data-html="true" data-placement="bottom" data-original-title="Enables user to Reconcile a PO to a Contractor with incomplete insurance.">										
+									<div class="purchase_order_access">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Control" <?php echo ($purchase_order_access == 1 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="purchase_order_access" name="purchase_order_access" value="<?php echo $purchase_order_access; ?>">
+								</div>
+							</div>
+
+							<?php $progress_report_set = $user_access_arr['22'];  ?> 
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-4 control-label m-top-5">Progress Report</label>											 
+								<div class="col-sm-8">										
+									<div class="progress_report_set">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($progress_report_set == 1? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="progress_report_set" name="progress_report_set" value="<?php echo $progress_report_set; ?>">
+								</div>
+							</div>
+
+							<?php $onboarding_set = $user_access_arr['24'];  ?> 
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-4 control-label m-top-5">Onboarding</label>											 
+								<div class="col-sm-8">										
+									<div class="onboarding_set">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="Have Access" <?php echo ($onboarding_set == 1? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="onboarding_set" name="onboarding_set" value="<?php echo $onboarding_set; ?>">
 								</div>
 							</div>
 

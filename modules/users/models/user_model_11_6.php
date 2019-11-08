@@ -207,40 +207,14 @@ AND UNIX_TIMESTAMP( STR_TO_DATE('$today', '%d/%m/%Y') ) <=  UNIX_TIMESTAMP( STR_
 		return $query;
 	}
 
-	public function check_for_user_supply($user_id){
-		$query = $this->db->query("SELECT `client_supply_settings`.* , `email`.`general_email`
-			FROM `client_supply_settings` 
-			INNER JOIN `users` ON `users`.`user_id` = `client_supply_settings`.`user_id`
-			INNER JOIN `email` ON `email`.`email_id` = `users`.`user_email_id`
-			WHERE `client_supply_settings`.`user_id` = '$user_id' ");
-		return $query;
-	}
-
-	public function supply_for_email($focus_company_id,$date_a,$date_b){
-		$query = $this->db->query("SELECT `client_supply` .* , `project`.`focus_company_id`, `project`.`project_name` 
-			FROM `client_supply` 
-			INNER JOIN `project` ON `project`.`project_id` = `client_supply`.`project_id` 
-			WHERE `project`.`focus_company_id` = '$focus_company_id' 
-			AND `client_supply`.`is_active` = '1'
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`delivery_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`delivery_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`has_reminded`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('05/11/2019', '%d/%m/%Y') )   ");
-		return $query;
-	}
-
-	public function set_reminded_supply($supply_id,$date){
-		$query = $this->db->query(" UPDATE `client_supply` SET `has_reminded` = '$date' WHERE `client_supply`.`client_supply_id` = '$supply_id' ");
-	}
-
-
 	public function insert_user_access($user_id,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$bulletin_board,$project_schedule,$labour_schedule,$leave_requests,$job_date_access, $progress_report){
 		$query = $this->db->query("INSERT INTO `user_access` (`user_id`, `dashboard`, `company`, `projects`, `wip`, `purchase_orders`, `invoice`, `users`, `bulletin_board`, `project_schedule`, `labour_schedule`, `leave_requests`, `job_date`, `progress_report`)
 				 VALUES ( '$user_id', '$dashboard', '$company', '$projects', '$wip', '$purchase_orders', '$invoice', '$users', '$bulletin_board', '$project_schedule', '$labour_schedule', '$leave_requests', '$job_date_access', '$progress_report')	");
 		return $query;			
 	}
 
-	public function update_user_access($user_id,$is_admin,$dashboard,$client_supply,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access,$purchase_order, $progress_report, $onboarding,$incident_report){
-		$query = $this->db->query("UPDATE `user_access` SET `dashboard` = '$dashboard',`client_supply` = '$client_supply', `company` = '$company', `projects` = '$projects', `wip` = '$wip', `purchase_orders` = '$purchase_orders', `invoice` = '$invoice', `users` = '$users', `bulletin_board` = '$bulletin_board', `project_schedule` = '$project_schedule', `labour_schedule` = '$labour_schedule', `company_project` = '$company_project', `purchase_order` = '$purchase_order', `shopping_centre` = '$shopping_center',`site_labour` = '$site_labour',`quick_quote` = '$quick_quote',`quote_deadline` = '$quote_deadline',`leave_requests` = '$leave_requests',`job_date` = '$job_date_access', `progress_report` = '$progress_report', `onboarding` = '$onboarding', `incident_report` = '$incident_report'  WHERE `user_access`.`user_id` = '$user_id' ");
+	public function update_user_access($user_id,$is_admin,$dashboard,$company,$projects,$wip,$purchase_orders,$invoice,$users,$role_id,$bulletin_board,$project_schedule,$labour_schedule,$company_project,$shopping_center,$site_labour,$site_labour_app,$quick_quote,$quote_deadline,$leave_requests,$job_date_access,$purchase_order, $progress_report, $onboarding){
+		$query = $this->db->query("UPDATE `user_access` SET `dashboard` = '$dashboard', `company` = '$company', `projects` = '$projects', `wip` = '$wip', `purchase_orders` = '$purchase_orders', `invoice` = '$invoice', `users` = '$users', `bulletin_board` = '$bulletin_board', `project_schedule` = '$project_schedule', `labour_schedule` = '$labour_schedule', `company_project` = '$company_project', `purchase_order` = '$purchase_order', `shopping_centre` = '$shopping_center',`site_labour` = '$site_labour',`quick_quote` = '$quick_quote',`quote_deadline` = '$quote_deadline',`leave_requests` = '$leave_requests',`job_date` = '$job_date_access', `progress_report` = '$progress_report', `onboarding` = '$onboarding' WHERE `user_access`.`user_id` = '$user_id' ");
 		$this->db->flush_cache();
 		$query = $this->db->query("UPDATE `users` SET `if_admin` = '$is_admin', `user_role_id` = '$role_id', `site_access` = '$site_labour_app' WHERE `users`.`user_id` ='$user_id' ");
 		return $query;
@@ -464,7 +438,7 @@ AND UNIX_TIMESTAMP( STR_TO_DATE('$today', '%d/%m/%Y') ) <=  UNIX_TIMESTAMP( STR_
 
 
 	public function fetch_user_by_role($rode_id){
-		$query = $this->db->query("SELECT * FROM `users` WHERE `users`.`user_role_id` = '$rode_id' AND `users`.`is_active` = '1' ORDER BY `users`.`user_first_name` ASC  ");
+		$query = $this->db->query("SELECT * FROM `users` WHERE `users`.`user_role_id` = '$rode_id' AND `users`.`is_active` = '1' ");
 		return $query;
 	}
 
