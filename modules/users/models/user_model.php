@@ -224,7 +224,7 @@ AND UNIX_TIMESTAMP( STR_TO_DATE('$today', '%d/%m/%Y') ) <=  UNIX_TIMESTAMP( STR_
 			AND `client_supply`.`is_active` = '1'
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`delivery_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
 			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`delivery_date`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`has_reminded`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('05/11/2019', '%d/%m/%Y') )   ");
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`has_reminded`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )   ");
 		return $query;
 	}
 

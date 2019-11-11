@@ -21,13 +21,22 @@ class Client_supply_m extends CI_Model{
 	}
 
 	public function get_client_supply_logo($warehouse_id){
-		$query = $this->db->query(" SELECT `client_storage`.*, `brand`.`has_brand_logo`,`brand`.`brand_name`
-			FROM `client_storage` 
-			INNER JOIN `brand` ON `brand`.`brand_id` = `client_storage`.`client_brand_id`
-			WHERE `client_storage`.`is_active`  = '1'  
-			AND `client_storage`.`warehouse_id` = '$warehouse_id' ");
-		return $query;
-	}
+	/*	$query = $this->db->query("SELECT `client_storage`.*, `client`.`company_name` AS `client_name`,`client`.`company_id` AS `client_id`, `f_company`.`company_name`,`warehouse`.`location`
+			FROM `client_storage`
+			INNER JOIN `company_details` `client` ON `client`.`company_id` = `client_storage`.`client_brand_id`
+			INNER JOIN `warehouse` ON `warehouse`.`warehouse_id` = `client_storage`.`warehouse_id`
+			INNER JOIN `company_details` `f_company` ON `f_company`.`company_id` = `warehouse`.`focus_company_id` WHERE `client_storage`.`is_active` = '1'  
+			AND  `client_storage`.`client_storage_id` = '$warehouse_id' ");*/
+
+
+$query = $this->db->query(" SELECT `client_storage`.* , `company_details`.`company_name`
+	FROM `client_storage`  
+	INNER JOIN `company_details` ON `company_details`.`company_id` = `client_storage`.`client_brand_id`
+	WHERE `client_storage`.`is_active` = '1'
+	AND  `client_storage`.`warehouse_id` = '$warehouse_id'  ");
+
+return $query;
+}
 
 	public function get_supply_data($supply_id){
 		$query = $this->db->query(" SELECT * FROM `client_supply` WHERE `client_supply`.`client_supply_id` = '$supply_id'  ");

@@ -1271,7 +1271,7 @@ endif;
  
 
 
-if($userdata->user_id == 2):
+//if($userdata->user_id == 2):
 // client supply
 					$check_user_supply_q = $this->user_model->check_for_user_supply($userdata->user_id);
 					if ($check_user_supply_q->num_rows === 1 || $userdata->user_id == 2) {
@@ -1284,7 +1284,7 @@ if($userdata->user_id == 2):
 							$cc_email = $check_user_supply['cc_email'];
 
 
-$reminder_lead_days = 5;
+//$reminder_lead_days = 5;
 
 
 						$supply_list = '';
@@ -1312,14 +1312,14 @@ $reminder_lead_days = 5;
 
 
 						$comp_id = $userdata->user_focus_company_id;
-						$comp_id = 5;
+					//	$comp_id = 5;
 
-						echo "$comp_id,$date_a,$date_b  ___ $reminder_lead_days";
+					//	echo "$comp_id,$date_a,$date_b  ___ $reminder_lead_days";
 
 
 						$supply_for_email_q = $this->user_model->supply_for_email($comp_id,$date_a,$date_b);
 
-						if ($supply_for_email_q->num_rows > 0 || $userdata->user_id == 2) {
+						if ($supply_for_email_q->num_rows > 0 ) {
 
 							foreach ($supply_for_email_q->result() as $supply){
 
@@ -1344,10 +1344,10 @@ $reminder_lead_days = 5;
 							$mail->Subject = 'Client Supply';
  
 
-							//$mail->addAddress($user_general_email);
-							$mail->addAddress('jervyezaballa@gmail.com');
+							$mail->addAddress($user_general_email);
+						//	$mail->addAddress('jervyezaballa@gmail.com');
 
-							$cc_email = 'jervy@focusshopfit.com.au';
+							// $cc_email = 'jervy@focusshopfit.com.au';
 
 							if(isset($cc_email) && $cc_email != ''  ){
 								$mail->addCC($cc_email);	
@@ -1369,7 +1369,7 @@ $reminder_lead_days = 5;
 						}
 					}
 // client supply
-endif;
+//endif;
 
 
 
@@ -1630,9 +1630,9 @@ endif;
 
 					//	else{ // remove else after
 							// HIDE THIS DURING DEBUG
-	if($userdata->user_id != 2){ 
+//	if($userdata->user_id != 2){ 
 		redirect('', 'refresh'); 
-	}
+//	}
 
 							// HIDE THIS DURING DEBUG
 					//	} // remove else after

@@ -45,11 +45,19 @@ class Client_supply extends MY_Controller{
 
 
 		$clinent_logo_q = $this->client_supply_m->get_client_supply_logo($warehouse_id);
+
+
+		//var_dump($clinent_logo_q);
+
+
+
 		$clinent_logo = array_shift($clinent_logo_q->result_array());
-		$has_brand_logo = $clinent_logo['has_brand_logo'];
-		$brand_name = $clinent_logo['brand_name'];
 
 
+	//	$has_brand_logo = $clinent_logo['has_brand_logo'];
+		$brand_name = $clinent_logo['company_name'];
+
+/*
 		if($has_brand_logo == 1){
 			echo '<img src="'.base_url().'uploads/brand_logo/'.$clinent_logo['client_brand_id'].'.jpg" style="width: 75%; display: block; margin: 5px auto; text-align: center;" />';
 		}else{
@@ -58,12 +66,10 @@ class Client_supply extends MY_Controller{
 			}
 		}
 
+*/
 
 
-
-
-
-
+echo '<span class=" btn-info pad-5 block m-10" style="border-radius: 6px;     font-size: 12px;     padding: 0px 5px;     margin: 5px;">'.$brand_name.'</span>';
 
 
 	}
@@ -158,11 +164,11 @@ class Client_supply extends MY_Controller{
 
 		$this->users->clear_apost();
 
- 	//	var_dump($_POST);
+//	var_dump($_POST);
 
 		$supply_name = $_POST["supply_name"];
 		$supply_data_id = $_POST["supply_data_id"];
-		$project_id = $_POST["project_id"];
+	//	$project_id = $_POST["project_id"];
 		$init_project_id = $_POST["init_project_id"];
 		$date_goods_expected = $_POST["date_goods_expected"];
 		$date_goods_arrived = $_POST["date_goods_arrived"];
@@ -178,19 +184,21 @@ class Client_supply extends MY_Controller{
 
 
 		$project_data = explode('_', $_POST["project_id"]);
-
 		$data_project_set = $project_data['0'];
 
-		if($data_project_set != $init_project_id){
-			$data_project_id = $init_project_id;
+	
 
+		if(isset($_POST["project_id"]) && $_POST["project_id"]!=''){
+			if($data_project_set != $init_project_id){
+				$data_project_id = $data_project_set;
+			}else{
+				$data_project_id = $init_project_id;
+			}
 		}else{
-			$data_project_id = $data_project_set;
+			$data_project_id = $init_project_id;
 		}
 
 		$client_id = 0;
-
-
 
 		$this->client_supply_m->update_supply_details($supply_data_id,$supply_name,$data_project_id,$quantity,$date_goods_expected,$date_goods_arrived,$delivered_by,$to_be_advised,$delivery_date,$is_deliver_to_site_select,$set_address,$description,$warehouse_selected);
 
@@ -216,7 +224,6 @@ class Client_supply extends MY_Controller{
 			$data_photos = $supply_data['photos'].','.$photos;
 			$this->client_supply_m->update_photos($supply_data_id,$data_photos);
 		}
-
 
 
 

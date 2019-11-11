@@ -1467,6 +1467,26 @@
 								</div>
 							</div>
 
+
+
+
+							<?php $client_supply_set = $user_access_arr['25'];  ?>
+
+							<div class="col-xs-12 m-bottom-10 clearfix">										 
+								<label class="col-sm-3 control-label m-top-5">Client Supply</label>											 
+								<div class="col-sm-9">										
+									<div class="client_supply">
+										<input type="checkbox" class="check-swtich check-a" data-checkbox="1" data-label-text="View" <?php echo ($client_supply_set >= 1 ? 'checked="true"' : ''); ?>>
+										<input type="checkbox" class="check-swtich check-b" data-checkbox="2" data-label-text="+Edit" <?php echo ($client_supply_set == 2 ? 'checked="true"' : ''); ?>>
+									</div>
+									<input type="hidden" class="" id="client_supply" name="client_supply" value="<?php echo $client_supply_set; ?>">
+								</div>
+							</div>
+
+
+
+
+
 							<?php $company_access_set = $user_access_arr['4'];  ?>
 
 							<div class="col-xs-12 m-bottom-10 clearfix">										 

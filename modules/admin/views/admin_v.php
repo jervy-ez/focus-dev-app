@@ -1705,7 +1705,7 @@
 									<div class="input-group m-bottom-10">
 
 
-										<span class="input-group-addon"><i class="fa fa-calendar"></i> Reminder Days</span>
+										<span class="input-group-addon"><i class="fa fa-calendar"></i> Days Before Delivery To Site - Reminder</span>
 
 										<input placeholder="Number of Days" name="days_lead_reminder" autocomplete="off" class="form-control" value="<?php echo $wa_emp_assnmt['reminder_lead_days']; ?>"> 
 										<span class="input-group-addon"> Default <?php echo $static_defaults[0]->client_supply_reminder_dys; ?> Days </span> 
@@ -1757,7 +1757,7 @@
 									<div class="input-group m-bottom-10">
 
 
-										<span class="input-group-addon"><i class="fa fa-calendar"></i> Reminder Days</span>
+										<span class="input-group-addon"><i class="fa fa-calendar"></i> Days Before Delivery To Site - Reminder</span>
 
 										<input placeholder="Number of Days" name="days_lead_reminder" autocomplete="off" class="form-control" value="<?php echo $nsw_emp_assnmt['reminder_lead_days']; ?>"> 
 										<span class="input-group-addon"> Default <?php echo $static_defaults[0]->client_supply_reminder_dys; ?> Days</span> 
@@ -1786,7 +1786,7 @@
 								<form method="post" action="<?php echo base_url(); ?>admin/update_lead_days">
 									<div class="input-group m-bottom-10">
 
-										<span class="input-group-addon"><i class="fa fa-calendar"></i> Default Days</span> 
+										<span class="input-group-addon"><i class="fa fa-calendar"></i> Default Days Reminder</span> 
 										<input class="form-control" placeholder="Number of Lead Days" name="days" autocomplete="off" value="<?php echo $static_defaults[0]->client_supply_reminder_dys; ?>" > 
 							
 										<span class="input-group-btn"><input type="submit" value="Save" class="btn btn-primary"></span>

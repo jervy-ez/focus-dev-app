@@ -7,7 +7,7 @@
 <?php $this->load->model('projects_m'); ?>
 <?php $date_today = date('d/m/Y'); ?>
 
-<?php $custom =  " AND  `project`.`is_paid` = '0' AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('".$date_today."', '%d/%m/%Y') )  "; ?>
+<?php $custom =  " AND  `project`.`is_paid` = '0' AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) > UNIX_TIMESTAMP( STR_TO_DATE('".$date_today."', '%d/%m/%Y') )  "; ?>
 <?php $projects_q = $this->projects_m->display_all_projects($custom); ?>
 
 <?php $supply_list_q = $this->client_supply_m->list_client_supply(); ?>
@@ -395,7 +395,7 @@ $('table#dataTable_client_supply th').click(function(){
 
                                       <div class="input-group tltip_adjt  m-bottom-10">
                                 <span id="" class="input-group-addon"><i class="fa fa-calendar-check-o"></i> Delivery  To Site Date  </span>
-                                <input type="text"  placeholder="DD/MM/YYYY" id="delivery_date" name="delivery_date" value="" autocomplete="off" class="form-control datepicker_shipping tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Date should not exceed the completion date of the selected project."  style="z-index: 0 !important;">
+                                <input type="text"  placeholder="DD/MM/YYYY" id="delivery_date" name="delivery_date" value="" autocomplete="off" class="form-control datepicker_shipping" style="z-index: 0 !important;">
                                
                               </div>
  
@@ -640,7 +640,7 @@ $('table#dataTable_client_supply th').click(function(){
                    
                                       <div class="input-group tltip_adjt  m-bottom-10">
                                 <span id="" class="input-group-addon"><i class="fa fa-calendar-check-o"></i> Delivery  To Site Date  </span>
-                                <input type="text"  placeholder="DD/MM/YYYY" id="delivery_date" name="delivery_date" value="" autocomplete="off" class="form-control datepicker_shipping tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Date should not exceed the completion date of the selected project."  style="z-index: 0 !important;">
+                                <input type="text"  placeholder="DD/MM/YYYY" id="delivery_date" name="delivery_date" value="" autocomplete="off" class="form-control datepicker_shipping" style="z-index: 0 !important;">
                                
                               </div>
  
@@ -897,8 +897,6 @@ var supply_data_id = $('#edit_supply input#supply_data_id').val();
 
 
 
-
-
   $.ajax({
    'url' : "<?php echo base_url(); ?>client_supply/view_supply/"+supply_id,
    'type' : 'POST',
@@ -919,14 +917,11 @@ var supply_data_id = $('#edit_supply input#supply_data_id').val();
     $('#edit_supply input#supply_data_id').val(supply_data[0]);
 
 
-      $('#edit_supply input#date_goods_expected').val(supply_data[5]);
-      $('#edit_supply input#date_goods_arrived').val(supply_data[6]);
       $('#edit_supply input#qty').val(supply_data[4]);
 
 
       $('#edit_supply select#delivered_by').val(supply_data[7]);
       $('#edit_supply select#to_be_advised').val(supply_data[8]);
-      $('#edit_supply input#delivery_date').val(supply_data[9]);
       $('#edit_supply select.is_deliver_to_site_select').val(supply_data[10]);
 
       if(supply_data[10] > 0){
@@ -938,6 +933,47 @@ var supply_data_id = $('#edit_supply input#supply_data_id').val();
 
       }
 
+var option_set = '';
+
+    $("#edit_supply select.projects_set_b option").each(function(i){
+    //  alert($(this).text() + " : " + $(this).val());
+    var option_text = $(this).text();
+      if( option_text.indexOf(supply_data[2]) !== -1 ){
+//        alert( $(this).val() );
+        option_set = $(this).val();
+
+
+
+    var prj_date = option_set.split("_");
+    var limit_date = prj_date[2];
+    var startdate = limit_date;
+    var new_date = moment(startdate, "DD/MM/YYYY");
+
+    new_date.add(<?php echo 2+($static_data['weeks_delivery']*7) ; ?>, 'days');
+
+    $('#edit_supply .datepicker_shipping').datetimepicker({format: 'DD/MM/YYYY',useCurrent: false}).val('');
+    $('#edit_supply .datepicker_shipping').data("DateTimePicker").maxDate(new_date);
+
+
+
+    $('#edit_supply input#date_goods_expected').datetimepicker({format: 'DD/MM/YYYY',useCurrent: false}).val('');
+    $('#edit_supply input#date_goods_expected').data("DateTimePicker").maxDate(new_date);
+
+    $('#edit_supply input#date_goods_arrived').datetimepicker({format: 'DD/MM/YYYY',useCurrent: false}).val('');
+    $('#edit_supply input#date_goods_arrived').data("DateTimePicker").maxDate(new_date);
+
+
+
+      $('#edit_supply input#delivery_date').val(supply_data[9]);
+      $('#edit_supply input#date_goods_expected').val(supply_data[5]);
+      $('#edit_supply input#date_goods_arrived').val(supply_data[6]);
+
+    //  alert(supply_data[9]+' ___ '+supply_data[5]+' ___ '+supply_data[6]+' ___ ');
+
+
+
+      }
+    });
 
 
 
@@ -1168,7 +1204,7 @@ $.ajax({
 
           <div id="" class="mezzanine_storage_unit_1 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 1" style="background:#1240AA; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 1</span>
-            <?php $this->client_supply->display_client_logo(1); ?>
+            <p><?php $this->client_supply->display_client_logo(1); ?></p>
           </div>
           <div id="" class="mezzanine_storage_unit_2 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 2" style="background:#1240AA; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 2</span>
@@ -1176,11 +1212,11 @@ $.ajax({
           </div>
           <div id="" class="mezzanine_storage_unit_3 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 3" style="background:#1240AA; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 3</span>
-            <?php $this->client_supply->display_client_logo(3); ?>
+            <?php //$this->client_supply->display_client_logo(3); ?>
           </div>
           <div id="" class="mezzanine_storage_unit_4 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 4" style="background:#1240AA; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 4</span>
-            <?php $this->client_supply->display_client_logo(4); ?>
+            <?php //$this->client_supply->display_client_logo(4); ?>
           </div>
           <div id="" class="mezzanine_storage_unit_5 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 5" style="background:#1240AA; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 5</span>
@@ -1194,27 +1230,27 @@ $.ajax({
 
           <div id="" class="mezzanine_storage_unit_7 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 7" style="background:#7109A9; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 7</span>
-            <?php $this->client_supply->display_client_logo(7); ?>
+            <?php //$this->client_supply->display_client_logo(7); ?>
           </div>
           <div id="" class="mezzanine_storage_unit_8 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 8" style="background:#7109A9; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 8</span>
-            <?php $this->client_supply->display_client_logo(8); ?>
+            <?php // $this->client_supply->display_client_logo(8); ?>
           </div>
           <div id="" class="mezzanine_storage_unit_9 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 9" style="background:#7109A9; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 9</span>
-            <?php $this->client_supply->display_client_logo(9); ?>
+            <?php //$this->client_supply->display_client_logo(9); ?>
           </div>
           <div id="" class="mezzanine_storage_unit_10 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 10" style="background:#7109A9; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 10</span>
-            <?php $this->client_supply->display_client_logo(10); ?>
+            <?php //$this->client_supply->display_client_logo(10); ?>
           </div>
           <div id="" class="mezzanine_storage_unit_11 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 11" style="background:#7109A9; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 11</span>
-            <?php $this->client_supply->display_client_logo(11); ?>
+            <?php //$this->client_supply->display_client_logo(11); ?>
           </div>
           <div id="" class="mezzanine_storage_unit_12 rrunit  set_wh" data-wh-location="WA - Warehouse Mezzanine Storage Unit 12" style="background:#7109A9; color:#fff; padding: 15px 0px !important;">
             <span>UNIT 12</span>
-            <?php $this->client_supply->display_client_logo(12); ?>
+            <?php //$this->client_supply->display_client_logo(12); ?>
           </div>
 
         </div>
