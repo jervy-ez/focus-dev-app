@@ -216,6 +216,22 @@ AND UNIX_TIMESTAMP( STR_TO_DATE('$today', '%d/%m/%Y') ) <=  UNIX_TIMESTAMP( STR_
 		return $query;
 	}
 
+	public function get_to_arrive_supply($date_a,$date_b){
+		$query = $this->db->query("SELECT `client_supply`.* ,  `project`.`project_name`,`company_details`.`company_name` FROM `client_supply`  
+
+			INNER JOIN `project` ON `project`.`project_id`  = `client_supply`.`project_id`
+			INNER JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+
+
+			WHERE `client_supply`.`is_active` = '1'
+			AND `client_supply`.`date_goods_arrived` = ''
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`date_goods_expected`, '%d/%m/%Y') ) <= UNIX_TIMESTAMP( STR_TO_DATE('$date_b', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`date_goods_expected`, '%d/%m/%Y') ) > UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`has_reminded_rcv`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_a', '%d/%m/%Y') )  ");
+		return $query;
+	}
+
+
 	public function supply_for_email($focus_company_id,$date_a,$date_b){
 		$query = $this->db->query("SELECT `client_supply` .* , `project`.`focus_company_id`, `project`.`project_name` 
 			FROM `client_supply` 
@@ -230,6 +246,11 @@ AND UNIX_TIMESTAMP( STR_TO_DATE('$today', '%d/%m/%Y') ) <=  UNIX_TIMESTAMP( STR_
 
 	public function set_reminded_supply($supply_id,$date){
 		$query = $this->db->query(" UPDATE `client_supply` SET `has_reminded` = '$date' WHERE `client_supply`.`client_supply_id` = '$supply_id' ");
+	}
+
+
+	public function set_reminded_recv_supply($supply_id,$date){
+		$query = $this->db->query(" UPDATE `client_supply` SET `has_reminded_rcv` = '$date' WHERE `client_supply`.`client_supply_id` = '$supply_id' ");
 	}
 
 

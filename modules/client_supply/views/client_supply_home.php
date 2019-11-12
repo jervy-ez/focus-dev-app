@@ -7,11 +7,22 @@
 <?php $this->load->model('projects_m'); ?>
 <?php $date_today = date('d/m/Y'); ?>
 
-<?php $custom =  " AND  `project`.`is_paid` = '0' AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) > UNIX_TIMESTAMP( STR_TO_DATE('".$date_today."', '%d/%m/%Y') )  "; ?>
+
+<?php $client_supply_reminder_dys = $static_data['client_supply_reminder_dys'];  ?>
+
+<?php $dateplus5 = date('d/m/Y', strtotime("-$client_supply_reminder_dys days"));   ?>
+
+<?php $custom =  " AND  `project`.`is_paid` = '0' AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) > UNIX_TIMESTAMP( STR_TO_DATE('".$dateplus5."', '%d/%m/%Y') )  "; ?>
 <?php $projects_q = $this->projects_m->display_all_projects($custom); ?>
 
 <?php $supply_list_q = $this->client_supply_m->list_client_supply(); ?>
 <?php //$this->invoice->reload_invoiced_amount(); ?>
+
+
+
+<link href="<?php echo base_url(); ?>css/lightbox.css" rel="stylesheet">
+<script type="text/javascript" src="<?php echo base_url(); ?>js/lightbox.js" ></script>
+
 
 <!-- title bar -->
 <div class="container-fluid head-control">
@@ -941,6 +952,8 @@ var option_set = '';
       if( option_text.indexOf(supply_data[2]) !== -1 ){
 //        alert( $(this).val() );
         option_set = $(this).val();
+
+        $("#edit_supply select.projects_set_b").val(option_set);
 
 
 
@@ -1886,7 +1899,12 @@ width: 157px;
 
     $('#bay_level').on('hidden.bs.modal', function () {
       $('select#warehouse_area').val('0');
+
+      $('.warehouse_set_value').remove();
     });
+
+
+
 
     $('#nsw_warehouse_setup').on('hidden.bs.modal', function () {
       $('select#warehouse_area').val('0');
@@ -1968,10 +1986,6 @@ width: 157px;
 
 
 <!-- MODAL BAY LEVEL -->
-
-<link href="<?php echo base_url(); ?>css/lightbox.css" rel="stylesheet">
-<script type="text/javascript" src="<?php echo base_url(); ?>js/lightbox.js" ></script>
-
  
 <?php $this->bulletin_board->list_latest_post(); ?>
 <?php $this->load->view('assets/logout-modal'); ?>

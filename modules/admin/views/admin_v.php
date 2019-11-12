@@ -3319,28 +3319,28 @@
 						</select>
 					</div>
 
-					<div class="col-sm-3 pad-5">Responsible for filling Immidiate Action WA:</div>
+					<div class="col-sm-3 pad-5">Responsible for filling-up Immediate Action WA:</div>
 					<div class="col-sm-3 pad-5">
 						<select class = "form-control input-sm" v-model = "imidiate_preventive_action_filler">
 							<option v-for = "users_list in orderUsers" :value="users_list.user_id">{{ users_list.user_first_name +" "+ users_list.user_last_name}}</option>
 						</select>
 					</div>
 
-					<div class="col-sm-3 pad-5">Responsible for filling Recommended Action WA:</div>
+					<div class="col-sm-3 pad-5">Responsible for filling-up Recommended Action WA:</div>
 					<div class="col-sm-3 pad-5">
 						<select class = "form-control input-sm" v-model = "recommended_action_filler">
 							<option v-for = "users_list in orderUsers" :value="users_list.user_id">{{ users_list.user_first_name +" "+ users_list.user_last_name}}</option>
 						</select>
 					</div>
 
-					<div class="col-sm-3 pad-5">Responsible for filling Immidiate Action NSW:</div>
+					<div class="col-sm-3 pad-5">Responsible for filling-up Immediate Action NSW:</div>
 					<div class="col-sm-3 pad-5">
 						<select class = "form-control input-sm" v-model = "imidiate_preventive_action_filler_nsw">
 							<option v-for = "users_list in orderUsers" :value="users_list.user_id">{{ users_list.user_first_name +" "+ users_list.user_last_name}}</option>
 						</select>
 					</div>
 
-					<div class="col-sm-3 pad-5">Responsible for filling Recommended Action NSW:</div>
+					<div class="col-sm-3 pad-5">Responsible for filling-up Recommended Action NSW:</div>
 					<div class="col-sm-3 pad-5">
 						<select class = "form-control input-sm" v-model = "recommended_action_filler_nsw">
 							<option v-for = "users_list in orderUsers" :value="users_list.user_id">{{ users_list.user_first_name +" "+ users_list.user_last_name}}</option>

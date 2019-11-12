@@ -30,12 +30,26 @@ class Client_supply extends MY_Controller{
 		$data['screen'] = 'Client Supply';
 		//$data['users'] = $this->user_model->fetch_user();
 
-
 		$select_static_defaults_q = $this->user_model->select_static_defaults();
 		$data['static_data'] = array_shift($select_static_defaults_q->result_array());
 
-		$data['page_title'] = 'Client Supply';
+		$client_supply_reminder_dys = $data['static_data']['client_supply_reminder_dys'];
+		$date_today = date('d/m/Y');
+		$date_limit_name = date('D', strtotime("today -$client_supply_reminder_dys days"));
 
+		if($date_limit_name == 'Sun'){
+			$client_supply_reminder_dys = $client_supply_reminder_dys-1;
+			$date_limit = date('d/m/Y', strtotime("-$client_supply_reminder_dys days")); 
+		}elseif($date_limit_name == 'Sat'){
+			$client_supply_reminder_dys = $client_supply_reminder_dys+1;
+			$date_limit = date('d/m/Y', strtotime("-$client_supply_reminder_dys days")); 
+		}else{
+			$date_limit = date('d/m/Y', strtotime("-$client_supply_reminder_dys days")); 
+		}
+
+		$this->client_supply_m->set_auto_delivered($date_today,$date_limit);
+		
+		$data['page_title'] = 'Client Supply';
 		$this->load->view('page', $data);
 	}
 
@@ -107,8 +121,53 @@ echo '<span class=" btn-info pad-5 block m-10" style="border-radius: 6px;     fo
 		}
 
 
-
 		$description = $_POST["description"];
+
+
+
+
+		
+
+
+		$select_static_defaults_q = $this->user_model->select_static_defaults();
+		$data['static_data'] = array_shift($select_static_defaults_q->result_array());
+
+		$project_finish = $project_data['2'];
+
+		$srchDate = date_format(date_create_from_format('d/m/Y', "$project_finish"), 'Y-m-d');
+
+
+		$client_supply_reminder_dys = $data['static_data']['client_supply_reminder_dys'];
+
+		$date_limit_name = date('D', strtotime("$srchDate -$client_supply_reminder_dys days"));
+
+		if($date_limit_name == 'Sun'){
+
+			$client_supply_reminder_dys = $client_supply_reminder_dys-1;
+			$set_delivery_date =  date('d/m/Y', strtotime($srchDate."  -$client_supply_reminder_dys days"));
+
+
+		}elseif($date_limit_name == 'Sat'){
+
+			$client_supply_reminder_dys = $client_supply_reminder_dys+1;
+			$set_delivery_date =  date('d/m/Y', strtotime($srchDate."  -$client_supply_reminder_dys days"));
+
+		}else{
+			$set_delivery_date =  date('d/m/Y', strtotime($srchDate."  -$client_supply_reminder_dys days"));
+		}
+
+
+		if($date_goods_expected == ''){
+			$date_goods_expected = $set_delivery_date;
+		}
+
+		if($delivery_date == ''){
+			$delivery_date = $set_delivery_date;
+		}
+
+
+
+
 
 
 	//	$unix_project_completion = strtotime(date_format(date_create_from_format('d/m/Y', $project_completion_date), 'Y-m-d') );
@@ -126,14 +185,14 @@ echo '<span class=" btn-info pad-5 block m-10" style="border-radius: 6px;     fo
 				$photos = $this->processUpload('supply_photos','client_supply',$project_number.'_supply',1);
 			}
 
-			$this->client_supply_m->inset_new_supply($supply_name,$project_number,$qty,$date_goods_expected,$date_goods_arrived,$delivered_by,$to_be_advised,$delivery_date,$is_deliver_to_site_select,$set_address,$photos,$description,$warehouse_selected);
+		$this->client_supply_m->inset_new_supply($supply_name,$project_number,$qty,$date_goods_expected,$date_goods_arrived,$delivered_by,$to_be_advised,$delivery_date,$is_deliver_to_site_select,$set_address,$photos,$description,$warehouse_selected);
 	
 
 	//	}
 
 		
 
-		redirect('/client_supply');
+	redirect('/client_supply');
 	}
 
 	public function del_photo_supply($supply_id,$photo){
@@ -200,13 +259,56 @@ echo '<span class=" btn-info pad-5 block m-10" style="border-radius: 6px;     fo
 
 		$client_id = 0;
 
+		if($date_goods_arrived == ''){
+		//	$date_goods_arrived = 'NULL';
+		}
+
+
+
+
+
+		
+
+
+		$select_static_defaults_q = $this->user_model->select_static_defaults();
+		$data['static_data'] = array_shift($select_static_defaults_q->result_array());
+
+		$project_finish = $project_data['2'];
+
+		$srchDate = date_format(date_create_from_format('d/m/Y', "$project_finish"), 'Y-m-d');
+
+		
+
+
+		$client_supply_reminder_dys = $data['static_data']['client_supply_reminder_dys'];
+
+		$date_limit_name = date('D', strtotime("$srchDate -$client_supply_reminder_dys days"));
+
+		if($date_limit_name == 'Sun'){
+			$client_supply_reminder_dys = $client_supply_reminder_dys-1;
+			$set_delivery_date =  date('d/m/Y', strtotime($srchDate."  -$client_supply_reminder_dys days"));
+
+		}elseif($date_limit_name == 'Sat'){
+			$client_supply_reminder_dys = $client_supply_reminder_dys+1;
+			$set_delivery_date =  date('d/m/Y', strtotime($srchDate."  -$client_supply_reminder_dys days"));
+
+		}else{
+			$set_delivery_date =  date('d/m/Y', strtotime($srchDate."  -$client_supply_reminder_dys days"));
+		}
+
+
+		if($date_goods_expected == ''){
+			$date_goods_expected = $set_delivery_date;
+		}
+
+		if($delivery_date == ''){
+			$delivery_date = $set_delivery_date;
+		}
+
+
 		$this->client_supply_m->update_supply_details($supply_data_id,$supply_name,$data_project_id,$quantity,$date_goods_expected,$date_goods_arrived,$delivered_by,$to_be_advised,$delivery_date,$is_deliver_to_site_select,$set_address,$description,$warehouse_selected);
 
-
-
- 	//var_dump($_FILES);
-
-
+ 		//var_dump($_FILES);
 
 		$get_supply_data_q = $this->client_supply_m->list_photos($supply_data_id);
 		$supply_data = array_shift($get_supply_data_q->result_array());
@@ -214,22 +316,15 @@ echo '<span class=" btn-info pad-5 block m-10" style="border-radius: 6px;     fo
 
 
 
-
-
 		if ( array_sum($_FILES['supply_photos']['error']) > 0 ){
 
 		}else{
-			
 			$photos = $this->processUpload('supply_photos','client_supply',$supply_data_id.'_supply',1);
 			$data_photos = $supply_data['photos'].','.$photos;
 			$this->client_supply_m->update_photos($supply_data_id,$data_photos);
 		}
 
-
-
- redirect('/client_supply');
- 
-
+		redirect('/client_supply');
 	}
 
 	public function delete_supply($id){

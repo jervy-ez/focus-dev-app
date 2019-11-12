@@ -1271,10 +1271,19 @@ endif;
  
 
 
-//if($userdata->user_id == 2):
+if($userdata->user_id == 2):
 // client supply
 					$check_user_supply_q = $this->user_model->check_for_user_supply($userdata->user_id);
-					if ($check_user_supply_q->num_rows === 1 || $userdata->user_id == 2) {
+					if ($check_user_supply_q->num_rows === 1) {
+
+
+
+
+
+
+
+
+
 
 
 							$check_user_supply = array_shift($check_user_supply_q->result_array());
@@ -1288,6 +1297,7 @@ endif;
 
 
 						$supply_list = '';
+						$supply_list_r = '';
 						$date_a = date("d/m/Y");
 
 
@@ -1295,12 +1305,12 @@ endif;
 						$date_b_name = date('D', strtotime("today +$reminder_lead_days days"));
 
 
-						if($date_b_name == 'SUN'){
+						if($date_b_name == 'Sun'){
 
 							$reminder_lead_days = $check_user_supply['reminder_lead_days']-2;
 							$date_b = date('d/m/Y', strtotime("today +$reminder_lead_days days"));
 
-						}elseif($date_b_name == 'SAT'){
+						}elseif($date_b_name == 'Sat'){
 
 							$reminder_lead_days = $check_user_supply['reminder_lead_days']-1;
 							$date_b = date('d/m/Y', strtotime("today +$reminder_lead_days days"));
@@ -1317,59 +1327,81 @@ endif;
 					//	echo "$comp_id,$date_a,$date_b  ___ $reminder_lead_days";
 
 
+
+
+
+
+
+
+						$get_to_arrive_supply_q = $this->user_model->get_to_arrive_supply($date_a,$date_b);
+
+						if ($get_to_arrive_supply_q->num_rows > 0 ) {
+
+
+							foreach ($get_to_arrive_supply_q->result() as $supply_rcv){
+								$supply_list_r .= '<p><strong>'.ucwords($supply_rcv->supply_name).'</strong>';
+								$supply_list_r .= '<br />Project: '.$supply_rcv->project_id.' - '.$supply_rcv->project_name.'';
+								$supply_list_r .= '<br />Client: '.$supply_rcv->company_name.'';
+								$supply_list_r .= '<br />Quantity: '.$supply_rcv->quantity.'';
+								$supply_list_r .= '<br />Arriving Date To Warehouse: '.$supply_rcv->date_goods_expected.'';
+								$supply_list_r .= '<br /><br /></p>';
+								$this->user_model->set_reminded_recv_supply($supply_rcv->client_supply_id,$date_a);
+							}
+
+							$mail->setFrom('noreply@focusshopfit.com.au', 'Sojourn Client Supply');
+							$content = '';
+
+							$mail->Subject = 'Inbound Delivery';
+ 
+							$mail->addAddress($user_general_email);
+							if(isset($cc_email) && $cc_email != ''  ){
+								$mail->addCC($cc_email);	
+							}
+
+/*
+							$mail->addAddress('jervy@focusshopfit.com.au');
+						    $cc_email = 'jervyezaballa@gmail.com';
+							$mail->addCC($cc_email);	
+*/
+							$content = '<p>Please be advised that the following supplies are about to arrive.</p>'.$supply_list_r;
+							$mail->Body = $content.'<br /><br />Sent via Sojourn auto-email service.<br />Please log-in to Sojourn and check the client supplies as per details above.<br /><br />&copy; FSF Group '.date('Y').'</p>';
+							$mail->send();
+						}
+
 						$supply_for_email_q = $this->user_model->supply_for_email($comp_id,$date_a,$date_b);
 
 						if ($supply_for_email_q->num_rows > 0 ) {
 
 							foreach ($supply_for_email_q->result() as $supply){
-
 								$supply_list .= '<p><strong>'.ucwords($supply->supply_name).'</strong>';
 								$supply_list .= '<br />Delivery To Site Date: '.$supply->delivery_date.'';
 								$supply_list .= '<br />Warehouse: '.$supply->warehouse.'';
-								$supply_list .= '<br /></p>';
-
+								$supply_list .= '<br /><br /></p>';
 								$this->user_model->set_reminded_supply($supply->client_supply_id,$date_a);
-
 							}
 
-
-
 							$mail->setFrom('noreply@focusshopfit.com.au', 'Sojourn Client Supply');
-						// remove user ID here for testing only  /*  ( && $userdata->user_id == 2 ) ||  ( $has_archvie_access == 1 && $userdata->user_id == 48 ) */ 
 
 							$content = '';
 
-
-
-							$mail->Subject = 'Client Supply';
- 
-
+							$mail->Subject = 'Outbound Delivery';
+						
 							$mail->addAddress($user_general_email);
-						//	$mail->addAddress('jervyezaballa@gmail.com');
-
-							// $cc_email = 'jervy@focusshopfit.com.au';
-
 							if(isset($cc_email) && $cc_email != ''  ){
 								$mail->addCC($cc_email);	
 							}
-
-
-
-
-							$content = '<p>Please be advised that there are suppies that needs to be delivered, please see the following below.</p>'.$supply_list;
-
+/*
+							$mail->addAddress('jervy@focusshopfit.com.au');
+						    $cc_email = 'jervyezaballa@gmail.com';
+							$mail->addCC($cc_email);	
+*/
+							$content = '<p>Please be advised that there are supplies that need to be delivered.</p>'.$supply_list;
 							$mail->Body = $content.'<br /><br />Sent via Sojourn auto-email service.<br />Please log-in to Sojourn and check the client supplies as per details above.<br /><br />&copy; FSF Group '.date('Y').'</p>';
-
 							$mail->send();
-
-
-
-
-
 						}
 					}
 // client supply
-//endif;
+endif;
 
 
 
@@ -1630,9 +1662,9 @@ endif;
 
 					//	else{ // remove else after
 							// HIDE THIS DURING DEBUG
-//	if($userdata->user_id != 2){ 
+	if($userdata->user_id != 2){ 
 		redirect('', 'refresh'); 
-//	}
+	}
 
 							// HIDE THIS DURING DEBUG
 					//	} // remove else after

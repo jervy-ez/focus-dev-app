@@ -20,6 +20,13 @@ class Client_supply_m extends CI_Model{
 		$this->db->query(" UPDATE `client_supply` SET `photos` = '$photos' WHERE `client_supply`.`client_supply_id` = '$id' ");
 	}
 
+	public function set_auto_delivered($set_delivered_date,$date_limit){
+		$this->db->query(" UPDATE `client_supply` SET `is_delivered_date` = '$set_delivered_date' 
+			WHERE `client_supply`.`is_active` = '1'  
+			AND `client_supply`.`is_delivered_date`  IS NULL
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`client_supply`.`delivery_date`, '%d/%m/%Y') ) < UNIX_TIMESTAMP( STR_TO_DATE('$date_limit', '%d/%m/%Y') ) ");
+	}
+	
 	public function get_client_supply_logo($warehouse_id){
 	/*	$query = $this->db->query("SELECT `client_storage`.*, `client`.`company_name` AS `client_name`,`client`.`company_id` AS `client_id`, `f_company`.`company_name`,`warehouse`.`location`
 			FROM `client_storage`
