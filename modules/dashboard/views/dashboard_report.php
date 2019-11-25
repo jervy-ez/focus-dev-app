@@ -266,7 +266,28 @@ if($is_company == 1){
   $user_details['user_first_name'] = $company_details['company_name']; 
   $user_details['user_last_name'] = '';
   $user_details['user_focus_company_id'] = $company_details['company_id'];
+
+
+
+
+  $int_comp_id = $company_details['company_id'];
+
+  if( in_array($int_comp_id, $focus_comp_forecast) ){
+
   $company_forecasted_amount = $focus_comp_forecast[$company_details['company_id']];
+
+  }else{
+
+  $company_forecasted_amount = 0;
+
+  }
+
+
+
+
+
+
+
 
   $pm_forecast['forecast_percent'] = 100;
 
@@ -296,7 +317,25 @@ if($is_company == 1){
 
 foreach ($months as $key => $value) {
 
+$init_pm_forecst = 'forecast_'.$value;
+
+if( in_array($init_pm_forecst, $pm_forecast) ){
+
   $forecasted_amount = $company_forecasted_amount * ( $pm_forecast['forecast_percent']/100 ) *  ($pm_forecast['forecast_'.$value]/100);
+
+}else{
+
+
+  $forecasted_amount = $company_forecasted_amount * ( $pm_forecast['forecast_percent']/100 ) *  0;
+
+
+}
+
+
+
+
+
+
   array_push($forecast_values, round($forecasted_amount));
   array_push($sales_values, round($pm_actual_sales['rev_'.$value]));
   array_push($old_sales_values, round($pm_last_year_sales['rev_'.$value]));

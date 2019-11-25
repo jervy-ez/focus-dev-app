@@ -623,7 +623,7 @@ if ($(window).width() >= 1400 && $(window).width() <= 1660) {
 										
 										<div role="tabpanel" class="tab-pane active fade in" id="clients" >
 											<div id="" class="col-lg-5">
-												<div class="loading_chart" style="height: 300px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
+												<div class="loading_chart hide" style="height: 300px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
 												<div class="" id="donut_a" style="text-align: center;"></div>
 											</div>
 											<div id="" class="col-lg-7">

@@ -266,7 +266,16 @@ if($is_company == 1){
   $user_details['user_focus_company_id'] = $company_details['company_id'];
 
   $company_forecasted_amount_old = $focus_comp_forecast_old[$company_details['company_id']];
-  $company_forecasted_amount = $focus_comp_forecast[$company_details['company_id']];
+
+  $int_comp_id = $company_details['company_id'];
+
+  if( in_array($int_comp_id, $focus_comp_forecast) ){
+    $company_forecasted_amount = $focus_comp_forecast[$company_details['company_id']];
+  }else{
+    $company_forecasted_amount = 0;
+  }
+
+
 
   $pm_forecast['forecast_percent'] = 100;
 }elseif($is_company == 2){

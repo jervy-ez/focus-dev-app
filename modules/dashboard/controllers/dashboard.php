@@ -102,7 +102,7 @@ class Dashboard extends MY_Controller{
 				$data['pm_setter'] = '';
 				$data['pm_setter_focus_id'] = '';
 
-				if($this->session->userdata('is_admin') == 1 || $user_role_id == 16 || $this->session->userdata('user_id') == 9 || $this->session->userdata('user_id') == 6):
+				if($this->session->userdata('is_admin') == 1 || $user_role_id == 16 || $this->session->userdata('user_id') == 9 || $this->session->userdata('user_id') == 6|| $this->session->userdata('user_id') == 85):
 
 					$dash_type = $this->input->get('dash_view', TRUE);
 				if( isset($dash_type) && $dash_type != ''){
@@ -11609,10 +11609,10 @@ foreach ($result_q as $data) {
 		$this->db->query(" UPDATE `client_supply` SET `has_reminded` = '01/01/2010' ");
 		$this->db->query(" UPDATE `client_supply` SET `is_delivered_date` = NULL ");
 		$this->db->query(" UPDATE `client_supply` SET `has_reminded_rcv` = '01/01/2010' ");
-
+/*
 		$this->db->query(" ALTER TABLE `client_supply` ADD `added_by_user` INT(3) NOT NULL AFTER `has_reminded_rcv` ");
 		$this->db->query(" UPDATE `client_supply` SET `added_by_user` = '2' ");
-
+*/
 		
 
 
