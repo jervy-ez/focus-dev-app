@@ -102,7 +102,7 @@ class Dashboard extends MY_Controller{
 				$data['pm_setter'] = '';
 				$data['pm_setter_focus_id'] = '';
 
-				if($this->session->userdata('is_admin') == 1 || $user_role_id == 16 || $this->session->userdata('user_id') == 9 || $this->session->userdata('user_id') == 6 || $this->session->userdata('user_id') == 85):
+				if($this->session->userdata('is_admin') == 1 || $user_role_id == 16 || $this->session->userdata('user_id') == 9 || $this->session->userdata('user_id') == 6|| $this->session->userdata('user_id') == 85):
 
 					$dash_type = $this->input->get('dash_view', TRUE);
 				if( isset($dash_type) && $dash_type != ''){
@@ -6973,112 +6973,6 @@ public function focus_projects_count_widget_mn(){
 		<input class="knob" data-width="100%" data-step=".1"  data-thickness=".13" value="'.number_format($average,1).'" readonly data-fgColor="#964dd7" data-angleOffset="-180"  data-max="'.$long_day.'">
 		<div id="" class="clearfix m-top-10"><div id="" class="col-xs-6"><strong><p>'.$short_day_day.' min</p></strong></div><div id="" class="col-xs-6 text-right"><strong><p>max '.$long_day.'</p></strong></div></div></div>';
 
-	}
-
-
-
-	public function list_client_supply_tbl($focus_company_id,$has_arrived_warehouse=0,$is_widget=1){
-
-		$this->load->module('client_supply'); 
-		$this->load->model('client_supply_m');
-		$bound = '';
-
-		$custom = " AND  `client_supply`.`is_delivered_date` IS NULL AND `project`.`focus_company_id` = '$focus_company_id'  ";
-
-
-		if($is_widget == 1){
-
-			if($has_arrived_warehouse == 1 ){
-				$custom .= " AND `client_supply`.`date_goods_arrived` != '' ORDER BY  `unix_dt_gds_expt`  ASC ";
-				$bound = 'outbnd';
-			}else{
-				$custom .= " AND `client_supply`.`date_goods_arrived` = '' ORDER BY  `unix_dlvy_dt`  ASC ";
-				$bound = 'inbnd';
-			}
-
-			$custom .= " LIMIT 10 ";
-
-		}else{
-			$custom = '';
-		}
-
-		$supply_list_q_wa = $this->client_supply_m->list_client_supply($custom);
-
-		foreach ($supply_list_q_wa->result() as $supply):  
-			$status_late = ''; 
-
-		$status_late = (    $supply->unix_dlvy_dt < strtotime(date('Y-m-d'))   ? 'late_delv' : '');   
-
-		echo '<tr class="'.$status_late.'  csup_row  focus_comp_loc_ '.$supply->focus_company_id.' ">';
-
-
-		if($is_widget != 1){
-			if($supply->date_goods_arrived == ''){
-				$has_arrived_warehouse = 0;
-				$bound = 'inbnd';
-			}else{
-				$has_arrived_warehouse = 1;
-				$bound = 'outbnd';
-			}
-		}
-
-
-		if($has_arrived_warehouse == 1 ){
-			echo '<td class="hide">'.$supply->unix_dlvy_dt.' '.$supply->project_name.' </td>';
-		}else{
-			echo '<td class="hide">'.$supply->unix_dt_gds_expt.' '.$supply->project_name.' </td>';
-		}
-
-
-
-		echo '<td><a href="'.base_url().'projects/view/'.$supply->project_id.'" target="_blank">'.$supply->project_id.'</a></td>
-		<td>'.$supply->company_name.'</td>';
-
-
-
-		if($is_widget == 1){
-			echo '<td><strong>'.$supply->supply_name;
-		}else{
-			echo '<td><a href="'.base_url().'client_supply?view_supply='.$supply->client_supply_id.'" target="_blank">'.$supply->supply_name.'</a></td>';
-		}
-
-
-
-/*
-		if($this->session->userdata('client_supply') ==  2): 
-			echo '<td><a href="'.base_url().'client_supply?view_supply='.$supply->client_supply_id.'" target="_blank">'.$supply->supply_name.'</a></td>';
-		else:
-			
-		endif; 
-*/
-
-
-		$delvr = '';
-
-
-		if($has_arrived_warehouse == 1 ){
-			$delvr = $supply->delivery_date;
-			echo '<button class="pull-right btn-success btn " style="padding: 2px 4px;" onClick="set_as_delivered('.$supply->client_supply_id.',this)"> <em class="fa fa-truck" style=""></em></button>';
-		}else{
-			$delvr = $supply->date_goods_expected;
-			echo '<button class="pull-right btn-info btn " style="padding: 2px 4px;" onClick="set_as_arrived('.$supply->client_supply_id.',this)"> <em class="fa fa-cubes" style=""></em></button>';
-		}
-
-		echo '</strong></td>';
-		echo '<td>'.$supply->warehouse.'</td>';
-
-/*
-		if($has_arrived_warehouse == 1 ){
-			echo '<td>'.$supply->delivery_date.'</td>';
-		}else{
-			echo '<td>'.$supply->date_goods_expected.'</td>';
-		}
-*/
-		echo '<td>'.$delvr.'</td>';
-		echo '<td class="hide">'.$focus_company_id.'_'.$bound.'</td>';
-		echo '</tr>';
-
-		endforeach;
 	}
 
 

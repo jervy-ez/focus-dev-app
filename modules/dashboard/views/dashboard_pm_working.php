@@ -1667,6 +1667,442 @@ chart.select();
 
 
 
+						<!-- ************   LEAVE CHART   ************ -->
+						
+
+						<div id="" class="hide hidden">
+
+
+<?php
+	$custom_q = '';
+	if($pm_type == 1){
+		$custom_q = " AND `users`.`user_focus_company_id` = '$focus_company_location' ";
+		$user_list_q = $this->user_model->list_user_short($custom_q);
+		$user_list= $user_list_q->result();
+	}else{
+								//	$custom_q = " AND `users`.`user_id` = '$user_id' ";
+		$user_list_q = $this->user_model->list_user_short(" AND `users`.`user_id` = '$user_id' ");
+		$user_list= $user_list_q->result();
+	}
+?>
+
+<?php 
+	$user_list_q = $this->user_model->list_user_short($custom_q);
+	$user_list= $user_list_q->result();
+?>
+
+
+							
+							<?php 
+
+							$q_leave_types = $this->user_model->fetch_leave_type();
+							$leave_types = $q_leave_types->result();
+
+							$added_data = new StdClass();
+							$added_data->{"leave_type_id"} = '0';
+							$added_data->{"leave_type"} = 'Public Holiday';
+							$added_data->{"remarks"} = '';
+
+
+							array_push($leave_types, $added_data);
+ 
+
+
+							if($pm_type == 1){
+
+								$leave_totals =  $this->dashboard->get_count_per_week(2,'','',$custom_q);
+								$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,'',$custom_q);
+							}else{
+
+								$leave_totals =  $this->dashboard->get_count_per_week(2,'',$user_id);
+								$last_year_leave = $this->dashboard->get_count_per_week(2,$last_year,$user_id);
+							}
+
+							?>
+						</div>
+
+						<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 box-widget pad-10">
+							<div class="widget wid-type-0 widg-head-styled">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide hidden"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head box-widg-head fill  pad-5">
+									<strong>Employee Leave Chart : <?php echo date('Y'); ?></strong>  <span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Lists every months week number and displays how many leaves taken place, the chart can be broken down into individual employees."></i></span>
+<?php 
+          	if($pm_type == 1): ?>
+
+	<select class="pull-right input-control input-sm chart_data_selection_emps" style="background:#AAAAAA; padding: 0;margin: -8px 0 0 0;width: 100px;height: 35px; border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+										
+										<option disabled="" value="0">Select View</option>
+										<option value="grouped"  selected="all">Grouped</option>
+
+
+										<?php foreach ($user_list as $key => $value): ?> 
+												<option class="emp_opy_select"  value="<?php echo $value->user_first_name.' '.$value->user_last_name.'|'.$value->primary_user_id; ?>" ><?php echo $value->user_first_name.' '.$value->user_last_name; ?></option>
+										<?php endforeach; ?>
+									</select>
+
+<?php endif; ?>
+							
+								</div>
+
+<?php $color_leave_type = array('#A7184B','#0092CE','#3D00A4','#FE2712','#FD5309','#0047FE','#8600AF');  ?>
+
+
+<?php 
+$leave_type_list = array();
+
+$leave_type_list[1] = 'Annual Leave';
+$leave_type_list[5] = 'Unpaid Leave';
+$leave_type_list[2] = 'Personal (Sick Leave)';
+$leave_type_list[6] = 'RDO (Rostered Day Off)';
+$leave_type_list[0] = 'Public Holiday';
+$leave_type_list[3] = 'Personal (Carers Leave)';
+$leave_type_list[4] = 'Personal (Comp. Leave)';
+
+?>
+
+
+
+								<div class="box-area clearfix row pad-right-10 pad-left-10 pad-bottom-10">									
+									<div class="widg-content col-md-12 col-xs-12 clearfix">
+										<div class="chart_main_leave_loading_chart" style="height: 457px; text-align: center; padding: 100px 53px; color: #ccc;"><i class="fa fa-spin fa-refresh fa-4x"></i></div>
+										<div class id=" pad-bottom-10 ">
+											
+											<div id="chart_main_leave"  ></div>
+
+											<div id="" class="" style="margin: -6px -26px 17px 53px;    display: block;    clear: both;    font-size: 10px;">
+												<?php foreach ($months as $key => $value): ?>
+													<div id="" class="mos"><?php echo $value; ?></div>
+												<?php endforeach; ?>
+											</div>
+
+											<script type="text/javascript"> var default_totals_c = ''; var default_totals_o = ''; </script>
+
+											<div id="" class="clearfix" style="margin: 20px 10px 0px;">
+												<?php $current_total_leaves = ''; $previou_total_leaves= ''; ?>
+
+
+												<?php foreach ($leave_type_list as $leave_data_id => $leave_name_value): ?>
+													<div class="" style="padding:2px; float:left; display:block; width: 14%;  background: <?php echo $color_leave_type[$leave_data_id];  ?>;">
+														<p class="pointer leave_type_selection tooltip-enabled type_label_<?php echo $leave_data_id; ?>" title="" data-html="true" data-placement="top" data-original-title="Total Applied: <?php echo $leave_totals[$leave_data_id]; ?><br />Last Year:  <?php echo $last_year_leave[$leave_data_id]; ?>" id="<?php echo $leave_name_value; ?>" style="color: #fff;   font-size: 12px;  text-align: center;"><?php echo $leave_name_value; ?></p>
+													</div>
+
+ 
+
+													<?php 
+														$current_total_leaves .= $leave_data_id.'-'.$leave_totals[$leave_data_id].'|';
+														$previou_total_leaves .= $leave_data_id.'-'.$last_year_leave[$leave_data_id].'|';
+													 ?>
+
+
+												<?php endforeach; ?>
+											</div>
+
+											<div id="" class="hide hidden">
+												<p class="current_total_leaves" ><?php echo "$current_total_leaves"; ?></p>
+												<p class="previou_total_leaves" ><?php echo "$previou_total_leaves"; ?></p>
+											</div>
+
+											<style type="text/css">.mos {    float: left;    width: 8.1%;    text-align: center;}</style>
+										</div> 	
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+
+
+
+						<script type="text/javascript">
+
+
+var chart_emply = c3.generate({
+	size: {
+		height: 340
+
+	},data: {
+		x : 'x',
+		columns: [
+          ['x',  // months labels
+
+          <?php 
+
+          for($i=1; $i <53 ; $i++){
+
+
+					if($i > 2){
+
+          				echo "'".$i."',";
+					}
+          }
+
+
+          ?> ], // months labels
+
+
+          <?php 
+
+
+		//          if($user_id == 16 || $user_id == 15){
+
+          if($pm_type == 1){
+          	echo $this->dashboard->get_count_per_week(1,'','',$custom_q);
+
+          }else{
+          	echo $this->dashboard->get_count_per_week(3,$current_year,$user_id);
+
+          }
+
+
+           ?>
+
+ 
+
+
+],
+selection: {enabled: true},
+type: 'bar', 
+ 
+colors: {
+	//*'Average': '#FF7F0E',
+	//'Current': '#2CA02C',
+//	'Last Year': '#9467BD',
+
+	<?php /*foreach ($leave_types as $leave_data): ?>
+		'<?php echo $this->session->userdata("user_first_name")." ".$this->session->userdata("user_last_name")." ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id];  ?>',
+	<?php endforeach; */?>
+
+	
+	<?php foreach ($user_list as $key => $value): ?> 
+		<?php foreach ($leave_types as $leave_data): ?>
+		'<?php echo $value->user_first_name.' '.$value->user_last_name." ".$leave_data->leave_type; ?>': '<?php echo $color_leave_type[$leave_data->leave_type_id]; ?>',
+	<?php endforeach; ?>
+<?php endforeach; ?>
+
+
+        },
+
+groups: [
+
+
+
+[
+	<?php /*foreach ($leave_types as $leave_data): ?>
+		'<?php echo $this->session->userdata("user_first_name")." ".$this->session->userdata("user_last_name")." ".$leave_data->leave_type; ?>',
+	<?php endforeach;*/ ?>
+
+
+	 
+<?php foreach ($user_list as $key => $value): ?> 
+	<?php foreach ($leave_types as $leave_data): ?>
+		'<?php echo $value->user_first_name.' '.$value->user_last_name.' '.$leave_data->leave_type; ?>',
+	<?php endforeach; ?>
+<?php endforeach; ?>
+
+
+
+],
+
+
+],
+order: null,
+}, 
+    
+tooltip: {
+        grouped: true // false // Default true
+    },
+    bindto: "#chart_main_leave",
+    bar:{ width:{ ratio: 0.5 }},
+    point:{ select:{ r: 6 }},
+ onrendered: function () {
+
+  $('.chart_main_leave_loading_chart').remove();
+
+
+
+
+   },
+//zoom: {enabled: true, rescale: true,extent: [1, 7]},
+legend: { show: false },
+
+axis: {x: {type: 'category', tick: {rotate: 0,multiline: false}, height: 0}, y: {       tick: {          format: d3.format('.2f')        }      } }, 
+
+tooltip: {
+	format: {
+     title: function (x) { return 'Week '+(x+3); },
+     value: function (value, ratio, id) {
+               // var format = id === 'data1' ? d3.format(',') : d3.format('$');
+               var format = d3.format('.2f');
+
+               var mod_value =  value.toFixed(2); //Math.ceil(value,2)  // need to get 2 decimal places
+
+           //    var mod_value_x = parseFloat(Math.round(mod_value * Math.pow(10, 2)) /Math.pow(10,2)).toFixed(2);
+
+            // var mod_value_y =   d3.format('.2f')
+
+            //   var mod_value = parseFloat(Math.round(value * 100) / 100).toFixed(2);
+               //return '$ '+format(mod_value);
+            //   return format(mod_value);
+
+
+               if(mod_value > 0){
+               	 return format(mod_value);
+               }
+
+
+           }//
+       } 
+
+   }
+});
+
+//chart_emply.hide();
+
+
+				chart_emply.show();
+				chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Public Holiday','Overall RDO (Rostered Day Off)']);
+	
+
+
+ 
+
+$('select.chart_data_selection_emps').on("change", function(e) {
+
+	$('#loading_modal').modal({"backdrop": "static", "show" : true} );
+
+	var data = $(this).val();
+
+	var current_total_leaves = $('p.current_total_leaves').text().split('|');
+	var previou_total_leaves = $('p.previou_total_leaves').text().split('|');
+
+
+
+	setTimeout(function(){
+
+
+		chart_emply.hide(); 
+		chart_emply.unselect();
+
+		if(data == 'all'){
+			setTimeout(function () { 
+				chart_emply.show(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Public Holiday','Overall RDO (Rostered Day Off)']);
+			}, 500);
+
+
+
+			for (var i = 0; i < current_total_leaves.length; i++) {
+				var data_thisYear = current_total_leaves[i].split('-');
+				var data_lastYear = previou_total_leaves[i].split('-');
+				$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
+			}
+
+
+
+
+		}else if(data == 'grouped'){
+			setTimeout(function () {
+				chart_emply.show();
+				chart_emply.hide(['Overall Annual Leave','Overall Personal (Sick Leave)','Overall Personal (Carers Leave)','Overall Personal (Compassionate Leave)','Overall Unpaid Leave','Overall Public Holiday','Overall RDO (Rostered Day Off)']);
+			}, 500);
+
+
+			for (var i = 0; i < current_total_leaves.length; i++) {
+				var data_thisYear = current_total_leaves[i].split('-');
+				var data_lastYear = previou_total_leaves[i].split('-');
+				$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
+			}
+
+
+
+		}else{
+
+			var user_data_selected = data.split('|');
+
+//alert(user_data_selected[1]);
+			setTimeout(function () {
+//get_count_per_week($return_total = 0, $set_year = '', $set_emp_id = '' )
+
+				$.ajax({
+					'url' : base_url+'dashboard/get_count_per_week/2/<?php echo $current_year; ?>/'+user_data_selected[1],
+					'type' : 'GET',
+					'success' : function(dataValCurr){
+						var data_arr_curr_dataVal = dataValCurr.split('|');
+						
+						$.ajax({
+							'url' : base_url+'dashboard/get_count_per_week/2/<?php echo $last_year; ?>/'+user_data_selected[1],
+							'type' : 'GET',
+							'success' : function(dataVal){
+
+								var data_arr_dataVal = dataVal.split('|');
+
+								for (var i = 0; i < data_arr_curr_dataVal.length; i++) {
+
+									var data_thisYear = data_arr_curr_dataVal[i].split('-');
+									var data_lastYear = data_arr_dataVal[i].split('-');
+
+									//alert(data_thisYear[0]+' **** '+data_thisYear[1]);
+									//alert(data_lastYear[0]+' **** '+data_lastYear[1]);
+
+									$("p.type_label_"+data_thisYear[0]).attr('data-original-title', "Total Applied: "+data_thisYear[1]+"<br />Last Year: "+data_lastYear[1]);
+								}
+
+							}
+						});
+					}
+				});
+
+
+
+				chart_emply.show([user_data_selected[0]+' Annual Leave',user_data_selected[0]+' Personal (Sick Leave)',user_data_selected[0]+' Personal (Carers Leave)',user_data_selected[0]+' Personal (Compassionate Leave)',user_data_selected[0]+' Unpaid Leave',user_data_selected[0]+' Public Holiday',user_data_selected[0]+' RDO (Rostered Day Off)']);
+			}, 500);
+		}
+
+	//	chart_emply.select();
+
+	 
+	},500);	
+
+	setTimeout(function(){
+		$('#loading_modal').modal('hide');
+	},5000);	
+
+	});
+
+
+$('.leave_type_selection').click(function(){
+	$('select.chart_data_selection_emps').val('0');
+	$('#loading_modal').modal({"backdrop": "static", "show" : true} );
+	var leave_type = $(this).attr('id');
+
+
+	setTimeout(function () {
+		chart_emply.hide(); 
+		chart_emply.unselect();
+	}, 500);
+ 
+	setTimeout(function () {
+		chart_emply.show([
+
+			<?php foreach ($user_list as $key => $value): ?>  
+				'<?php echo $value->user_first_name.' '.$value->user_last_name.' '; ?>'+leave_type,
+			<?php endforeach; ?> 
+
+		]);
+	}, 1000);
+
+	setTimeout(function(){
+		//chart_emply.select();
+		$('#loading_modal').modal('hide');
+	},3000);
+
+});
+
+</script>
+						<!-- ************************ -->
+
+						<!-- ************   LEAVE CHART   ************ -->
+
+
 						<!-- ************************ -->
 						
 						<div class="clearfix"></div>

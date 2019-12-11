@@ -52,7 +52,24 @@
 
         <li class="">
             <a href="#edit_supply" data-toggle="tab" class="edit_supply_tab" style="display:none;"><i class="fa fa-list fa-lg"></i> Supply Details</a>
-          </li> 
+          </li>
+
+
+        <li class="">
+
+
+            <a href="#edit_supply" data-toggle="tab" class="edit_supply_tab"><i class="fa fa-sign-in fa-lg"></i> Inbound</a>
+             </li>
+
+
+        <li class="">
+            <a href="#edit_supply" data-toggle="tab" class="edit_supply_tab"><i class="fa fa-sign-out fa-lg"></i> Outbound</a>
+             </li>
+
+
+        <li class="">
+        <a href="#edit_supply" data-toggle="tab" class="edit_supply_tab"><i class="fa fa-check-square-o fa-lg"></i> Completed</a>
+</li>
 
 
         <?php if(@$this->session->flashdata('error_add')): ?>

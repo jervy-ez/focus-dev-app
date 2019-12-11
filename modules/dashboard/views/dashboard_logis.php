@@ -3,6 +3,8 @@
 <?php $this->load->module('dashboard'); ?>
 <?php $months = array("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"); ?>
 <?php $this->load->module('dashboard/estimators'); ?>
+
+
 <!-- title bar -->
 
 
@@ -421,6 +423,253 @@ $focus_company_location = $user_focus_company_id;
 							</div>
 						</div>
 
+
+
+						
+
+						<!-- ************************ -->
+						
+						<div class="clearfix"></div>
+
+						<!-- ************************ -->
+
+
+
+
+ 
+
+
+
+
+											<script type="text/javascript"> //pre_load_module('#up_coming_deadline_area','dashboard/estimators/up_coming_deadline',15000); </script>
+
+						<div class="col-sm-12 col-xs-12 box-widget pad-10 client_supplies_area">
+							<div class="widget wid-type-b widg-head-styled" style="max-height: 501px;">
+								<div class="reload-widget-icon pull-right m-top-8 m-right-10 m-left-5 hide"><i class="fa fa-spin fa-refresh"></i></div>
+								<div class="widg-head  box-widg-head fill pad-5">
+
+								<strong>Client Supply - Deliveries</strong>
+
+
+
+
+								<span class="pointer"><i class="fa fa-info-circle tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title=""></i></span> 
+ 
+
+
+
+ <select class="pull-right input-control input-sm slct_client_supply_sort" onchange="client_supply_tble(this.value)" style="  color: #FFF;  background: #62a762;padding: 2px 0 0 0;margin: -8px 0 0 30px; font-size: 15px; height: 35px;border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+    <option value="1" selected="">Delivery Date ASC</option>
+    <option value="2">Delivery Date DESC</option> 
+</select>
+
+
+
+ <select class="pull-right input-control input-sm sltc_search_on_client_supply" onchange="search_on_client_supply_tble('6',this.value)" style="  color: #FFF;  background: #62a762;padding: 2px 0 0 0;margin: -8px 0 0 30px; font-size: 15px; height: 35px;border-radius: 0;border: 0;border-bottom: 1px solid #999999;">
+    <option class="comp_suply_5 bnd_optn" value="5_outbnd" selected="">Outbound</option>
+    <option class="comp_suply_5 bnd_optn" value="5_inbnd">Inbound</option>
+
+    <option class="comp_suply_6 bnd_optn" style="display:none;" value="6_outbnd" selected="">Outbound</option>
+    <option class="comp_suply_6 bnd_optn" style="display:none;" value="6_inbnd">Inbound</option>
+</select>
+
+
+								<div id="" class="pull-right comp_cs_toggle">
+									<button class="pull-right bttn_csp" id="6">NSW</button>
+									<button class="pull-right active bttn_csp" id="5">WA</button>
+								</div>
+
+								<script type="text/javascript">
+
+
+								$('button.bttn_csp').click(function(){
+									var company = $(this).attr('id');
+
+									$('button.bttn_csp').removeClass('active');
+									$(this).addClass('active');
+
+
+									$('option.bnd_optn').hide();
+									$('option.comp_suply_'+company).show();
+
+
+								
+
+
+
+
+
+
+									var sort_spply = $('select.slct_client_supply_sort').val();
+
+
+									var bnd_slct_val = $('select.sltc_search_on_client_supply').val();
+
+									var arr_bnd = bnd_slct_val.split("_");
+
+
+
+
+									client_supply_tble(sort_spply);
+
+									var search_val = company+'_'+arr_bnd[1];
+
+
+
+
+									search_on_client_supply_tble('6',search_val);
+
+
+
+								});
+
+
+
+								function set_as_delivered(supply_id,obj){
+									$.ajax({
+										'url' : base_url+'client_supply/set_as_delivered/'+supply_id,
+										'type' : 'GET'
+									});
+									$(obj).parent().parent().parent().addClass('is_supply_delivrd').removeClass('late_delv');
+									$(obj).hide();
+								}
+
+								function set_as_arrived(supply_id,obj){
+									$.ajax({
+										'url' : base_url+'client_supply/set_as_arrived/'+supply_id,
+										'type' : 'GET'
+									});
+									$(obj).parent().parent().parent().addClass('is_supply_delivrd').removeClass('late_delv');
+									$(obj).hide();
+								}
+
+
+								</script>
+
+
+								<style type="text/css">
+
+
+									.comp_cs_toggle button{
+
+
+										color: #FFF;
+										border-radius: 5px 5px 0 0;
+										border: none;
+										margin: 0 3px 0;
+										padding: 3px 15px;
+										background-color: #417741;
+									}
+
+
+
+									.comp_cs_toggle button.active{
+										background-color: #FFF !important;
+										color: #518e51 !important;
+									}
+
+
+									tr.late_delv td {
+										background-color: #ffc6c6 !important;
+									}
+
+									tr.is_supply_delivrd td {
+										background-color: #bef5be !important;
+									}
+
+
+								</style>
+ 
+
+								</div>
+								<div class="box-area clearfix">
+									<div class="widg-content clearfix">
+
+
+  
+
+
+<div id="" class="" style=" max-height: 452px;    padding: 0 5px 0;    overflow: hidden;    overflow-x: hidden; ">
+											<div class="clearfix center " id="joinery_in_wip">
+												<!-- <p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p> -->
+											
+<table id="dataTable_client_supply" class="table table-striped table-bordered" cellspacing="0" width="100%">
+
+
+
+                              <thead  style="background-color:#f3f1f1;" ><tr><th class="hide">id</th><th>Project</th><th>Client</th><th>Supply Name</th><th>Warehouse</th><th>Delivery</th><th class="hide hidden"></th> </tr></thead>
+										 <tbody>                              
+
+
+
+
+										 	<?php $this->dashboard->list_client_supply_tbl(5); ?>
+										 	<?php $this->dashboard->list_client_supply_tbl(6); ?>
+										 	<?php $this->dashboard->list_client_supply_tbl(5,1); ?>
+										 	<?php $this->dashboard->list_client_supply_tbl(6,1); ?>
+
+
+
+
+
+
+
+                              </tbody>
+
+
+
+									</table>
+
+									</div>
+
+
+ 
+
+
+
+ 
+										</div>							
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<style type="text/css">
+							.client_supplies_area #dataTable_client_supply_wrapper div.row{
+								display: none; visibility: hidden;
+							}
+
+
+							tr.late_delv td {
+								background-color: #ffc6c6 !important;
+							}
+
+
+							tr.focus_comp_loc_6{
+								display: none;
+							}
+ 
+						</style>
+
+
+<script type="text/javascript"> 
+
+
+
+
+	setTimeout(function () {
+		 search_on_client_supply_tble('6','5_outbnd');
+
+	}, 3000);
+
+
+
+</script>
+
+
+
+
+
 						<!-- ************************ -->
 						
 						<div class="clearfix"></div>
@@ -587,7 +836,7 @@ $focus_company_location = $user_focus_company_id;
 											<div class="clearfix center " id="joinery_in_wip">
 												<!-- <p style="margin:-15px -20px;"><i class="fa fa-cog fa-spin fa-fw margin-bottom"></i> Loading...</p> -->
 											
-<table id="po_wip_join" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead><tr><!--<th>Brand/Shopping Centre Group</th>--><th style="border-right: none;">Project Number</th><th style="border-right: none;">PO Number</th><th style="border-right: none;">Delivery</th><th style="border-right: none;">CPO Date</th><th>Amount Ex-GST</th><th class="hide">unix_delivery</th><th class="hide">unix_cpo</th></tr></thead>
+<table id="po_wip_join" class="table table-striped table-bordered" cellspacing="0" width="100%"><thead style="background-color:#f3f1f1;" ><tr><!--<th>Brand/Shopping Centre Group</th>--><th style="border-right: none;">Project Number</th><th style="border-right: none;">PO Number</th><th style="border-right: none;">Delivery</th><th style="border-right: none;">CPO Date</th><th>Amount Ex-GST</th><th class="hide">unix_delivery</th><th class="hide">unix_cpo</th></tr></thead>
 										<tbody>
 											<?php echo $this->dashboard->po_joinery_list(); ?>
 										</tbody>
@@ -641,6 +890,15 @@ setTimeout(function() {
 
 
 						<!-- ************************ -->
+
+
+
+
+
+
+
+						<!-- ************************ -->
+
 
 
 
