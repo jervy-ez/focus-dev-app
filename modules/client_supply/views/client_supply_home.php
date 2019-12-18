@@ -45,64 +45,79 @@
 
 
         <ul id="myTab" class="nav nav-tabs pull-right">
-<li>
+          <li>
             <a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
           </li>
 
-
-        <li class="">
+          <li class="">
             <a href="#edit_supply" data-toggle="tab" class="edit_supply_tab" style="display:none;"><i class="fa fa-list fa-lg"></i> Supply Details</a>
           </li>
 
 
-        <li class="">
+
+          <?php if(@$this->session->flashdata('error_add')): ?>  <!-- main if -->
+
+<!-- 
+            <li class="" >
+              <a href="#supply_list" class="default_nav_btn" data-toggle="tab"><i class="fa fa-table fa-lg"></i> Supply List</a>
+            </li>
+ -->
 
 
-            <a href="#edit_supply" data-toggle="tab" class="edit_supply_tab"><i class="fa fa-sign-in fa-lg"></i> Inbound</a>
-             </li>
+          <li class="">
+            <a href="#supply_list" data-toggle="tab" class="default_nav_btn bnd_cntrl" id="inbnd"><i class="fa fa-sign-in fa-lg"></i> Inbound</a>
+          </li>
 
+          <li class="">
+            <a href="#supply_list" data-toggle="tab" class="default_nav_btn bnd_cntrl" id="outbnd"><i class="fa fa-sign-out fa-lg"></i> Outbound</a>
+          </li>
 
-        <li class="">
-            <a href="#edit_supply" data-toggle="tab" class="edit_supply_tab"><i class="fa fa-sign-out fa-lg"></i> Outbound</a>
-             </li>
-
-
-        <li class="">
-        <a href="#edit_supply" data-toggle="tab" class="edit_supply_tab"><i class="fa fa-check-square-o fa-lg"></i> Completed</a>
-</li>
-
-
-        <?php if(@$this->session->flashdata('error_add')): ?>
-
-          <li class="" >
-            <a href="#supply_list" class="default_nav_btn" data-toggle="tab"><i class="fa fa-table fa-lg"></i> Supply List</a>
+          <li class="">
+            <a href="#supply_list" data-toggle="tab" class="default_nav_btn bnd_cntrl" id="cpmltd"><i class="fa fa-check-square-o fa-lg"></i> Completed</a>
           </li>
 
 
 
-        <?php if($this->session->userdata('client_supply') ==  2): ?>
-                  <li class="active">
-                    <a href="#new_supply" class="default_nav_btn" data-toggle="tab" class="new_supply_tab"><i class="fa fa-plus-square fa-lg"></i> New Supply</a>
-                  </li>
-        <?php endif; ?>
+            <?php if($this->session->userdata('client_supply') ==  2): ?> 
+              <li class="active">
+                <a href="#new_supply" class="default_nav_btn new_supply_tab" data-toggle="tab"><i class="fa fa-plus-square fa-lg"></i> New Supply</a>
+              </li>
+            <?php endif; ?>
 
 
 
-        <?php else: ?>
+          <?php else: ?>
+<!-- 
+            <li class="active" >
+              <a href="#supply_list" class="default_nav_btn" data-toggle="tab"><i class="fa fa-table fa-lg"></i> Supply List</a>
+            </li>
 
-          <li class="active" >
-            <a href="#supply_list" class="default_nav_btn" data-toggle="tab"><i class="fa fa-table fa-lg"></i> Supply List</a>
+ -->
+
+
+
+          <li class="">
+            <a href="#supply_list" data-toggle="tab" class="default_nav_btn bnd_cntrl" id="inbnd"><i class="fa fa-sign-in fa-lg"></i> Inbound</a>
+          </li>
+
+          <li class="active">
+            <a href="#supply_list" data-toggle="tab" class="default_nav_btn bnd_cntrl" id="outbnd"><i class="fa fa-sign-out fa-lg"></i> Outbound</a>
+          </li>
+
+          <li class="">
+            <a href="#supply_list" data-toggle="tab" class="default_nav_btn bnd_cntrl" id="cpmltd"><i class="fa fa-check-square-o fa-lg"></i> Completed</a>
           </li>
 
 
 
-                  <?php if($this->session->userdata('client_supply') ==  2): ?>
-                    <li class="">
-                      <a href="#new_supply" class="default_nav_btn" data-toggle="tab" class="new_supply_tab"><i class="fa fa-plus-square fa-lg"></i> New Supply</a>
-                    </li> 
-                  <?php endif; ?>
 
-        <?php endif; ?>
+            <?php if($this->session->userdata('client_supply') ==  2): ?>
+              <li class="">
+                <a href="#new_supply" class="default_nav_btn new_supply_tab" data-toggle="tab" ><i class="fa fa-plus-square fa-lg"></i> New Supply</a>
+              </li> 
+            <?php endif; ?>
+
+        <?php endif; ?>  <!-- main if -->
 
 
 
@@ -169,7 +184,7 @@
                 <div class="row clearfix">
                     <div class="col-lg-6">
                       <div class="box-head pad-left-15 clearfix">
-                        <label><?php echo $screen; ?></label>
+                        <label class="screen_mod"><?php echo $screen; ?>: Outbound</label>
                         <div id="aread_test"></div>
                       </div>
                     </div>
@@ -179,7 +194,7 @@
  
 <div id="" class="clspt_lgdn_badge pull-right m-right-5">
 
-                         <span class="badge badge-info  btn-info pad-5 warehouse_set_value pointer"  style="background:#BEF5BE; color:#000;">&nbsp; Delivered &nbsp;</span> &nbsp; 
+                         <span class="badge badge-info  btn-info pad-5 warehouse_set_value"  style="background:#BEF5BE; color:#000;">&nbsp; Delivered &nbsp;</span> &nbsp; 
                          <span class="badge badge-info  btn-info pad-5" style="background:#FFC6C6; color:#000;">&nbsp; Overdue Delivery &nbsp;</span>
 
 
@@ -210,11 +225,13 @@
 
 
                             <table id="dataTable_client_supply" class="table table-striped table-bordered" cellspacing="0" width="100%" style="font-size: 14px !important;">
-                              <thead><tr><th class="hide">id</th><th>Project</th><th>Client</th><th>Supply Name</th><th>Warehouse</th><th>Delivery</th><th></th> </tr></thead>
-                              <tbody>                              
+                              <thead><tr><th class="hide">id</th><th>Project</th><th>Client</th><th>Supply Name</th><th>Warehouse</th><th><span class="column_delivery_text" >Delivery</span></th><th></th> </tr></thead>
+                              <tbody>       
+
+                              <?php echo $this->client_supply->list_client_supply_table(); ?>                       
 
 
-                                <?php foreach ($supply_list_q->result() as $supply): ?>
+                                <?php /* foreach ($supply_list_q->result() as $supply): ?>
                                   <?php $status_late = ''; ?>
 
                                     <?php $status_late = (    $supply->unix_dlvy_dt < strtotime(date('Y-m-d'))   ? 'late_delv' : '');  ?>
@@ -266,7 +283,7 @@
                                   <?php endif; ?>
                                 </tr>
 
-                                <?php endforeach; ?>
+                                <?php endforeach; */ ?>
 
                               </tbody>
                             </table>
@@ -278,7 +295,7 @@
 
                       <script type="text/javascript">
                         setTimeout(function(){
-$('.cstm_filter_set #dataTable_client_supply_filter label').prepend('<select class="form-control pull-right m-left-10 supply_tbl_sort" onChange="client_supply_tble(this.value)" style="height: 30px;"><option value="" disabled>Sort Site Delivery</option><option selected="" value="1">Delivery Date ASC</option> <option value="2">Delivery Date DESC</option>    </select>    ');
+$('.cstm_filter_set #dataTable_client_supply_filter label').prepend('<select class="form-control pull-right m-left-10 supply_tbl_sort" onChange="client_supply_tble(this.value)" style="height: 30px;"><option value="" disabled>Sort Site Delivery</option><option selected="" value="1">Delivery Date ASC</option> <option value="2">Delivery Date DESC</option>    </select> <select class="form-control pull-right m-left-10 focus_comp_selection_cmpy" onChange="search_on_client_supply_tble(6,this.value)" style="height: 30px;">  <option value="">ALL</option>  <option value="5">WA</option><option value="6">NSW</option>   </select> ');
                         
 
 
@@ -291,6 +308,64 @@ $('table#dataTable_client_supply th').click(function(){
 
 
                         },2000);
+
+
+
+
+
+  setTimeout(function () {
+     search_on_client_supply_tble('6','outbnd');
+  }, 1250);
+
+
+
+$('a.bnd_cntrl').click(function(){
+
+  var bound = $(this).attr('id');
+
+
+
+
+  var cop_selected = $('select.focus_comp_selection_cmpy').val();
+
+
+
+
+
+
+     search_on_client_supply_tble('6',cop_selected+'_'+bound);
+     var label_text = '';
+
+
+     if(bound == 'inbnd'){
+      label_text = 'Inbound';
+
+
+      $('span.column_delivery_text').text('Arrival');
+     }
+
+
+     if(bound == 'outbnd'){
+      label_text = 'Outbound';
+      $('span.column_delivery_text').text('Delivery');
+     }
+
+
+     if(bound == 'cpmltd'){
+      label_text = 'Completed';
+      $('span.column_delivery_text').text('Delivery');
+     }
+
+
+
+
+
+$('label.screen_mod').html('Client Supply: '+label_text);
+
+
+});
+
+
                       </script>
 
 
@@ -664,11 +739,39 @@ $('table#dataTable_client_supply th').click(function(){
                               </div>
   
 
-                              
+
+
+
+
+
+
+
+
+
+
                               <div id="" class=""><p><br></p><hr><p></p></div>
 
 
-                             <span><strong class="pad-5" style="font-size: 18px;">Outbound</strong></span>
+
+
+                              <div class="btn btn-sm  btn-warning set_as_delivered pull-right" onclick="supply_set_as_delivered()" id="" style="margin: -12px 0 0px;"><em class="fa fa-truck"></em> Set As Delivered</div>
+
+
+ 
+
+
+
+                              <span><strong class="pad-5" style="font-size: 18px;">Outbound</strong></span>
+
+
+
+                              <div id="" class="clearfix"></div>
+
+
+
+
+
+ 
  
                               <div class="input-group m-bottom-10">
                                 <span id="" class="input-group-addon"><i class="fa fa-truck"></i> Delivered By </span>
@@ -713,13 +816,16 @@ $('table#dataTable_client_supply th').click(function(){
                                
                               </div>  
 
-<p><hr /></p>
+<p><br /></p>
 
 
 
 
+<div class="input-group m-bottom-10">
+  <span id="" class="input-group-addon  "><i class="fa fa-user "></i> Created By: <strong class="user_created_by" >Jervy Zaballa</strong> </span>
+</div>
 
-<div class="btn pull-left btn-info set_as_delivered" onclick="set_as_delivered()" id=""><em class="fa fa-truck"></em> Set As Delivered</div>
+
 
 <div class="input-group m-bottom-10 is_delevered_ok">
   <span id="" class="input-group-addon  "><i class="fa fa-truck "></i> Delivered: <strong class="date_is_delivered" ></strong> </span>
@@ -932,7 +1038,7 @@ $('table#dataTable_client_supply th').click(function(){
 
 
 
-function set_as_delivered(){
+function supply_set_as_delivered(){
 
 var supply_data_id = $('#edit_supply input#supply_data_id').val();
  
@@ -949,6 +1055,7 @@ var supply_data_id = $('#edit_supply input#supply_data_id').val();
 
 
 
+    $('label.screen_mod').html('Client Supply: View');
 
   $.ajax({
    'url' : "<?php echo base_url(); ?>client_supply/view_supply/"+supply_id,
@@ -1068,6 +1175,9 @@ var option_set = '';
       }
 
       $('#edit_supply input#warehouse_selected').val(supply_data[14]);
+
+
+      $('.user_created_by').text(supply_data[17]);
 
 
       if(supply_data[16] == ''){
@@ -1327,7 +1437,7 @@ tr.late_delv td {
     background-color: #ffc6c6 !important;
 }
 
-tr.is_supply_delivrd td {
+tr.is_supply_delivrd td, tr.cpmltd td {
     background-color: #bef5be !important;
 }
 
@@ -1836,6 +1946,36 @@ width: 157px;
 
 
 
+function set_as_delivered(supply_id,obj){
+  $.ajax({
+    'url' : base_url+'client_supply/set_as_delivered/'+supply_id,
+    'type' : 'GET'
+  });
+  $(obj).parent().parent().addClass('is_supply_delivrd').removeClass('late_delv');
+  $(obj).hide();
+  /*
+  $(obj).parent().next().next().next().find('em.list_set_bound').html('cpmltd');
+  var sort_val = $('select.supply_tbl_sort').val();
+
+  client_supply_tble(sort_val);
+  */
+}
+
+function set_as_arrived(supply_id,obj){
+  $.ajax({
+    'url' : base_url+'client_supply/set_as_arrived/'+supply_id,
+    'type' : 'GET'
+  });
+  $(obj).parent().parent().addClass('is_supply_delivrd').removeClass('late_delv');
+  $(obj).hide();
+/*
+  $(obj).parent().next().next().next().find('em.list_set_bound').html('outbnd');
+
+  var sort_val = $('select.supply_tbl_sort').val();
+
+  client_supply_tble(sort_val);
+*/
+}
 
 
 
@@ -2032,6 +2172,12 @@ width: 157px;
 
 
  
+
+  $('a.new_supply_tab').click(function(){
+    $('div.clspt_lgdn_badge').hide();
+    $('label.screen_mod').html('Client Supply: New');
+  });
+
 
 
  

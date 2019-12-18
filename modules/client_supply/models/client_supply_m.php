@@ -50,7 +50,12 @@ return $query;
 }
 
 	public function get_supply_data($supply_id){
-		$query = $this->db->query(" SELECT * FROM `client_supply` WHERE `client_supply`.`client_supply_id` = '$supply_id'  ");
+		$query = $this->db->query(" SELECT `client_supply`.*, CONCAT(`users`.`user_first_name`, ' ',`users`.`user_last_name`) AS `user_posted`
+			FROM `client_supply` 
+			INNER JOIN `users` ON `users`.`user_id` = `client_supply`.`added_by_user`
+
+
+			WHERE `client_supply`.`client_supply_id` = '$supply_id'  ");
 		return $query;
 	}
 

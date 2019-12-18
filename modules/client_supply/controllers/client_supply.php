@@ -360,6 +360,144 @@ echo '<span class=" btn-info pad-5 block m-10" style="border-radius: 6px;     fo
 
 
 
+	public function list_client_supply_table(){
+
+		$unix_date_sort = '';
+
+		$bound = '';
+		$custom = '';
+		$delvr = '';
+
+
+		$supply_list_q_wa = $this->client_supply_m->list_client_supply($custom);
+
+		foreach ($supply_list_q_wa->result() as $supply):  
+			$status_late = ''; 
+
+		$status_late = ( $supply->unix_dlvy_dt < strtotime(date('Y-m-d'))   ? 'late_delv' : '');   
+
+
+
+
+		if($supply->date_goods_arrived == ''){
+			$has_arrived_warehouse = 0;
+			$bound = 'inbnd';
+		}else{
+			$has_arrived_warehouse = 1;
+			$bound = 'outbnd';
+		}
+
+		if($supply->is_delivered_date != ''){
+			$bound = 'cpmltd';
+		}
+
+		echo '<tr class="'.$status_late.' '.$bound.'  csup_row  focus_comp_loc_'.$supply->focus_company_id.' ">';
+
+
+		if($has_arrived_warehouse == 1 ){
+
+
+			$delvr = $supply->delivery_date;
+			$unix_date_sort = $supply->unix_dlvy_dt;
+			
+			if($delvr == ''){
+				$unix_date_sort = '_';
+			}
+
+
+			echo '<td class="hide">'.$unix_date_sort.' '.$supply->project_name.' </td>';
+		
+
+
+		}else{
+			$delvr = $supply->date_goods_expected;
+			$unix_date_sort = $supply->unix_dt_gds_expt;
+
+
+			if($delvr == ''){
+				$unix_date_sort = '_';
+			}
+
+
+			echo '<td class="hide">'.$unix_date_sort.' '.$supply->project_name.' </td>';
+		}
+
+
+
+		echo '<td><a href="'.base_url().'projects/view/'.$supply->project_id.'" target="_blank">'.$supply->project_id.'</a></td>
+		<td>'.$supply->company_name.'</td>';
+
+
+ 
+	//	echo '<td><a href="'.base_url().'client_supply?view_supply='.$supply->client_supply_id.'" target="_blank">'.$supply->supply_name.'</a>';
+
+
+
+		echo '<td><a href="#" class="pointer view_edit_supply" id="'.$supply->client_supply_id.'">'.$supply->supply_name.'</a>';
+		 
+
+
+
+/*
+		if($this->session->userdata('client_supply') ==  2): 
+			echo '<td><a href="'.base_url().'client_supply?view_supply='.$supply->client_supply_id.'" target="_blank">'.$supply->supply_name.'</a></td>';
+		else:
+			
+		endif; 
+*/
+
+
+
+		if($has_arrived_warehouse == 1 ){
+			if($bound != 'cpmltd'):
+				echo '<button class="pull-right btn-success btn  tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Set Delivered to Site Address"  style="padding: 2px 4px;" onClick="set_as_delivered('.$supply->client_supply_id.',this)"> <em class="fa fa-truck" style=""></em></button>';
+			endif;
+		}else{
+
+			if($bound != 'cpmltd'):
+				echo '<button class="pull-right btn-info btn  tooltip-enabled" title="" data-html="true" data-placement="top" data-original-title="Set Arrived to Warehouse"  style="padding: 2px 4px;" onClick="set_as_arrived('.$supply->client_supply_id.',this)"> <em class="fa fa-cubes" style=""></em></button>';
+			endif;
+		}
+
+		echo '</strong></td>';
+		echo '<td>'.$supply->warehouse.'</td>';
+
+/*
+		if($has_arrived_warehouse == 1 ){
+			echo '<td>'.$supply->delivery_date.'</td>';
+		}else{
+			echo '<td>'.$supply->date_goods_expected.'</td>';
+		}
+*/
+		echo '<td>'.$delvr.'</td>';
+	//	echo '<td class="">'.$supply->focus_company_id.'_'.$bound.'</td>';
+
+
+		if( $supply->photos != '' ): 
+			echo '<td> <em class="fa fa-photo fa-lg  view_img pointer pad-3" id="set_img_'.$supply->client_supply_id.'" style="color:#35a239;"  ></em>';
+
+			echo '<em class="hide list_set_bound">'.$supply->focus_company_id.'_'.$bound.'</em> </td>  ';
+		else:
+			echo '<td>';
+			if($this->session->userdata('client_supply') ==  2):  
+				echo ' <em class="fa fa-cloud-upload upload_img fa-lg pointer pad-3" style="color:#3f51b5;" id="'.$supply->client_supply_id.'" ></em>';
+			endif;
+
+			echo ' <em class="hide list_set_bound">'.$supply->focus_company_id.'_'.$bound.'</em></td>';
+		endif;  
+
+		echo '</tr>';
+		endforeach;
+	}
+
+
+
+
+
+
+
+
+
 	public function upload_photos(){
 		$client_supply_id = $_POST['client_supply_id'];
 		$photos = $this->processUpload('supply_photos','client_supply',$client_supply_id.'_supply',1);
@@ -387,7 +525,8 @@ echo '<span class=" btn-info pad-5 block m-10" style="border-radius: 6px;     fo
 		echo $supply_data['description'].'|';
 		echo $supply_data['warehouse'].'|';
 		echo $supply_data['is_active'].'|';
-		echo $supply_data['is_delivered_date'];
+		echo $supply_data['is_delivered_date'].'|';
+		echo $supply_data['user_posted'];
 
 
 	}
