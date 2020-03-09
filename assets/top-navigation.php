@@ -128,7 +128,7 @@
 
 				</li>
 			</ul>
-
+f
 
 			<?php endif; ?>
 
@@ -223,7 +223,10 @@
 								<a id="apply_for_leave" style="cursor: pointer;" onclick="apply_for_leave('');"><i class="fa fa-calendar-plus-o"></i> Apply for Leave</a>
 							</li>
 						
-						<?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 16 || $this->session->userdata('is_admin') == 1 ): ?>
+
+						<?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_role_id') == 16 || $this->session->userdata('user_id') == 15 ): ?>
+
+
 						<?php if (strpos($_SERVER['REQUEST_URI'], 'dashboard') !== false): ?>
 
 							<li><a role="menuitem" data-toggle="modal" data-target="#management_report" tabindex="-1" href="#"><i class="fa fa-file-text-o" aria-hidden="true"></i> Management Report</a></li>
@@ -288,19 +291,17 @@
 	        <div class="box-area pad-5 clearfix">
 
 	        	<input type="hidden" class="no_hrs_of_work" name="no_hrs_of_work" value="<?php echo isset($leave_remaining1->no_hrs_of_work) ? $leave_remaining1->no_hrs_of_work : '8'; ?>">
-
 				<input type="hidden" id="user_id_page_no_hrs_of_work" name="user_id_page_no_hrs_of_work" value="<?php echo (!empty($leave_remaining2->no_hrs_of_work)) ? $leave_remaining2->no_hrs_of_work : ''; ?>">	        	
-
 				<input type="hidden" id="for_edit_no_hrs_of_work" name="for_edit_no_hrs_of_work" value="<?php echo (!empty($leave_remaining3->no_hrs_of_work)) ? $leave_remaining3->no_hrs_of_work : ''; ?>">
-
 				<input type="hidden" id="for_edit_user_id_page" name="for_edit_user_id_page" value="<?php echo $for_edit_user_id_page; ?>">	        	
 
-	        	<input type="hidden" id="leave_remaining1_annual" name="leave_remaining1_annual" value="<?php echo (!empty($leave_remaining1->total_annual)) ? round($leave_remaining1->total_annual / $leave_remaining1->no_hrs_of_work, 2) : '0'; ?>">
-	        	<input type="hidden" id="leave_remaining1_personal" name="leave_remaining1_personal" value="<?php echo (!empty($leave_remaining1->total_personal)) ? round($leave_remaining1->total_personal / $leave_remaining1->no_hrs_of_work, 2) : '0'; ?>">
-	        	<input type="hidden" id="leave_remaining2_annual" name="leave_remaining2_annual" value="<?php echo (!empty($leave_remaining2->total_annual)) ? round($leave_remaining2->total_annual / $leave_remaining2->no_hrs_of_work, 2) : '0'; ?>">
-	        	<input type="hidden" id="leave_remaining2_personal" name="leave_remaining2_personal" value="<?php echo (!empty($leave_remaining2->total_personal)) ? round($leave_remaining2->total_personal / $leave_remaining2->no_hrs_of_work, 2) : '0'; ?>">
-	        	<input type="hidden" id="leave_remaining3_annual" name="leave_remaining3_annual" value="<?php echo (!empty($leave_remaining3->total_annual)) ? round($leave_remaining3->total_annual / $leave_remaining3->no_hrs_of_work, 2) : '0'; ?>">
-	        	<input type="hidden" id="leave_remaining3_personal" name="leave_remaining3_personal" value="<?php echo (!empty($leave_remaining3->total_personal)) ? round($leave_remaining3->total_personal / $leave_remaining3->no_hrs_of_work, 2) : '0'; ?>">
+	        	<input type="hidden" id="leave_remaining1_annual" name="leave_remaining1_annual" value="<?php echo (!empty($leave_remaining1->total_annual)) ? $leave_remaining1->total_annual : '0'; ?>">
+	        	<input type="hidden" id="leave_remaining1_personal" name="leave_remaining1_personal" value="<?php echo (!empty($leave_remaining1->total_personal)) ? $leave_remaining1->total_personal : '0'; ?>">
+	        	<input type="hidden" id="leave_remaining2_annual" name="leave_remaining2_annual" value="<?php echo (!empty($leave_remaining2->total_annual)) ? $leave_remaining2->total_annual : '0'; ?>">
+	        	<input type="hidden" id="leave_remaining2_personal" name="leave_remaining2_personal" value="<?php echo (!empty($leave_remaining2->total_personal)) ? $leave_remaining2->total_personal : '0'; ?>">
+	        	<input type="hidden" id="leave_remaining3_annual" name="leave_remaining3_annual" value="<?php echo (!empty($leave_remaining3->total_annual)) ? $leave_remaining3->total_annual : '0'; ?>">
+	        	<input type="hidden" id="leave_remaining3_personal" name="leave_remaining3_personal" value="<?php echo (!empty($leave_remaining3->total_personal)) ? $leave_remaining3->total_personal : '0'; ?>">
+
 	        	<input type="hidden" id="one_day_notice" name="one_day_notice" value="<?php echo (!empty($notice_days_annual[0]->days_advance_notice)) ? $notice_days_annual[0]->days_advance_notice : '0'; ?>">
 	        	<input type="hidden" id="one_day_notice_msg" name="one_day_notice_msg" value="<?php echo (!empty($notice_days_annual[0]->days_notice)) ? $notice_days_annual[0]->days_notice : ''; ?>">
 	        	
@@ -390,7 +391,7 @@
 							</div>
 						</div>
 
-						<div class="clearfix"></div>
+						<!-- <div class="clearfix"></div>
 
 						<div class="col-sm-12 m-bottom-10 clearfix">
 							<label for="partial_time" class="col-sm-5 control-label time_in_out">Time <span class="toggle_time">In</span>* <i class="fa fa-question-circle fa-lg tooltip-test info_time_data" data-toggle="tooltip" data-placement="top" title="If 'Arrived Late' please input your 'Time In' here, if 'Depart Early' please input your 'Time Out' here. This input will accept only 15 minutes interval time data."></i>:</label>
@@ -414,7 +415,7 @@
 									</span>
 								</div>
 							</div>
-						</div>
+						</div> -->
 
 					</div>
 
@@ -529,6 +530,7 @@
 							}?>
 
 							<option value="20-logis">Gary Ford</option>
+							<option value="62-logis">Matthew Oldfield</option>
 							<option value="74-acnt">Jayvin Santos</option>
 							<option value="21-acnt">Lesley Waller</option>
 							<option value="22-jp">Marcus Dell</option>
@@ -586,7 +588,7 @@
 							<span id="" class="input-group-addon"><i class="fa fa-calendar"></i> Year</span>
 							<select id="management_report_year" class="form-control m-bottom-10">
 								<option selected value="">Year</option>
-								<?php for ($starting_count=2015; $starting_count <= date('Y'); $starting_count++) { echo '<option value="'.$starting_count.'">'.$starting_count.'</option>'; } ?>
+								<?php for ($starting_count=2015; $starting_count <= date('Y')+1; $starting_count++) { echo '<option value="'.$starting_count.'">'.$starting_count.'</option>'; } ?>
 							</select>
 						</div>
 
@@ -646,7 +648,7 @@
 			</div>
 			<div class="modal-footer" style="margin-top: 0;">
 				<button type="button" class="btn btn-danger" onclick="clearPH_holiday();">Close</button>
-				<button type="button" class="btn btn-success" onclick="minusPH_holidays();">Apply</button>
+				<button type="button" id="ConfirmHoliday" class="btn btn-success">Apply</button>
 			</div>
 		</div>
 	</div>
@@ -805,7 +807,7 @@
 			}
 		});
 	  	
-	  	is_offshore_disable_this(leave_type_id);
+	  	// is_offshore_disable_this(leave_type_id);
 	});
 
 	$('#start_day_datepicker').click(function() {
@@ -842,50 +844,50 @@
         toolbarPlacement: 'bottom'
     });
 
-	$('#leave_hrs_datepicker').datetimepicker({
-		icons: {
-                    close: 'fa fa-check-circle'
-                },
-        tooltips: {
-		    close: 'Done?'
-		},
-        format: 'HH:mm',
-        stepping: 15,
-        showClose: true,
-        toolbarPlacement: 'bottom',
-        enabledHours: [00, 01, 02, 03, 04, 05, 06, 07]
-    }).on('dp.change', function (h) {
+	// $('#leave_hrs_datepicker').datetimepicker({
+	// 	icons: {
+ //                    close: 'fa fa-check-circle'
+ //                },
+ //        tooltips: {
+	// 	    close: 'Done?'
+	// 	},
+ //        format: 'HH:mm',
+ //        stepping: 15,
+ //        showClose: true,
+ //        toolbarPlacement: 'bottom',
+ //        enabledHours: [00, 01, 02, 03, 04, 05, 06, 07]
+ //    }).on('dp.change', function (h) {
 
-    	if (is_offshore == 0 && leave_type_id != 5 || user_id_page_is_offshore == 0){
-    		var leave_type = $('#leave_type').val();		
-			var leave_type_name = leave_type.substr(2);
-			var leave_type_id = leave_type.substr(0, 1);
+ //    	if (is_offshore == 0 && leave_type_id != 5 || user_id_page_is_offshore == 0){
+ //    		var leave_type = $('#leave_type').val();		
+	// 		var leave_type_name = leave_type.substr(2);
+	// 		var leave_type_id = leave_type.substr(0, 1);
 
-			var format_h = moment(h.date).format('HH:mm');
+	// 		var format_h = moment(h.date).format('HH:mm');
 
-			var total_leave = format_h.toString();
-			var get_hrs = total_leave.substr(1, 1);
-			var get_mins = total_leave.substr(3);
-			var total_hrs_leave = '';
+	// 		var total_leave = format_h.toString();
+	// 		var get_hrs = total_leave.substr(1, 1);
+	// 		var get_mins = total_leave.substr(3);
+	// 		var total_hrs_leave = '';
 
-			switch (get_mins) {
-			    case '15':
-			        total_hrs_leave = get_hrs + '.25';
-			        break;
-			    case '30':
-			    	total_hrs_leave = get_hrs + '.50';
-			        break;
-			    case '45':
-			        total_hrs_leave = get_hrs + '.75';
-			        break;
-			    default:
-			    	total_hrs_leave = get_hrs + '.0';
-			        break;
-			}
+	// 		switch (get_mins) {
+	// 		    case '15':
+	// 		        total_hrs_leave = get_hrs + '.25';
+	// 		        break;
+	// 		    case '30':
+	// 		    	total_hrs_leave = get_hrs + '.50';
+	// 		        break;
+	// 		    case '45':
+	// 		        total_hrs_leave = get_hrs + '.75';
+	// 		        break;
+	// 		    default:
+	// 		    	total_hrs_leave = get_hrs + '.0';
+	// 		        break;
+	// 		}
 
-			leave_application_exceed_msg(leave_type_id, total_hrs_leave)	
-    	}
-	});
+	// 		leave_application_exceed_msg(leave_type_id, total_hrs_leave)	
+ //    	}
+	// });
 
 	function apply_for_leave(user_id) {
 
@@ -1063,7 +1065,7 @@
 				if (edit_partial_day == 1){
 
 					$('#partial_day').prop('checked', true);
-					is_offshore_disable_this(edit_leave_type_id);
+					// is_offshore_disable_this(edit_leave_type_id);
 					$('#partial_day_wrap').show();
 					$('.partial_part[value="'+edit_partial_part+'"]').prop('checked', true);
 					$('#partial_time').val(edit_partial_time);
@@ -1113,11 +1115,13 @@
 					$('#partial_day').prop('checked', false);
 					$('#total_days_away').show();
 
-					if (for_edit_no_hrs_of_work != ''){
-						$('#total_days_away').text(+(Math.round(edit_total_days / for_edit_no_hrs_of_work + "e+2")  + "e-2"));
-					} else {
-						$('#total_days_away').text(+(Math.round(edit_total_days / no_hrs_of_work + "e+2")  + "e-2"));
-					}
+					// if (for_edit_no_hrs_of_work != ''){
+					// 	$('#total_days_away').text(+(Math.round(edit_total_days / for_edit_no_hrs_of_work + "e+2")  + "e-2"));
+					// } else {
+					// 	$('#total_days_away').text(+(Math.round(edit_total_days / no_hrs_of_work + "e+2")  + "e-2"));
+					// }
+
+					$('#total_days_away').text(edit_total_days);
 				}
 
 				$('#leave_modal_button').html('<div class="pull-left">' +
@@ -1589,10 +1593,10 @@
 							});
 
 							if (leave_type_id < 5){
-								leave_application_exceed_msg(leave_type_id, '4.0');
+								leave_application_exceed_msg(leave_type_id, '0.5');
 							}
 
-							is_offshore_disable_this(leave_type_id);
+							// is_offshore_disable_this(leave_type_id);
 
 						}
 			   		}
@@ -1693,7 +1697,9 @@
 							   	if (result == ''){
 							   		pending_leave_count = 0
 							   	} else {
-							   		pending_leave_count = result / no_hrs_of_work;	
+							   		// pending_leave_count = result / no_hrs_of_work;
+
+							   		pending_leave_count = result;
 							   	}
 
 							   	var pending_leave_remaining = leave_remaining - pending_leave_count;
@@ -1771,7 +1777,9 @@
 							   	if (result == ''){
 							   		pending_leave_count = 0
 							   	} else {
-							   		pending_leave_count = result / user_id_page_no_hrs_of_work;	
+							   		// pending_leave_count = result / user_id_page_no_hrs_of_work;	
+
+							   		pending_leave_count = result;	
 							   	}
 
 							   	var pending_leave_remaining = leave_remaining - pending_leave_count;
@@ -1785,7 +1793,7 @@
 							   			if (total_days_away > pending_leave_remaining){
 									   		$('#confirmModal').modal('show');
 									   		$('h4#myModalLabel.modal-title.msgbox').html("Can't proceed with Leave Application");
-											$('#confirmText').html('Insufficient leave credit due to the pending leave request. 1');
+											$('#confirmText').html('Insufficient leave credit due to the pending leave request.');
 										    $('#confirmButtons').html('<button type="button" class="btn btn-warning" onclick="clearLeaveReqForm();">Try Again</button>');   
 									   	}
 							   		}
@@ -1794,7 +1802,7 @@
 							   		if (total_days_away > pending_leave_remaining){
 								   		$('#confirmModal').modal('show');
 								   		$('h4#myModalLabel.modal-title.msgbox').html("Can't proceed with Leave Application");
-										$('#confirmText').html('Insufficient leave credit due to the pending leave request. 1');
+										$('#confirmText').html('Insufficient leave credit due to the pending leave request.');
 									    $('#confirmButtons').html('<button type="button" class="btn btn-warning" onclick="clearLeaveReqForm();">Try Again</button>');   
 								   	}
 							   	}
@@ -1833,7 +1841,7 @@
 							if (+(total_leave_remaining) < 0 && leave_type_id < '5') {
 
 								$('h4#myModalLabel.modal-title.msgbox').html("Can't proceed with the leave application.");
-								$('#confirmText').html('Leave Application exceed with your Total Leave Remaining. You can apply it as an Unpaid Leave.');
+								$('#confirmText').html('Leave Application exceed with your Total Leave Remaining. You can apply it as an Unpaid Leave 0.');
 								$('#confirmButtons').html('<button type="button" class="btn btn-warning" data-dismiss="modal">Ok</button>');
 								$('#confirmModal').modal('show');
 								
@@ -1880,8 +1888,8 @@
 		$('#confirmModal').modal('hide');
 		$('#PH_holiday').modal('hide');
 
-		$('#leave_details').val('');
-		$('#leave_details').focus();
+		// $('#leave_details').val('');
+		// $('#leave_details').focus();
 	}
 
 	function minusHolidays_half(leave_type_id){
@@ -1922,7 +1930,7 @@
 		}
 	}
 
-	function minusPH_holidays(){
+	function minusPH_holidays(leave_type_id){
 		ph_holidays = $('#PH_holidayInput').val();
 		var ph_total_days_away = $('#total_days_away').text();
 		var ph_total_leave = $('#total_leave').text();
@@ -2154,11 +2162,14 @@
 		var s_total_hrs_leave = total_hrs_leave.toString();
 
 		if (s_total_hrs_leave.indexOf('.') == 1){
-			if (user_id_page_no_hrs_of_work == '' || user_id_page_no_hrs_of_work === undefined){
-				var q_total_days = +(Math.round(total_hrs_leave / no_hrs_of_work + "e+2")  + "e-2");
-			} else {
-				var q_total_days = +(Math.round(total_hrs_leave / user_id_page_no_hrs_of_work + "e+2")  + "e-2");
-			}
+			
+			// if (user_id_page_no_hrs_of_work == '' || user_id_page_no_hrs_of_work === undefined){
+			// 	var q_total_days = +(Math.round(total_hrs_leave / no_hrs_of_work + "e+2")  + "e-2");
+			// } else {
+			// 	var q_total_days = +(Math.round(total_hrs_leave / user_id_page_no_hrs_of_work + "e+2")  + "e-2");
+			// }
+
+			var q_total_days = total_hrs_leave;
 
 			var total_leave_remaining = leave_remaining - q_total_days;
 
@@ -2167,7 +2178,7 @@
 			if (+(total_leave_remaining) < 0 && leave_type_id != '5') {
 
 				$('h4#myModalLabel.modal-title.msgbox').html("Can't proceed with the leave application.");
-				$('#confirmText').html('Leave Application exceed with your Total Leave Remaining. You can apply it as an Unpaid Leave.');
+				$('#confirmText').html('Leave Application exceed with your Total Leave Remaining. You can apply it as an Unpaid Leave 1.');
 				$('#confirmButtons').html('<button type="button" class="btn btn-warning" data-dismiss="modal">Ok</button>');
 				$('#confirmModal').modal('show');
 
@@ -2191,7 +2202,7 @@
 			if (+(total_leave_remaining) < 0 && leave_type_id != '5') {
 
 				$('h4#myModalLabel.modal-title.msgbox').html("Can't proceed with the leave application.");
-				$('#confirmText').html('Leave Application exceed with your Total Leave Remaining. You can apply it as an Unpaid Leave.');
+				$('#confirmText').html('Leave Application exceed with your Total Leave Remaining. You can apply it as an Unpaid Leave 2.');
 				$('#confirmButtons').html('<button type="button" class="btn btn-warning" data-dismiss="modal">Ok</button>');
 				$('#confirmModal').modal('show');
 
@@ -2241,11 +2252,13 @@
 		var possible_date = '';
 		var s_set_total_days_away = set_total_days_away.toString();
 
-		if (user_id_page_no_hrs_of_work == '' || user_id_page_no_hrs_of_work === undefined){
-			var get_total_days_away = set_total_days_away / no_hrs_of_work;	
-		} else {
-			var get_total_days_away = set_total_days_away / user_id_page_no_hrs_of_work;
-		}
+		// if (user_id_page_no_hrs_of_work == '' || user_id_page_no_hrs_of_work === undefined){
+		// 	var get_total_days_away = set_total_days_away / no_hrs_of_work;	
+		// } else {
+		// 	var get_total_days_away = set_total_days_away / user_id_page_no_hrs_of_work;
+		// }
+
+		var get_total_days_away = set_total_days_away;
 
 		if (set_leave_type_id == 1 && leave_request_access == 0){
 			if (get_total_days_away == 1 || s_set_total_days_away.indexOf('.') == 1) {
@@ -2384,35 +2397,40 @@
 				
 				if (partial_time != '' && no_hrs_of_leave != ''){
 
-					var get_hrs = no_hrs_of_leave.substr(1, 1);
-					var get_mins = no_hrs_of_leave.substr(3);
+					// var get_hrs = no_hrs_of_leave.substr(1, 1);
+					// var get_mins = no_hrs_of_leave.substr(3);
 
-					switch (get_mins) {
-					    case '15':
-					        total_hrs_leave = get_hrs + '.25';
-					        break;
-					    case '30':
-					    	total_hrs_leave = get_hrs + '.50';
-					        break;
-					    case '45':
-					        total_hrs_leave = get_hrs + '.75';
-					        break;
-					    default:
-					    	total_hrs_leave = get_hrs + '.0';
-					        break;
-					}
+					// switch (get_mins) {
+					//     case '15':
+					//         total_hrs_leave = get_hrs + '.25';
+					//         break;
+					//     case '30':
+					//     	total_hrs_leave = get_hrs + '.50';
+					//         break;
+					//     case '45':
+					//         total_hrs_leave = get_hrs + '.75';
+					//         break;
+					//     default:
+					//     	total_hrs_leave = get_hrs + '.0';
+					//         break;
+					// }
+
+					total_hrs_leave = '0.5';
 
 				}  else {
 					$('#confirmModal').modal('hide');
 					alert('Please filled the required (*) fields');
 					return false;
 				}
+
 			} else {
-				if (user_id_page_no_hrs_of_work == '' || user_id_page_no_hrs_of_work === undefined){
-					total_hrs_leave = total_days_away * no_hrs_of_work;	
-				} else {
-					total_hrs_leave = total_days_away * user_id_page_no_hrs_of_work;
-				}
+				// if (user_id_page_no_hrs_of_work == '' || user_id_page_no_hrs_of_work === undefined){
+				// 	total_hrs_leave = total_days_away * no_hrs_of_work;	
+				// } else {
+				// 	total_hrs_leave = total_days_away * user_id_page_no_hrs_of_work;
+				// }
+
+				total_hrs_leave = total_days_away;
 			}
 
 			advanced_notice_for_annual(leave_type_id, total_hrs_leave);
@@ -2420,7 +2438,7 @@
 			if (has_error == 0){
 
 				if ($('#partial_day').is(':checked')){
-					var data = leave_type_id+'|'+start_day_of_leave+'|'+end_day_of_leave+'|'+date_return+'|'+leave_details+'|'+total_hrs_leave+'|'+partial_day+'|'+partial_part+'|'+partial_time+'|'+ph_holidays;
+					var data = leave_type_id+'|'+start_day_of_leave+'|'+end_day_of_leave+'|'+date_return+'|'+leave_details+'|'+total_hrs_leave+'|'+partial_day+'|'+partial_part+'|'+''+'|'+ph_holidays;
 				} else {
 					var data = leave_type_id+'|'+start_day_of_leave+'|'+end_day_of_leave+'|'+date_return+'|'+leave_details+'|'+total_hrs_leave+'|'+'0'+'|'+'0'+'|'+''+'|'+ph_holidays;
 				}
@@ -2475,23 +2493,26 @@
 
 				if (e_partial_time != '' && e_no_hrs_of_leave != ''){
 
-					var e_get_hrs = e_no_hrs_of_leave.substr(1, 1);
-					var e_get_mins = e_no_hrs_of_leave.substr(3);
+					// var e_get_hrs = e_no_hrs_of_leave.substr(1, 1);
+					// var e_get_mins = e_no_hrs_of_leave.substr(3);
 
-					switch (e_get_mins) {
-					    case '15':
-					        e_total_hrs_leave = e_get_hrs + '.25';
-					        break;
-					    case '30':
-					    	e_total_hrs_leave = e_get_hrs + '.50';
-					        break;
-					    case '45':
-					        e_total_hrs_leave = e_get_hrs + '.75';
-					        break;
-					    default:
-					    	e_total_hrs_leave = e_get_hrs + '.0';
-					        break;
-					}
+					// switch (e_get_mins) {
+					//     case '15':
+					//         e_total_hrs_leave = e_get_hrs + '.25';
+					//         break;
+					//     case '30':
+					//     	e_total_hrs_leave = e_get_hrs + '.50';
+					//         break;
+					//     case '45':
+					//         e_total_hrs_leave = e_get_hrs + '.75';
+					//         break;
+					//     default:
+					//     	e_total_hrs_leave = e_get_hrs + '.0';
+					//         break;
+					// }
+
+					e_total_hrs_leave = '0.5';
+
 				} else {
 					$('#confirmModal').modal('hide');
 					alert('Please filled the required (*) fields');
@@ -2499,16 +2520,20 @@
 				}
 
 			} else {
-				if (for_edit_user_id_page == '' || for_edit_user_id_page === undefined){
-					e_total_hrs_leave = e_total_days_away * no_hrs_of_work;	
-				} else {
-					e_total_hrs_leave = e_total_days_away * for_edit_no_hrs_of_work;
-				}
+				// if (for_edit_user_id_page == '' || for_edit_user_id_page === undefined){
+				// 	e_total_hrs_leave = e_total_days_away * no_hrs_of_work;	
+				// } else {
+				// 	e_total_hrs_leave = e_total_days_away * for_edit_no_hrs_of_work;
+				// }
+
+				e_total_hrs_leave = e_total_days_away
 			}
 
 			advanced_notice_for_annual(e_leave_type_id, e_total_hrs_leave);
 
 			if (has_error == 0){
+
+				// NEXT DEBUGGING
 
 				if ($('#partial_day').is(':checked')){
 					var data = edit_leave_req_id+'|'+e_leave_type_id+'|'+e_start_day_of_leave+'|'+e_end_day_of_leave+'|'+e_date_return+'|'+e_leave_details+'|'+e_total_hrs_leave+'|'+e_partial_day+'|'+e_partial_part+'|'+e_partial_time;
@@ -2600,6 +2625,16 @@
 			apply_for_leave('leave_user_id');
 		}
 	}
+
+	$('#ConfirmHoliday').click(function(){
+
+		var leave_type = $('#leave_type').val();		
+		var leave_type_name = leave_type.substr(2);
+		var leave_type_id = leave_type.substr(0, 1);
+
+		minusPH_holidays(leave_type_id);
+
+	});
 
 </script>
 <!-- Mike Coros end -->
