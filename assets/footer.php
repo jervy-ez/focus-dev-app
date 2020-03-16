@@ -724,10 +724,11 @@ if ($('input#set_as_primary_'+target).prop('checked')) {
 
   //alert(primary+'-'+other);
   dynamic_value_ajax(primary,'update_contact_primary');
-  dynamic_value_ajax(other,'update_contact_primary');
+ // dynamic_value_ajax(other,'update_contact_primary');
  
 }
 
+    $('#loading_modal').modal({"backdrop": "static", "show" : true} );
        setTimeout(function(){
         window.location.reload(true);
 
@@ -738,6 +739,7 @@ if ($('input#set_as_primary_'+target).prop('checked')) {
    $("#add_save_contact").click(function(){
       
 
+    $('#loading_modal').modal({"backdrop": "static", "show" : true} );
 var can_add_contact = 1;
 
       
@@ -801,6 +803,7 @@ if(can_add_contact == 1){
 
 
   $(".delete_other_contact").click(function(){
+    $('#loading_modal').modal({"backdrop": "static", "show" : true} );
     $(this).remove();
     var target = $(this).attr('id').substring(21);
 
