@@ -1422,17 +1422,22 @@ $.post(baseurl+"users/update_availability",{
 
 $('.submit_ave').click(function(){
 
+
+  var timezone = $('select.tz_set_a').val();
+
   var is_complete = 1;
 
-  if($('.time_ave_a').val() == '' || $('.time_ave_b').val() == ''){
+  if($('.time_ave_a').val() == '' || $('.time_ave_b').val() == '' || $('select.tz_set_a').val() == 0){
 
     $('input.time_ave_a').parent().addClass('has-error');
     $('input.time_ave_b').parent().addClass('has-error');
+    $('select.tz_set_a').parent().addClass('has-error');
 
   }else{
 
     $('input.time_ave_a').parent().removeClass('has-error');
     $('input.time_ave_b').parent().removeClass('has-error');
+    $('select.tz_set_a').parent().removeClass('has-error');
 
     var day_start = $('.day_set_non_rec').val();
     var date_a = day_start+' '+$('.time_ave_a').val();
@@ -1453,7 +1458,7 @@ $('.submit_ave').click(function(){
     }
 
 
-    var data = date_a+'`'+date_b+'`'+notes+'`'+user_id+'`'+pathname+'`'+status;
+    var data = date_a+'`'+date_b+'`'+notes+'`'+user_id+'`'+pathname+'`'+status+'`'+timezone;
 
 
     $('#set_availability').modal('hide');
@@ -3977,16 +3982,22 @@ $('button.reoccur_submit_now').click(function(){
 
   }
 
+
+  var tz_set_b = $('select.tz_set_b').val();
+
   if(data_range_b == ''){
     alert('Please select days.')
+
+  }else if(tz_set_b == 0){
+
+    alert('Please select timezone.')
 
   }else{
     $('#setting_reoccurrence').modal('hide');
     $('#loading_modal').modal({"backdrop": "static", "show" : true} );
 
-
-
-    var data = date_a+'`'+date_b+'`'+notes+'`'+user_id+'`'+pathname+'`'+status;
+ 
+    var data = date_a+'`'+date_b+'`'+notes+'`'+user_id+'`'+pathname+'`'+status+'`'+tz_set_b;
     var reoccur = appointment_time_a+'`'+appointment_time_b+'`'+pattern_reoc+'`'+data_range_a+'`'+data_range_b+'`'+range_datetime_picker_1+'`'+range_datetime_picker_2+'`'+no_end_occur;
 
 //alert(data);
@@ -4014,6 +4025,8 @@ function(result){
     }
   }
   );
+
+
   }
 
 
@@ -4080,9 +4093,6 @@ $('.set_reoccurrence').click(function(){
 
   $('#summ_status_text').text( $('.ave_type').text()  );
   $('#summ_starting_date').text( day_start_ave );
-
-  
-
 
   if($('input.time_ave_a').val() != ''){
     var date_time_start = $('input.time_ave_a').val();
@@ -4156,114 +4166,10 @@ $('.no_end_occur').click(function(){
 
 
 $('button.set_full_day').click(function(){
-/*
-  var currentdate = new Date();
-
-  if(currentdate.getHours() > 12){
-    var time_set = 'PM';
-  }else{
-    var time_set = 'AM';
-  }
-
-  var hours = currentdate.getHours() % 12 || 12;
-
-  var set_month = (currentdate.getMonth()+1) < 10 ? '0' + (currentdate.getMonth()+1) : (currentdate.getMonth()+1);
-*/
-
- // var current_date_time_a = currentdate.getDate() + "/" + set_month + "/" + currentdate.getFullYear() + " 07:00 AM";
-
-
-
- // var current_date_time_b = currentdate.getDate() + "/" + set_month + "/" + currentdate.getFullYear() + " 05:00 PM";
-
-
   $('input.time_ave_a').val("07:00 AM");
   $('input.time_ave_b').val("05:00 PM");
-
-
 });
 
-
-// $('.print-wip').on("click", function(event) {
-//   event.preventDefault();
-//   var totals_wip = $('.totals_wip').html();
-//   var has_error = 0;
-
-//   var wip_client = $('select.report_company').val();
-//   var wip_pm = $('.select-pm-tbl').val();
-//   var wip_find_start_finish_date = $('#finish_date_start').val();
-//   var wip_find_finish_date = $('#finish_date').val();
-//   var wip_cost_total = $('#cost_total').val();
-//   var selected_cat = $('#select-cat-tbl').val();
-
-
-//   var wip_start_date_start_a = $('#start_date_start').val();
-//   var wip_start_date_b = $('#start_date').val();
-  
-//   var doc_type = $('#doc_type').val();
-
-//   var date_created_start = $('#date_created_start').val();
-//   var date_created = $('#date_created').val();
-  
-  
-//   var un_acepted_start_date = $('#un_acepted_start_date').val();
-//   var un_acepted_end_date = $('#un_acepted_end_date').val();
-
-//   if(doc_type == 'WIP'){
-//     var prj_status = 'wip';
-//   }else{
-//     var prj_status = $('select#prj_status').val();
-//   }
-
- 
-
-
-
-
-//   $('#loading_modal').modal('show');
-  
-
-
-
-//   $('.report_result').html('');
-
-
-//   if(has_error == 0){
-//     setTimeout(function(){
-
-//       var wip_project_total = ''; // $('.wip_project_total').html();
-//       var wip_project_estimate = ''; // $('.wip_project_estimate').html();
-//       var wip_project_quoted = ''; // $('.wip_project_quoted').html();
-//       var wip_project_total_invoiced = ''; // $('.wip_project_total_invoiced').html();
-
-//       var wip_sort = $('select#wip_sort').val();
-
-//       var data = wip_client+'*'+wip_pm+'*'+wip_find_start_finish_date+'*'+wip_find_finish_date+'*'+wip_cost_total+'*'+selected_cat+'*'+wip_project_total+'*'+wip_project_estimate+'*'+wip_project_quoted+'*'+wip_project_total_invoiced+'*'+wip_sort+'*'+wip_start_date_start_a+'*'+wip_start_date_b+'*'+doc_type+'*'+date_created_start+'*'+date_created+'*'+prj_status+'*'+un_acepted_start_date+'*'+un_acepted_end_date;
-
-//  // alert(data);
-
-//       $.ajax({
-//         'url' : base_url+'reports/wip_report',
-//         'type' : 'POST',
-//         'data' : {'ajax_var' : data },
-//         'success' : function(data){
-//           if(data){
-//             $('#loading_modal').modal('hide');
-//             $('.report_result').html(data);
-//             window.open(baseurl+'docs/temp/'+data+'.pdf', '', 'height=600,width=850,top=100,left=100,location=no,toolbar=no,resizable=yes,menubar=no,scrollbars=yes',true);
-//           }
-//         }
-//       });  
-
-
-//     }, 1000);  
-// }
-
-
-
-// var wipTable = $('#wipTable').dataTable();
-// wipTable.fnFilter();
-// });
 
 $('.print-wip').on("click", function(event) {
   event.preventDefault();
