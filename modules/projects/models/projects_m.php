@@ -29,6 +29,66 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
+	public function list_doc_type(){
+		$query = $this->db->query("SELECT * FROM `storage_doc_type` WHERE `storage_doc_type`.`is_active` = '1' ORDER BY `storage_doc_type`.`doc_type_name` ASC ");
+		return $query;
+	}
+
+	public function insert_uploaded_file($file_name,$file_type,$project_id,$date_upload,$user_id){
+		$query = $this->db->query("INSERT INTO `storage_files` ( `file_name`, `file_type`, `project_id`, `date_upload`, `user_id`) VALUES ( '$file_name', '$file_type', '$project_id', '$date_upload', '$user_id') ");
+		return $query;
+	}
+
+	public function remove_uploaded_file($file_id){
+		$query = $this->db->query("UPDATE `storage_files` SET `is_active` = '0' WHERE `storage_files`.`storage_files_id` = '$file_id' ");
+		return $query;		
+	}
+
+	public function remove_doc_type($type_id){
+		$query = $this->db->query(" UPDATE `storage_doc_type` SET `is_active` = '0' WHERE `storage_doc_type`.`storage_doc_type_id` = '$type_id' ");
+		return $query;
+	}
+
+	public function update_type_name($doc_type_name,$type_id){
+		$query = $this->db->query(" UPDATE `storage_doc_type` SET `doc_type_name` = '$doc_type_name' WHERE `storage_doc_type`.`storage_doc_type_id` = '$type_id' ");
+		return $query;
+	}
+
+	public function list_projects_by_job_date($current_year='',$last_year=''){
+		$query = $this->db->query(" SELECT `storage_files`.`storage_files_id`,`storage_files`.`project_id`,`project`.`project_name` ,`storage_files`.`file_name`,`storage_files`.`date_upload`,  `storage_doc_type`.`doc_type_name`, `users`.`user_first_name`
+			FROM `storage_files`  
+			INNER JOIN  `storage_doc_type` ON `storage_doc_type`.`storage_doc_type_id` =  `storage_files`.`file_type`
+			INNER JOIN  `project` ON `project`.`project_id` =  `storage_files`.`project_id`
+			INNER JOIN 	`users` ON `users`.`user_id` =  `storage_files`.`user_id`
+
+			WHERE `storage_files`.`is_active` = '1'  AND  `project`.`is_active` = '1' 
+			
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('01/01/$last_year', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) <  UNIX_TIMESTAMP( STR_TO_DATE('31/12/$current_year', '%d/%m/%Y') )
+			
+			
+			ORDER BY  `storage_files`.`project_id`  DESC, `storage_doc_type`.`doc_type_name` ASC, UNIX_TIMESTAMP( STR_TO_DATE(`storage_files`.`date_upload`, '%d/%m/%Y') ) DESC ");
+		return $query;
+	}
+
+	public function list_uploaded_files($proj_id){
+		$query = $this->db->query(" SELECT * FROM `storage_files` 
+			INNER JOIN `storage_doc_type` ON `storage_doc_type`.`storage_doc_type_id` = `storage_files`.`file_type` 
+			WHERE `storage_files`.`project_id` = '$proj_id' 
+			AND `storage_files`.`is_active` = '1' 
+		
+
+			ORDER BY  `storage_files`.`project_id`  DESC, `storage_doc_type`.`doc_type_name` ASC, UNIX_TIMESTAMP( STR_TO_DATE(`storage_files`.`date_upload`, '%d/%m/%Y') ) DESC ");
+
+
+		return $query;
+	}
+
+	public function insert_doc_type($type_name){
+		$query = $this->db->query("INSERT INTO `storage_doc_type` ( `doc_type_name`, `is_active`) VALUES ( '$type_name', '1')");
+		return $query;
+	}
+
 	public function fetch_user_pa_assignment($pa_id){
 		$query = $this->db->query("SELECT * FROM `project_administrator_manager` WHERE `project_administrator_manager`.`project_administrator_id` = '$pa_id' ");
 		return $query;

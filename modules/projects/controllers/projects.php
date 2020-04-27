@@ -3343,6 +3343,289 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
 	}
 
 
+
+	public function document_storage(){
+  
+		$data['main_content'] = 'doc_storage';
+		$data['screen'] = 'Document Storage';
+		$data['page_title'] = 'Document Storage';
+		$this->load->view('page', $data);
+
+	}
+
+	public function process_upload_file_storage(){
+		$this->clear_apost();
+		$time = time();
+		$user_id = $this->session->userdata('user_id');
+		$date_upload = date("d/m/Y"); 
+
+		$path = "./docs/stored_docs";
+
+		$is_prj_scrn = 0;
+
+        $config = array();
+	    $config['upload_path'] = $path."/";
+        $config['allowed_types'] = '*';
+        $config['max_size']      = '0';
+        $config['overwrite']     = FALSE;
+
+
+        $this->upload->initialize($config);
+        $this->load->library('upload');
+
+		if(!is_dir($path)){
+			mkdir($path, 0755, true);
+		}
+
+        $files = $_FILES;
+		$file_type = $_POST['doc_type_name'];
+		$project_id = $_POST['doc_proj_id'];
+		$is_prj_scrn = $_POST['is_prj_scrn'];
+
+        $cpt = count($_FILES['doc_files']['name']);
+
+        for($i=0; $i<$cpt; $i++){
+
+        	$file_name = $files['doc_files']['name'][$i];
+        	$path_parts = pathinfo($file_name);
+        	$extension = strtolower($path_parts['extension']);
+
+        	$data_file_name = $project_id.'_'.$path_parts['filename'].'_'.$time.'.'.$extension;
+	    	$file_name_set = str_replace(' ', '_', $data_file_name);
+
+        	$_FILES['doc_files']['name']= $file_name_set;
+        	$_FILES['doc_files']['tmp_name']= $files['doc_files']['tmp_name'][$i];
+        	$_FILES['doc_files']['type']= $files['doc_files']['type'][$i];
+        	$_FILES['doc_files']['error']= $files['doc_files']['error'][$i];
+        	$_FILES['doc_files']['size']= $files['doc_files']['size'][$i];  
+
+        	if ( !$this->upload->do_upload('doc_files')) {
+			   	echo $this->upload->display_errors();
+			}else{
+				$this->projects_m->insert_uploaded_file($file_name_set,$file_type,$project_id,$date_upload,$user_id);
+			}
+        }
+
+        if($is_prj_scrn == 1){
+        	redirect('/projects/view/'.$project_id);
+        }else{
+        	redirect('/projects/document_storage');
+        }
+    }
+
+
+
+
+	public function add_doc_type(){
+		$this->clear_apost();
+		$type_name = $this->input->post('type_name');
+
+		if(isset($type_name) && $type_name!= ''){
+			$this->projects_m->insert_doc_type($type_name);
+		}
+
+
+		redirect('projects/document_storage');
+	}
+
+	public function list_doc_type_storage( $view='select' ){
+		$q_list_doc_type = $this->projects_m->list_doc_type();
+		$doc_type = $q_list_doc_type->result();
+
+
+		if($view == 'select'){
+			foreach ($doc_type as $data){
+				echo "<option value=\"$data->storage_doc_type_id\">".$data->doc_type_name."</option>";
+			}
+		}
+
+		if($view == 'list_view'){
+			foreach ($doc_type as $data){
+				echo "<p id=\"".$data->storage_doc_type_id."\"><em class='fa fa-arrow-circle-right'></em> ".$data->doc_type_name;
+
+
+
+ if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):
+				echo '<em id="'.$data->storage_doc_type_id.'" class="pointer fa fa-pencil-square fa-lg pull-right edt_doctype" style="color: orange;   margin-top: 3px;"></em>';
+endif;
+				echo "</p>";
+
+			}
+		}
+
+
+
+
+
+
+
+	}
+
+	public function list_uploaded_files($proj_id){
+
+		$q_list_doc_type = $this->projects_m->list_uploaded_files($proj_id);
+
+
+		$rows = $q_list_doc_type->num_rows;
+
+
+		$list_doc_type = $q_list_doc_type->result();
+		$doc_type = '';
+
+
+		if($rows < 1){
+			echo '<p class="m-top-10"><em class="fa fa-exclamation-circle"></em> No Files Uploaded</p>';
+		}else{
+			foreach ($list_doc_type as $stored_files){
+				if($doc_type == ''){
+					$doc_type = $stored_files->doc_type_name;
+					echo "<p class=\"m-top-15\"><strong>$doc_type</strong></p>";
+				}else{
+					if($doc_type != $stored_files->doc_type_name){
+						$doc_type = $stored_files->doc_type_name;
+						echo "<p class=\"m-top-15\"><strong>$doc_type</strong></p>";
+					}
+				}
+				echo '<p class="row_file_list clearfix pad-3 pad-left-5 pad-right-5">
+				<a href="'.base_url().'docs/stored_docs/'.$stored_files->file_name.'" target="_blank" class="pull-left" id=""><em class="fa fa-chevron-circle-right"></em>&nbsp;'.$stored_files->file_name.'</a>';
+			
+ if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):	
+				echo '<em id="'.$stored_files->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;"></em>';
+			endif;
+
+			echo '</p>';
+			}
+
+		}
+
+
+
+	}
+
+	public function remove_uploaded_file(){
+		$this->projects_m->remove_uploaded_file($_POST['file_id']);
+ 
+
+		$user_id = 	$this->session->userdata('user_id');
+
+		$type = 'Update';
+		$actions = 'Deleted a file ID:'.$_POST['file_id'];
+
+		date_default_timezone_set("Australia/Perth"); 
+		$date = date("d/m/Y");
+		$time = date("H:i:s");
+		$this->user_model->insert_user_log($user_id,$date,$time,$actions,'',$type);
+	 
+	}
+
+	public function delete_doc_type($type_id){
+		$this->projects_m->remove_doc_type($type_id);	
+
+		$user_id = 	$this->session->userdata('user_id');
+
+		$type = 'Update';
+		$actions = 'Deleted a doc type ID:'.$type_id;
+
+		date_default_timezone_set("Australia/Perth"); 
+		$date = date("d/m/Y");
+		$time = date("H:i:s");
+		$this->user_model->insert_user_log($user_id,$date,$time,$actions,'',$type);
+
+		redirect('/projects/document_storage');	
+	}
+
+	public function update_doc_type(){
+		$this->clear_apost();
+		$type_name = trim($_POST['type_name']);
+		$type_id = trim($_POST['type_id']);
+		
+		$this->projects_m->update_type_name($type_name,$type_id);
+		redirect('/projects/document_storage');	
+	}
+
+	public function list_projects_by_job_date($this_year=''){ 
+
+	 	if($this_year == ''){
+	 		$this_year = date('Y');
+	 	}
+ 
+	 	$last_year = $this_year - 1;
+
+		$q_list_projects_by_job_date = $this->projects_m->list_projects_by_job_date($this_year,$last_year);
+
+		$has_data = $q_list_projects_by_job_date->num_rows;
+
+		$prj_line = 0;
+		$doc_type = '';
+
+		if($has_data > 1){
+
+			$projects_by_job_date = $q_list_projects_by_job_date->result();
+			foreach ($projects_by_job_date as $data){
+
+				
+				if($prj_line != $data->project_id){
+				//	echo "<tr><td>";
+					echo '<div class="pad-5 prj_files_group">
+						<div class="btn btn-info btn-xs fa fa-code-fork prj_files_head" id="'.$data->project_id.'"  style="margin: -4px 0 0 0;" id=""></div> 
+						&nbsp; '.$data->project_id.' - '.$data->project_name.' 
+						<div class="pull-right btn btn-success btn-xs set_doc_storage" id="'.$data->project_id.'_project_set"  data-toggle="modal" data-target="#doc_storage" style="margin: -1px 0 0 0;">Upload</div> </div>';
+					
+
+					$prj_line = $data->project_id;
+				}
+
+
+				if($doc_type == ''){
+					$doc_type = $data->doc_type_name;
+					echo '<p class="uploaded_files_row no-m pad-5 '.$data->project_id.'_files" style="display:none;"><strong>'.$doc_type.'</strong></p>';
+				}else{
+					if($doc_type != $data->doc_type_name){
+						$doc_type = $data->doc_type_name;
+						echo '<p class="uploaded_files_row no-m pad-5 '.$data->project_id.'_files" style="display:none;"><strong>'.$doc_type.'</strong></p>';
+					}
+				}
+
+ 
+
+echo '<div class="pad-5 '.$data->project_id.'_files uploaded_files_row" style="display:none;"> &nbsp; 
+
+					<span><em class="fa fa-level-up fa-lg fa-rotate-90" style="color: #269ABC;"></em> &nbsp; 
+
+					<a href="'.base_url().'docs/stored_docs/'.$data->file_name.'" target="_blank">'.$data->file_name.'</a></span> 
+
+					<span style=" background:#F7901E; font-size: 12px; padding: 1px 8px;    float: right;     border: 1px solid #864e11;  color: #fff;  height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;"><em class="fa fa-calendar-o"></em> '.$data->date_upload.' &nbsp; '.$data->user_first_name.'</span>';
+
+ if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):
+
+					echo '<em id="'.$data->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;"></em>';
+		
+endif;
+
+					echo '</div>';
+
+ 
+
+
+
+
+			//	echo "</td></tr>";  
+
+			}
+
+
+		}else{
+			echo '<div id="" class=""><p>No Uploaded Files</p></div>';
+		}
+
+
+
+
+	}
+
+
+
+
 	public function projects_wip_review(){
 
 
@@ -4055,7 +4338,7 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
 
 		/*========= CC & BCC emails end ========= */
 
-		$user_mail->addBCC('michael@focusshopfit.com.au');
+		$user_mail->addBCC('marko@focusshopfit.com.au');
 		$user_mail->addBCC($sendpdf_from);
 
 		// $user_mail->smtpdebug  = 2;

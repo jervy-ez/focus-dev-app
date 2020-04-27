@@ -316,20 +316,12 @@ $filtered_date = $induction_commencement_date;
 					<li>
 						<a href="#" class="btn-small view_applied_settings"><i class="fa fa-cog"></i> Applied Settings</a>
 					</li>
-					<?php endif; ?>
-
-					<?php if($this->session->userdata('projects') >= 1): ?>
-						<li>
-							<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
-						</li>
-					<?php endif; ?>
-
-					<?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6 /*  ||  ( $this->session->userdata('projects') >= 1 && $this->session->userdata('user_role_id') == 2   )     */  ): ?>
-						<li>
-							<a class="btn-small" data-toggle="modal" data-target="#doc_storage" tabindex="-1" href="#"><em class="fa fa-cloud-upload"></em> Doc Storage</a>
-						</li>
-					<?php endif; ?>
-
+					<?php endif; ?>	
+  <?php if($this->session->userdata('projects') >= 2): ?>
+					<li>
+						<a class="btn-small sb-open-right"><i class="fa fa-file-text-o"></i> Project Comments</a>
+					</li>
+					  <?php endif; ?>
 				</ul>
 			</div>
 
@@ -337,8 +329,6 @@ $filtered_date = $induction_commencement_date;
 	</div>
 </div>
 <!-- title bar -->
-
-
 
 
 
@@ -489,11 +479,6 @@ $filtered_date = $induction_commencement_date;
 												<?php endif; ?>
 
 												<li><a href="<?php echo base_url(); ?>reports/print_project_amendments?project_id=<?php echo $project_id ?>" id="print_project_amendments"><i class="fa fa-file-pdf-o"></i> Project Amendments</a></li>
-												<?php if($job_category == "Maintenance"){ ?>
-													<li><a href="<?php echo base_url(); ?>projects/service_report/<?php echo $project_id ?>"><i class="fa fa-file-pdf-o"></i> Service Report</a></li>
-												<?php } ?>
-
-												<li><a href="<?php echo base_url(); ?>works/safe_site_observation/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Safe Site Work Observation - checklist </a></li>
 
 											</ul>
 										</li>									
@@ -1401,144 +1386,7 @@ $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 		}
 	});
 
-	<?php if(isset($_GET['wid'])  &&  $_GET['wid'] != ''): ?>
-		var wid = <?php echo $_GET['wid']; ?>;
-		var toggle_bttn_val = 0;
-
-		setTimeout(function(){
-
-			$('table#table-wd tr').hide();
-			$('table#table-wd tr#row-work-'+wid).show();
-
-			$('#tbl_works .table-footer table th').first().append('<button class="btn btn-xs btn-info pull-left toggle_works_btn set">Toggle List - Works</button>');
-
-			$('.toggle_works_btn.set').click(function(){
-				
-				if(toggle_bttn_val%2==0){
-					$('table#table-wd tr').show();
-
-				}else{
-					$('table#table-wd tr').hide();
-					$('table#table-wd tr#row-work-'+wid).show();
-				}
-
-				toggle_bttn_val++;
-			});
-
-
-	 	},1000);
-
-
-
-	<?php endif; ?>
-
-
-
-	<?php if(isset($_GET['vid'])  &&  $_GET['vid'] != ''): ?>
-		var vid = <?php echo $_GET['vid']; ?>;
-		var toggle_bttn_val = 0;
-
-		setTimeout(function(){			
-			$('#proj_variation_list table.vr_table_list tr').hide();
-			$('#proj_variation_list table.vr_table_list tr#vr_id_'+vid).show();
-			$('#tbl_works #proj_variation_list').next().find('table th').first().append('<button class="btn btn-xs btn-info pull-left toggle_vworks_btn set">Toggle List - Variations</button>');
-
-			$('.toggle_vworks_btn.set').click(function(){
-				
-				if(toggle_bttn_val%2==0){
-					$('#proj_variation_list table.vr_table_list tr').show();
-
-				}else{
-					$('#proj_variation_list table.vr_table_list tr').hide();
-					$('#proj_variation_list table.vr_table_list tr#vr_id_'+vid).show();
-				}
-
-				toggle_bttn_val++;
-			});
-
-		},1300);
-
-	<?php endif; ?>
-
 </script>
-
-
-
-
-<div id="doc_storage" class="modal fade" tabindex="-1" data-width="760" >
-	<div class="modal-dialog">
-		<div class="modal-content">
-
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h4 class="modal-title"><em class="fa fa-cloud-upload"></em> Document File Storage: <?php echo $project_id; ?></h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-
-						
-
-
-						<form method="post" action="<?php echo base_url(); ?>projects/process_upload_file_storage" id="upload_doc_file_prj" enctype="multipart/form-data">
-
-							<div class="input-group m-bottom-10"><span id="" class="input-group-addon">Document Type*</span>
-								<select name="doc_type_name" class="form-control">
-									<option disabled="disabled" selected="selected" value="0" class="hide hidden">Select Document Type*</option>
-									<?php echo $this->projects->list_doc_type_storage(); ?>
-								</select>
-							</div>
-
-							<div class="input-group">
-								<input type="file" multiple="multiple" name="doc_files[]" requaired="" autocomplete="off" id="archive_name_edt" class="form-control btn-default pad-5" style="box-shadow: none;">
-								<input type="hidden" name="doc_proj_id" id="doc_proj_id" value="<?php echo $project_id; ?>">
-								<input type="hidden" name="is_prj_scrn" id="is_prj_scrn" value="1">
-
-								<span class="input-group-addon btn btn-success" data-dismiss="modal" onclick=" $('form#upload_doc_file_prj').submit(); $('#loading_modal').modal({'backdrop': 'static', 'show' : true} );"  style=" color:#fff; box-shadow: none;"><i class="fa fa-upload"></i> Upload</span>
-							</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<hr class="no-m" />
-			<div class="modal-body">
-
-				<h4 class="m-top-0"><i class="fa fa-file-text-o"></i> Uploaded Files</h4>
-				<hr class="no-m" />
-
-				<?php echo $this->projects->list_uploaded_files($project_id); ?>
-
-
-			</div>
-		</div>
-	</div>
-</div>
-
-<style type="text/css">
-p.row_file_list:hover em.del_stored_file{	display: block !important;}
-p.row_file_list:hover{	background-color: #efefef; }
-</style>
-
-<?php  if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):?>
-
-<script type="text/javascript">
-	$('.del_stored_file').click(function(){
-		$('#loading_modal').modal({'backdrop': 'static', 'show' : true} );
-
-
-		setTimeout(function(){
-			$('#loading_modal').modal('hide');
-		},1000);
-
-
-		var file_id = $(this).attr('id');
-		// alert(file_id);
-		$.post(baseurl+"projects/remove_uploaded_file",{file_id: file_id});
-		$(this).parent().remove();
-
-	});
-</script>
-<?php endif; ?>
 
 
 <?php $this->load->view('assets/logout-modal'); ?>

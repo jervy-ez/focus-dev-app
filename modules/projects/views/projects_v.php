@@ -197,17 +197,17 @@
 	<div class="container-fluid">
 		<div class="row">
 
-			<div class="col-md-6 col-sm-4 col-xs-12 pull-left">
+			<div class="col-md-3 col-sm-3 col-xs-12 pull-left">
 				<header class="page-header">
 					<h3><?php $datestring = "%l, %F %d, %Y"; $time = time(); //use time() for timestamp  ?>
 						<?php echo $screen; ?> Screen<br><small><?php echo mdate($datestring, $time); #echo date("l, F d, Y"); ?></small>
 					</h3>
 				</header>
 			</div>
-
+ 
      
 
-			<div class="page-nav-options col-md-6 col-sm-8 col-xs-12 pull-right hidden-xs">
+			<div class="page-nav-options col-md-9 col-sm-9 col-xs-12 pull-right hidden-xs">
 				<ul class="nav nav-tabs navbar-right">
 					<li>
 						<a href="<?php echo base_url(); ?>"><i class="fa fa-home"></i> Home</a>
@@ -254,10 +254,16 @@
 
 
          <?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ||  ( $this->session->userdata('projects') >= 1 && $this->session->userdata('user_role_id') == 2   )       ): ?>
-
           <li class="">
             <a href="#" class="btn-small btn-primary" data-toggle="modal" data-target="#brands_list"> Brands</a>
-          </li>   
+          </li>
+          <?php endif; ?>
+
+
+         <?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6 /*  ||  ( $this->session->userdata('projects') >= 1 && $this->session->userdata('user_role_id') == 2   )     */  ): ?>
+          <li class="">
+            <a href="<?php echo base_url(); ?>projects/document_storage" class="btn-small btn-primary"><em class="fa fa-cloud-upload"></em> Doc Storage</a>
+          </li>
           <?php endif; ?>
           
 				</ul>
@@ -709,8 +715,6 @@
         <?php endif; ?>
 
 
-
-
           <?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 9): ?>
           <div class="col-md-3 pull-right">
             <div class="box">
@@ -727,7 +731,7 @@
               </div>
               <div class="box-area pattern-sandstone pad-10">
                 <div class="box-content box-list collapse in">
-                 <ul id="list_removed_jobdate_prj" style="overflow-y: scroll;    height: 485px;">
+                 <ul id="list_removed_jobdate_prj" style="overflow-y: scroll;    height: 270px;">
                   <?php echo $this->projects->list_removed_jobdate_prj(25); ?>
                 </ul>
               </div>
@@ -757,7 +761,7 @@
 
 
 
-<!-- wip_filter_modal -->
+<!-- Brands List -->
 <div class="modal fade" id="brands_list" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -791,31 +795,23 @@
 
                        <?php echo $this->projects->list_all_brands(); ?>
 
-
-
                    </table>
-                  </div>
-
-        
-
- 
-  
-
-
-
-      </div>
+                  </div>       </div>
 
 
       <div class="modal-footer"> 
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>         
 
       </div>
-
-
     </div>
   </div>
 </div>
+<!-- Brands List -->
+
+
+
+
+
 
 
 <script type="text/javascript">
