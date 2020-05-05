@@ -54,6 +54,14 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
+	public function list_year_uploads(){
+		$query = $this->db->query(" SELECT SUBSTRING(`storage_files`.`date_upload`,-4) AS `year_list`
+			FROM `storage_files` WHERE `storage_files`.`is_active` = '1' 
+			GROUP BY SUBSTRING(`storage_files`.`date_upload`,-4)  
+			ORDER BY `year_list`  DESC ");
+		return $query;
+	}
+
 	public function list_projects_by_job_date($current_year='',$last_year=''){
 		$query = $this->db->query(" SELECT `storage_files`.`storage_files_id`,`storage_files`.`project_id`,`project`.`project_name` ,`storage_files`.`file_name`,`storage_files`.`date_upload`,  `storage_doc_type`.`doc_type_name`, `users`.`user_first_name`
 			FROM `storage_files`  
@@ -63,8 +71,8 @@ class Projects_m extends CI_Model{
 
 			WHERE `storage_files`.`is_active` = '1'  AND  `project`.`is_active` = '1' 
 			
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('01/01/$last_year', '%d/%m/%Y') )
-			AND UNIX_TIMESTAMP( STR_TO_DATE(`project`.`project_date`, '%d/%m/%Y') ) <  UNIX_TIMESTAMP( STR_TO_DATE('31/12/$current_year', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`storage_files`.`date_upload`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('01/01/$last_year', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`storage_files`.`date_upload`, '%d/%m/%Y') ) <  UNIX_TIMESTAMP( STR_TO_DATE('31/12/$current_year', '%d/%m/%Y') )
 			
 			
 			ORDER BY  `storage_files`.`project_id`  DESC, `storage_doc_type`.`doc_type_name` ASC, UNIX_TIMESTAMP( STR_TO_DATE(`storage_files`.`date_upload`, '%d/%m/%Y') ) DESC ");

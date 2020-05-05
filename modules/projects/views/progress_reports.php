@@ -676,6 +676,21 @@
 						</div>
 					</div>
 				</div>
+				
+				
+				<script type="text/javascript">
+					$('input#sendpdf_other_emails').keyup(function(e){
+						var inputted_email = $(this).val();
+						if(inputted_email.length > 0){
+							if(e.keyCode == 186){
+								$(this).val(inputted_email.slice(0, -1)+',');
+							}
+							if(e.keyCode == 32){
+								$(this).val(inputted_email.slice(0, -1)+',');
+							} 
+						}
+					});
+				</script>
 
 				<div id="check_client_wrap" class="row" style="display: none;">
 					<div class="col-md-10 col-md-offset-2">
@@ -699,6 +714,20 @@
 					</div>
 				</div>
 
+				<script type="text/javascript">
+					$('input#sendpdf_cc').keyup(function(e){
+						var inputted_email = $(this).val();
+						if(inputted_email.length > 0){
+							if(e.keyCode == 186){
+								$(this).val(inputted_email.slice(0, -1)+',');
+							}
+							if(e.keyCode == 32){
+								$(this).val(inputted_email.slice(0, -1)+',');
+							} 
+						}
+					});
+				</script>
+
 				<div class="clearfix"><br></div>
 
 				<div class="row">
@@ -710,6 +739,20 @@
 						</div>
 					</div>
 				</div>
+
+				<script type="text/javascript">
+					$('input#sendpdf_bcc').keyup(function(e){
+						var inputted_email = $(this).val();
+						if(inputted_email.length > 0){
+							if(e.keyCode == 186){
+								$(this).val(inputted_email.slice(0, -1)+',');
+							}
+							if(e.keyCode == 32){
+								$(this).val(inputted_email.slice(0, -1)+',');
+							} 
+						}
+					});
+				</script>
 
 				<div class="clearfix"><br></div>
 

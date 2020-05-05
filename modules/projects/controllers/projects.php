@@ -3342,6 +3342,19 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
 //		
 	}
 
+	public function list_years_uploaded($year){
+
+		$q_list_year_uploads = $this->projects_m->list_year_uploads();
+		$year_uploads = $q_list_year_uploads->result();
+
+		echo "<option value='$year'> ".($year-1)." - ".$year."</option>";
+		foreach ($year_uploads as $data){
+			if($year != $data->year_list){
+				echo "<option value='$data->year_list'>".($data->year_list-1)." - ".$data->year_list."</option>";
+			}			
+		}
+	}
+
 
 
 	public function document_storage(){
@@ -3489,9 +3502,9 @@ endif;
 				echo '<p class="row_file_list clearfix pad-3 pad-left-5 pad-right-5">
 				<a href="'.base_url().'docs/stored_docs/'.$stored_files->file_name.'" target="_blank" class="pull-left" id=""><em class="fa fa-chevron-circle-right"></em>&nbsp;'.$stored_files->file_name.'</a>';
 			
- if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):	
+ //if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):	
 				echo '<em id="'.$stored_files->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;"></em>';
-			endif;
+			//endif;
 
 			echo '</p>';
 			}
@@ -3553,18 +3566,20 @@ endif;
 
 		$q_list_projects_by_job_date = $this->projects_m->list_projects_by_job_date($this_year,$last_year);
 
+
 		$has_data = $q_list_projects_by_job_date->num_rows;
 
 		$prj_line = 0;
 		$doc_type = '';
 
-		if($has_data > 1){
+		if($has_data > 0){
 
 			$projects_by_job_date = $q_list_projects_by_job_date->result();
 			foreach ($projects_by_job_date as $data){
 
 				
 				if($prj_line != $data->project_id){
+		$doc_type = '';
 				//	echo "<tr><td>";
 					echo '<div class="pad-5 prj_files_group">
 						<div class="btn btn-info btn-xs fa fa-code-fork prj_files_head" id="'.$data->project_id.'"  style="margin: -4px 0 0 0;" id=""></div> 
@@ -3596,11 +3611,11 @@ echo '<div class="pad-5 '.$data->project_id.'_files uploaded_files_row" style="d
 
 					<span style=" background:#F7901E; font-size: 12px; padding: 1px 8px;    float: right;     border: 1px solid #864e11;  color: #fff;  height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;"><em class="fa fa-calendar-o"></em> '.$data->date_upload.' &nbsp; '.$data->user_first_name.'</span>';
 
- if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):
+// if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):
 
 					echo '<em id="'.$data->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;"></em>';
 		
-endif;
+//endif;
 
 					echo '</div>';
 
@@ -4240,6 +4255,18 @@ endif;
 		$sendpdf_cc = $sendpdf_data[7];
 		$sendpdf_bcc = $sendpdf_data[8];
 
+
+
+		$sendpdf_main_to = str_replace(' ','', $sendpdf_main_to);
+		$sendpdf_other_emails = str_replace(' ','', $sendpdf_other_emails);
+		$sendpdf_cc = str_replace(' ','', $sendpdf_cc);
+		$sendpdf_bcc = str_replace(' ','', $sendpdf_bcc);
+
+		$sendpdf_main_to = str_replace(';',',', $sendpdf_main_to);
+		$sendpdf_other_emails = str_replace(';',',', $sendpdf_other_emails);
+		$sendpdf_cc = str_replace(';',',', $sendpdf_cc);
+		$sendpdf_bcc = str_replace(';',',', $sendpdf_bcc);
+
 		if ( !class_exists("PHPMailer") ){
 			require('PHPMailer/class.phpmailer.php'); 
 		}
@@ -4270,6 +4297,10 @@ endif;
 			} else {
 				$sendpdf_main_to_arr = array();
 				$sendpdf_main_to_arr = explode(",", $sendpdf_main_to);
+
+				$sendpdf_main_to_arr = array_filter($sendpdf_main_to_arr);
+
+
 				$sendpdf_main_to_count = count($sendpdf_main_to_arr);
 
 				for ($i=0; $i < $sendpdf_main_to_count; $i++) { 
@@ -4288,6 +4319,7 @@ endif;
 			} else {
 				$sendpdf_other_emails_arr = array();
 				$sendpdf_other_emails_arr = explode(",", $sendpdf_other_emails);
+				$sendpdf_other_emails_arr = array_filter($sendpdf_other_emails_arr);
 				$sendpdf_other_emails_count = count($sendpdf_other_emails_arr);
 
 				for ($i=0; $i < $sendpdf_other_emails_count; $i++) { 
@@ -4310,6 +4342,7 @@ endif;
 			} else {
 				$sendpdf_cc_arr = array();
 				$sendpdf_cc_arr = explode(",", $sendpdf_cc);
+				$sendpdf_cc_arr = array_filter($sendpdf_cc_arr);
 				$sendpdf_cc_count = count($sendpdf_cc_arr);
 
 				for ($i=0; $i < $sendpdf_cc_count; $i++) { 
@@ -4328,6 +4361,7 @@ endif;
 			} else {
 				$sendpdf_bcc_arr = array();
 				$sendpdf_bcc_arr = explode(",", $sendpdf_bcc);
+				$sendpdf_bcc_arr = array_filter($sendpdf_bcc_arr);
 				$sendpdf_bcc_count = count($sendpdf_bcc_arr);
 
 				for ($i=0; $i < $sendpdf_bcc_count; $i++) { 
@@ -4338,7 +4372,7 @@ endif;
 
 		/*========= CC & BCC emails end ========= */
 
-		$user_mail->addBCC('marko@focusshopfit.com.au');
+	//	$user_mail->addBCC('michael@focusshopfit.com.au');
 		$user_mail->addBCC($sendpdf_from);
 
 		// $user_mail->smtpdebug  = 2;

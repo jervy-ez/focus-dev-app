@@ -124,7 +124,7 @@
 
 
                 <div class="input-group m-top-15 m-left-10  pull-right" style="width:300px;">
-                  <span class="input-group-addon"><i class="fa fa-calendar"></i> Job Created Year </span> 
+                  <span class="input-group-addon"><i class="fa fa-calendar"></i> Upload Year </span> 
 
                   <input type="hidden" name="client_supply_settings_id" value="1"> 
 
@@ -132,9 +132,11 @@
                   <select id="year_prj_cdt" name="year_prj_cdt" tabindex="-1" class="form-control">
 
 
-                    <?php for ($i= date('Y'); $i > 2015; $i--): $l_year = $i-1;?> 
+                    <?php $this_year = date('Y'); /* for ($i= date('Y'); $i > 2015; $i--): $l_year = $i-1;?> 
                       <option value="<?php echo "$i"; ?>" ><?php echo "$i-$l_year"; ?></option> 
-                    <?php endfor; ?>
+                    <?php endfor; */ ?>
+
+                    <?php echo $this->projects->list_years_uploaded($this_year); ?>
  
                   </select>
                 </div>

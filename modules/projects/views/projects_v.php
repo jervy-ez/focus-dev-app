@@ -260,11 +260,9 @@
           <?php endif; ?>
 
 
-         <?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6 /*  ||  ( $this->session->userdata('projects') >= 1 && $this->session->userdata('user_role_id') == 2   )     */  ): ?>
-          <li class="">
+           <li class="">
             <a href="<?php echo base_url(); ?>projects/document_storage" class="btn-small btn-primary"><em class="fa fa-cloud-upload"></em> Doc Storage</a>
-          </li>
-          <?php endif; ?>
+          </li> 
           
 				</ul>
 			</div>

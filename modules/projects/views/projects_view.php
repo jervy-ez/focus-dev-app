@@ -324,11 +324,9 @@ $filtered_date = $induction_commencement_date;
 						</li>
 					<?php endif; ?>
 
-					<?php if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6 /*  ||  ( $this->session->userdata('projects') >= 1 && $this->session->userdata('user_role_id') == 2   )     */  ): ?>
-						<li>
+					 	<li>
 							<a class="btn-small" data-toggle="modal" data-target="#doc_storage" tabindex="-1" href="#"><em class="fa fa-cloud-upload"></em> Doc Storage</a>
-						</li>
-					<?php endif; ?>
+						</li> 
 
 				</ul>
 			</div>
@@ -1519,7 +1517,7 @@ p.row_file_list:hover em.del_stored_file{	display: block !important;}
 p.row_file_list:hover{	background-color: #efefef; }
 </style>
 
-<?php  if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):?>
+<?php  //if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):?>
 
 <script type="text/javascript">
 	$('.del_stored_file').click(function(){
@@ -1538,7 +1536,7 @@ p.row_file_list:hover{	background-color: #efefef; }
 
 	});
 </script>
-<?php endif; ?>
+<?php //endif; ?>
 
 
 <?php $this->load->view('assets/logout-modal'); ?>
