@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="css/inputmask.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<input id="test1" name="test1"/><br/>
+<input id="test2" name="test2"/><br/>
+<input id="test3" name="test3"/><br/>
+<input class="email-inputmask" name="test3"/><br/>
+<br/>
+
+
+<div class="card-body">
+                                <h5 class="card-title m-b-0">Form Elements</h5>
+                                <div class="form-group m-t-20">
+                                    <label>Date Mask <small class="text-muted">dd/mm/yyyy</small></label>
+                                    <input type="text" class="form-control date-inputmask" id="date-mask" placeholder="dd/mm/yyyy">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone <small class="text-muted">(999) 999-9999</small></label>
+                                    <input type="text" class="form-control phone-inputmask" id="phone-mask" placeholder="Enter Phone Number">
+                                </div>
+                                <div class="form-group">
+                                    <label>International Number <small class="text-muted">+99 999 999 999</small></label>
+                                    <input type="text" class="form-control international-inputmask" id="international-mask" placeholder="International Phone Number">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone / xEx <small class="text-muted">(999) 999-9999 / x999999</small></label>
+                                    <input type="text" class="form-control xphone-inputmask" id="xphone-mask" placeholder="Enter Phone Number">
+                                </div>
+                                <div class="form-group">
+                                    <label>Purchase Order <small class="text-muted">aaaa 9999-****</small></label>
+                                    <input type="text" class="form-control purchase-inputmask" id="purchase-mask" placeholder="Enter Purchase Order">
+                                </div>
+                            </div>
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.0.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="dist/jquery.inputmask.js" charset="utf-8"></script>
+<script>
+	console.log(navigator.userAgent);
+    $("#test1").inputmask("datetime", {
+        inputFormat: "dd/mm/yyyy",
+        outputFormat: "mm-yyyy-dd",
+        inputEventOnly: true
+    });
+    $("#test2").inputmask("datetime", {
+        inputFormat: "dd/mm/yyyy",
+        outputFormat: "mm-yyyy-dd",
+        inputEventOnly: true
+    });
+    $("#test3").inputmask("datetime", {
+        inputFormat: "dd/mm/yyyy",
+        outputFormat: "mm-yyyy-dd",
+        inputEventOnly: true
+    });
+
+
+    $(function(e) {
+    "use strict";
+    $(".date-inputmask").inputmask("dd/mm/yyyy"), 
+    $(".phone-inputmask").inputmask("(999) 999-9999"), 
+    $(".international-inputmask").inputmask("+99(999)999-9999"), 
+    $(".xphone-inputmask").inputmask("(999) 999-9999 / x999999"), 
+    $(".purchase-inputmask").inputmask("aaaa 9999-****"), 
+    $(".cc-inputmask").inputmask("9999 9999 9999 9999"), 
+    $(".ssn-inputmask").inputmask("999-99-9999"), 
+    $(".isbn-inputmask").inputmask("999-99-999-9999-9"), 
+    $(".currency-inputmask").inputmask("$9999"), 
+    $(".percentage-inputmask").inputmask("99%"), 
+    $(".decimal-inputmask").inputmask({
+        alias: "decimal"
+        , radixPoint: "."
+    }), 
+    
+    $(".email-inputmask").inputmask({
+    mask: "*{1,20}[.*{1,20}][.*{1,20}][.*{1,20}]@*{1,20}[*{2,6}][*{1,2}].*{1,}[.*{2,6}][.*{1,2}]"
+    , greedy: !1
+    , onBeforePaste: function (n, a) {
+        return (e = e.toLowerCase()).replace("mailto:", "")
+    }
+    , definitions: {
+        "*": {
+            validator: "[0-9A-Za-z!#$%&'*+/=?^_`{|}~/-]"
+            , cardinality: 1
+            , casing: "lower"
+        }
+    }
+    })
+});
+
+
+</script>
+</body>
+</html>

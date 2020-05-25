@@ -1,95 +1,29 @@
-<!DOCTYPE>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<!-- main site ip -->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title><?php echo (isset($page_title) ? $page_title : 'Sojourn');  ?></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        
-        <link href="<?php echo base_url(); ?>css/bootstrap.min.css" rel="stylesheet" type="text/css">        
-        <link href="<?php echo base_url(); ?>css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv
+    ="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Aries Rail - Job Summary</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <meta name="description" content="This is an example dashboard created using build-in elements and components.">
+    <meta name="msapplication-tap-highlight" content="no">
+    <!--
+    =========================================================
+    * ArchitectUI HTML Theme Dashboard - v1.0.0
+    =========================================================
+    * Product Page: https://dashboardpack.com
+    * Copyright 2019 DashboardPack (https://dashboardpack.com)
+    * Licensed under MIT (https://github.com/DashboardPack/architectui-html-theme-free/blob/master/LICENSE)
+    =========================================================
+    * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+    -->
+    <link href="<?php echo base_url(); ?>temp_css/main.css" rel="stylesheet">
+    <link href="<?php echo base_url(); ?>css/base.css?var=2" rel="stylesheet">
+</head>
+<body>
 
-        <link href="<?php echo base_url(); ?>css/segment.css" rel="stylesheet"/>
-
-        <link href="<?php echo base_url(); ?>css/select2.css" rel="stylesheet"/>
-        <link href="<?php echo base_url(); ?>css/main.css?ver=32" rel="stylesheet" type="text/css">
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/vendor/jquery-1.11.0.min.js"></script>
-
-        <script src="<?php echo base_url(); ?>js/moment.js" ></script>  
-
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/jquery-1.12.0.min.js"></script>
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/dataTables.fixedColumns.min.js"></script>
-
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/jquery-2.1.3.js"></script>
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/tableHeadFixer.js"></script>
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/jquery.tablednd.0.7.min.js"></script>
-        <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/tablefilter.js"></script>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-        
-		<link href="<?php echo base_url(); ?>css/font-awesome.min.css" rel="stylesheet">
-        <script src="<?php echo base_url(); ?>js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
- 
- 
-        <script src="<?php echo base_url(); ?>js/pathseg.js"></script>
- 
-		<link href="<?php echo base_url(); ?>css/c3.css" rel="stylesheet" type="text/css">
-		<script src="<?php echo base_url(); ?>js/c3/d3.js" charset="utf-8"></script>
-		<script src="<?php echo base_url(); ?>js/c3/c3.js"></script>
-
-        <link href="<?php echo base_url(); ?>css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
-        <script src="<?php echo base_url(); ?>js/bootstrap-datetimepicker.min.js" ></script>
-
-	    <script src="<?php echo base_url(); ?>js/segment.js"></script>
-
-        <!-- added by: MC 08-03-17 -->
-        <link href="<?php echo base_url(); ?>css/bsPhotoGallery/jquery.bsPhotoGallery.css" rel="stylesheet">
-        <link href="<?php echo base_url(); ?>css/Jcrop/Jcrop.css" rel="stylesheet">
-        <script src="<?php echo base_url(); ?>js/tinymce/js/tinymce/tinymce.min.js" charset="utf-8"></script>
-
-        <script>
-            tinymce.init({ 
-                selector:'#sendpdf_body',
-                height: '300px',
-                toolbar: false,
-                menubar: false,
-                plugins: false,
-                forced_root_block : ''
-            });
-        </script>
-
-        <script>
-            tinymce.init({ 
-                selector:'#declinedCommentsBox',
-                height: '300px',
-                toolbar: false,
-                menubar: false,
-                plugins: false,
-                forced_root_block : ''
-            });
-        </script>
-
-        <script>
-            tinymce.init({ 
-                selector:'#email_msg_onboarding_bank',
-                height: '300px',
-                toolbar: 'bold italic',
-                menubar: false,
-                plugins: false,
-                forced_root_block : ''
-            });
-        </script>
-
-    </head>
-    <body>
-
-    <div id="main" class="main-content">
-    	<!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+    <!-- first and last div -->
+    <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
