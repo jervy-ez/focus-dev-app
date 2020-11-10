@@ -245,6 +245,9 @@ img {
     cursor: default !important;
 }
 
+.cursor-pointer{
+    cursor: pointer !important;
+}
 
 /*vertical timeline*/
 
@@ -661,3 +664,10 @@ img {
 }
 
 /* toggle */
+
+
+
+/*date picker*/
+ 
+
+/*date picker*/

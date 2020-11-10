@@ -22,6 +22,16 @@
     -->
     <link href="<?php echo base_url(); ?>temp_css/main.css" rel="stylesheet">
     <link href="<?php echo base_url(); ?>css/base.css?var=2" rel="stylesheet">
+
+<!-- 
+
+    probably be used on specific pages only
+    
+    <link rel="stylesheet" type="text/css" href="DataTables/datatables.min.css"/>
+    <script type="text/javascript" src="DataTables/datatables.min.js"></script>
+ -->
+
+
 </head>
 <body>
 

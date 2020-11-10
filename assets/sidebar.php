@@ -34,24 +34,18 @@
                             <ul class="vertical-nav-menu">
                                 <li class="app-sidebar__heading">Dashboard</li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>" id="sb_home">
-                                        <i class="metismenu-icon fas fa-tachometer-alt"></i>
-                                        Home
-                                    </a>
+                                    <a href="<?php echo base_url(); ?>" id="sb_home"><i class="metismenu-icon fas fa-tachometer-alt"></i>Home</a>
                                 </li>
-
+                                <li class="app-sidebar__heading">Companies</li>
+                                <li>
+                                    <a href="<?php echo base_url(); ?>Companies/clients" id="sb_clients"><i class="metismenu-icon fas fa-briefcase  "></i>Clients</a>
+                                </li>
                                 <li class="app-sidebar__heading">Users</li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>Users/account" id="sb_my_profile">
-                                        <i class="metismenu-icon fas fa-user-circle"></i>
-                                        My Profile
-                                    </a>
+                                    <a href="<?php echo base_url(); ?>Users/account" id="sb_my_profile"><i class="metismenu-icon fas fa-user-circle"></i>My Profile</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo base_url(); ?>Users" id="sb_users_list">
-                                        <i class="metismenu-icon fas fa-users"></i>
-                                        Users List
-                                    </a>
+                                    <a href="<?php echo base_url(); ?>Users" id="sb_users_list"><i class="metismenu-icon fas fa-users"></i>Users List</a>
                                 </li>
 
                             </ul>
