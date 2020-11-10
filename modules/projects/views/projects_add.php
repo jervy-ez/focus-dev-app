@@ -486,6 +486,14 @@
 													<input type="hidden" name="brand_shopping_center" class="brand_shopping_center" id="brand_shopping_center" value="<?php echo $this->input->post('brand_shopping_center'); ?>">
 													<input type="hidden" name="selected_shopping_center_detail" class="selected_shopping_center_detail" id="selected_shopping_center_detail" value="<?php echo $this->input->post('selected_shopping_center_detail'); ?>">													
 
+
+													<input type="hidden" name="sc_unit_lvl" id="sc_unit_lvl">
+													<input type="hidden" name="sc_unit_num" id="sc_unit_num">
+													<input type="hidden" name="sc_unit_strt" id="sc_unit_strt">
+													<input type="hidden" name="sc_unit_state" id="sc_unit_state">
+													<input type="hidden" name="sc_unit_sbrb" id="sc_unit_sbrb">
+													<input type="hidden" name="sc_unit_pcode" id="sc_unit_pcode">
+
 													<div class="col-sm-3 m-bottom-5 clearfix">											
 														<a href="#" data-toggle="modal" data-target="#select_shopping_center_modal" data-backdrop="static" class="btn btn-primary">Select Shopping Center</a>
 													</div>

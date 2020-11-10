@@ -1438,7 +1438,8 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 			$cc_pm = ($cc_pm_raw == 0 ? $project_manager_id : $cc_pm_raw);
 
 			if($is_shopping_center == 1){
-				$site_address_id =  $this->input->post('brand_shopping_center');
+				$sc_address_id =  $this->input->post('brand_shopping_center');
+				$site_address_id =  $this->projects_m->duplicate_address_row($sc_address_id)
 			}else{
 
 				$general_address_id_result_a = $this->company_m->fetch_address_general_by('postcode-suburb',$data['postcode_a'],$data['suburb_a']);

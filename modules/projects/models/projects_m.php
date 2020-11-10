@@ -550,11 +550,14 @@ class Projects_m extends CI_Model{
 	}
 
 
+	public function duplicate_address_row($address_detail_id){
 
-
-
-
-
+		$this->db->query(" INSERT INTO `address_detail` (`unit_number`,`unit_level`,`street`,`po_box`,`general_address_id`)
+			SELECT `unit_number`,`unit_level`,`street`,`po_box`,`general_address_id`
+			FROM `address_detail` WHERE `address_detail`.`address_detail_id` = '$address_detail_id' ");		
+		$new_add_id = $this->db->insert_id();
+		return $new_add_id;
+	}
 
 	public function add_invoice_comment($project_id,$comment,$include_invoice_comments){
 		$this->db->query("UPDATE `project` SET `invoice_comments` = '$comment', `project`.`include_invoice_comments` = '$include_invoice_comments' WHERE `project`.`project_id` = '$project_id' ");
