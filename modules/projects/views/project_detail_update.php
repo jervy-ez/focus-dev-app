@@ -657,7 +657,7 @@
 													<?php if($this->input->post('selected_shopping_center_detail')): ?>
 														<input type="hidden" name="selected_shopping_center_detail" class="selected_shopping_center_detail" id="selected_shopping_center_detail" value="<?php echo $this->input->post('selected_shopping_center_detail'); ?>">
 													<?php else: ?>
-														<input type="hidden" name="selected_shopping_center_detail" class="selected_shopping_center_detail" id="selected_shopping_center_detail" value="<?php echo $shopping_center_brand_name.', '.$unit_number.' '.$street.', '.ucwords(strtolower($suburb)).', '.$state.', '.$postcode; ?>">
+														<input type="hidden" name="selected_shopping_center_detail" class="selected_shopping_center_detail" id="selected_shopping_center_detail" value="<?php echo $shop_name.', '.$unit_number.' '.$street.', '.ucwords(strtolower($suburb)).', '.$state.', '.$postcode; ?>">
 													<?php endif; ?>
 
 													<?php #echo $shortname.'|'.$state.'|'.$phone_area_code.'|'.$state_id.'|'.$shopping_center_brand_name; ?>
@@ -674,7 +674,7 @@
 																<strong class="selected_shopping_center_text" id="selected_shopping_center_text"><?php echo $this->input->post('selected_shopping_center_detail'); ?></strong>
 															<?php else: ?>
 																<strong class="selected_shopping_center_text" id="selected_shopping_center_text">
-															<?php echo $shopping_common_name; echo ', '.$unit_number.' '.$street.', '.ucwords(strtolower($suburb)).', '.$state.', '.$postcode; ?></strong>
+															<?php echo $shop_name; echo ', '.$unit_number.' '.$street.', '.ucwords(strtolower($suburb)).', '.$state.', '.$postcode; ?></strong>
 															<?php endif; ?>
 														</p>
 													</div>

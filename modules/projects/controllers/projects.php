@@ -42,10 +42,15 @@ class Projects extends MY_Controller{
 		$data['screen'] = 'Projects';
 
 		if(isset($_GET['fompj'])){
-			$fompj['set_view_company_project'] = $_GET['fompj'];
+
+			$user_id = $this->session->userdata('user_id');
+			$company_id = $_GET['fompj'];
+			$this->user_model->update_set_project_view($user_id,$company_id);
+
+			$fompj['set_view_company_project'] = $company_id;
 			$this->session->set_userdata($fompj);
 		}else{
-			$fompj['set_view_company_project'] = $this->session->userdata('user_focus_company_id');
+			$fompj['set_view_company_project'] = $this->session->userdata('set_view_company_project');
 			$this->session->set_userdata($fompj);
 		}
 
@@ -894,8 +899,14 @@ $user_id = $this->session->userdata('user_id');
 			$shopping_center = array_shift($shopping_center_q->result_array());
 
 			$data['shopping_center_id'] = $shopping_center['shopping_center_id'];
+			/*
 			$data['shopping_center_brand_name'] = $shopping_center['shopping_center_brand_name'];
 			$data['shopping_common_name'] = $shopping_center['common_name'];
+			*/
+
+
+			$data['shopping_center_brand_name'] = $data['shop_name'];
+			$data['shopping_common_name'] = $data['shop_name'];
 
 
 			$applied_admin_settings_raw = $this->display_project_applied_defaults($project_id);
@@ -1439,7 +1450,8 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 
 			if($is_shopping_center == 1){
 				$sc_address_id =  $this->input->post('brand_shopping_center');
-				$site_address_id =  $this->projects_m->duplicate_address_row($sc_address_id)
+				$site_address_id =  $this->projects_m->duplicate_address_row($sc_address_id);
+
 			}else{
 
 				$general_address_id_result_a = $this->company_m->fetch_address_general_by('postcode-suburb',$data['postcode_a'],$data['suburb_a']);
@@ -1473,6 +1485,17 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 			}
 
 			$inserted_project_id = $this->projects_m->insert_new_project($project_name, $project_date, $contact_person_id, $project_total, $job_date,$brand_name, $is_wip, $client_po, $site_start, $site_finish, $job_category, $job_type, $focus_user_id ,$focus_id, $project_manager_id, $project_admin_id, $project_estiamator_id,$site_address_id, $invoice_address_id, $project_notes_id, $project_markup,$project_status_id, $client_id, $install_hrs, $project_area, $is_double_time, $labour_hrs_estimate, $shop_tenancy_number,$defaults_id,$cc_pm,$date_quote_deadline,$proj_joinery_user);
+
+
+			if($is_shopping_center == 1){
+
+				$selected_shopping_center_raw = $this->input->post('selected_shopping_center_detail'); 
+				$selected_shopping_center_arr = explode(',', $selected_shopping_center_raw);
+
+				$shop_name = $selected_shopping_center_arr[0];
+				$this->projects_m->set_shop_name($inserted_project_id,$shop_name);
+
+			}
 
 
 			$static_defaults_q = $this->user_model->select_static_defaults();
@@ -1555,7 +1578,7 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 				$consdr = array_shift($considerations_raw->result_array());
 				$this->works_m->insert_considerations($work_id,0, $consdr['site_inspection_req'], $consdr['special_conditions'], $consdr['additional_visit_req'], $consdr['operate_during_install'], $consdr['week_work'], $consdr['weekend_work'], $consdr['after_hours_work'], $consdr['new_premises'], $consdr['free_access'], $consdr['other'], $consdr['otherdesc']);
 
-				$this->session->set_flashdata('curr_tab', 'works');
+			//	$this->session->set_flashdata('curr_tab', 'works');
 			}
 // ========================= EMAIL Notification for PA for INDUCTION ==================
 			$is_exempted = $this->induction_project_exempted($inserted_project_id);
@@ -2881,7 +2904,18 @@ $gp = 0;
 
 
 				if($is_shopping_center == 1){
-					$site_address_id =  $this->input->post('brand_shopping_center');
+
+
+				$sc_address_id =  $this->input->post('brand_shopping_center');
+				$site_address_id =  $this->projects_m->duplicate_address_row($sc_address_id);
+
+				$selected_shopping_center_raw = $this->input->post('selected_shopping_center_detail'); 
+				$selected_shopping_center_arr = explode(',', $selected_shopping_center_raw);
+
+				$shop_name = $selected_shopping_center_arr[0];
+				$this->projects_m->set_shop_name($project_id,$shop_name);
+
+
 				}else{
 					$site_address_id = $data['address_id'];
 					$shop_tenancy_number = '';

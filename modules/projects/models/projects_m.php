@@ -30,7 +30,7 @@ class Projects_m extends CI_Model{
 	}
 
 	public function list_doc_type(){
-		$query = $this->db->query("SELECT * FROM `storage_doc_type` WHERE `storage_doc_type`.`is_active` = '1' ORDER BY `storage_doc_type`.`doc_type_name` ASC ");
+		$query = $this->db->query("SELECT * FROM `storage_doc_type` WHERE `storage_doc_type`.`is_active` = '1' AND  `storage_doc_type`.`doc_type_area` = '0' ORDER BY `storage_doc_type`.`doc_type_name` ASC ");
 		return $query;
 	}
 
@@ -557,6 +557,10 @@ class Projects_m extends CI_Model{
 			FROM `address_detail` WHERE `address_detail`.`address_detail_id` = '$address_detail_id' ");		
 		$new_add_id = $this->db->insert_id();
 		return $new_add_id;
+	}
+
+	public function set_shop_name($project_id,$shop_name){
+		$this->db->query(" UPDATE `project` SET `shop_name` = '$shop_name' WHERE `project`.`project_id` = '$project_id' ");
 	}
 
 	public function add_invoice_comment($project_id,$comment,$include_invoice_comments){

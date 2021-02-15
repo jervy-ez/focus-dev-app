@@ -8,7 +8,7 @@
 <?php $this->load->module('bulletin_board'); ?>
 <?php $this->load->model('admin_m'); ?>
 
-                    <?php $focus_id_main_display = $this->session->userdata('user_focus_company_id'); ?>
+                    <?php $focus_id_main_display = $this->session->userdata('set_view_company_project'); ?>
 <?php 
 
   $progress_reports = $this->session->userdata('progress_report');

@@ -202,7 +202,7 @@
 													<div class="clearfix"></div>
 
 													<h4><i class="fa fa-map-marker"></i> Site Address:</h4>
-													<?php $shop_tenancy_numb = ($job_type != 'Shopping Center' ? '' : ''.$shopping_common_name.': '.$shop_tenancy_number); ?>
+													<?php $shop_tenancy_numb = ($job_type != 'Shopping Center' ? '' : ''.$shop_name.': '.$shop_tenancy_number); ?>
 													<?php $unit_level =  ($unit_level != '' ? 'Unit/Level:'.$unit_level.',' : '' ); ?>
 													<h5 style="margin-left: 20px;"><p id="site_address1"><?php echo "$shop_tenancy_numb $unit_level $unit_number $street, $suburb, $state, $postcode"; ?></p></h5>
 													<input type="hidden" id="site_address1" name="site_address1" value="<?php echo "$shop_tenancy_numb $unit_level $unit_number $street, $suburb, $state, $postcode"; ?>">

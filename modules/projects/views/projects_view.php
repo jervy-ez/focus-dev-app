@@ -302,7 +302,7 @@ $filtered_date = $induction_commencement_date;
 					<li>
 						<a href="<?php echo base_url(); ?>projects/update_project_details/<?php echo $project_id; ?>" class="btn-small sub-nav-bttn">Project Details</a>
 					</li>
-					<?php if($this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 4 || $this->session->userdata('is_admin') == 1  ): ?>
+					<?php if($this->session->userdata('user_role_id') == 2 || $this->session->userdata('user_role_id') == 3 || $this->session->userdata('user_role_id') == 20 || $this->session->userdata('user_role_id') == 4 || $this->session->userdata('is_admin') == 1  ): ?>
 					<?php if ($project_date_created > $filtered_date): ?>
 					<?php if($induction_exempted == 0): ?>
 					<li>
