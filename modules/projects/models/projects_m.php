@@ -9,10 +9,13 @@ class Projects_m extends CI_Model{
 			UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_commencement`, '%d/%m/%Y') ) AS `unix_start_date`
 
 			, `project`.`quote_deadline_date`, `project_cost_total`.`work_estimated_total`,`project_cost_total`.`variation_total`, `project`.`install_time_hrs`,`project`.`unaccepted_date`,`project`.`date_site_commencement`,`company_details`.`company_name`,`company_details`.`company_id`, `project`.`job_category`, `project`.`project_status_id`, `project`.`job_date`, `project`.`budget_estimate_total`,`project`.`project_manager_id`,`project`.`project_admin_id`,`project`.`project_estiamator_id`,`project`.`is_wip`, `project`.`is_paid`, `project`.date_site_finish, `project`.warranty_date,
-			UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) AS `unix_date_site_finish`
+			UNIX_TIMESTAMP( STR_TO_DATE(`project`.`date_site_finish`, '%d/%m/%Y') ) AS `unix_date_site_finish`,
+			`company_details_temp`.`company_name` AS `pending_comp_name`,
+			`project`.`is_pending_client`
 			FROM  `project`
 
-			INNER JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+			LEFT JOIN `company_details` ON `company_details`.`company_id` = `project`.`client_id`
+			LEFT JOIN `company_details_temp` ON `company_details_temp`.`company_details_temp_id` = `project`.`client_id`
 			INNER JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id` 
 
 			".$extra_join."
@@ -25,17 +28,28 @@ class Projects_m extends CI_Model{
 	}
 
 	public function select_particular_project($id){
-		$query = $this->db->query("select a.*, b.*, a.address_id as site_add  from project a left join company_details b on a.client_id = b.company_id where project_id = '$id'");
+		$query = $this->db->query("SELECT a.*, b.*, 
+									c.company_name AS pending_comp_name,
+									concat(c.contact_person_fname,' ',c.contact_person_sname) AS pending_cont_person,
+									c.contact_number AS pending_cont_number,
+									c.email AS pending_cont_email, a.address_id as site_add  
+									FROM project a 
+										LEFT JOIN company_details b on b.company_id  = a.client_id
+										LEFT JOIN company_details_temp c ON c.company_details_temp_id = a.client_id
+									WHERE project_id = '$id'
+								");
 		return $query;
 	}
 
-	public function list_doc_type(){
-		$query = $this->db->query("SELECT * FROM `storage_doc_type` WHERE `storage_doc_type`.`is_active` = '1' AND  `storage_doc_type`.`doc_type_area` = '0' ORDER BY `storage_doc_type`.`doc_type_name` ASC ");
+	public function list_doc_type($doc_type='0'){
+		$query = $this->db->query("SELECT * FROM `storage_doc_type` WHERE `storage_doc_type`.`is_active` = '1' 
+			AND  `storage_doc_type`.`doc_type_area` = '$doc_type' 
+			ORDER BY `storage_doc_type`.`doc_type_name` ASC ");
 		return $query;
 	}
 
-	public function insert_uploaded_file($file_name,$file_type,$project_id,$date_upload,$user_id){
-		$query = $this->db->query("INSERT INTO `storage_files` ( `file_name`, `file_type`, `project_id`, `date_upload`, `user_id`) VALUES ( '$file_name', '$file_type', '$project_id', '$date_upload', '$user_id') ");
+	public function insert_uploaded_file($file_name,$file_type,$project_id,$client_id,$date_upload,$user_id){
+		$query = $this->db->query("INSERT INTO `storage_files` ( `file_name`, `file_type`, `project_id`, `client_id`, `date_upload`, `user_id`) VALUES ( '$file_name', '$file_type', $project_id, $client_id, '$date_upload', '$user_id') ");
 		return $query;
 	}
 
@@ -68,8 +82,30 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
+	public function list_projects_by_client($current_year='',$last_year=''){
+		$query = $this->db->query("SELECT `storage_files`.`storage_files_id`, `storage_files`.`client_id` ,`company_details`.`company_name` ,`storage_files`.`file_name`,`storage_files`.`date_upload`,  `storage_doc_type`.`doc_type_name`, `users`.`user_first_name`
+			
+FROM `storage_files`  
+INNER JOIN  `storage_doc_type` ON `storage_doc_type`.`storage_doc_type_id` =  `storage_files`.`file_type`
+		 
+
+INNER JOIN `company_details` ON `company_details`.`company_id` = `storage_files`.`client_id`
+        
+			INNER JOIN 	`users` ON `users`.`user_id` =  `storage_files`.`user_id`
+
+			WHERE `storage_files`.`is_active` = '1'  AND  `company_details`.`active` = '1' 
+			
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`storage_files`.`date_upload`, '%d/%m/%Y') ) >= UNIX_TIMESTAMP( STR_TO_DATE('01/01/$last_year', '%d/%m/%Y') )
+			AND UNIX_TIMESTAMP( STR_TO_DATE(`storage_files`.`date_upload`, '%d/%m/%Y') ) <  UNIX_TIMESTAMP( STR_TO_DATE('31/12/$current_year', '%d/%m/%Y') )
+			
+			
+ORDER BY  `storage_files`.`client_id`  DESC, `storage_doc_type`.`doc_type_name` ASC, UNIX_TIMESTAMP( STR_TO_DATE(`storage_files`.`date_upload`, '%d/%m/%Y') ) DESC ");
+		return $query;
+
+	}
+
 	public function list_projects_by_job_date($current_year='',$last_year=''){
-		$query = $this->db->query(" SELECT `storage_files`.`storage_files_id`,`storage_files`.`project_id`,`project`.`project_name` ,`storage_files`.`file_name`,`storage_files`.`date_upload`,  `storage_doc_type`.`doc_type_name`, `users`.`user_first_name`
+		$query = $this->db->query(" SELECT `storage_files`.`storage_files_id`,`storage_files`.`project_id`,`project`.`project_name` ,`storage_files`.`file_name`,`storage_files`.`date_upload`,  `storage_doc_type`.`doc_type_name`, `users`.`user_first_name`, `storage_files`.`is_project_attachment`,`storage_files`.`is_authorized`,`storage_files`.`is_updated` 
 			FROM `storage_files`  
 			INNER JOIN  `storage_doc_type` ON `storage_doc_type`.`storage_doc_type_id` =  `storage_files`.`file_type`
 			INNER JOIN  `project` ON `project`.`project_id` =  `storage_files`.`project_id`
@@ -86,7 +122,7 @@ class Projects_m extends CI_Model{
 	}
 
 	public function list_uploaded_files($proj_id){
-		$query = $this->db->query(" SELECT   `storage_files`.`storage_files_id`,`storage_files`.`project_id`,`project`.`project_name` ,`storage_files`.`file_name`,`storage_files`.`date_upload`,  `storage_doc_type`.`doc_type_name`, `users`.`user_first_name`
+		$query = $this->db->query(" SELECT   `storage_files`.`storage_files_id`,`storage_files`.`project_id`,`project`.`project_name` ,`storage_files`.`file_name`,`storage_files`.`date_upload`,  `storage_doc_type`.`doc_type_name`, `users`.`user_first_name`,`storage_files`.`is_project_attachment`,`storage_files`.`is_authorized`,`storage_files`.`is_updated` 
 
 			FROM `storage_files` 
 			INNER JOIN  `storage_doc_type` ON `storage_doc_type`.`storage_doc_type_id` =  `storage_files`.`file_type`
@@ -103,8 +139,8 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
-	public function insert_doc_type($type_name){
-		$query = $this->db->query("INSERT INTO `storage_doc_type` ( `doc_type_name`, `is_active`) VALUES ( '$type_name', '1')");
+	public function insert_doc_type($type_name,$doc_type){
+		$query = $this->db->query("INSERT INTO `storage_doc_type` ( `doc_type_name`,  `doc_type_area`, `is_active`) VALUES ( '$type_name', '$doc_type', '1')");
 		return $query;
 	}
 
@@ -128,6 +164,18 @@ class Projects_m extends CI_Model{
 		$query = $this->db->query("SELECT `project`.`focus_company_id` FROM `project` WHERE `project`.`is_active` = '1' AND `project`.`job_category` != 'Company' AND `project`.`job_type` != 'Company'  
 			".$custom." 
 			GROUP BY `project`.`focus_company_id`");
+		return $query;
+	}
+
+	public function list_pm_wiprp(){
+
+		$query = $this->db->query("SELECT  `project`.`project_manager_id`, CONCAT(  `users`.`user_first_name`,' ' ,`users`.`user_last_name`) AS `name_log`
+			FROM  `project`
+			LEFT JOIN `users` ON `users`.`user_id` =   `project`.`project_manager_id`
+			WHERE `project`.is_active = '1'  
+			AND `project`.`job_date` != '' AND `project`.`is_paid` ='0'  AND `project`.`job_type` != 'Company'  AND `project`.`project_manager_id` != '20'
+			GROUP BY  `project`.`project_manager_id`  
+			ORDER BY `name_log` ASC ");
 		return $query;
 	}
 
@@ -321,6 +369,7 @@ class Projects_m extends CI_Model{
 			LEFT JOIN `brand` ON `brand`.`brand_id` = `project`.`brand_id`
 			LEFT JOIN `project_status` ON `project_status`.`project_status_id` = `project`.`project_status_id`
 			LEFT JOIN `project_cost_total` ON `project_cost_total`.`project_id` = `project`.`project_id`
+			LEFT JOIN `company_details_temp` ON `company_details_temp`.`company_details_temp_id` = `project`.`client_id`
 			WHERE `project`.`project_id` = '$project_id' AND `project`.is_active = '1'  ");
 		return $query;
 	}
@@ -435,10 +484,10 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
-	public function insert_new_project($project_name, $project_date, $primary_contact_person_id, $budget_estimate_total, $job_date, $brand,$is_wip, $client_po, $date_site_commencement, $date_site_finish, $job_category, $job_type, $focus_user_id ,$focus_company_id, $project_manager_id, $project_admin_id, $project_estiamator_id, $address_id, $invoice_address_id, $notes_id, $markup,$project_status_id, $client_id, $install_time_hrs, $project_area, $is_double_time, $labour_hrs_estimate, $shop_tenancy_number,$defaults_id,$cc_pm,$quote_deadline_date,$proj_joinery_user){
+	public function insert_new_project($project_name, $project_date, $primary_contact_person_id, $budget_estimate_total, $job_date, $brand,$is_wip, $client_po, $date_site_commencement, $date_site_finish, $job_category, $job_type, $focus_user_id ,$focus_company_id, $project_manager_id, $project_admin_id, $project_estiamator_id, $address_id, $invoice_address_id, $notes_id, $markup,$project_status_id, $client_id, $install_time_hrs, $project_area, $is_double_time, $labour_hrs_estimate, $shop_tenancy_number,$defaults_id,$cc_pm,$quote_deadline_date,$proj_joinery_user,$client_type){
 
-		$this->db->query("INSERT INTO `project` (`project_name`, `project_date`, `primary_contact_person_id`, `budget_estimate_total`, `job_date`, `brand_id`, `is_wip`, `client_po`, `date_site_commencement`, `date_site_finish`, `job_category`, `job_type`, `focus_user_id`,`focus_company_id`, `project_manager_id`, `project_admin_id`, `project_estiamator_id`, `address_id`, `invoice_address_id`, `notes_id`, `markup`,`project_status_id`, `client_id` , `install_time_hrs`, `project_area`, `is_double_time`, `labour_hrs_estimate`, `shop_tenancy_number` , `defaults_id`, `client_contact_person_id`, `quote_deadline_date`,`joinery_selected_sender`,`review_date`) 
-			VALUES ('$project_name', '$project_date', '$primary_contact_person_id', '$budget_estimate_total', '$job_date','$brand', '$is_wip', '$client_po', '$date_site_commencement', '$date_site_finish', '$job_category', '$job_type','$focus_user_id' ,'$focus_company_id', '$project_manager_id', '$project_admin_id', '$project_estiamator_id', '$address_id', '$invoice_address_id', '$notes_id', '$markup', '$project_status_id', '$client_id','$install_time_hrs', '$project_area', '$is_double_time', '$labour_hrs_estimate', '$shop_tenancy_number', '$defaults_id', '$cc_pm', '$quote_deadline_date', '$proj_joinery_user','$project_date')");
+		$this->db->query("INSERT INTO `project` (`project_name`, `project_date`, `primary_contact_person_id`, `budget_estimate_total`, `job_date`, `brand_id`, `is_wip`, `client_po`, `date_site_commencement`, `date_site_finish`, `job_category`, `job_type`, `focus_user_id`,`focus_company_id`, `project_manager_id`, `project_admin_id`, `project_estiamator_id`, `address_id`, `invoice_address_id`, `notes_id`, `markup`,`project_status_id`, `client_id` , `install_time_hrs`, `project_area`, `is_double_time`, `labour_hrs_estimate`, `shop_tenancy_number` , `defaults_id`, `client_contact_person_id`, `quote_deadline_date`,`joinery_selected_sender`,`review_date`,`is_pending_client`) 
+			VALUES ('$project_name', '$project_date', '$primary_contact_person_id', '$budget_estimate_total', '$job_date','$brand', '$is_wip', '$client_po', '$date_site_commencement', '$date_site_finish', '$job_category', '$job_type','$focus_user_id' ,'$focus_company_id', '$project_manager_id', '$project_admin_id', '$project_estiamator_id', '$address_id', '$invoice_address_id', '$notes_id', '$markup', '$project_status_id', '$client_id','$install_time_hrs', '$project_area', '$is_double_time', '$labour_hrs_estimate', '$shop_tenancy_number', '$defaults_id', '$cc_pm', '$quote_deadline_date', '$proj_joinery_user','$project_date','$client_type')");
 		return $this->db->insert_id();
 		#inserts a new project and returns a project_id		
 	}
@@ -508,7 +557,7 @@ class Projects_m extends CI_Model{
 		$this->db->query("UPDATE `project` SET `is_active` = '0' WHERE `project`.`project_id` = '$project_id'");		
 	}
 
-	public function update_full_project_details($project_id,$project_name,$client_id,$contact_person_id,$client_po,$job_type,$brand,$job_category,$job_date,$site_start,$site_finish,$is_wip,$install_hrs,$is_double_time,$project_total,$labour_hrs_estimate,$project_markup,$project_area,$project_manager_id,$project_admin_id,$project_estiamator_id,$shop_tenancy_number,$site_address_id,$shop_tenancy_number,$site_address_id,$invoice_address_id,$focus_id,$cc_pm,$proj_joinery_user,$rev_date){
+	public function update_full_project_details($project_id,$project_name,$client_id,$contact_person_id,$client_po,$job_type,$brand,$job_category,$job_date,$site_start,$site_finish,$is_wip,$install_hrs,$is_double_time,$project_total,$labour_hrs_estimate,$project_markup,$project_area,$project_manager_id,$project_admin_id,$project_estiamator_id,$shop_tenancy_number,$site_address_id,$shop_tenancy_number,$site_address_id,$invoice_address_id,$focus_id,$cc_pm,$proj_joinery_user,$rev_date,$client_type){
 		$query = $this->db->query("SELECT * from `project` where `project_id` = '$project_id'");
 		foreach ($query->result_array() as $row){
 			$site_hours = $row['install_time_hrs'];
@@ -522,7 +571,7 @@ class Projects_m extends CI_Model{
 
 		$this->db->query("UPDATE project_schedule set site_start_date = '$site_start', site_finish_date = '$site_finish' where `project_id` = '$project_id'");
 		
-		$this->db->query("UPDATE `project` SET `project_name` = '$project_name', `client_id` = '$client_id',  `primary_contact_person_id` = '$contact_person_id', `client_po` = '$client_po', `job_type` = '$job_type', `brand_id` = '$brand', `job_category` = '$job_category', `job_date` = '$job_date', `date_site_commencement` = '$site_start', `date_site_finish` = '$site_finish', `is_wip` = '$is_wip', `shop_tenancy_number` = '$shop_tenancy_number', `address_id` = '$site_address_id', `review_date` = '$rev_date',`focus_company_id` = '$focus_id', `invoice_address_id` = '$invoice_address_id', `install_time_hrs` = '$install_hrs', `is_double_time` = '$is_double_time', `budget_estimate_total` = '$project_total', `labour_hrs_estimate` = '$labour_hrs_estimate', `markup` = '$project_markup', `project_area` = '$project_area', `project_manager_id` = '$project_manager_id', `project_admin_id` = '$project_admin_id', `project_estiamator_id` = '$project_estiamator_id', `client_contact_person_id` = '$cc_pm', `joinery_selected_sender` = '$proj_joinery_user'
+		$this->db->query("UPDATE `project` SET `project_name` = '$project_name', `client_id` = '$client_id',  `primary_contact_person_id` = '$contact_person_id', `client_po` = '$client_po', `job_type` = '$job_type', `brand_id` = '$brand', `job_category` = '$job_category', `job_date` = '$job_date', `date_site_commencement` = '$site_start', `date_site_finish` = '$site_finish', `is_wip` = '$is_wip', `shop_tenancy_number` = '$shop_tenancy_number', `address_id` = '$site_address_id', `review_date` = '$rev_date',`focus_company_id` = '$focus_id', `invoice_address_id` = '$invoice_address_id', `install_time_hrs` = '$install_hrs', `is_double_time` = '$is_double_time', `budget_estimate_total` = '$project_total', `labour_hrs_estimate` = '$labour_hrs_estimate', `markup` = '$project_markup', `project_area` = '$project_area', `project_manager_id` = '$project_manager_id', `project_admin_id` = '$project_admin_id', `project_estiamator_id` = '$project_estiamator_id', `client_contact_person_id` = '$cc_pm', `joinery_selected_sender` = '$proj_joinery_user', `is_pending_client`= '$client_type'
 			WHERE `project`.`project_id` = '$project_id' ");
 
 	}
@@ -613,7 +662,11 @@ class Projects_m extends CI_Model{
 	}
 
 	public function has_attachment($project_id){
-		$query = $this->db->query("SELECT * from `project_attachments` WHERE `project_id` = '$project_id'");	
+		// $query = $this->db->query("SELECT * from `project_attachments` WHERE `project_id` = '$project_id'");	
+		$query = $this->db->query("SELECT * FROM `storage_files`
+									WHERE `is_project_attachment` = 1
+										AND `project_id` = '$project_id'");	
+
 		if($query->num_rows == 0){
 			return 0;
 		}else{
@@ -906,6 +959,58 @@ class Projects_m extends CI_Model{
 
 	public function fetch_service_report_images_all($project_id){
 		$query = $this->db->query("SELECT * FROM `service_report_images` as t1 LEFT JOIN `service_report_group` as t2 ON `t1`.group_id = `t2`.group_id WHERE `t1`.`project_id` = '$project_id' ORDER BY `t1`.`group_id`");
+		return $query;
+	}
+
+	public function attach_storage_file_to_project($storage_files_id){
+		$this->db->query("UPDATE `storage_files` SET `is_project_attachment` = 1 WHERE `storage_files_id` = '$storage_files_id'");
+	}
+
+	public function unattach_storage_file_to_project($storage_files_id){
+		$this->db->query("UPDATE `storage_files` SET `is_project_attachment` = 0 WHERE `storage_files_id` = '$storage_files_id'");
+	}
+
+	public function approve_storage_file_to_project($storage_files_id){
+		$this->db->query("UPDATE `storage_files` SET `is_authorized` = 1 WHERE `storage_files_id` = '$storage_files_id'");
+	}
+
+	public function fetch_project_required_doc_type_file($project_id,$doc_type){
+		$query = $this->db->query("SELECT * FROM storage_files a
+								LEFT JOIN storage_doc_type b ON b.storage_doc_type_id = a.file_type
+							WHERE a.is_active = 1
+								AND a.project_id = '$project_id'
+								AND a.file_type = '$doc_type'
+						");
+		return $query;
+	}
+
+	public function set_file_for_replacement($storage_files_id){
+		$this->db->query("UPDATE `storage_files` SET `for_replacement` = 1 WHERE `storage_files_id` = '$storage_files_id'");
+	}
+
+	public function check_file_for_replacement($project_id){
+		$query = $this->db->query("SELECT * FROM storage_files a
+								LEFT JOIN storage_doc_type b ON b.storage_doc_type_id = a.file_type
+							WHERE a.is_active = 1
+								AND a.project_id = '$project_id'
+								AND a.for_replacement = '1'
+						");
+		return $query;
+	}
+
+	public function unselect_doc_file($project_id){
+		$this->db->query("UPDATE `storage_files` SET `is_project_attachment` = 0 WHERE `project_id` = '$project_id' AND `for_replacement` = 1");
+	}
+
+	public function approve_doc_file_selected($storage_files_id){
+		$this->db->query("UPDATE `storage_files` SET `is_authorized` = 1, is_project_attachment = 1 WHERE `storage_files_id` = '$storage_files_id'");
+	}
+
+	public function fetch_storage_file_details($storage_files_id){
+		$query = $this->db->query("SELECT * FROM storage_files a
+										LEFT JOIN storage_doc_type b ON b.storage_doc_type_id = a.file_type
+									WHERE a.storage_files_id = '$storage_files_id'
+						");
 		return $query;
 	}
 }

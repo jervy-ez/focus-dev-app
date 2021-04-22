@@ -5,8 +5,17 @@
 <?php $this->load->module('send_emails'); ?>
 <?php $this->load->module('variation'); ?>
 <?php $this->load->module('invoice'); ?>
-<?php
 
+<script src="<?php echo base_url(); ?>js/vue.js"></script>
+<script src="<?php echo base_url(); ?>js/vue-select.js"></script>
+<link rel="stylesheet" href="<?php echo base_url(); ?>css/vue-select.css">
+<script src="<?php echo base_url(); ?>js/moment.min.js"></script>
+<script src="<?php echo base_url(); ?>js/jmespath.js"></script>
+<script src="<?php echo base_url(); ?>js/axios.min.js"></script>
+
+
+
+<?php
 	$progress_reports = $this->session->userdata('progress_report');
 
 	if($this->session->flashdata('curr_tab')){
@@ -419,9 +428,11 @@ $filtered_date = $induction_commencement_date;
 									<div class="pad-top-15 pad-left-15 pad-bottom-5 clearfix box-tabs">	
 										
 									<ul id="myTab" class="nav nav-tabs pull-right">
+										<?php if($is_pending_client == 0): ?>
 										<li class="<?php echo ($curr_tab == 'invoice' ? 'active' : '' ); ?>">
 											<a href="#invoices" data-toggle="tab" class="link_tab_invoice" id="<?php echo $project_id ?>"><i class="fa fa-list-alt fa-lg"></i> Invoices</a>
 										</li>
+										<?php endif; ?>
 										<li class="<?php echo ($curr_tab == 'project-details' ? 'active' : '' ); ?>">
 											<a href="#project-details" data-toggle="tab"><i class="fa fa-briefcase fa-lg"></i> Project Details</a>
 										</li>
@@ -493,6 +504,7 @@ $filtered_date = $induction_commencement_date;
 
 												<li><a href="<?php echo base_url(); ?>works/safe_site_observation/<?php echo $project_id ?>" target="_blank"><i class="fa fa-file-pdf-o"></i> Safe Site Work Observation - checklist </a></li>
 
+												<li><a href="#" target="_blank" id = "site_diary_pdf"><i class="fa fa-file-pdf-o"></i> Site Diary </a></li>
 											</ul>
 										</li>									
 									</ul>
@@ -799,21 +811,49 @@ $('#site_finish').datetimepicker({
 useCurrent: false, //Important! See issue #1075
 format: 'DD/MM/YYYY'
 });
+
+
 $("#site_start").on("dp.change", function (e) {
-$('#site_finish').data("DateTimePicker").minDate(e.date);
+	$('#site_finish').data("DateTimePicker").minDate(e.date);
 
-$('#site_finish').datetimepicker({
-useCurrent: false, //Important! See issue #1075
-format: 'DD/MM/YYYY'
+	$('#site_finish').datetimepicker({
+	useCurrent: false, //Important! See issue #1075
+	format: 'DD/MM/YYYY'
+	});
+
+	$('#summ_starting_date').text( e.date.format('DD/MM/YYYY') );
+
+	var date_start = $(this).val();
+	var date_finish = $('#site_finish').val();
+
+	if(date_finish){
+		var date_s_tmsp = moment(date_start,'DD/MM/YYYY').format('x');
+		var date_f_tmsp = moment(date_finish,'DD/MM/YYYY').format('x');
+		if(date_s_tmsp > date_f_tmsp){
+			$(this).val('');
+			alert('Site Start date selected conflicts to Site Finish, please selecte another date.')
+		}
+	}
 });
 
-$('#summ_starting_date').text( e.date.format('DD/MM/YYYY') );
 
-});
 $("#site_finish").on("dp.change", function (e) {
-$(this).data("DateTimePicker").minDate(e.date);
-$('#site_start').data("DateTimePicker").maxDate(e.date);
-$('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
+	$(this).data("DateTimePicker").minDate(e.date);
+	$('#site_start').data("DateTimePicker").maxDate(e.date);
+	$('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
+
+	var date_start = $('#site_start').val();
+	var date_finish = $(this).val();
+
+	if(date_start){
+		var date_s_tmsp = moment(date_start,'DD/MM/YYYY').format('x');
+		var date_f_tmsp = moment(date_finish,'DD/MM/YYYY').format('x');
+		if(date_s_tmsp > date_f_tmsp){
+			$(this).val('');
+			alert('Site Finish date selected conflicts to Site Start, please selecte another date.')
+		}
+	}
+
 });
 
  
@@ -1372,6 +1412,10 @@ $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 
 
 <script type="text/javascript">
+
+
+
+
 	var set_job_date_from_projects = '<?php echo $job_date; ?>';
 	var set_if_fully_invoiced =  <?php echo (  $this->invoice->is_vr_invoiced($project_id)  && $this->invoice->if_has_vr($project_id) > 0   ? '1' : '0' ); ?>;
 
@@ -1388,6 +1432,10 @@ $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 	});
 
 	$(document).ready(function() { 
+
+
+
+
 
 		if ($('#tab_variations_hidden').val() == 'variations'){
 
@@ -1465,10 +1513,10 @@ $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 
 <div id="doc_storage" class="modal fade" tabindex="-1" data-width="760" >
 	<div class="modal-dialog  modal-lg">
-		<div class="modal-content">
+		<div class="modal-content" style="width:120%;">
 
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" onClick="window.location.reload();">×</button>
 				<h4 class="modal-title"><em class="fa fa-cloud-upload"></em> Document File Storage: <?php echo $project_id; ?></h4>
 			</div>
 			<div class="modal-body">
@@ -1482,7 +1530,7 @@ $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 
 							<div class="input-group m-bottom-10" >
 								<span id="" class="input-group-addon"><strong>Document Type*</strong></span>
-								<select name="doc_type_name" class="form-control doc_type_name" required="">
+								<select id = "doc_type_name" name="doc_type_name" class="form-control doc_type_name" required="" required="" onchange = "document_type_change()">
 									<option disabled="disabled" selected="selected" value="0" class="hide hidden">Select Document Type*</option>
 									<?php echo $this->projects->list_doc_type_storage(); ?>
 								</select>
@@ -1544,6 +1592,125 @@ $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 	</div>
 </div>
 
+<div id="doc_type_comfirmation" class="modal fade" tabindex="-1" data-width="760">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 class="modal-title">Confirmation</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<b>Do you want to replace an existing file with same doc type?</b>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer row">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" id = "display_existing_doc_file">Yes</button>
+	        	<button type="button" class="btn btn-success" data-dismiss="modal">No</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="mdl_doc_type_list" class="modal fade" tabindex="-1" data-width="760">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 class="modal-title">Confirmation</h4>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" id="file_is_set" value = "0">
+				<div class="row">
+					<div class="col-md-12" style = "height: 200px; overflow: auto">
+						<table class="table table-hover text-nowrap thead-dark">
+			                <thead>
+			                    <tr>
+			                    	<th></th>
+			                    	<th>Date Uploaded</th>
+			                    	<th>Doc Type</th>
+				                    <th>File Name</th>
+			                    </tr>
+			                </thead>
+		                  	<tbody>
+			                    <tr v-for = "req_doc_type_list in req_doc_type_list">
+			                    	<td>
+			                    		<input type="checkbox" name="req_doc_type" :value = "req_doc_type_list.storage_files_id">
+			                     	</td>
+			                     	<td>{{ req_doc_type_list.date_upload }}</td>
+			                    	<td>{{ req_doc_type_list.doc_type_name }}</td>
+				                    <td>{{ req_doc_type_list.file_name }}</td>
+			                    </tr>
+			                </tbody>
+			            </table>
+					</div>
+				</div>
+			</div>
+			<hr class="no-m"/>
+			<div class="modal-footer row">
+				<button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click = "set_replace_files">Select</button>
+	        	<button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var file_is_set = 0;
+	var app = new Vue({
+	  	el: '#mdl_doc_type_list',
+	  	data: {
+	  		req_doc_type_list: [],
+	  	},
+		mounted: function(){
+			this.load_req_doc_type_files();
+		},
+  		filters: {
+		    getDayname: function(date){
+		      return moment(date).format('ddd');
+		    },
+		    format_date: function(date){
+		      return moment(date).format('ll');
+		    },
+		    ausdate: function(date) {
+		      if(date == '0000-00-00'){
+		        return '';
+		      }else{
+		        return moment(date).format('DD/MM/YYYY');
+		      }
+		      
+		    },
+		    getTime: function(date){
+		      var temp_date = '2020-01-01 '+date;
+		      return moment(temp_date).format('h:mm a');
+		    },
+  		},
+  		methods: {
+  			load_req_doc_type_files: function(){
+  				var doc_type_id = $("#doc_type_name").val();
+  				var project_id = '<?php echo $project_id ?>';
+  				axios.post("<?php echo base_url() ?>projects/fetch_project_required_doc_type_file", 
+		        {
+		        	'project_id': '<?php echo $project_id ?>',
+					'doc_type': doc_type_id
+		        }).then(response => {
+		          	this.req_doc_type_list = response.data;              
+		        }).catch(error => {
+		          console.log(error.response)
+		        });
+  			},
+
+  			set_replace_files: function(){
+  				file_is_set = 1;
+  			},
+  		}
+  	});
+</script>
+
 <style type="text/css">
 
 
@@ -1559,11 +1726,27 @@ p.row_file_list:hover{	background-color: #efefef; }
 	z-index: 180;
 }
 
+
+#doc_storage .modal-content {
+    max-height: 90%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.doc_droup_set p.doc_type_text{
+	cursor: pointer;
+}
+
+ 
+
 </style>
 
 <?php  //if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):?>
 
 <script type="text/javascript">
+
+
+
 
 $('input#doc_files').text("Your Text to Choose a File Here!");
 
@@ -1600,7 +1783,16 @@ $('input#doc_files').on('dragover', function(e) {
 		var doc_type = $('select.doc_type_name').val();
 
 		if(doc_type > 0){
-
+			if(file_is_set == 1){
+				$('input[name="req_doc_type"]:checked').each(function() {
+				   	$.post(baseurl+"projects/set_file_for_replacement", 
+					{
+						storage_files_id: this.value
+					}, 
+					function(result){
+					});
+				});
+			}
 			$('#doc_storage').modal('hide');
 			$('form#upload_doc_file_prj').submit(); $('#loading_modal').modal({'backdrop': 'static', 'show' : true} );
 
@@ -1639,7 +1831,6 @@ $('input#doc_files').on('dragover', function(e) {
 		function(result){
 			$("#docStorageList").html(result);
 		});
-		
 	}
 
 	$("#showDocStorage").click(function(){
@@ -1671,6 +1862,125 @@ $('input#doc_files').on('dragover', function(e) {
 			$("#docStorageList").html(result);
 		});
 	});
+
+	$("#site_diary_pdf").click(function(){
+		var project_id = '<?php echo $project_id ?>'
+		$.post(baseurl+"induction_health_safety/generate_site_diary_qrcode",
+	    {
+	        project_id: project_id
+	    },
+	    function(result){
+	        window.open(baseurl+'induction_health_safety/induction_site_diary_blank_pdf?project_id='+project_id);
+	    });
+		return false;
+	});
+
+
+	window.attach_to_project = function(storage_files_id){
+	    if(jQuery('input[id=attach_'+storage_files_id+']').is(':checked')){
+	      	var r = confirm("Are you sure you want to Attach file to the project?");
+	      	if (r == true) {
+		        $.post(baseurl+"projects/attach_storage_file_to_project", 
+		        { 
+		          storage_files_id:storage_files_id
+		        }, 
+		        function(result){ 
+		        });       
+	      	}else{
+	        	$( "#attach_"+storage_files_id).prop('checked', false);
+	      	}
+	    }else{
+	      	var r = confirm("Are you sure you want to Remove Attached file to the project?");
+	      	if (r == true) {
+		        $.post(baseurl+"projects/unattach_storage_file_to_project", 
+		        { 
+		          storage_files_id:storage_files_id
+		        }, 
+		        function(result){
+		        });       
+	      	}else{
+	        	$( "#attach_"+storage_files_id).prop('checked', true);
+	      	}
+	    }
+	   
+	    
+	}
+
+	window.approve_doc_type = function(storage_files_id){
+		alert(storage_files_id);
+		$.post(baseurl+"projects/check_file_for_replacement", 
+        { 
+          project_id: '<?php echo $project_id ?>'
+        }, 
+        function(result){
+        	if(result == ""){
+        		var r = confirm("Are you sure you want to Approved Attached file to the project?");
+		      	if (r == true) {
+			        $.post(baseurl+"projects/approve_doc_file", 
+			        { 
+			          storage_files_id:storage_files_id
+			        }, 
+			        function(result){
+			        	window.location.reload();
+			        });       
+		      	}
+        	}else{
+        		var r = confirm(result);
+        		if (r == true) {
+        			$.post(baseurl+"projects/unselect_doc_file", 
+			        { 
+			          project_id: '<?php echo $project_id ?>'
+			        }, 
+			        function(result){
+			        	$.post(baseurl+"projects/approve_doc_file_selected", 
+				        { 
+				          storage_files_id:storage_files_id
+				        }, 
+				        function(result){
+				        	window.location.reload();
+				        });     
+			        });   
+
+        			
+        		}
+        	}
+      
+        });   
+
+
+		// var r = confirm("Are you sure you want to Approved Attached file to the project?");
+  //     	if (r == true) {
+	 //        $.post(baseurl+"projects/approve_doc_file", 
+	 //        { 
+	 //          storage_files_id:storage_files_id
+	 //        }, 
+	 //        function(result){
+	 //        	window.location.reload();
+	 //        });       
+  //     	}
+	}
+
+	window.document_type_change = function(){
+		var doc_type_id = $("#doc_type_name").val();
+		this.app.load_req_doc_type_files();
+		$.post(baseurl+"projects/check_doc_type_is_required", 
+        { 
+          doc_type_id: doc_type_id,
+          project_id: '<?php echo $project_id ?>'
+        }, 
+        function(result){
+        	if(result == 1){
+        		$("#doc_type_comfirmation").modal('show');
+        	}
+        });   
+	}
+
+	$("#display_existing_doc_file").click(function(){
+		$("#doc_type_comfirmation").modal('hide');
+		$("#mdl_doc_type_list").modal('show');
+	});
+
+
 </script>
 <?php //endif; ?>
 

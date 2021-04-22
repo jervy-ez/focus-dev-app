@@ -57,6 +57,12 @@ $today_date =  strtotime(date('Y-m-d'));
 
 $is_restricted = 0;
 foreach ($proj_t->result_array() as $row){
+	if($row['is_pending_client'] == 1):
+		$company_name = $row['pending_comp_name'];
+	else:
+		$company_name = $row['company_name'];
+	endif;
+
 	$unaccepted_date = $row['unaccepted_date'];
 	if($unaccepted_date !== ""){
 		$unaccepted_date_arr = explode('/',$unaccepted_date);
@@ -230,14 +236,14 @@ $today_rvw_mrkr
 
 
 			echo '<td>'.$row['date_site_commencement'].'</td>';
-			echo '<td><strong>'.$row['company_name'].'</strong></td>';
+			echo '<td><strong>'.$company_name.'</strong></td>';
 
 
 			echo '<td>
 
 			<i class="fa fa-book  btn btn-sm btn-success view_notes_prjrvw" style="padding: 4px;"></i>
 
-			<a href="'.base_url().'projects/update_project_details/'.$row['project_id'].'?status_rvwprj='.$status.'&pmr='.$row['project_manager_id'].'"><strong class="prj_id_rvw">'.$row['project_id'].' '.'</strong> - '.$row['project_name'].'</a>';
+			<a href="'.base_url().'projects/update_project_details/'.$row['project_id'].'?status_rvwprj='.$status.'&pmr='.$row['project_manager_id'].'"><strong class="prj_id_rvw">'.$row['project_id'].''.'</strong> - '.$row['project_name'].'</a>';
 
 			
 
@@ -299,13 +305,13 @@ $today_rvw_mrkr
 	}elseif($status == $get_table_status || $get_table_status == 'all'){
 
 		if ($status == 'quote'){
-			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'?tab=works" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
+			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'?tab=works" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$company_name.'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
 		} else if ($status == 'invoiced') {
-			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'?tab=invoice" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
+			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'?tab=invoice" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$company_name.'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
 		} else if ($status == 'paid') {
-			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'?tab=project_details" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
+			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'?tab=project_details" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$company_name.'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
 		} else {
-			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
+			echo '<tr class="'.$status.'"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$company_name.'</td><td>'.$row['job_category'].'</td><td>'.($row['job_date'] == '' ? 'Unset' : $row['job_date']).'</td>';
 		}
 
 		if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
@@ -340,7 +346,7 @@ $today_rvw_mrkr
 
 		if ($warranty_date_format >= $date_today_format){
 
-			echo '<tr class="warranty"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$row['company_name'].'</td><td>'.$row['job_category'].'</td><td>'.$row['warranty_date'].'</td>';
+			echo '<tr class="warranty"><td><a href="'.base_url().'projects/view/'.$row['project_id'].'" >'.$row['project_id'].'</a></td><td>'.$row['project_name'].'</td><td>'.$company_name.'</td><td>'.$row['job_category'].'</td><td>'.$row['warranty_date'].'</td>';
 
 			if($row['install_time_hrs'] > 0 || $row['work_estimated_total'] > 0.00 || $row['variation_total'] > 0.00 ){
 				echo '<td>'.number_format($row['project_total']+$row['variation_total']).'</td>';

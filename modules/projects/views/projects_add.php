@@ -5,6 +5,13 @@
 <?php $this->load->module('shopping_center'); ?>
 <?php $this->load->module('admin'); ?>
 <?php $this->users->_check_user_access('projects',2); ?>
+
+<script src="<?php echo base_url(); ?>js/vue.js"></script>
+<script src="<?php echo base_url(); ?>js/vue-select.js"></script>
+<link rel="stylesheet" href="<?php echo base_url(); ?>css/vue-select.css">
+<script src="<?php echo base_url(); ?>js/moment.min.js"></script>
+<script src="<?php echo base_url(); ?>js/jmespath.js"></script>
+<script src="<?php echo base_url(); ?>js/axios.min.js"></script>
 <!-- title bar -->
 <div class="container-fluid head-control">
 	<div class="container-fluid">
@@ -33,13 +40,14 @@
 </div>
 <!-- title bar -->
 
-
+<div id="proj_app">
 <div class="container-fluid">
 	<!-- Example row of columns -->
 	<div class="row">				
 		<?php $this->load->view('assets/sidebar'); ?>
 		<div class="section col-sm-12 col-md-11 col-lg-11">
 			<form class="form-horizontal" role="form" method="post" action="">
+				<input type="hidden" name="pending_comp_id" id="pending_comp_id">
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-md-9">
@@ -122,38 +130,58 @@
 	      								<div class="box m-bottom-15 clearfix">
 											<div class="box-head pad-5 m-bottom-5">
 												<label><i class="fa fa-book fa-lg"></i> General</label>
+
+												<select class= "input-sm pull-right" v-model = "sel_client_type" v-on:change ="select_client_type" name = "client_type">
+													<option value = "0">Existing Client</option>
+													<option value = "1">Pending Client</option>
+												</select>
 											</div>
 											
-											<div class="box-area pad-5 clearfix">																																
+											<div class="box-area pad-5 clearfix">											
+												<div v-show="client_type">												
 												
-												<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('company_prg')){ echo 'has-error has-feedback';} ?>">
-													<label for="company_prg" class="col-sm-3 control-label">Client*</label>
-													<div class="col-sm-9">														
-														<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-briefcase  fa-lg"></i></span>
-															<select name="company_prg" class="form-control chosen find_contact_person get_address_invoice" id="company_prg" style="width: 100%;" tabindex="2">
-																<option value=''>Select Client Name*</option>																												
-																<?php $this->company->company_list('dropdown'); ?>
+													<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('company_prg')){ echo 'has-error has-feedback';} ?>">
+														<label for="company_prg" class="col-sm-3 control-label">Client*</label>
+														<div class="col-sm-9">														
+															<div class="input-group">
+																<span class="input-group-addon"><i class="fa fa-briefcase  fa-lg"></i></span>
+																<select name="company_prg" class="form-control chosen find_contact_person get_address_invoice" id="company_prg" style="width: 100%;" tabindex="2">
+																	<option value=''>Select Client Name*</option>																												
+																	<?php $this->company->company_list('dropdown'); ?>
+																</select>
+																<script type="text/javascript">$('select#company_prg').val('<?php echo $this->input->post('company_prg'); ?>');</script>
+															</div>
+														</div>
+													</div>
+													
+													<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('contact_person')){ echo 'has-error has-feedback';} ?>">
+														<label for="contact_person" class="col-md-3 col-sm-5 control-label">Contact Person*</label>
+														<div class="col-md-9 col-sm-7 here">
+															<select name="contact_person" class="form-control" id="contact_person" style="width: 100%;"  tabindex="26">		
+																<option value=''>Select Contact Person*</option>
+																<?php if($this->input->post('company_prg')): ?>
+																	<?php $comp_arr = explode('|', $this->input->post('company_prg')); ?>		
+																	<?php $this->projects->find_contact_person($comp_arr[1]); ?>
+																<?php endif; ?>
 															</select>
-															<script type="text/javascript">$('select#company_prg').val('<?php echo $this->input->post('company_prg'); ?>');</script>
+															<script type="text/javascript">$('select#contact_person').val('<?php echo $this->input->post('contact_person'); ?>');</script>
 														</div>
 													</div>
 												</div>
-												
-												<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('contact_person')){ echo 'has-error has-feedback';} ?>">
-													<label for="contact_person" class="col-md-3 col-sm-5 control-label">Contact Person*</label>
-													<div class="col-md-9 col-sm-7 here">
-														<select name="contact_person" class="form-control" id="contact_person" style="width: 100%;"  tabindex="26">		
-															<option value=''>Select Contact Person*</option>
-															<?php if($this->input->post('company_prg')): ?>
-																<?php $comp_arr = explode('|', $this->input->post('company_prg')); ?>		
-																<?php $this->projects->find_contact_person($comp_arr[1]); ?>
-															<?php endif; ?>
-														</select>
-														<script type="text/javascript">$('select#contact_person').val('<?php echo $this->input->post('contact_person'); ?>');</script>
+												<div v-show="!client_type">
+													<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('company_prg')){ echo 'has-error has-feedback';} ?>">
+														<label for="company_prg" class="col-sm-3 control-label">Pending Client* </label>
+														<div class="col-sm-9">														
+															<v-select name = "company_prg_pending" v-model = "temp_company_id" :options="options" id="company_prg_pending" @input="select_pending_client"></v-select>
+														</div>
+													</div>
+													<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('company_prg')){ echo 'has-error has-feedback';} ?>">
+														<label for="company_prg" class="col-sm-3 control-label">Contact Person* </label>
+														<div class="col-sm-9">														
+															<input type="text" class="form-control input-sm" disabled="" v-model = "cont_person">
+														</div>
 													</div>
 												</div>
-
 
 												
 												<div class="col-sm-6 m-bottom-10 hide clearfix">
@@ -167,8 +195,7 @@
 													</div>
 												</div>
 
-
-
+												<div class="clearfix"></div>
 
 												
 												<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('brand_name')){ echo 'has-error has-feedback';} ?>">
@@ -370,7 +397,8 @@
 												<li class="active">
 													<a href="#physicalAddress" data-toggle="tab"><i class="fa fa-globe fa-lg"></i> Site Address</a>
 												</li>
-												<li class="">
+
+												<li class="" v-show="client_type">
 													<a href="#postalAddress" data-toggle="tab"  tabindex="20" ><i class="fa fa-inbox fa-lg"></i> Invoice Address</a>
 												</li>
 												<input type="hidden" name="is_form_submit" value="1">																					
@@ -1326,9 +1354,81 @@ $('select#estimator').val('<?php echo $this->input->post("estimator"); ?>');
   </div>
 </div>
 
+</div>
 
 <?php $this->load->view('assets/logout-modal'); ?>
 <script type="text/javascript">
+	Vue.component('v-select', VueSelect.VueSelect);
+	var app = new Vue({
+	  	el: '#proj_app',
+	  	data: {
+	  		client_type: true,
+	  		sel_client_type: "0",
+		    company: [],
+		    temp_company_id: 0,
+		    options: [],
+			cont_person: "",
+			
+		  
+	  	},
+		mounted: function(){
+			this.load_contractor_supplier();
+		},
+  		filters: {
+		    getDayname: function(date){
+		      return moment(date).format('ddd');
+		    },
+		    format_date: function(date){
+		      return moment(date).format('ll');
+		    },
+		    ausdate: function(date) {
+		      if(date == '0000-00-00'){
+		        return '';
+		      }else{
+		        return moment(date).format('DD/MM/YYYY');
+		      }
+		      
+		    },
+		    getTime: function(date){
+		      var temp_date = '2020-01-01 '+date;
+		      return moment(temp_date).format('h:mm a');
+		    },
+  		},
+  		methods: {
+  			load_contractor_supplier: function(){
+		    	axios.post("<?php echo base_url() ?>company/fetch_temporary_comp", 
+		      	{
+		      		'company_type': 0
+		      	}).then(response => {	
+		      		this.options = [];
+		          	this.company = response.data;    
+		          	for (var key in this.company) {
+		          		this.options.push({'value': this.company[key].company_details_temp_id, 'label': this.company[key].company_name });
+			        }     
+	  				     
+		      	}).catch(error => {
+		        	console.log(error.response)
+		      	});
+		    },
+		    select_client_type : function(){
+		    	if(this.sel_client_type == 0){
+		    		this.client_type = true;
+		    	}else{
+		    		this.client_type = false;
+		    	}
+		    },
+		    
+			select_pending_client: function(){
+				$("#pending_comp_id").val(this.temp_company_id.value+"/"+this.temp_company_id.label);
+				for (var key in this.company) {
+					if(this.company[key].company_details_temp_id == this.temp_company_id.value){
+						this.cont_person = this.company[key].contact_person_fname +" "+ this.company[key].contact_person_sname;
+					}
+		          	
+			    }     
+			}
+		}
+	});
 
 	// MC 02-12-18
 	if ($('select#leading_hand').val() === '0'){
@@ -1396,6 +1496,6 @@ $('#site_start').data("DateTimePicker").maxDate(e.date);
 $('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
 });
 
-
+	
 
 </script>

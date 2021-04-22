@@ -3,6 +3,13 @@
 <?php $this->load->module('projects'); ?>
 <?php $this->load->module('invoice'); ?>
 <?php $this->load->module('shopping_center'); ?>
+
+<script src="<?php echo base_url(); ?>js/vue.js"></script>
+<script src="<?php echo base_url(); ?>js/vue-select.js"></script>
+<link rel="stylesheet" href="<?php echo base_url(); ?>css/vue-select.css">
+<script src="<?php echo base_url(); ?>js/moment.min.js"></script>
+<script src="<?php echo base_url(); ?>js/jmespath.js"></script>
+<script src="<?php echo base_url(); ?>js/axios.min.js"></script>
 <!-- title bar -->
 <div class="container-fluid head-control">
 	<div class="container-fluid">
@@ -39,13 +46,14 @@
 	</div>
 </div>
 <!-- title bar -->
-
+<div id="proj_app">
 <div class="container-fluid">
 	<!-- Example row of columns -->
 	<div class="row">				
 		<?php $this->load->view('assets/sidebar'); ?>
 		<div class="section col-sm-12 col-md-11 col-lg-11">
 			<form class="form-horizontal" role="form" method="post" action="">
+				<input type="hidden" name="pending_comp_id" id="pending_comp_id">
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-md-9">
@@ -71,7 +79,7 @@
 													<option value="<?php echo $value->company_id; ?>"><?php echo $value->company_name; ?></option>
 												<?php endforeach; ?>
 											</select>
-											<script type="text/javascript">$('.focus').val('<?php echo ($this->input->post('focus') ? $this->input->post('focus') : $focus_company_id ); ?>');</script>
+											
 										</div>
 
 										<?php if($this->session->userdata('is_admin') != 1):  ?>
@@ -106,87 +114,104 @@
 	      								<div class="box m-bottom-15 clearfix">
 											<div class="box-head pad-5 m-bottom-5">
 												<label><i class="fa fa-book fa-lg"></i> General</label>
+												<?php if($job_date == ""): ?>
+												<select class= "input-sm pull-right" v-model = "sel_client_type" v-on:change ="select_client_type" name = "client_type">
+													<option value = "0">Existing Client</option>
+													<option value = "1">Pending Client</option>
+												</select>
+												<?php endif; ?>
 											</div>
 											
-											<div class="box-area pad-5 clearfix">																																
+											<div class="box-area pad-5 clearfix">																												<div v-show="client_type">					
 												
-												<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('company_prg')){ echo 'has-error has-feedback';} ?>">
-													<label for="company_prg" class="col-sm-3 control-label">Client*</label>
-													<div class="col-sm-9">														
-														<div class="input-group">
-															<span class="input-group-addon"><i class="fa fa-briefcase  fa-lg"></i></span>
-															<select name="company_prg" class="form-control chosen find_contact_person get_address_invoice" id="company_prg" style="width: 100%;" tabindex="2">
-																<!-- <option value=''>Select Client Name*</option>																												
-																<?php //$this->company->company_list('dropdown'); ?> -->	
+													<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('company_prg')){ echo 'has-error has-feedback';} ?>">
+														<label for="company_prg" class="col-sm-3 control-label">Client*</label>
+														<div class="col-sm-9">														
+															<div class="input-group">
+																<span class="input-group-addon"><i class="fa fa-briefcase  fa-lg"></i></span>
+																<select name="company_prg" class="form-control chosen find_contact_person get_address_invoice" id="company_prg" style="width: 100%;" tabindex="2">
+																	<!-- <option value=''>Select Client Name*</option>																												
+																	<?php //$this->company->company_list('dropdown'); ?> -->	
 
-																<?php
+																	<?php
 
-																	if($this->session->userdata('company_project') == 1){
-																		echo '
-																		<option value="Fsf Group Pty Ltd|75">Fsf Group Pty Ltd</option>
-																		<option value="Focus Shopfit Nsw Pty Ltd|72">Focus Shopfit Nsw Pty Ltd</option>
-																		<option value="Focus Shopfit Pty Ltd|726">Focus Shopfit Pty Ltd</option>';
+																		if($this->session->userdata('company_project') == 1){
+																			echo '
+																			<option value="Fsf Group Pty Ltd|75">Fsf Group Pty Ltd</option>
+																			<option value="Focus Shopfit Nsw Pty Ltd|72">Focus Shopfit Nsw Pty Ltd</option>
+																			<option value="Focus Shopfit Pty Ltd|726">Focus Shopfit Pty Ltd</option>';
 
-																	}else{
+																		}else{
 
-																		foreach ($all_company_list as $row){
-																			echo '<option value="'.$row->company_name.'|'.$row->company_id.'">'.ucwords(strtolower($row->company_name)).'</option>';
+																			foreach ($all_company_list as $row){
+																				echo '<option value="'.$row->company_name.'|'.$row->company_id.'">'.ucwords(strtolower($row->company_name)).'</option>';
+																			}
 																		}
-																	}
 
-																?>
+																	?>
 
 
+																</select>
+
+
+
+															</div>
+														</div>
+													</div>
+													
+													<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('contact_person')){ echo 'has-error has-feedback';} ?>">
+														<label for="contact_person" class="col-md-3 col-sm-5 control-label">Contact Person*</label>
+														<div class="col-md-9 col-sm-7 here">
+															<select name="contact_person" class="form-control" id="contact_person" style="width: 100%;"  tabindex="26">
+																<?php if($this->input->post('company_prg')): ?>
+																	<?php $comp_arr = explode('|', $this->input->post('company_prg')); ?>		
+																	<?php $this->projects->find_contact_person($comp_arr[1]); ?>
+																<?php else: ?>
+																 <?php /*	<option readonly value="<?php echo $contact_person_id; ?>"  ><?php echo "$contact_person_fname $contact_person_lname"; ?> (Selected)</option> */ ?>
+																	<?php $this->projects->find_contact_person($client_company_id); ?>
+																<?php endif; ?>
 															</select>
 
-															<?php if($this->input->post('company_prg')): ?>
-																<script type="text/javascript">$('select#company_prg').val('<?php echo $this->input->post('company_prg'); ?>');</script>
+															<?php if($this->input->post('contact_person')): ?>
+																<script type="text/javascript">$('select#contact_person').val('<?php echo $this->input->post('contact_person'); ?>');</script>
 															<?php else: ?>
-															 
-																<script type="text/javascript">$('select#company_prg').val("<?php  echo str_replace('&apos;','\'',$client_company_name)."|".$client_company_id; ?>");</script>
+																<script type="text/javascript">$('select#contact_person').val('<?php echo $contact_person_id; ?>');</script>
+
 															<?php endif; ?>
 
 
 														</div>
 													</div>
+													<script type="text/javascript">
+
+														$('select#company_prg').on("change", function(e) {
+															var sub_client = $(this).val();
+
+															$('select#sub_client_id').val(sub_client);
+
+														});
+
+													</script>
 												</div>
-												
-												<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('contact_person')){ echo 'has-error has-feedback';} ?>">
-													<label for="contact_person" class="col-md-3 col-sm-5 control-label">Contact Person*</label>
-													<div class="col-md-9 col-sm-7 here">
-														<select name="contact_person" class="form-control" id="contact_person" style="width: 100%;"  tabindex="26">
-															<?php if($this->input->post('company_prg')): ?>
-																<?php $comp_arr = explode('|', $this->input->post('company_prg')); ?>		
-																<?php $this->projects->find_contact_person($comp_arr[1]); ?>
-															<?php else: ?>
-															 <?php /*	<option readonly value="<?php echo $contact_person_id; ?>"  ><?php echo "$contact_person_fname $contact_person_lname"; ?> (Selected)</option> */ ?>
-																<?php $this->projects->find_contact_person($client_company_id); ?>
-															<?php endif; ?>
-														</select>
 
-														<?php if($this->input->post('contact_person')): ?>
-															<script type="text/javascript">$('select#contact_person').val('<?php echo $this->input->post('contact_person'); ?>');</script>
-														<?php else: ?>
-															<script type="text/javascript">$('select#contact_person').val('<?php echo $contact_person_id; ?>');</script>
-
-														<?php endif; ?>
-
-
+												<div v-show="!client_type">
+													<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('company_prg')){ echo 'has-error has-feedback';} ?>">
+														<label for="company_prg" class="col-sm-3 control-label">Pending Client* </label>
+														<div class="col-sm-9">														
+															<v-select name = "company_prg_pending" v-model = "temp_company_id" :options="options" id="company_prg_pending" @input="select_pending_client"></v-select>
+														</div>
+													</div>
+													<div class="col-sm-6 m-bottom-10 clearfix <?php if(form_error('company_prg')){ echo 'has-error has-feedback';} ?>">
+														<label for="company_prg" class="col-sm-3 control-label">Contact Person* </label>
+														<div class="col-sm-9">														
+															<input type="text" class="form-control input-sm" disabled="" v-model = "cont_person">
+														</div>
 													</div>
 												</div>
 
 												<div class="clearfix"></div>
 
-												<script type="text/javascript">
-
-												$('select#company_prg').on("change", function(e) {
-													var sub_client = $(this).val();
-
-													$('select#sub_client_id').val(sub_client);
-
-												});
-
-												</script>
+												
 
 
 <?php /*
@@ -247,11 +272,7 @@
 
 														</select>
 
-														<?php if($this->input->post('brand_name')): ?>
-															<script type="text/javascript">$("select#brand_name").val("<?php echo $this->input->post('brand_name'); ?>");</script>
-														<?php else: ?>
-															<script type="text/javascript">$("select#brand_name").val("<?php echo $brand_id; ?>");</script>
-														<?php endif; ?>
+														
 													</div>
 												</div>
 
@@ -318,11 +339,7 @@
 
 														</select>
 
-														<?php if($this->input->post('job_type')): ?>
-															<script type="text/javascript">$("select#job_type").val("<?php echo $this->input->post('job_type'); ?>");</script>
-														<?php else: ?>
-															<script type="text/javascript">$("select#job_type").val("<?php echo $job_type; ?>");</script>
-														<?php endif; ?>
+														
 													</div>
 												</div>
 												
@@ -355,37 +372,10 @@
 															<?php if($this->session->userdata('company_project') == 1 || $job_category == 'Company'): ?>
 																<option value="Company">Company</option>
 															<?php endif; ?>
-															<script type="text/javascript">$("select#job_category").val("<?php echo $this->input->post('job_category'); ?>");</script>
+															
 														</select>
 
-														<script type="text/javascript">
-
-															$("select#job_category").on("change", function(e) {
-																var job_category = $(this).val();
-
-																if(job_category == 'Maintenance'){
-																	var focus_comp_assnmt = 3197;
-																}else{
-																	var focus_comp_assnmt = <?php echo $focus_company_id; ?>;
-																}
-
-																$('select#focus').val(focus_comp_assnmt);
-															});
-														</script>
-
-
-
-
-														<?php if($this->input->post('job_category')): ?>
-															<script type="text/javascript">$("select#job_category").val("<?php echo $this->input->post('job_category'); ?>");</script>
-														<?php else: ?>
-															<script type="text/javascript">$("select#job_category").val("<?php echo $job_category; ?>");</script>															
-														<?php endif; ?>
-
-
-
-
-
+														
 													</div>
 												</div>
 												<input type="hidden" id = "update_proj_type" value = "<?php echo $job_category ?>">
@@ -598,17 +588,13 @@
 													</div>
 
 													<div class="col-sm-6 col-xs-12 m-bottom-10 clearfix <?php if(form_error('suburb_a')){ echo 'has-error';} ?>">
-														<label for="suburb" class="col-sm-3 control-label">Suburb*</label>
+														<label for="" class="col-sm-3 control-label">Suburb*</label>
 														<div class="col-sm-9 col-xs-12">
 
 															<select class="form-control suburb-option-a chosen" id="suburb_a" name="suburb_a">
 																<?php $this->company->get_suburb_list('dropdown|state_id|'.$suburb.'|'.$state.'|'.$phone_area_code.'|'.$state_id); ?>
 															</select>
-															<?php if($this->input->post('suburb_a')): ?>								
-																<script type="text/javascript">$("select#suburb_a").val("<?php echo $this->input->post('suburb_a'); ?>");</script>
-															<?php else: ?>
-																<script type="text/javascript">$("select#suburb_a").val("<?php echo $suburb.'|'.$state.'|'.$phone_area_code; ?>");</script>
-															<?php endif; ?>
+															
 
 															</div>
 														</div>
@@ -631,11 +617,6 @@
 													<select class="form-control postcode-option-a chosen" id="postcode_a" name="postcode_a">
 														<?php $this->company->get_post_code_list($suburb); ?>																	
 													</select>
-													<?php if($this->input->post('postcode_a')): ?>
-														<script type="text/javascript">$("select#postcode_a").val("<?php echo $this->input->post('postcode_a'); ?>");</script>
-													<?php else: ?>
-														<script type="text/javascript">$("select#postcode_a").val("<?php echo $postcode; ?>");</script>	
-													<?php endif; ?>	
 
 													</div>
 												</div>
@@ -735,11 +716,7 @@
 															}?>
 														</select>
 
-														<?php if($this->input->post('state_b')): ?>
-															<script type="text/javascript">$("select#state_b").val("<?php echo $this->input->post('state_b'); ?>");</script>
-														<?php else: ?>
-															<script type="text/javascript">$("select#state_b").val("<?php echo $i_shortname.'|'.$i_state.'|'.$i_phone_area_code.'|'.$i_state_id; ?>");</script>
-														<?php endif; ?>
+														
 
 													</div>
 
@@ -752,11 +729,7 @@
 														<select class="form-control suburb-option-b chosen" id="suburb_b" name="suburb_b">
 															<?php $this->company->get_suburb_list('dropdown|state_id|'.$i_suburb.'|'.$i_state.'|'.$i_phone_area_code.'|'.$i_state_id); ?>
 														</select>
-														<?php if($this->input->post('state_b')): ?>								
-															<script type="text/javascript">$("select#suburb_b").val("<?php echo $this->input->post('suburb_b'); ?>");</script>
-														<?php else: ?>
-															<script type="text/javascript">$("select#suburb_b").val("<?php echo $i_suburb.'|'.$i_state.'|'.$i_phone_area_code; ?>");</script>
-														<?php endif; ?> 
+														
 														</div>
 													</div>
 
@@ -768,11 +741,7 @@
 															<select class="form-control postcode-option-b chosen" id="postcode_b" name="postcode_b">
 																<?php $this->company->get_post_code_list($i_suburb); ?>																	
 															</select>
-															<?php if($this->input->post('state_b')): ?>	
-																<script type="text/javascript">$("select#postcode_b").val("<?php echo $this->input->post('postcode_b'); ?>");</script>
-															<?php else: ?>
-																<script type="text/javascript">$("select#postcode_b").val("<?php echo $i_postcode; ?>");</script>
-															<?php endif; ?> 
+															
 														</div>
 													</div>
 
@@ -846,11 +815,7 @@
 														</select>
 
 
-														<?php if($this->input->post('project_manager')): ?>
-															<script type="text/javascript">$('select#project_manager').val('<?php echo $this->input->post('project_manager'); ?>');</script>
-														<?php else: ?>	
-															<script type="text/javascript">$('select#project_manager').val('<?php echo $pm_user_id; ?>');</script>
-														<?php endif; ?>
+														
 
 
 																							
@@ -891,11 +856,7 @@
 														</select>
 
 
-														<?php if($this->input->post('project_admin')): ?>
-															<script type="text/javascript">$('select#project_administrator').val('<?php echo $this->input->post('project_admin'); ?>');</script>
-														<?php else: ?>		
-															<script type="text/javascript">$('select#project_administrator').val('<?php echo $pa_user_id; ?>');</script>	
-														<?php endif; ?>												
+																									
 													</div>
 												</div>
 												
@@ -921,11 +882,7 @@
 															<?php endif; ?>
 														</select>
 
-														<?php if($this->input->post('estimator')): ?>
-															<script type="text/javascript">$('select#estimator').val('<?php echo $this->input->post('estimator'); ?>');</script>
-														<?php else: ?>
-															<script type="text/javascript">$('select#estimator').val('<?php echo ($pe_user_first_name == "" ? 0 : $pe_user_id ); ?>');</script>	
-														<?php endif; ?>												
+																									
 													</div>
 												</div>
 
@@ -972,14 +929,7 @@
 
 															
 														</select>
-														<script type="text/javascript">$('select#client_contact_project_manager').val('<?php echo $this->input->post('project_manager'); ?>');</script>	
-
-
-														<?php if($this->input->post('client_contact_project_manager')): ?>
-															<script type="text/javascript">$('select#client_contact_project_manager').val('<?php echo $this->input->post('client_contact_project_manager'); ?>');</script>
-														<?php else: ?>	
-															<script type="text/javascript">$('select#client_contact_project_manager').val('<?php echo $cc_pm_user_id; ?>');</script>
-														<?php endif; ?>
+														
 
 																							
 													</div>
@@ -1014,13 +964,7 @@
 																	<option value='0'>Other</option>
 															</select>
 
-															<?php if($this->input->post('leading_hand')): ?>
-																<script type="text/javascript">$('select#leading_hand').val('<?php echo $this->input->post('leading_hand'); ?>');</script>
-															<?php elseif($manual_lh_name == ""): ?>																
-																<script type="text/javascript">$('select#leading_hand').val('<?php echo ($lead_hand_user_first_name == "" ? '' : $lead_hand_user_id ); ?>');</script>	
-															<?php else: ?>																
-																<script type="text/javascript">$('select#leading_hand').val('<?php echo ($lead_hand_user_first_name == "" ? 0 : $lead_hand_user_id ); ?>');</script>	
-															<?php endif; ?>
+															
 
 														</div>
 													</div>
@@ -1311,10 +1255,94 @@
 		</select>
 	</div>
 </div>
+</div>
 
 <?php $this->load->view('assets/logout-modal'); ?>
 <script type="text/javascript">
+	Vue.component('v-select', VueSelect.VueSelect);
+	var app = new Vue({
+	  	el: '#proj_app',
+	  	data: {
+	  		client_type: true,
+	  		sel_client_type: '<?php echo $is_pending_client ?>',
+		    company: [],
+		    temp_company_id: [],
+		    options: [],
+			cont_person: "",
+			
+		  
+	  	},
+		mounted: function(){
+			this.load_contractor_supplier();
+			this.select_client_type();
+		},
+  		filters: {
+		    getDayname: function(date){
+		      return moment(date).format('ddd');
+		    },
+		    format_date: function(date){
+		      return moment(date).format('ll');
+		    },
+		    ausdate: function(date) {
+		      if(date == '0000-00-00'){
+		        return '';
+		      }else{
+		        return moment(date).format('DD/MM/YYYY');
+		      }
+		      
+		    },
+		    getTime: function(date){
+		      var temp_date = '2020-01-01 '+date;
+		      return moment(temp_date).format('h:mm a');
+		    },
+  		},
+  		methods: {
+  			load_contractor_supplier: function(){
+		    	axios.post("<?php echo base_url() ?>company/fetch_temporary_comp", 
+		      	{
+		      		'company_type': 0
+		      	}).then(response => {	
+		      		this.options = [];
+		          	this.company = response.data;    
+		          	for (var key in this.company) {
+		          		if(this.company[key].company_details_temp_id == '<?php echo $client_id ?>'){
+		          			this.temp_company_id = {
+						      value: this.company[key].company_details_temp_id,
+						      label: this.company[key].company_name
+						    }
 
+						    this.cont_person = this.company[key].contact_person_fname +" "+  this.company[key].contact_person_sname
+		          		
+		          		}
+
+		          		this.options.push({'value': this.company[key].company_details_temp_id, 'label': this.company[key].company_name });
+			        }  
+
+			        
+
+	  				     
+		      	}).catch(error => {
+		        	console.log(error.response)
+		      	});
+		    },
+		    select_client_type : function(){
+		    	if(this.sel_client_type == 0){
+		    		this.client_type = true;
+		    	}else{
+		    		this.client_type = false;
+		    	}
+		    },
+		    
+			select_pending_client: function(){
+				$("#pending_comp_id").val(this.temp_company_id.value+"/"+this.temp_company_id.label);
+				for (var key in this.company) {
+					if(this.company[key].company_details_temp_id == this.temp_company_id.value){
+						this.cont_person = this.company[key].contact_person_fname +" "+ this.company[key].contact_person_sname;
+					}
+			    }     
+			},
+		}
+	});
 	// MC 02-19-18
 	if ($('select#leading_hand').val() === '0'){
 		$('#editOtherLH').show();
@@ -1348,29 +1376,176 @@ $('#site_finish').datetimepicker({
 useCurrent: false, //Important! See issue #1075
 format: 'DD/MM/YYYY'
 });
+
+
+
 $("#site_start").on("dp.change", function (e) {
-$('#site_finish').data("DateTimePicker").minDate(e.date);
+	$('#site_finish').data("DateTimePicker").minDate(e.date);
 
-$('#site_finish').datetimepicker({
-useCurrent: false, //Important! See issue #1075
-format: 'DD/MM/YYYY'
+	$('#site_finish').datetimepicker({
+	useCurrent: false, //Important! See issue #1075
+	format: 'DD/MM/YYYY'
+	});
+
+	$('#summ_starting_date').text( e.date.format('DD/MM/YYYY') );
+
+	var date_start = $(this).val();
+	var date_finish = $('#site_finish').val();
+
+	if(date_finish){
+		var date_s_tmsp = moment(date_start,'DD/MM/YYYY').format('x');
+		var date_f_tmsp = moment(date_finish,'DD/MM/YYYY').format('x');
+		if(date_s_tmsp > date_f_tmsp){
+			$(this).val('');
+			alert('Site Start date selected conflicts to Site Finish, please selecte another date.')
+		}
+	}
 });
 
-$('#summ_starting_date').text( e.date.format('DD/MM/YYYY') );
 
-});
+
 $("#site_finish").on("dp.change", function (e) {
-$(this).data("DateTimePicker").minDate(e.date);
-$('#site_start').data("DateTimePicker").maxDate(e.date);
-$('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
+
+	//$("#site_start").data("DateTimePicker").minDate(e.date);
+	//$('#site_start').data("DateTimePicker").maxDate(e.date);
+
+	$('#summ_end_date').text( e.date.format('DD/MM/YYYY') );
+
+	var date_start = $('#site_start').val();
+	var date_finish = $(this).val();
+
+	if(date_start){
+		var date_s_tmsp = moment(date_start,'DD/MM/YYYY').format('x');
+		var date_f_tmsp = moment(date_finish,'DD/MM/YYYY').format('x');
+		if(date_s_tmsp > date_f_tmsp){
+			$(this).val('');
+			alert('Site Finish date selected conflicts to Site Start, please selecte another date.')
+		}
+	}
+
 });
 
+ 
 
 
 $('.job-date-set').datetimepicker({
    format: 'DD/MM/YYYY',maxDate: new Date
 });
+
 $('.job-date-set').val('<?php echo $job_date; ?>');
 
 
 </script>
+
+<?php if($this->input->post('company_prg')): ?>
+	<script type="text/javascript">$('select#company_prg').val('<?php echo $this->input->post('company_prg'); ?>');</script>
+<?php else: ?>
+ 
+	<script type="text/javascript">$('select#company_prg').val("<?php  echo str_replace('&apos;','\'',$client_company_name)."|".$client_company_id; ?>");</script>
+<?php endif; ?>
+
+<?php if($this->input->post('job_type')): ?>
+	<script type="text/javascript">$("select#job_type").val("<?php echo $this->input->post('job_type'); ?>");</script>
+<?php else: ?>
+	<script type="text/javascript">$("select#job_type").val("<?php echo $job_type; ?>");</script>
+<?php endif; ?>
+
+<?php if($this->input->post('suburb_a')): ?>								
+	<script type="text/javascript">$("select#suburb_a").val("<?php echo $this->input->post('suburb_a'); ?>");</script>
+<?php else: ?>
+	<script type="text/javascript">$("select#suburb_a").val("<?php echo $suburb.'|'.$state.'|'.$phone_area_code; ?>");</script>
+<?php endif; ?>
+
+<?php if($this->input->post('postcode_a')): ?>
+	<script type="text/javascript">$("select#postcode_a").val("<?php echo $this->input->post('postcode_a'); ?>");</script>
+<?php else: ?>
+	<script type="text/javascript">$("select#postcode_a").val("<?php echo $postcode; ?>");</script>	
+<?php endif; ?>	
+
+<?php if($this->input->post('state_b')): ?>
+	<script type="text/javascript">$("select#state_b").val("<?php echo $this->input->post('state_b'); ?>");</script>
+<?php else: ?>
+	<script type="text/javascript">$("select#state_b").val("<?php echo $i_shortname.'|'.$i_state.'|'.$i_phone_area_code.'|'.$i_state_id; ?>");</script>
+<?php endif; ?>
+
+suburb
+<?php if($this->input->post('state_b')): ?>								
+	<script type="text/javascript">$("select#suburb_b").val("<?php echo $this->input->post('suburb_b'); ?>");</script>
+<?php else: ?>
+	<script type="text/javascript">$("select#suburb_b").val("<?php echo $i_suburb.'|'.$i_state.'|'.$i_phone_area_code; ?>");</script>
+<?php endif; ?> 
+
+<?php if($this->input->post('state_b')): ?>	
+	<script type="text/javascript">$("select#postcode_b").val("<?php echo $this->input->post('postcode_b'); ?>");</script>
+<?php else: ?>
+	<script type="text/javascript">$("select#postcode_b").val("<?php echo $i_postcode; ?>");</script>
+<?php endif; ?> 
+
+<?php if($this->input->post('project_manager')): ?>
+	<script type="text/javascript">$('select#project_manager').val('<?php echo $this->input->post('project_manager'); ?>');</script>
+<?php else: ?>	
+	<script type="text/javascript">$('select#project_manager').val('<?php echo $pm_user_id; ?>');</script>
+<?php endif; ?>
+
+<?php if($this->input->post('project_admin')): ?>
+	<script type="text/javascript">$('select#project_administrator').val('<?php echo $this->input->post('project_admin'); ?>');</script>
+<?php else: ?>		
+	<script type="text/javascript">$('select#project_administrator').val('<?php echo $pa_user_id; ?>');</script>	
+<?php endif; ?>	
+
+<?php if($this->input->post('estimator')): ?>
+	<script type="text/javascript">$('select#estimator').val('<?php echo $this->input->post('estimator'); ?>');</script>
+<?php else: ?>
+	<script type="text/javascript">$('select#estimator').val('<?php echo ($pe_user_first_name == "" ? 0 : $pe_user_id ); ?>');</script>	
+<?php endif; ?>	
+
+<script type="text/javascript">$('select#client_contact_project_manager').val('<?php echo $this->input->post('project_manager'); ?>');</script>	
+
+
+<?php if($this->input->post('client_contact_project_manager')): ?>
+	<script type="text/javascript">$('select#client_contact_project_manager').val('<?php echo $this->input->post('client_contact_project_manager'); ?>');</script>
+<?php else: ?>	
+	<script type="text/javascript">$('select#client_contact_project_manager').val('<?php echo $cc_pm_user_id; ?>');</script>
+<?php endif; ?>
+
+<?php if($this->input->post('leading_hand')): ?>
+	<script type="text/javascript">$('select#leading_hand').val('<?php echo $this->input->post('leading_hand'); ?>');</script>
+<?php elseif($manual_lh_name == ""): ?>																
+	<script type="text/javascript">$('select#leading_hand').val('<?php echo ($lead_hand_user_first_name == "" ? '' : $lead_hand_user_id ); ?>');</script>	
+<?php else: ?>																
+	<script type="text/javascript">$('select#leading_hand').val('<?php echo ($lead_hand_user_first_name == "" ? 0 : $lead_hand_user_id ); ?>');</script>	
+<?php endif; ?>
+
+<script type="text/javascript">$('.focus').val('<?php echo ($this->input->post('focus') ? $this->input->post('focus') : $focus_company_id ); ?>');</script>
+
+<?php if($this->input->post('brand_name')): ?>
+	<script type="text/javascript">$("select#brand_name").val("<?php echo $this->input->post('brand_name'); ?>");</script>
+<?php else: ?>
+	<script type="text/javascript">$("select#brand_name").val("<?php echo $brand_id; ?>");</script>
+<?php endif; ?>
+
+<script type="text/javascript">$("select#job_category").val("<?php echo $this->input->post('job_category'); ?>");</script>
+
+<script type="text/javascript">
+
+	$("select#job_category").on("change", function(e) {
+		var job_category = $(this).val();
+
+		if(job_category == 'Maintenance'){
+			var focus_comp_assnmt = 3197;
+		}else{
+			var focus_comp_assnmt = <?php echo $focus_company_id; ?>;
+		}
+
+		$('select#focus').val(focus_comp_assnmt);
+	});
+</script>
+
+
+
+
+<?php if($this->input->post('job_category')): ?>
+	<script type="text/javascript">$("select#job_category").val("<?php echo $this->input->post('job_category'); ?>");</script>
+<?php else: ?>
+	<script type="text/javascript">$("select#job_category").val("<?php echo $job_category; ?>");</script>															
+<?php endif; ?>

@@ -69,6 +69,77 @@
   </div>
 </div>
 <!-- title bar -->
+ <script type="text/javascript">
+
+
+function reCountWip(tble_target,colA,colB){
+
+
+  var wip_tot_prj = 0;
+  var wip_tot_cst = 0;
+  var wip_tot_hrs = 0;
+  var wip_tot_uin = 0;
+
+  var cst = 0;
+  var hrs = 0;
+  var uin = 0;
+
+  $('tbody.'+tble_target+' > tr').each(function(index, tr) {
+
+  if($(this).css('display') != 'none'){
+
+
+
+
+  wip_tot_prj++;
+ 
+  cst = $(this).find('td:nth-child('+colA+')').text();
+  cst = cst.replace(",", "");
+  wip_tot_cst =  parseFloat(wip_tot_cst)+parseFloat(cst);
+ 
+
+if(colB > 0){
+
+  hrs = $(this).find('td:nth-child('+colB+')').text();
+  wip_tot_hrs =  parseFloat(wip_tot_hrs)+parseFloat(hrs);
+
+  var colC =  parseInt(colB)+1;
+
+  uin = $(this).find('td:nth-child('+colC+')').text();
+  uin = uin.replace(",", "");
+  wip_tot_uin =  parseFloat(wip_tot_uin)+parseFloat(uin);
+
+
+
+
+}
+
+
+
+  }
+
+
+
+
+
+});
+
+
+$('.'+tble_target+'_prj').text(wip_tot_prj.toLocaleString());
+$('.'+tble_target+'_cst').text(wip_tot_cst.toLocaleString());
+
+
+
+if(colB > 0){
+  $('.'+tble_target+'_hrs').text(wip_tot_hrs.toLocaleString());
+  $('.'+tble_target+'_uin').text(wip_tot_uin.toLocaleString());
+
+}
+
+}
+
+
+</script>
 
 <div class="container-fluid">
 
@@ -141,27 +212,44 @@
  
                         <div class="input-group  pull-right" style="width:320px; margin-right: -5px;">
                           <span class="input-group-addon">Project Manager</span>
+                          
+<?php /*
                           <select class="form-control prjrvw_pm_selection">
                             <option value="all|0">View All</option>
                             <?php
-                              foreach ($users->result_array() as $row):
-                                if($row['user_role_id']==3 || $row['user_role_id']==20   ):
-                                  if( $this->session->userdata('user_role_id') == 2 ):
-                                    if( in_array($row['user_id'], $group_pm) ):
-                                      echo '<option value="'.$row['user_first_name'].' '.$row['user_last_name'].'|'.$row['user_id'].'" >'.$row['user_first_name'].' '.$row['user_last_name'].'</option>';
-                                    endif;
-                                  else:
-                                    echo '<option value="'.$row['user_first_name'].' '.$row['user_last_name'].'|'.$row['user_id'].'" >'.$row['user_first_name'].' '.$row['user_last_name'].'</option>';
-
-                                  endif;
-
- 
-
-
-                                endif;
+                              foreach ($pm_list->result_array() as $row):
+                                      echo '<option value="'.$row['name_log'].'|'.$row['project_manager_id'].'" >'.$row['name_log'].'</option>';
                               endforeach;
                             ?>
                           </select>
+
+*/ ?>
+
+
+<select class="form-control prjrvw_pm_selection">
+  <option value="all|0">View All</option>
+  <?php
+  foreach ($users->result_array() as $row):
+    if($row['user_role_id']==3 || $row['user_role_id']==20   ):
+      if( $this->session->userdata('user_role_id') == 2 ):
+        if( in_array($row['user_id'], $group_pm) ):
+          echo '<option value="'.$row['user_first_name'].' '.$row['user_last_name'].'|'.$row['user_id'].'" >'.$row['user_first_name'].' '.$row['user_last_name'].'</option>';
+        endif;
+        else:
+          echo '<option value="'.$row['user_first_name'].' '.$row['user_last_name'].'|'.$row['user_id'].'" >'.$row['user_first_name'].' '.$row['user_last_name'].'</option>';
+
+        endif;
+
+        
+
+
+        endif;
+        endforeach;
+        ?>
+      </select>
+
+
+                          
                         </div>
   
 
@@ -270,6 +358,8 @@
          }
        }
 
+
+
      });
 
  
@@ -320,7 +410,10 @@
 
                        // alert(prj_list_text);
 
-                        if( prj_list_text.includes('pm_'+pm_id_arr[1])  ){
+                     //   if( prj_list_text.includes('pm_'+pm_id_arr[1])){
+
+
+                        if( prj_list_text == 'pm_'+pm_id_arr[1] ){
                          $(itm_obj).parent().show();
 
                        }else{
@@ -339,6 +432,16 @@
 
 
                     }
+
+ 
+
+       reCountWip('prj_wip_rvw',5,7);
+     
+      
+ setTimeout(function(){    reCountWip('prj_qut_rvw',5,7);   },100);
+
+ setTimeout(function(){   reCountWip('un_invoiced_rvw',7,0);    },200);
+
 
                   });
 
@@ -397,64 +500,118 @@
                         <div class="m-bottom-15 clearfix">
 
 
-                          <div class="box-area">  
-                            <p class="m-bottom-10 m-top-10">New projects for quotation.</p>
+                          <div class="box-area clearfix">  
+                            
+                         <div id="" class="clearfix" style="margin: -20px;"></div>
+
+
+                          <strong class="m-0 pull-left">New projects for quotation.</strong>
+                            <div id="" class="pull-left"> &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+
+
+                           
+
+                            </div>
+
+
+
                             
                           </div>
 
-
+ <div id="" class="" style="height: 60%;    overflow-y: scroll;">
                             <table id=" " class="prj_rvw_tbl table table-bordered" cellspacing="0" width="100%">
 
                             <thead>
   
 
-<!-- wip
-quote -->
+                              <tr> <th>Finish</th> <th>Start</th><th>Client</th> <th>Project</th> <th>Total WIP</th> <th>Quote Deadline  <i class="fa  fa-sort-numeric-asc"></i>  </th> <th>Install</th> <th>Invoiced</th> <th class=" hide">PM</th> </tr> 
+                            
 
-                              <tr> <th>Finish</th> <th>Start</th><th>Client</th> <th>Project</th> <th>Total</th> <th>Quote Deadline  <i class="fa  fa-sort-numeric-asc"></i>  </th> <th>Install Hrs</th> <th>Invoiced</th> <th class=" hide">PM</th> </tr> 
                             </thead>
                             <tbody  class="prj_qut_rvw"> 
                               <?php echo $this->projects->display_all_projects('quote',1); ?>
                             </tbody>  
-                          </table>                            
+
+                        <tfoot>     
+  <tr> <th> </th> <th> </th><th> </th> <th>Total Projects Count: <strong class="prj_qut_rvw_prj">0</strong></th> <th><strong class="prj_qut_rvw_cst">0</strong> </th> <th>  </th> <th><strong class="prj_qut_rvw_hrs">0</strong> Hrs</th> <th><strong class="prj_qut_rvw_uin">0</strong></th> <th class=" hide"> </th> </tr>
+ </tfoot>
+
+                          </table>   
+                          </div>                         
                         </div> 
                       </div>
                       <div class="tab-pane clearfix active" id="wip">
                         <div class="m-bottom-15 clearfix">
-                          <div class="box-area">  
-                            <p class="m-bottom-10 m-top-10">Work-in-progress projects.</p>
-                            
+                          <div class="box-area clearfix"> 
+
+                         <div id="" class="clearfix" style="margin: -20px;"></div>
+                            <strong class="m-0 pull-left">Work-in-progress projects.</strong>
+                       <?php /*
+                                                    <div id="" class="pull-left"> &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+                                                      &nbsp; Total Jobs: <strong class="prj_wip_rvw_prj">0</strong> &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+                                                      &nbsp; Total WIP: <strong class="prj_wip_rvw_cst">0</strong> Ex-gst &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+                                                      &nbsp; Total Install Hrs: <strong class="prj_wip_rvw_hrs">0</strong> Hrs
+                                                    </div>
+                                                   */ ?> 
                           </div>
-
-                          <table id=" " class="prj_rvw_tbl table table-bordered" cellspacing="0" width="100%">
-
-                            <thead>
-                              <tr> <th>Finish  <i class="fa fa-sort-numeric-asc"></i></th> <th>Start</th><th>Client</th> <th>Project</th> <th>Total</th> <th>Job Date</th> <th>Install Hrs</th> <th>Invoiced</th> <th class=" hide">PM</th> </tr> 
-                            </thead>
-                            <tbody class="prj_wip_rvw"> 
-                              <?php echo $this->projects->display_all_projects('wip',1); ?>
-                            </tbody>
-                          </table>
-                          
+                          <div id="" class="" style="height: 60%;    overflow-y: scroll;">
+                            <table id=" " class="prj_rvw_tbl table table-bordered" cellspacing="0" width="100%">
+                              <thead>
+                                <tr>
+                                <th>Finish  <i class="fa fa-sort-numeric-asc"></i></th> 
+                                <th>Start</th>
+                                <th>Client</th> 
+                                <th>Project</th> 
+                                <th>Total</th> 
+                                <th>Job Date</th> 
+                                <th>Install</th> 
+                                <th>Invoiced</th> <th class=" hide">PM</th> </tr> 
+                              </thead>
+                              <tbody class="prj_wip_rvw"> 
+                                <?php echo $this->projects->display_all_projects('wip',1); ?>
+                              </tbody>
+                              <tfoot>
+                               <tr> <th> </th> <th> </th><th> </th> <th>Total Projects Count: <strong class="prj_wip_rvw_prj">0</strong></th> <th><strong class="prj_wip_rvw_cst">0</strong> </th> <th>  </th> <th><strong class="prj_wip_rvw_hrs">0</strong> Hrs</th> <th><strong class="prj_wip_rvw_uin">0</strong></th> <th class=" hide"> </th> </tr> 
+                             </tfoot>
+                           </table>
+                         </div>
                         </div>
                       </div>
 
                       <div class="tab-pane clearfix" id="uninvoiced">
                         <div class="m-bottom-15 clearfix">
                          <div class="box-area">  
-                          <p class="m-bottom-10 m-top-10">On-going projects that needs to be invoiced.</p>
+                          
+
+                         <div id="" class="clearfix" style="margin: -20px;"></div>
+                          <strong class="m-0 pull-left">On-going projects that needs to be invoiced.</strong>
+                          
+<?php /*
+                            <div id="" class="pull-left"> &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+                            
+                              &nbsp; Total Jobs: <strong class="un_invoiced_rvw_prj">0</strong> &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+                              &nbsp; Total WIP: <strong class="un_invoiced_rvw_cst">0</strong> Ex-gst &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
+                            </div>
+*/ ?>
+
 
                         </div>
-                           <table id=" " class="prj_rvw_tbl table table-bordered" cellspacing="0" width="100%">
-                            
-                            <thead>
-                              <tr> <th>Finish</th> <th>Client</th>  <th>Project</th> <th>Invoicing <i class="fa fa-sort-numeric-asc"></i></th> <th>Progress</th> <th>Percent</th> <th>Amount</th> <th class=" hide">PM</th></tr> 
-                            </thead>
-                            <tbody class="un_invoiced_rvw"> 
-                              <?php  echo $this->projects->list_un_invoiced_rvw(); ?>
-                            </tbody>
-                          </table>
- 
+
+                        <div id="" class="clearfix"></div>
+
+                        <div id="" class="" style="height: 60%;    overflow-y: scroll;">
+                         <table id=" " class="prj_rvw_tbl table table-bordered" cellspacing="0" width="100%">
+                          <thead>
+                            <tr> <th>Finish</th> <th>Client</th>  <th>Project</th> <th>Invoicing <i class="fa fa-sort-numeric-asc"></i></th> <th>Progress</th> <th>Percent</th> <th>Amount</th> <th class=" hide">PM</th></tr> 
+                          </thead>
+                          <tbody class="un_invoiced_rvw"> 
+                            <?php  echo $this->projects->list_un_invoiced_rvw(); ?>
+                          </tbody>
+                          <tfoot>
+                           <tr> <th></th> <th></th>  <th>Total Projects Count: <strong class="un_invoiced_rvw_prj">0</strong></th> <th>    </th> <th></th> <th></th> <th><strong class="un_invoiced_rvw_cst">0</strong> </th> <th class=" hide"> </th></tr>
+                         </tfoot>
+                       </table>
+                     </div>
                       </div>
                     </div>
 
@@ -550,6 +707,41 @@ tr.posted_rev_late td a{
   color: #fff !important;
 }
 
+
+table.prj_rvw_tbl{
+text-align: left;
+  position: relative;
+  border-collapse: collapse; 
+  margin: 0;
+  padding: 0;
+}
+ 
+table.prj_rvw_tbl thead th {
+ 
+  position: sticky;
+  top: 0; /* Don't forget this, required for the stickiness */
+  background: #DDDDDD;
+  font-weight: bold;
+  
+}
+ 
+table.prj_rvw_tbl tfoot th {
+ 
+  position: sticky;
+  bottom: 0; /* Don't forget this, required for the stickiness */
+  background: #DDDDDD;
+  font-weight: bold;
+ 
+}
+
+
+table.prj_rvw_tbl td p {
+  white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0px;
+}
+
 </style>
    
 
@@ -627,6 +819,10 @@ tr.posted_rev_late td a{
  //.offset().top - 70)
 
 
+
+
+
+
 </script>
 
 <?php endif; ?>
@@ -636,6 +832,22 @@ tr.posted_rev_late td a{
 <script type="text/javascript">
 
 $(document).ready(function() {
+
+
+
+$(window).on("resize load", function(){
+
+  var newWidth = $(window).width() / 5;
+ 
+
+  $('table.prj_rvw_tbl td p').css('width',newWidth+'px')
+
+
+});
+
+ 
+
+
 
 /*
 
@@ -855,6 +1067,8 @@ $('.close_toggle_prjrvw').click(function(e) {
   });
   var target_row_id = $('input.prjrvw_btn_clck_id').val();
 
+//  alert(target_row_id);
+
   setTimeout(function(){   
     $('.no_updates_btn').text('No Updates').hide();
    // $('tr.current_item_prjrvw .needs_review').hide();
@@ -873,6 +1087,7 @@ $('.close_toggle_prjrvw').click(function(e) {
 });
 
   $('.view_notes_prjrvw').click(function(event) {
+ 
 
       $('.box-area tr').removeClass('current_item_prjrvw_selected');
 
@@ -884,11 +1099,19 @@ $('.close_toggle_prjrvw').click(function(e) {
       $('textarea#notes_comment_text').val('');
 
       var project_raw_name = $(this).parent().text();
+
       var project_id = $(this).next().find('.prj_id_rvw').text();
 
+      var project_id_tbl_row = $(this).parent().parent().attr('id');
 
 
-      $('input.prjrvw_btn_clck_id').val( $(this).parent().parent().attr('id') );
+
+     // $('input.prjrvw_btn_clck_id').val( $(this).parent().parent().parent().attr('id') );
+
+
+      $('input.prjrvw_btn_clck_id').val(project_id_tbl_row);
+
+
 
       $('.project_title_rvw').text(project_raw_name);
       $('input.prjrvw_project_id').val(project_id);
@@ -904,12 +1127,12 @@ $('.close_toggle_prjrvw').click(function(e) {
 
  
    
-        $("input.no_updates_checkbox"). prop("checked", false);
+        $("input.no_updates_checkbox").prop("checked", false);
         $('.no_updates_btn').show().attr('id',project_id);
     //    $('.completed_review_btn').show().attr('id',project_id);
       }else{
 
-        $("input.no_updates_checkbox"). prop("checked", true);
+        $("input.no_updates_checkbox").prop("checked", true);
     //    $('.completed_review_btn').show().attr('id',project_id);
         $('.no_updates_btn').hide();
       }
@@ -971,7 +1194,7 @@ $('.proj_rvw_reload_bttn').click(function(){
     $('.proj_rvw_reload_bttn').find('i').removeClass('fa-spin');
   },1000);
 
-  $('tr#'+target_btn+' .view_notes_prjrvw').trigger('click');
+  $('tr#'+target_btn+' i.view_notes_prjrvw').trigger('click');
 
 
 });
@@ -994,12 +1217,26 @@ $('.proj_rvw_reload_bttn').click(function(){
 
   $('#progress_claim_srch_rec').keypress(function(event){
 
+
+    reCountWip('prj_wip_rvw',5,7);
+
+
+
+    setTimeout(function(){    reCountWip('prj_qut_rvw',5,7);   },200);
+
+
+    setTimeout(function(){   reCountWip('un_invoiced_rvw',7,0);    },400);
+
+
     var keycode = (event.keyCode ? event.keyCode : event.which);
     if(keycode == '13'){
       //alert('You pressed a "enter" key in textbox');  
       //$('.srch_btn_prgs_c_rec').trigger('click');
     }
     event.stopPropagation();
+
+
+
   });
 
 
@@ -1011,6 +1248,27 @@ $('.proj_rvw_reload_bttn').click(function(){
     $('input#amount_inc_gst').val('0.00');
     $('#is_invoice_paid_check').prop('checked', true);
   });
+
+ 
+
+//prj_wip_rvw
+
+
+
+
+       reCountWip('prj_wip_rvw',5,7);
+     
+      
+ setTimeout(function(){    reCountWip('prj_qut_rvw',5,7);   },100);
+
+ setTimeout(function(){   reCountWip('un_invoiced_rvw',7,0);    },200);
+
+// setTimeout(function(){   reCountWip('un_invoiced_rvw');    },200);
+
+
+//$(".location table tbody tr td:nth-child(2)").addClass("black");
+
+
 </script>
 
 

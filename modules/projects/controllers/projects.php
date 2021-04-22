@@ -427,7 +427,14 @@ $user_id = $this->session->userdata('user_id');
 */
 			
 
+/*
 
+echo '<p id="" class=""></p>';
+
+echo "$extra_query   ----------------    $extra_order";
+
+echo '<p id="" class=""></p>';
+*/
 
 		$data['proj_t'] = $this->projects_m->display_all_projects($extra_query,$extra_order);
 		$this->load->view('tables_projects',$data);
@@ -732,66 +739,92 @@ $user_id = $this->session->userdata('user_id');
 			$data['focus_company_id'] = $focus_company['company_id'];
 			$data['focus_company_name'] = $focus_company['company_name'];
 
-			$q_client_company = $this->company_m->display_company_detail_by_id($data['client_id']);
-			$client_company = array_shift($q_client_company->result_array());
-			$data['client_company_id'] = $client_company['company_id'];
-			$data['client_company_name'] = $client_company['company_name'];
+			if($data['is_pending_client'] == 0):
+				$q_client_company = $this->company_m->display_company_detail_by_id($data['client_id']);
+				$client_company = array_shift($q_client_company->result_array());
+				$data['client_company_id'] = $client_company['company_id'];
+				$data['client_company_name'] = $client_company['company_name'];
 
-			$q_fetch_contact_details_primary = $this->company_m->fetch_contact_details_primary($client_company['company_id']);
-			$company_contact_details_primary_detail = array_shift($q_fetch_contact_details_primary->result_array());
+				$q_fetch_contact_details_primary = $this->company_m->fetch_contact_details_primary($client_company['company_id']);
+				$company_contact_details_primary_detail = array_shift($q_fetch_contact_details_primary->result_array());
 
-			$data['company_contact_details_area_code'] = $company_contact_details_primary_detail['area_code'];
-			$data['company_contact_details_office_number'] = $company_contact_details_primary_detail['office_number'];
-			$data['company_contact_details_direct_number'] = $company_contact_details_primary_detail['direct_number'];
-			$data['company_contact_details_mobile_number'] = $company_contact_details_primary_detail['mobile_number'];
-			$data['company_contact_details_after_hours'] = $company_contact_details_primary_detail['after_hours'];
-			$data['company_contact_details_general_email'] = $company_contact_details_primary_detail['general_email'];
-			$data['company_contact_details_direct'] = $company_contact_details_primary_detail['direct'];
-			$data['company_contact_details_accounts'] = $company_contact_details_primary_detail['accounts'];
-			$data['company_contact_details_maintenance'] = $company_contact_details_primary_detail['maintenance'];
+				$data['company_contact_details_area_code'] = $company_contact_details_primary_detail['area_code'];
+				$data['company_contact_details_office_number'] = $company_contact_details_primary_detail['office_number'];
+				$data['company_contact_details_direct_number'] = $company_contact_details_primary_detail['direct_number'];
+				$data['company_contact_details_mobile_number'] = $company_contact_details_primary_detail['mobile_number'];
+				$data['company_contact_details_after_hours'] = $company_contact_details_primary_detail['after_hours'];
+				$data['company_contact_details_general_email'] = $company_contact_details_primary_detail['general_email'];
+				$data['company_contact_details_direct'] = $company_contact_details_primary_detail['direct'];
+				$data['company_contact_details_accounts'] = $company_contact_details_primary_detail['accounts'];
+				$data['company_contact_details_maintenance'] = $company_contact_details_primary_detail['maintenance'];
 
+				$query_client_address = $this->company_m->fetch_complete_detail_address($client_company['address_id']);
+				$temp_data = array_shift($query_client_address->result_array());
+				$data['query_client_address_postcode'] = $temp_data['postcode'];
+				$data['query_client_address_suburb'] = ucwords(strtolower($temp_data['suburb']));
+				$data['query_client_address_po_box'] = $temp_data['po_box'];
+				$data['query_client_address_street'] = ucwords(strtolower($temp_data['street']));
+				$data['query_client_address_unit_level'] = ucwords(strtolower($temp_data['unit_level']));
+				$data['query_client_address_unit_number'] = $temp_data['unit_number'];
+				$data['query_client_address_state'] = $temp_data['name'];
 
-			$query_client_address = $this->company_m->fetch_complete_detail_address($client_company['address_id']);
-			$temp_data = array_shift($query_client_address->result_array());
-			$data['query_client_address_postcode'] = $temp_data['postcode'];
-			$data['query_client_address_suburb'] = ucwords(strtolower($temp_data['suburb']));
-			$data['query_client_address_po_box'] = $temp_data['po_box'];
-			$data['query_client_address_street'] = ucwords(strtolower($temp_data['street']));
-			$data['query_client_address_unit_level'] = ucwords(strtolower($temp_data['unit_level']));
-			$data['query_client_address_unit_number'] = $temp_data['unit_number'];
-			$data['query_client_address_state'] = $temp_data['name'];
+				$q_contact_person = $this->company_m->fetch_all_contact_persons($data['primary_contact_person_id']);
+				$contact_person = array_shift($q_contact_person->result_array());
 
+				$data['contact_person_id'] = $contact_person['contact_person_id'];
+				$data['contact_person_fname'] = $contact_person['first_name'];
+				$data['contact_person_lname'] = $contact_person['last_name'];
+				
+				$q_fetch_phone = $this->company_m->fetch_phone($contact_person['contact_number_id']);
+				$contact_person_phone = array_shift($q_fetch_phone->result_array());
 
-			$q_contact_person = $this->company_m->fetch_all_contact_persons($data['primary_contact_person_id']);
-			$contact_person = array_shift($q_contact_person->result_array());
-			$data['contact_person_id'] = $contact_person['contact_person_id'];
-			$data['contact_person_fname'] = $contact_person['first_name'];
-			$data['contact_person_lname'] = $contact_person['last_name'];
-
-			$q_fetch_phone = $this->company_m->fetch_phone($contact_person['contact_number_id']);
-			$contact_person_phone = array_shift($q_fetch_phone->result_array());
-
-			
-
-			if($contact_person_phone['office_number'] != ''): 
-				$data['contact_person_phone_office'] = $contact_person_phone['area_code'].' '.$contact_person_phone['office_number'];
-			else: $data['contact_person_phone_office'] = '';
-			endif;
+				if($contact_person_phone['office_number'] != ''): 
+					$data['contact_person_phone_office'] = $contact_person_phone['area_code'].' '.$contact_person_phone['office_number'];
+				else: $data['contact_person_phone_office'] = '';
+				endif;
 
 
-			if($contact_person_phone['direct_number'] != ''): 
-				$data['contact_person_phone_direct'] = $contact_person_phone['area_code'].' '.$contact_person_phone['direct_number'];
-			else: $data['contact_person_phone_direct'] = '';
-			endif;
+				if($contact_person_phone['direct_number'] != ''): 
+					$data['contact_person_phone_direct'] = $contact_person_phone['area_code'].' '.$contact_person_phone['direct_number'];
+				else: $data['contact_person_phone_direct'] = '';
+				endif;
 
-			if($contact_person_phone['mobile_number'] != ''):
-				$data['contact_person_phone_mobile'] = $contact_person_phone['mobile_number'];
-			else: $data['contact_person_phone_mobile'] = '';
-			endif;
+				if($contact_person_phone['mobile_number'] != ''):
+					$data['contact_person_phone_mobile'] = $contact_person_phone['mobile_number'];
+				else: $data['contact_person_phone_mobile'] = '';
+				endif;
 
-			if($contact_person_phone['after_hours'] != ''):
-				$data['contact_person_phone_afterhours'] = $contact_person_phone['area_code'].' '.$contact_person_phone['after_hours'];
-			else: $data['contact_person_phone_afterhours'] = '';
+				if($contact_person_phone['after_hours'] != ''):
+					$data['contact_person_phone_afterhours'] = $contact_person_phone['area_code'].' '.$contact_person_phone['after_hours'];
+				else: $data['contact_person_phone_afterhours'] = '';
+				endif;
+			else:
+				$data['client_company_id'] = $data['company_details_temp_id'];
+				$data['client_company_name'] = $data['company_name'];
+
+				$data['company_contact_details_area_code'] = "";
+				$data['company_contact_details_office_number'] = "";
+				$data['company_contact_details_direct_number'] = "";
+				$data['company_contact_details_mobile_number'] = "";
+				$data['company_contact_details_after_hours'] = "";
+				$data['company_contact_details_general_email'] = "";
+				$data['company_contact_details_direct'] = "";
+				$data['company_contact_details_accounts'] = "";
+				$data['company_contact_details_maintenance'] = "";
+
+				$data['query_client_address_postcode'] = "";
+				$data['query_client_address_suburb'] = "";
+				$data['query_client_address_po_box'] = "";
+				$data['query_client_address_street'] = "";
+				$data['query_client_address_unit_level'] = "";
+				$data['query_client_address_unit_number'] = "";
+				$data['query_client_address_state'] = "";
+
+				$data['contact_person_id'] = "";
+				$data['contact_person_fname'] = $data['contact_person_fname'];
+				$data['contact_person_lname'] = $data['contact_person_sname'];;
+
+				$data['contact_person_phone_office'] = $data['contact_number'];
 			endif;
 
 			$query_address= $this->company_m->fetch_complete_detail_address($data['address_id']);
@@ -1201,7 +1234,7 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 	
 	public function add(){
 		//var_dump($_POST);
-
+		$client_type = $this->input->post('client_type');
 		$this->users->_check_user_access('projects',2);
 
 		if($this->session->userdata('company_project') == 1){
@@ -1291,18 +1324,21 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 			$this->form_validation->set_rules('brand_shopping_center', 'Site Brand/Shopping Center','trim|required|xss_clean');
 		}		
 
-		$this->form_validation->set_rules('street_b', 'Invoice Street','trim|required|xss_clean');
-		$this->form_validation->set_rules('suburb_b', 'Invoice Address Suburb','trim|required|xss_clean');
-		$this->form_validation->set_rules('state_b', 'Invoice State','trim|required|xss_clean');
-		$this->form_validation->set_rules('postcode_b', 'Invoice Postcode','trim|required|xss_clean');
-
+		if($client_type == 0){
+			$this->form_validation->set_rules('street_b', 'Invoice Street','trim|required|xss_clean');
+			$this->form_validation->set_rules('suburb_b', 'Invoice Address Suburb','trim|required|xss_clean');
+			$this->form_validation->set_rules('state_b', 'Invoice State','trim|required|xss_clean');
+			$this->form_validation->set_rules('postcode_b', 'Invoice Postcode','trim|required|xss_clean');
+		}
 
 
 		$this->form_validation->set_rules('project_manager', 'Project Manager','trim|required|xss_clean');
 		$this->form_validation->set_rules('project_admin', 'Project Admin','trim|required|xss_clean');
 		$this->form_validation->set_rules('estimator', 'Estimator','trim|required|xss_clean');
-		$this->form_validation->set_rules('company_prg', 'Company Client','trim|required|xss_clean');
-		$this->form_validation->set_rules('contact_person', 'Contact Person','trim|required|xss_clean');
+		if($client_type == 0){
+			$this->form_validation->set_rules('company_prg', 'Company Client','trim|required|xss_clean');
+			$this->form_validation->set_rules('contact_person', 'Contact Person','trim|required|xss_clean');
+		}
 		$this->form_validation->set_rules('install_hrs', 'Site Hours','trim|xss_clean');
 		$this->form_validation->set_rules('project_total', 'Project Estimate','trim|required|xss_clean');
 		$this->form_validation->set_rules('labour_hrs_estimate', 'Site Labour Estimate','trim|required|xss_clean');
@@ -1371,12 +1407,6 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 			$data['street'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street', true)));
 			$data['postcode_a'] = $this->company->if_set($this->input->post('postcode_a', true));
 
-			$data['pobox'] = $this->company->if_set($this->input->post('pobox', true));
-			$data['unit_level_b'] = $this->company->if_set($this->input->post('unit_level_b', true));
-			$data['number_b'] = $this->company->if_set($this->input->post('number_b', true));			
-			$data['street_b'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street_b', true)));
-			$data['postcode_b'] = $this->company->if_set($this->input->post('postcode_b', true));		
-
 			$state_a_arr = explode('|', $this->input->post('state_a', true));
 			$num = count($state_a_arr);
 			if($num > 1){
@@ -1386,11 +1416,32 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 			$suburb_a_ar = explode('|',$this->company->if_set($this->input->post('suburb_a', true)));
 			$data['suburb_a'] = strtoupper($suburb_a_ar[0]);
 
-			$state_b_arr = explode('|', $this->input->post('state_b', true));
-			$data['state_b'] = $state_b_arr[3];
+			if($client_type == 0){
+				$data['pobox'] = $this->company->if_set($this->input->post('pobox', true));
+				$data['unit_level_b'] = $this->company->if_set($this->input->post('unit_level_b', true));
+				$data['number_b'] = $this->company->if_set($this->input->post('number_b', true));			
+				$data['street_b'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street_b', true)));
+				$data['postcode_b'] = $this->company->if_set($this->input->post('postcode_b', true));	
 
-			$suburb_b_ar = explode('|',$this->company->if_set($this->input->post('suburb_b', true)));
-			$data['suburb_b'] = strtoupper($suburb_b_ar[0]);
+				$state_b_arr = explode('|', $this->input->post('state_b', true));
+				$data['state_b'] = $state_b_arr[3];
+
+				$suburb_b_ar = explode('|',$this->company->if_set($this->input->post('suburb_b', true)));
+				$data['suburb_b'] = strtoupper($suburb_b_ar[0]);
+			}else{
+				$data['pobox'] = "";
+				$data['unit_level_b'] = $this->company->if_set($this->input->post('unit_level', true));
+				$data['number_b'] = $this->company->if_set($this->input->post('unit_number', true));			
+				$data['street_b'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street', true)));
+				$data['postcode_b'] = $this->company->if_set($this->input->post('postcode_a', true));
+
+				///$state_b_arr = explode('|',$this->company->if_set($this->input->post('suburb_a', true)));
+				$data['state_b'] = $data['state_a'];
+
+				$suburb_b_ar = explode('|',$this->company->if_set($this->input->post('suburb_a', true)));
+				$data['suburb_b'] = strtoupper($suburb_b_ar[0]);	
+			}
+
 
 			$project_manager_id = $this->input->post('project_manager');
 			$project_admin_id = $this->input->post('project_admin');
@@ -1403,22 +1454,23 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 				$project_leading_hand_mobile_no = $this->input->post('lh_mobile_no');
 			}
 
-			$company_prg_arr =  explode('|',$this->input->post('company_prg'));
-			$client_id = $company_prg_arr[1];
-			$company_name = $company_prg_arr[0];
 
-/*
-			$sub_client_arr =  explode('|',$this->input->post('sub_client'));
-			$sub_client_id = $sub_client_arr[1];
 
-			if($sub_client_id == ''){
-				$sub_client_id = $client_id;
+			if($client_type == 0){
+				$company_prg_arr =  explode('|',$this->input->post('company_prg'));
+				$client_id = $company_prg_arr[1];
+				$company_name = $company_prg_arr[0];
+
+				$contact_person_id = $this->input->post('contact_person');
+			}else{
+				$pending_comp_id = $this->input->post('pending_comp_id');
+				$company_prg_arr =  explode('/',$pending_comp_id);
+				$client_id = $company_prg_arr[0];
+				$company_name = $company_prg_arr[1];
+				$contact_person_id = 0;
+
+				
 			}
-*/
-		//	$sub_client_id = 0;
-
-			
-			$contact_person_id = $this->input->post('contact_person');
 			$project_total = str_replace (',','', $this->input->post('project_total') );
 
 			$install_hrs = $this->input->post('install_hrs');
@@ -1484,7 +1536,7 @@ $timestamp_nxt_revuew_req = (int)strtotime("$day_revew_req next week");
 				$date_quote_deadline =  date('d/m/Y', strtotime("$formated_start_date -$new_days_quote_deadline days"));
 			}
 
-			$inserted_project_id = $this->projects_m->insert_new_project($project_name, $project_date, $contact_person_id, $project_total, $job_date,$brand_name, $is_wip, $client_po, $site_start, $site_finish, $job_category, $job_type, $focus_user_id ,$focus_id, $project_manager_id, $project_admin_id, $project_estiamator_id,$site_address_id, $invoice_address_id, $project_notes_id, $project_markup,$project_status_id, $client_id, $install_hrs, $project_area, $is_double_time, $labour_hrs_estimate, $shop_tenancy_number,$defaults_id,$cc_pm,$date_quote_deadline,$proj_joinery_user);
+			$inserted_project_id = $this->projects_m->insert_new_project($project_name, $project_date, $contact_person_id, $project_total, $job_date,$brand_name, $is_wip, $client_po, $site_start, $site_finish, $job_category, $job_type, $focus_user_id ,$focus_id, $project_manager_id, $project_admin_id, $project_estiamator_id,$site_address_id, $invoice_address_id, $project_notes_id, $project_markup,$project_status_id, $client_id, $install_hrs, $project_area, $is_double_time, $labour_hrs_estimate, $shop_tenancy_number,$defaults_id,$cc_pm,$date_quote_deadline,$proj_joinery_user,$client_type);
 
 
 			if($is_shopping_center == 1){
@@ -2096,6 +2148,20 @@ $gp = 0;
 			$this->projects_m->update_project_total($project_id,$final_total_quoted);
 		}
 
+
+
+		if($project_id == 43561){
+			$final_total_quoted = $final_total_quoted - 0.37;
+			$this->projects_m->update_project_total($project_id,$final_total_quoted);
+		}
+
+
+/*
+		if($project_id == 43781){
+			$final_total_quoted = $final_total_quoted + 0.21;
+			$this->projects_m->update_project_total($project_id,$final_total_quoted);
+		}
+*/
 		$result = array(
 			"gp" => $gp,
 			"final_total_cost" => $actual_project_cost,
@@ -2318,7 +2384,7 @@ $gp = 0;
 					$fetch_user= $this->user_model->fetch_user($row['user_id']);
 					$user = array_shift($fetch_user->result_array());
 
-					echo '<div class=" '.($row['is_active'] == 1 ? 'active' : 'deleted' ).'   notes_line user_postby_'.strtolower( str_replace(' ', '',  $user['user_first_name']) ).' comment_type_'.$row['is_project_comments'].'">';
+					echo '<div class=" '.($row['is_active'] == 1 ? 'active' : 'deleted' ).' '.$row['project_comments_id'].'  notes_line user_postby_'.strtolower( str_replace(' ', '',  $user['user_first_name']) ).' comment_type_'.$row['is_project_comments'].'">';
 
 					if($row['is_active'] == 1 && $row['is_project_comments'] == 2){
 						echo '<div class="pull-right btn btn-danger view_delete btn-xs fa fa-trash" id="'.$row['project_comments_id'].'"></div>';
@@ -2402,6 +2468,7 @@ $gp = 0;
 	}
 
 	public function update_project_details(){
+		$client_type = $this->input->post('client_type');
 		$this->clear_apost();
 
 		$this->users->_check_user_access('projects',2);
@@ -2453,9 +2520,9 @@ $gp = 0;
 			$system_default_raw = $this->admin_m->latest_system_default($data['defaults_id']);
 			$system_default = array_shift($system_default_raw->result_array());
 
-		$admin_defaults_q = $this->admin_m->fetch_admin_defaults($system_default['admin_default_id']); 
-		$admin_defaults = array_shift($admin_defaults_q->result_array());
-		$days_quote_deadline = $admin_defaults['days_quote_deadline'];
+			$admin_defaults_q = $this->admin_m->fetch_admin_defaults($system_default['admin_default_id']); 
+			$admin_defaults = array_shift($admin_defaults_q->result_array());
+			$days_quote_deadline = $admin_defaults['days_quote_deadline'];
 
 
 			$markup_raw = $this->admin_m->fetch_markup($system_default['markup_id']);
@@ -2683,12 +2750,12 @@ $gp = 0;
 				$this->form_validation->set_rules('shop_tenancy_number', 'Site Shop/Tenancy Number','trim|required|xss_clean');
 				$this->form_validation->set_rules('brand_shopping_center', 'Site Brand/Shopping Center','trim|required|xss_clean');
 			}
-
-			$this->form_validation->set_rules('street_b', 'Invoice Street','trim|required|xss_clean');
-			$this->form_validation->set_rules('suburb_b', 'Invoice Address Suburb','trim|required|xss_clean');
-			$this->form_validation->set_rules('state_b', 'Invoice State','trim|required|xss_clean');
-			$this->form_validation->set_rules('postcode_b', 'Invoice Postcode','trim|required|xss_clean');
-
+			if($client_type == 0):
+				$this->form_validation->set_rules('street_b', 'Invoice Street','trim|required|xss_clean');
+				$this->form_validation->set_rules('suburb_b', 'Invoice Address Suburb','trim|required|xss_clean');
+				$this->form_validation->set_rules('state_b', 'Invoice State','trim|required|xss_clean');
+				$this->form_validation->set_rules('postcode_b', 'Invoice Postcode','trim|required|xss_clean');
+			endif;
 
 
 			$this->form_validation->set_rules('project_manager', 'Project Manager','trim|required|xss_clean');
@@ -2699,9 +2766,11 @@ $gp = 0;
 			// 	$this->form_validation->set_rules('lh_name', 'Leading Hand Full Name','trim|required|xss_clean');
 			// 	$this->form_validation->set_rules('lh_mobile_no', 'Leading Hand Mobile No.','trim|required|xss_clean');
 			// }
+			if($client_type == 0):
+				$this->form_validation->set_rules('company_prg', 'Company Client','trim|required|xss_clean');
+				$this->form_validation->set_rules('contact_person', 'Contact Person','trim|required|xss_clean');
+			endif;
 
-			$this->form_validation->set_rules('company_prg', 'Company Client','trim|required|xss_clean');
-			$this->form_validation->set_rules('contact_person', 'Contact Person','trim|required|xss_clean');
 			$this->form_validation->set_rules('install_hrs', 'Site Hours','trim|xss_clean');
 			$this->form_validation->set_rules('proj_joinery_user', 'Joinery Personel','trim|xss_clean');
 
@@ -2830,23 +2899,40 @@ $gp = 0;
 				$data['street'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street', true)));
 				$data['postcode_a'] = $this->company->if_set($this->input->post('postcode_a', true));
 
-				$data['pobox'] = $this->company->if_set($this->input->post('pobox', true));
-				$data['unit_level_b'] = $this->company->if_set($this->input->post('unit_level_b', true));
-				$data['number_b'] = $this->company->if_set($this->input->post('number_b', true));			
-				$data['street_b'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street_b', true)));
-				$data['postcode_b'] = $this->company->if_set($this->input->post('postcode_b', true));		
-
 				$state_a_arr = explode('|', $this->input->post('state_a', true));	
 				$data['state_a'] = $state_a_arr[3];
+
 
 				$suburb_a_ar = explode('|',$this->company->if_set($this->input->post('suburb_a', true)));
 				$data['suburb_a'] = strtoupper($suburb_a_ar[0]);
 
-				$state_b_arr = explode('|', $this->input->post('state_b', true));
-				$data['state_b'] = $state_b_arr[3];
+				if($client_type == 0):
+					$data['pobox'] = $this->company->if_set($this->input->post('pobox', true));
+					$data['unit_level_b'] = $this->company->if_set($this->input->post('unit_level_b', true));
+					$data['number_b'] = $this->company->if_set($this->input->post('number_b', true));			
+					$data['street_b'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street_b', true)));
+					$data['postcode_b'] = $this->company->if_set($this->input->post('postcode_b', true));
+	
 
-				$suburb_b_ar = explode('|',$this->company->if_set($this->input->post('suburb_b', true)));
-				$data['suburb_b'] = strtoupper($suburb_b_ar[0]);
+					$state_b_arr = explode('|', $this->input->post('state_b', true));
+					$data['state_b'] = $state_b_arr[3];
+
+					$suburb_b_ar = explode('|',$this->company->if_set($this->input->post('suburb_b', true)));
+					$data['suburb_b'] = strtoupper($suburb_b_ar[0]);
+				else:
+					$data['pobox'] = "";
+					$data['unit_level_b'] = $this->company->if_set($this->input->post('unit_level', true));
+					$data['number_b'] = $this->company->if_set($this->input->post('unit_number', true));			
+					$data['street_b'] = $this->company->cap_first_word($this->company->if_set($this->input->post('street', true)));
+					$data['postcode_b'] = $this->company->if_set($this->input->post('postcode_a', true));
+
+					///$state_b_arr = explode('|',$this->company->if_set($this->input->post('suburb_a', true)));
+					$data['state_b'] = $data['state_a'];
+
+					$suburb_b_ar = explode('|',$this->company->if_set($this->input->post('suburb_a', true)));
+					$data['suburb_b'] = strtoupper($suburb_b_ar[0]);
+				endif;
+				
 
 				$project_manager_id = $this->input->post('project_manager');
 				$project_admin_id = $this->input->post('project_admin');
@@ -2858,10 +2944,18 @@ $gp = 0;
 					$project_leading_hand_mobile_no = $this->input->post('lh_mobile_no');
 				}
 
-				$company_prg_arr =  explode('|',$this->input->post('company_prg'));
-				$client_id = $company_prg_arr[1];
-
-				$contact_person_id = $this->input->post('contact_person');
+				if($client_type == 0):
+					$company_prg_arr =  explode('|',$this->input->post('company_prg'));
+					$client_id = $company_prg_arr[1];
+					$contact_person_id = $this->input->post('contact_person');
+				else:
+					$pending_comp_id = $this->input->post('pending_comp_id');
+					$company_prg_arr =  explode('/',$pending_comp_id);
+					$client_id = $company_prg_arr[0];
+					$company_name = $company_prg_arr[1];
+					$contact_person_id = 0;
+				endif;
+				
 				$brand_name = $this->input->post('brand_name');
 
 				$est_amt = $this->input->post('project_total');
@@ -2934,8 +3028,9 @@ $gp = 0;
 			$date_quote_deadline =  date('d/m/Y', strtotime("$formated_start_date -$days_quote_deadline days"));
 */
 
-$rev_date  = date("d/m/Y");
-				$this->projects_m->update_full_project_details($project_id,$project_name,$client_id,$contact_person_id,$client_po,$job_type,$brand_name,$job_category,$job_date,$site_start,$site_finish,$is_wip,$install_hrs,$is_double_time,$project_total,$labour_hrs_estimate,$project_markup,$project_area,$project_manager_id,$project_admin_id,$project_estiamator_id,$shop_tenancy_number,$site_address_id,$shop_tenancy_number,$site_address_id,$invoice_address_id,$focus_id,$cc_pm,$proj_joinery_user,$rev_date);
+
+				$rev_date  = date("d/m/Y");
+				$this->projects_m->update_full_project_details($project_id,$project_name,$client_id,$contact_person_id,$client_po,$job_type,$brand_name,$job_category,$job_date,$site_start,$site_finish,$is_wip,$install_hrs,$is_double_time,$project_total,$labour_hrs_estimate,$project_markup,$project_area,$project_manager_id,$project_admin_id,$project_estiamator_id,$shop_tenancy_number,$site_address_id,$shop_tenancy_number,$site_address_id,$invoice_address_id,$focus_id,$cc_pm,$proj_joinery_user,$rev_date,$client_type);
 
 				if( strpos(implode(",",$data['warranty_categories']), $job_category) !== false ):
 					$this->projects->set_warranty_date_after_paid($project_id);
@@ -3072,7 +3167,6 @@ $rev_date  = date("d/m/Y");
 				if(isset($_GET['status_rvwprj']) && $_GET['status_rvwprj'] != '' ){
 					redirect(base_url().'projects/projects_wip_review?prj_ret_rev='.$project_id.'-'.$_GET['status_rvwprj'].'_prj_view&pmr='.$project_manager_id);
 				}
-
 
 
 				redirect('/projects/view/'.$project_id);
@@ -3413,6 +3507,16 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
 
 
 
+	public function client_file_storage(){
+  
+		$data['main_content'] = 'cf_storage';
+		$data['screen'] = 'Client File Storage';
+		$data['page_title'] = 'Client File Storage';
+		$this->load->view('page', $data);
+
+	}
+
+
 	public function document_storage(){
   
 		$data['main_content'] = 'doc_storage';
@@ -3426,6 +3530,19 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
 		$this->clear_apost();
 		$time = time();
 		$user_id = $this->session->userdata('user_id');
+		$users_q = $this->user_model->fetch_user($user_id);
+		$user_name = "";
+		$user_email = "";
+		foreach ($users_q->result_array() as $users_row){
+			$user_name = $users_row['user_first_name']." ".$users_row['user_last_name'];
+			$user_email_id = $users_row['user_email_id'];
+			$email_q = $this->company_m->fetch_email($user_email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$user_email = $email_row['general_email'];
+			}
+		}
+
+
 		$date_upload = date("d/m/Y"); 
 
 		$path = "./docs/stored_docs";
@@ -3448,8 +3565,39 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
 
         $files = $_FILES;
 		$file_type = $_POST['doc_type_name'];
-		$project_id = $_POST['doc_proj_id'];
+	//	$project_id = $_POST['doc_proj_id'];
 		$is_prj_scrn = $_POST['is_prj_scrn'];
+		$project_id = 'NULL';
+		$client_id = 'NULL';
+
+		if( isset($_POST['client']) && $_POST['client'] != '' ){
+			$client_data_arr = explode('|', $_POST['client']);
+			$client_id = $client_data_arr[1];
+		}
+
+		if( isset($_POST['doc_proj_id']) && $_POST['doc_proj_id'] != '' ){
+			$project_id = $_POST['doc_proj_id'];
+		}
+
+
+		$proj_q = $this->projects_m->select_particular_project($project_id);
+		foreach ($proj_q->result_array() as $row){
+			$project_manager_id = $row['project_manager_id'];
+		}
+
+		$pm_q = $this->user_model->fetch_user($project_manager_id);
+		$pm_name = "";
+		$pm_email = "";
+		foreach ($pm_q->result_array() as $pm_row){
+			$pm_name = $pm_row['user_first_name']." ".$pm_row['user_last_name'];
+			$user_email_id = $pm_row['user_email_id'];
+			$email_q = $this->company_m->fetch_email($user_email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$pm_email = $email_row['general_email'];
+			}
+		}
+
+
 
         $cpt = count($_FILES['doc_files']['name']);
 
@@ -3459,7 +3607,12 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
         	$path_parts = pathinfo($file_name);
         	$extension = strtolower($path_parts['extension']);
 
-        	$data_file_name = $project_id.'_'.$path_parts['filename'].'_'.$time.'.'.$extension;
+        	if( isset($_POST['doc_proj_id']) && $_POST['doc_proj_id'] != '' ){
+        		$data_file_name = $project_id.'_'.$path_parts['filename'].'_'.$time.'.'.$extension;
+        	}else{
+        		$data_file_name = $path_parts['filename'].'_'.$time.'.'.$extension;
+        	}
+
 	    	$file_name_set = str_replace(' ', '_', $data_file_name);
 	    	$file_name_set_final = str_replace("'", '`', $file_name_set);
 	    	$file_name_amp = str_replace('&', '_and_', $file_name_set_final);
@@ -3474,14 +3627,53 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
         	if ( !$this->upload->do_upload('doc_files')) {
 			   	echo $this->upload->display_errors();
 			}else{
-				$this->projects_m->insert_uploaded_file($file_name_amp,$file_type,$project_id,$date_upload,$user_id);
+				$this->projects_m->insert_uploaded_file($file_name_amp,$file_type,$project_id,$client_id,$date_upload,$user_id);
+				if($file_type == 6 || $file_type == 3){
+// SEND NOTIFICATION
+					require_once('PHPMailer/class.phpmailer.php');
+					require_once('PHPMailer/PHPMailerAutoload.php');
+
+					$mail = new phpmailer(true);
+					$mail->host = "sojourn-focusshopfit-com-au.mail.protection.outlook.com";
+					$mail->port = 587;
+				
+					//$mail->setfrom('userconf@sojourn.focusshopfit.com.au', 'name');
+					$mail->setFrom($user_email, $user_name);
+
+					//$mail->addreplyto('userconf@sojourn.focusshopfit.com.au', 'name');
+					$mail->addReplyTo($user_email);
+				
+					$mail->addaddress($pm_email, $pm_name);
+					
+					$mail->addBCC('mark.obis2012@gmail.com');
+
+					$mail->smtpdebug = 2;
+					$mail->ishtml(true);
+
+					// $mail->Subject = "File upload for approval";
+					// $mail->Body    = "A file was uploaded to the doc storage of Project number: ".$project_id." and awaiting approval. Please visit this link to and go to doc storage to check: https://sojourn.focusshopfit.com.au/projects/view/".$project_id;
+
+					// if(!$mail->send()) {
+					// 	echo 'Message could not be sent.'.' Mailer Error: ' . $mail->ErrorInfo;
+					// } else {
+					// 	echo "Email Send Successfully";
+					// }
+
+// SEND NOTIFICATION
+				}
 			}
         }
 
         if($is_prj_scrn == 1){
         	redirect('/projects/view/'.$project_id);
         }else{
-        	redirect('/projects/document_storage');
+
+        	if( isset($_POST['client']) && $_POST['client'] != '' ){
+        		redirect('/projects/client_file_storage');
+        	}else{
+        		redirect('/projects/document_storage');
+        	}
+
         }
     }
 
@@ -3489,19 +3681,32 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
 
 
 	public function add_doc_type(){
+		$doc_type = 0;
 		$this->clear_apost();
 		$type_name = $this->input->post('type_name');
+		$doc_type = $this->input->post('doc_type');
 
-		if(isset($type_name) && $type_name!= ''){
-			$this->projects_m->insert_doc_type($type_name);
+
+		if($this->input->post('doc_type')  !==  null && $this->input->post('doc_type') > 0 ){
+			$doc_type = $this->input->post('doc_type');
 		}
 
 
-		redirect('projects/document_storage');
+		if(isset($type_name) && $type_name != ''){
+			$this->projects_m->insert_doc_type($type_name,$doc_type);
+		}
+
+		if($this->input->post('doc_type')  !==  null && $this->input->post('doc_type') > 0 ){
+			redirect('projects/client_file_storage');
+		}else{
+			redirect('projects/document_storage');
+		}
 	}
 
-	public function list_doc_type_storage( $view='select' ){
-		$q_list_doc_type = $this->projects_m->list_doc_type();
+	public function list_doc_type_storage( $view='select' , $doc_type_id=''){
+
+
+		$q_list_doc_type = $this->projects_m->list_doc_type($doc_type_id);
 		$doc_type = $q_list_doc_type->result();
 
 
@@ -3537,6 +3742,9 @@ endif;
 		$proj_id = $_POST['proj_id'];
 		$q_list_doc_type = $this->projects_m->list_uploaded_files($proj_id);
 
+		$user_role_id = $this->session->userdata('user_role_id');
+		$is_admin = $this->session->userdata('is_admin');
+
 
 		$rows = $q_list_doc_type->num_rows;
 
@@ -3544,33 +3752,99 @@ endif;
 		$list_doc_type = $q_list_doc_type->result();
 		$doc_type = '';
 
+		$authorize_role_id = 0;
+		$doc_storage_defaults = $this->admin_m->fetch_default_doc_storage();
+		$q_doc_storage_defaults = $doc_storage_defaults->result();
+		foreach ($q_doc_storage_defaults as $default_doc_storage){
+			$authorize_role_id = $default_doc_storage->authorize_role_id;	
+		}
+
+		$default_doc_types = $this->admin_m->fetch_doc_storage_required_notification();
+		$q_default_doc_types = $default_doc_types->result();
+
+			echo '<div>';
 
 		if($rows < 1){
 			echo '<p class="m-top-10"><em class="fa fa-exclamation-circle"></em> No Files Uploaded</p>';
-		}else{
+		}else{ 
 			foreach ($list_doc_type as $stored_files){
 				if($doc_type == ''){
 					$doc_type = $stored_files->doc_type_name;
-					echo "<p class=\"m-top-15\"><strong>$doc_type</strong></p>";
+					echo "</div><div class=\"doc_droup_set\"  ><p class=\"m-top-15 doc_type_text\"> <div class=\"btn btn-info btn-xs   doc_type_head \"  style=\"margin: -4px 0 0 0;\"><em  class=\"fa fa-code-fork\"></em></div> &nbsp; <strong>$doc_type</strong></p>";
 				}else{
 					if($doc_type != $stored_files->doc_type_name){
 						$doc_type = $stored_files->doc_type_name;
-						echo "<p class=\"m-top-15\"><strong>$doc_type</strong></p>";
+						echo "</div><div class=\"doc_droup_set\"  ><p class=\"m-top-15 doc_type_text\"> <div class=\"btn btn-info btn-xs  doc_type_head \"  style=\"margin: -4px 0 0 0;\"><em  class=\"fa fa-code-fork\"></em></div> &nbsp; <strong>$doc_type</strong></p>";
 					}
 				}
-				echo '<p class="row_file_list clearfix pad-3 pad-left-5 pad-right-5">
-				<a href="'.base_url().'docs/stored_docs/'.urlencode($stored_files->file_name).'" target="_blank" class="pull-left" id=""><em class="fa fa-chevron-circle-right"></em>&nbsp;'.$stored_files->file_name.'</a>';
+
+				if($stored_files->is_project_attachment == 1){
+					$check = 'checked';
+				}else{
+					$check = '';
+				}
+				$need_authorization = 0;
+				foreach ($q_default_doc_types as $required_doc_type){
+					if($doc_type == $required_doc_type->doc_type_name){
+						$need_authorization = 1;
+					}
+				}
+
+				echo '<p class="row_file_list clearfix pad-3 pad-left-5 pad-right-5" style="display:none;">
+				<a href="'.base_url().'docs/stored_docs/'.urlencode($stored_files->file_name).'" target="_blank" class="pull-left" id=""><em class="fa fa-level-up fa-lg fa-rotate-90" style="color: #269ABC;"></em> &nbsp;&nbsp;'.$stored_files->file_name.'</a>';
 			
  //if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):	
 
 				echo '<span style=" background:#F7901E; font-size: 12px; padding: 1px 8px; float: right; border: 1px solid #864e11;  color: #fff;  height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;"><em class="fa fa-calendar-o"></em> '.$stored_files->date_upload.' &nbsp; '.$stored_files->user_first_name.'</span>';
 			//endif;
 
-				echo '<em id="'.$stored_files->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;" onclick = "del_stored_file('.$stored_files->storage_files_id.')"></em>';
+				//if($need_authorization == 0){
+					echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-right" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+
+					echo '<em id="'.$stored_files->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;" onclick = "del_stored_file('.$stored_files->storage_files_id.')"></em>';
+				// }else{
+				// 	if($is_admin == 1 || $user_role_id == $authorize_role_id):
+				// 		if($stored_files->is_authorized == 1){
+				// 			echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-right" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				// 		}else{
+				// 			echo '<button type = "button" class = "btn btn-success btn-xs pull-right" style = "font-size: 12px" onclick="approve_doc_type('.$stored_files->storage_files_id.')">Approve</button>';
+				// 		}
+
+				// 		echo '<em id="'.$stored_files->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;" onclick = "del_stored_file('.$stored_files->storage_files_id.')"></em>';
+				// 	else:
+				// 		if($stored_files->is_authorized == 1){
+				// 			echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-right" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.' disabled>';
+				// 		}
+				// 	endif;
+				// }
+
+				// echo '<em id="'.$stored_files->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;" onclick = "del_stored_file('.$stored_files->storage_files_id.')"></em>';
 			echo '</p>';
 			}
 
+			echo '</div>';
+
 		}
+
+
+		echo "<script>
+
+		$('.doc_type_head').click(function(){
+
+
+			$('p.row_file_list').hide();
+
+
+				$(this).parent().find('p.row_file_list').show();
+ 
+
+
+
+
+ 
+}); 
+
+ </script>";
 
 
 
@@ -3605,7 +3879,9 @@ endif;
 		$time = date("H:i:s");
 		$this->user_model->insert_user_log($user_id,$date,$time,$actions,'',$type);
 
-		redirect('/projects/document_storage');	
+	//	redirect('/projects/document_storage');
+
+		echo '<script> window.history.back(); </script>';
 	}
 
 	public function update_doc_type(){
@@ -3614,7 +3890,9 @@ endif;
 		$type_id = trim($_POST['type_id']);
 		
 		$this->projects_m->update_type_name($type_name,$type_id);
-		redirect('/projects/document_storage');	
+	//	redirect('/projects/document_storage');	
+
+		echo '<script> window.history.back(); </script>';
 	}
 
 	public function list_projects_by_job_date($this_year=''){ 
@@ -3622,6 +3900,21 @@ endif;
 	 	if($this_year == ''){
 	 		$this_year = date('Y');
 	 	}
+
+
+	 	$user_role_id = $this->session->userdata('user_role_id');
+		$is_admin = $this->session->userdata('is_admin');
+
+		$authorize_role_id = 0;
+		$doc_storage_defaults = $this->admin_m->fetch_default_doc_storage();
+		$q_doc_storage_defaults = $doc_storage_defaults->result();
+		foreach ($q_doc_storage_defaults as $default_doc_storage){
+			$authorize_role_id = $default_doc_storage->authorize_role_id;
+		}
+
+
+		$default_doc_types = $this->admin_m->fetch_doc_storage_required_notification();
+		$q_default_doc_types = $default_doc_types->result();
  
 	 	$last_year = $this_year - 1;
 
@@ -3644,9 +3937,14 @@ endif;
 				//	echo "<tr><td>";
 					echo '<div class="pad-5 prj_files_group">
 						<div class="btn btn-info btn-xs fa fa-code-fork prj_files_head" id="'.$data->project_id.'"  style="margin: -4px 0 0 0;" id=""></div> 
-						&nbsp; '.$data->project_id.' - '.$data->project_name.' 
-						<div class="pull-right btn btn-success btn-xs set_doc_storage" id="'.$data->project_id.'_project_set"  data-toggle="modal" data-target="#doc_storage" style="margin: -1px 0 0 0;">Upload</div> </div>';
+						&nbsp; '.$data->project_id.' - '.$data->project_name.'';
+
+if($this->session->userdata('user_role_id') != 15  ):
+						echo '<div class="pull-right btn btn-success btn-xs set_doc_storage" id="'.$data->project_id.'_project_set"  data-toggle="modal" data-target="#doc_storage" style="margin: -1px 0 0 0;">Upload</div>';
 					
+endif;
+
+echo ' </div>';
 
 					$prj_line = $data->project_id;
 				}
@@ -3662,9 +3960,154 @@ endif;
 					}
 				}
 
+				if($data->is_project_attachment == 1){
+					$check = 'checked';
+				}else{
+					$check = '';
+				}
+
+				$need_authorization = 0;
+				foreach ($q_default_doc_types as $required_doc_type){
+					if($doc_type == $required_doc_type->doc_type_name){
+						$need_authorization = 1;
+					}
+				}
+
  
 
-echo '<div class="pad-5 '.$data->project_id.'_files uploaded_files_row" style="display:none;"> &nbsp; 
+				echo '<div class="pad-5 '.$data->project_id.'_files uploaded_files_row" style="display:none;"> &nbsp; 
+
+					<span><em class="fa fa-level-up fa-lg fa-rotate-90" style="color: #269ABC;"></em> &nbsp;';
+
+				if($need_authorization == 0):
+					echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$data->storage_files_id.'" title = "Project attachments" onclick = "attach_to_project('.$data->storage_files_id.')" '.$check.'> &nbsp;';
+				else:
+					if($is_admin == 1 || $user_role_id == $authorize_role_id):
+						if($data->is_authorized == 1):
+							echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$data->storage_files_id.'" title = "Project attachments" onclick = "attach_to_project('.$data->storage_files_id.')" '.$check.'> &nbsp;';
+						endif;
+					else:
+						if($data->is_authorized == 1){
+							echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$data->storage_files_id.'" title = "Project attachments" onclick = "attach_to_project('.$data->storage_files_id.')" '.$check.' disabled> &nbsp;';
+						}
+					endif;
+				endif;
+
+				echo '<a href="'.base_url().'docs/stored_docs/'.urlencode($data->file_name).'" target="_blank">'.$data->file_name.'</a></span> 
+
+					<span style=" background:#F7901E; font-size: 12px; padding: 1px 8px;    float: right;     border: 1px solid #864e11;  color: #fff;  height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;"><em class="fa fa-calendar-o"></em> '.$data->date_upload.' &nbsp; '.$data->user_first_name.'</span>';
+
+
+				if($need_authorization == 0):
+					if($this->session->userdata('user_role_id') != 15  ):
+
+						echo '<em id="'.$data->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;"></em>';
+							
+					endif;
+				else:
+					if($is_admin == 1 || $user_role_id == $authorize_role_id):
+						if($data->is_authorized == 0):
+							echo '<button type = "button" class = "btn btn-success btn-xs pull-right" style = "font-size: 12px" onclick="approve_doc_type('.$data->storage_files_id.')">Approve</button>';
+						endif;
+						if($this->session->userdata('user_role_id') != 15  ):
+
+							echo '<em id="'.$data->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;"></em>';
+								
+						endif;
+					endif;
+				endif;
+
+
+					echo '</div>';
+
+ 
+
+
+
+
+			//	echo "</td></tr>";  
+
+			}
+
+
+		}else{
+			echo '<div id="" class=""><p>No Uploaded Files</p></div>';
+		}
+
+
+
+
+	}
+
+	public function attach_storage_file_to_project(){
+		$storage_files_id = $_POST['storage_files_id'];
+
+		$this->projects_m->attach_storage_file_to_project($storage_files_id);
+
+	}
+
+	public function unattach_storage_file_to_project(){
+		$storage_files_id = $_POST['storage_files_id'];
+
+		$this->projects_m->unattach_storage_file_to_project($storage_files_id);
+	}
+
+
+
+
+
+
+
+
+
+
+public function list_projects_by_client($this_year=''){ 
+
+	 	if($this_year == ''){
+	 		$this_year = date('Y');
+	 	}
+ 
+	 	$last_year = $this_year - 1;
+
+		$q_list_projects_by_job_date = $this->projects_m->list_projects_by_client($this_year,$last_year);
+
+
+		$has_data = $q_list_projects_by_job_date->num_rows;
+
+		$prj_line = '';
+		$doc_type = '';
+
+		if($has_data > 0){
+
+			$projects_by_job_date = $q_list_projects_by_job_date->result();
+			foreach ($projects_by_job_date as $data){
+
+				
+				if($prj_line != $data->client_id){
+		$doc_type = '';
+				//	echo "<tr><td>";
+					echo '<div class="pad-5 prj_files_group">
+						<div class="btn btn-info btn-xs fa fa-code-fork prj_files_head" id="'.$data->client_id.'"  style="margin: -4px 10px 0 0;" id=""></div>'.$data->company_name.' 
+						<div class="pull-right btn btn-success btn-xs set_doc_storage_c" id="'.$data->company_name.'|'.$data->client_id.'_project_set"  data-toggle="modal" data-target="#doc_storage" style="margin: -1px 0 0 0;">Upload</div> </div>';
+					
+
+					$prj_line = $data->client_id;
+				}
+
+
+				if($doc_type == ''){
+					$doc_type = $data->doc_type_name;
+					echo '<p class="uploaded_files_row no-m pad-5 '.$data->client_id.'_files" style="display:none;"><strong>'.$doc_type.'</strong></p>';
+				}else{
+					if($doc_type != $data->doc_type_name){
+						$doc_type = $data->doc_type_name;
+						echo '<p class="uploaded_files_row no-m pad-5 '.$data->client_id.'_files" style="display:none;"><strong>'.$doc_type.'</strong></p>';
+					}
+				}
+
+ 
+
+echo '<div class="pad-5 '.$data->client_id.'_files uploaded_files_row" style="display:none;"> &nbsp; 
 
 					<span><em class="fa fa-level-up fa-lg fa-rotate-90" style="color: #269ABC;"></em> &nbsp; 
 
@@ -3702,6 +4145,37 @@ echo '<div class="pad-5 '.$data->project_id.'_files uploaded_files_row" style="d
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	public function projects_wip_review(){
 
 
@@ -3716,10 +4190,12 @@ echo '<div class="pad-5 '.$data->project_id.'_files uploaded_files_row" style="d
 		redirect('/projects');
     }     
 
-  
 		$data['main_content'] = 'projects_wip_review';
 		$data['screen'] = 'Projects WIP Review';
+
 		$data['users'] = $this->user_model->fetch_user();
+		$data['pm_list'] = $this->projects_m->list_pm_wiprp();
+
 		$data['page_title'] = 'Projects WIP Review';
 		$this->load->view('page', $data);
 
@@ -5381,7 +5857,199 @@ echo '<div class="pad-5 '.$data->project_id.'_files uploaded_files_row" style="d
 
 		$destination_file = './docs/stored_docs/'.$data_file_name;
 
-		$this->projects_m->insert_uploaded_file($file_name_set,$file_type,$proj_id,$date_upload,$user_id);
+		$this->projects_m->insert_uploaded_file($file_name_set,$file_type,$proj_id,0,$date_upload,$user_id);
 		copy($src_file, $destination_file);
 	}
+
+	public function approve_doc_file(){
+		$storage_files_id = $_POST['storage_files_id'];
+		$this->projects_m->approve_storage_file_to_project($storage_files_id);
+
+		$doc_file_q = $this->projects_m->fetch_storage_file_details($storage_files_id);
+		$project_id = 0;
+		foreach ($doc_file_q->result_array() as $row){
+			$project_id = $row['project_id'];
+		}
+
+		$proj_q = $this->projects_m->select_particular_project($project_id);
+		foreach ($proj_q->result_array() as $row){
+			$project_manager_id = $row['project_manager_id'];
+			$project_admin_id = $row['project_admin_id'];
+			$joinery_selected_sender = $row['joinery_selected_sender'];
+
+			$focus_company_id = $row['focus_company_id'];
+			$data['focus_company_id'] = $focus_company_id;
+		}
+
+
+// SEND NOTIFICATION
+		$data['project_id'] = $project_id;
+		$user_id = $this->session->userdata('user_id');
+		$users_q = $this->user_model->fetch_user($user_id);
+		$user_name = "";
+		$user_email = "";
+		foreach ($users_q->result_array() as $users_row){
+			$user_name = $users_row['user_first_name']." ".$users_row['user_last_name'];
+			$user_email_id = $users_row['user_email_id'];
+			$email_q = $this->company_m->fetch_email($user_email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$user_email = $email_row['general_email'];
+			}
+		}
+
+		$pa_q = $this->user_model->fetch_user($project_admin_id);
+		$pa_name = "";
+		$pa_email = "";
+		foreach ($pa_q->result_array() as $pa_row){
+			$pa_name = $pa_row['user_first_name']." ".$pa_row['user_last_name'];
+			$user_email_id = $pa_row['user_email_id'];
+			$email_q = $this->company_m->fetch_email($user_email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$pa_email = $email_row['general_email'];
+			}
+		}
+
+		$joinery_q = $this->user_model->fetch_user($joinery_selected_sender);
+		$joinery_name = "";
+		$joinery_email = "";
+		foreach ($joinery_q->result_array() as $joinery_row){
+			$joinery_name = $joinery_row['user_first_name']." ".$joinery_row['user_last_name'];
+			$user_email_id = $joinery_row['user_email_id'];
+			$email_q = $this->company_m->fetch_email($user_email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$joinery_email = $email_row['general_email'];
+			}
+		}
+
+		$admin_q = $this->admin_m->fetch_default_doc_storage();
+		foreach ($admin_q->result_array() as $admin_row){
+			$email_subject = $admin_row['email_subject'];
+			$email_content = $admin_row['email_content'];
+		}
+
+		require_once('PHPMailer/class.phpmailer.php');
+		require_once('PHPMailer/PHPMailerAutoload.php');
+
+		$mail = new phpmailer(true);
+		$mail->host = "sojourn-focusshopfit-com-au.mail.protection.outlook.com";
+		$mail->port = 587;
+	
+		//$mail->setfrom('userconf@sojourn.focusshopfit.com.au', 'name');
+		$mail->setFrom($user_email, $user_name);
+
+		//$mail->addreplyto('userconf@sojourn.focusshopfit.com.au', 'name');
+		$mail->addReplyTo($user_email);
+	
+		// $mail->addaddress('mark.obis2012@gmail.com', 'Mark Obis');
+		$mail->addaddress($pa_email);
+		$mail->addaddress($joinery_email);
+		$mail->addaddress($pm_email);
+		
+		$mail->addBCC('mark.obis2012@gmail.com');
+
+		$mail->smtpdebug = 2;
+		$mail->ishtml(true);
+
+		$mail->Subject = $email_subject;
+
+		$data['message'] = $email_content;
+		$data['sender'] = $user_name;
+		$data['send_email'] = $user_email;
+
+		$data['comp_phone'] = "Ph. 08 6305 0991";
+		if($focus_company_id == 6):
+			$data['comp_address_line1'] = "Unit 45/85-115 ";
+			$data['comp_address_line2'] = "Alfred Road, Chipping Norton ";
+			$data['comp_address_line3'] = "NSW 2170";
+		else:
+			$data['comp_address_line1'] = "Unit 3 / 86 Inspiration Drive";
+			$data['comp_address_line2'] = "Wangara WA 6065";
+			$data['comp_address_line3'] = "PO Box 1326 Wangara DC WA 6947";
+		endif;
+
+		$data['comp_name'] = "FSF Group Pty Ltd";
+		$data['abn1'] = "ABN 61 167 776 678";
+		$data['comp_name2'] = "Focus Shopfit Pty Ltd";
+		$data['abn2'] = "ABN 16 159 087 984";
+		$data['comp_name3'] = "Focus Shopfit NSW Pty Ltd";
+		$data['abn3'] = "ABN 17 164 759 102";
+
+		$message = $this->load->view('message_view',$data,TRUE);
+
+		$mail->Body    = $message;
+
+		if(!$mail->send()) {
+			echo 'Message could not be sent.'.' Mailer Error: ' . $mail->ErrorInfo;
+		} else {
+			echo "Email Send Successfully";
+		}
+
+// SEND NOTIFICATION
+
+	}
+
+	public function check_doc_type_is_required(){
+		$doc_type_id = $_POST['doc_type_id'];
+		$project_id = $_POST['project_id'];
+
+		$required = 0;
+		$default_doc_types = $this->admin_m->fetch_doc_storage_required_notification();
+		foreach ($default_doc_types->result_array() as $row){
+			$storage_doc_type_id = $row['storage_doc_type_id'];
+			if($doc_type_id == $storage_doc_type_id){
+				$required = 1;
+			}
+		}
+
+		if($required == 1){
+			$project_files = $this->projects_m->fetch_project_required_doc_type_file($project_id,$doc_type_id);
+			if($project_files->num_rows == 0){
+				$required = 0;
+			}
+		}
+		
+		echo $required;
+	}
+
+	public function fetch_project_required_doc_type_file(){
+		$data = json_decode(file_get_contents("php://input"), true);
+        $project_id = $data['project_id'];
+        $doc_type = $data['doc_type'];
+
+		$query = $this->projects_m->fetch_project_required_doc_type_file($project_id,$doc_type);
+        echo json_encode($query->result());
+	}
+
+	public function set_file_for_replacement(){
+		$storage_files_id = $_POST['storage_files_id'];
+		$this->projects_m->set_file_for_replacement($storage_files_id);
+	}
+
+	public function check_file_for_replacement(){
+		$project_id = $_POST['project_id'];
+		$query = $this->projects_m->check_file_for_replacement($project_id);
+		$message = "";
+		if($query->num_rows > 0){
+			$message = "The following item will be replaced once approved: ";
+			foreach ($query->result_array() as $row){
+				$message = $message." * ".$row['file_name'];
+			}
+
+			$message = $message.". Are you sure you want to proceed?";
+
+		}
+
+		echo $message;
+	}
+
+	public function unselect_doc_file(){
+		$project_id = $_POST['project_id'];
+		$this->projects_m->unselect_doc_file($project_id);
+	}
+
+	public function approve_doc_file_selected(){
+		$storage_files_id = $_POST['storage_files_id'];
+		$this->projects_m->approve_doc_file_selected($storage_files_id);
+	}
+
 }

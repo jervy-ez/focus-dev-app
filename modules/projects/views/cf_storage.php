@@ -1,15 +1,6 @@
 <?php date_default_timezone_set("Australia/Perth");  // date is set to perth and important setting for diff timezone acounts ?>
-
-
-<?php $this->load->module('projects'); ?>
-<?php $this->load->model('projects_m'); ?>
- 
 <?php $this->load->module('bulletin_board'); ?>
-
-
- 
-
- 
+<?php $this->load->module('company'); ?>
 
 <!-- title bar -->
 <div class="container-fluid head-control">
@@ -34,7 +25,7 @@
           </li> 
         
           <li <?php if($screen=='Supplier'){ echo 'class="active"';} ?> >
-            <a href="<?php echo base_url(); ?>projects/client_file_storage" class="btn-small"><em class="fa fa-cloud-upload"></em> Client File Storage</a>        
+            <a href="<?php echo base_url(); ?>projects/document_storage" class="btn-small"><em class="fa fa-cloud-upload"></em> Doc Storage </a>        
           </li>
 
         </ul>
@@ -122,8 +113,14 @@
 
                 <div class="pad-left-10   pull-left">                    
                     <label class="m-top-5">Uploaded Files</label>
-                    <p>Please click on the project to view uploaded files.</p>
+                    <p>Please click on the client name to view uploaded files.</p>
                   </div>
+
+
+ 
+
+                <div class="input-group m-top-15 m-left-10  pull-right" style="width:94px;"> <span class=" btn search_files_btn btn-success" style="color:#fff;"  data-toggle="modal" data-target="#doc_storage" ><i class="fa fa-cloud-upload"></i> Upload</span></div>
+
 
                 <div class="input-group m-top-15 m-left-10  pull-right" style="width:300px;">
                   <span class="input-group-addon"><i class="fa fa-calendar"></i> Upload Year </span> 
@@ -134,24 +131,18 @@
                   <select id="year_prj_cdt" name="year_prj_cdt" tabindex="-1" class="form-control">
 
 
-                    <?php $this_year = date('Y');  for ($i= date('Y'); $i > 2019; $i--): $l_year = $i-1;?> 
+                    <?php $this_year = date('Y'); for ($i= date('Y'); $i > 2020; $i--): $l_year = $i-1;?> 
                       <option value="<?php echo "$i"; ?>" ><?php echo "$i-$l_year"; ?></option> 
                     <?php endfor; ?>
 
                     <?php // echo $this->projects->list_years_uploaded($this_year); ?>
  
                   </select>
-
-
-
-
-
                 </div>
-
 
                 <div class="input-group pull-right search-work-desc  m-right-5 m-top-15">
                   <div class="input-group">
-                    <input type="text" class="form-control input-wd search_files_up" placeholder="Enter Project Number">  
+                    <input type="text" class="form-control input-wd search_files_up" placeholder="Looking for...">  
                     <span class="input-group-addon btn search_files_btn btn-primary" style="color:#fff;"><i class="fa fa-search"></i> Search</span>                  
                   </div>
                 </div>
@@ -172,10 +163,10 @@
 
 
                   <table id="table" class="table table-striped table-bordered   no-m" cellspacing="0" width="100%">
-                     <thead> <tr><th width="100" style="border: none;">Project</th></tr> </thead> 
+                     <thead> <tr><th width="100" style="border: none;">Clients List</th></tr> </thead> 
                 </table>
 
-                <div id="" class="pad-5 file_list_of" style="overflow-y: auto;max-height: 781px;border: 1px solid #ccc;border-top: 0;">
+                <div id="" class="pad-5" style="overflow-y: auto;max-height: 781px;border: 1px solid #ccc;border-top: 0;">
                   <?php $control_year = $this->uri->segment(3); ?>
 
                   <?php if( isset($control_year) && $control_year != '' ): ?>
@@ -183,7 +174,7 @@
 
                   <?php endif; ?>
 
-                  <?php echo $this->projects->list_projects_by_job_date($control_year); ?>
+                  <?php echo $this->projects->list_projects_by_client($control_year); ?>
 
                 </div>
 
@@ -228,6 +219,18 @@
 
                   });
 
+                  $('.set_doc_storage_c').click(function(){
+                    var client_set = $(this).attr('id');
+
+                    var client_data_arr = client_set.split("_");
+
+                    $('select.client').val(client_data_arr[0]);
+
+                  });
+
+
+
+
                   $('.del_stored_file').click(function(){
                     $('#loading_modal').modal({'backdrop': 'static', 'show' : true} );
 
@@ -247,107 +250,35 @@
 
 
 
-/*
-$('.search_files_up').keyup(function() {
-
-  var search_val = $(this).val();
-
-  if(!search_val){
-
-                    $('.uploaded_files_row').show();
-                    $('.prj_files_group').show();
-  }
-
-});*/
 
                   /*pad-5 41849_files uploaded_files_row*/
 
                   $('.search_files_btn').click(function(){
-                  //  $('#loading_modal').modal({"backdrop": "static", "show" : true} );
-
-
- $(".file_list_of").animate({scrollTop: 1 });
-                   
                     $('.uploaded_files_row').hide();
-                  //  $('.prj_files_group').hide();
-
-
-
-
-
-
                     var search_files_up = $('input.search_files_up').val().toLowerCase();
 
 
-                //    var listItems = $(".uploaded_files_row");
-
- 
-                   //   $('#'+search_files_up).parent().show();
-
-                 //     $('body').scrollTo('#'+search_files_up); 
-
-                 
- 
-
-
-                // $('html, body').animate({scrollTop: $('#'+search_files_up).offset().top -100 }, 'slow');
-
-               //  $('.file_list_of').animate({scrollTop: $("#"+search_files_up).offset().top -215},'slow');
-
-/*
-                 $('html, body').animate({
-  scrollTop: $("#"+search_files_up)
-}, 2000);
-
-*/
-
-
-
- setTimeout(function(){
-
-$(".file_list_of").animate({scrollTop: $("#"+search_files_up).position().top - 200}, 800, 'swing');
-  }, 1000);
-
-
-
-
-                  //    $('#'+search_files_up).scrollTo(100);
-
-
-                      $('.'+search_files_up+'_files').show();
-                    //  $('#loading_modal').modal('hide');
- 
-                   
-/*
+                    var listItems = $(".uploaded_files_row");
                     listItems.each(function(idx,obj) {
-
-
-
-
                       var text_link = $(obj).find( "a" ).text().toLowerCase();
 
                       if(text_link.includes(search_files_up) === true ) {
  
+
+
+
+
                        setTimeout(function(){
- 
-                           $(obj).prev().prev().show();
-                           $(obj).prev().show();
-                           $(obj).show();
-
-                       //   scrollTop: $("#elementtoScrollToID").offset().top
-
-
-                       //   $('body').scrollTo(obj); 
- 
-                      //  alert('test');
-
+                        $(obj).show().focus();
                       }, 100);
 
-                     } 
+
+
+                     }
 
 
                     });
-*/
+
                   });
 
 
@@ -357,7 +288,7 @@ $(".file_list_of").animate({scrollTop: $("#"+search_files_up).position().top - 2
                     $('#loading_modal').modal({"backdrop": "static", "show" : true} );
 
                     setTimeout(function(){
-                      window.location.replace('<?php echo base_url(); ?>projects/document_storage/'+data);
+                      window.location.replace('<?php echo base_url(); ?>projects/client_file_storage/'+data);
                     },1000);
                   });
 
@@ -397,6 +328,7 @@ $(".file_list_of").animate({scrollTop: $("#"+search_files_up).position().top - 2
                     <form method="post" action="<?php echo base_url(); ?>projects/add_doc_type" class="m-bottom-0">
                       <div class="input-group">
                         <input type="text" class="form-control" value="" name="type_name" placeholder="Type Name">
+                        <input type="hidden" name="doc_type" value="1">
                         <span class="input-group-btn">
                           <input type="submit" value="Save" class="btn btn-primary">
                         </span>
@@ -420,7 +352,7 @@ $(".file_list_of").animate({scrollTop: $("#"+search_files_up).position().top - 2
                 <div id="" class="box-area clearfix pad-5">
                   <div class="clearfix m-5">
 
-                    <form method="post" action="<?php echo base_url(); ?>projects/update_doc_type" class="m-bottom-0">
+                    <form method="post" action="<?php // echo base_url(); ?>projects/update_doc_type" class="m-bottom-0">
                       <div class="input-group">
                         <span class="input-group-btn">
                           <input type="submit" value="Update" class="btn btn-success">
@@ -449,7 +381,7 @@ $(".file_list_of").animate({scrollTop: $("#"+search_files_up).position().top - 2
                   <div class="clearfix m-5 m-bottom-10">
                     <div class=" " id="">
                       
-                      <?php echo $this->projects->list_doc_type_storage('list_view'); ?>
+                      <?php  echo $this->projects->list_doc_type_storage('list_view',1); ?>
                     </div>
                   </div>
                 </div>
@@ -578,9 +510,21 @@ $(".file_list_of").animate({scrollTop: $("#"+search_files_up).position().top - 2
                 <span id="" class="input-group-addon"><strong>Document Type*</strong></span>
                 <select name="doc_type_name" class="form-control doc_type_name" required="">
                   <option disabled="disabled" selected="selected" value="0" class="hide hidden">Select Document Type*</option>
-                  <?php echo $this->projects->list_doc_type_storage(); ?>
+                  <?php echo $this->projects->list_doc_type_storage('select',1); ?>
                 </select>
               </div>
+
+
+              <div class="input-group m-bottom-10" >
+                <span id="" class="input-group-addon"><strong>Client*</strong></span>
+                <select name="client" class="form-control client" required="">
+                  <option disabled="disabled" selected="selected" value="0" class="hide hidden">Select Client Name*</option>
+                  <?php echo $this->company->company_list('dropdown'); ?>
+                </select>
+              </div>
+
+
+
 
               <div class="clearfix file_area_box" style="position: relative; border: 1px solid #CCCCCC; border-radius: 5px; overflow: hidden; height: 100px;">        
                 <input type="file" multiple="multiple" name="doc_files[]" required="" autocomplete="off" id="doc_files"  onchange="javascript:docUploadedList()" class=" form-control btn-default" style="width: 100%; position: absolute; z-index: 220; box-shadow: none;height: 100px;background: none !important;font-weight: bold;border: none !important;">
