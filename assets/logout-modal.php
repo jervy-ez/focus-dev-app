@@ -654,36 +654,12 @@
 
 
 
-<?php $this->load->module('help_videos'); ?>
-
-
-
-<div id="help_video_group" class="modal fade" tabindex="-1" data-width="760" >
-  <div class="modal-dialog" style="width:85%;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close close_video" data-dismiss="modal" aria-hidden="true">×</button>
-        <h4 class="modal-title"><em id="" class="fa fa-film"></em> Help Videos </h4>
-      </div>
-      <div class="modal-body frame_video_area" style="margin:0 !important; padding:0 !important; display:none;">
- 
-  <iframe style="width: 100%;height: 70%;background-repeat: no-repeat;background-color:#000;background-image: url('<?php echo base_url(); ?>uploads/misc/loading_bub.gif');background-position: center;background-size: 50px;" class="group_video_frame" ></iframe>
 
 
 
 
-      </div>
-      <div id="" class="m-10" style="position:relative;display: block;height: 80%;">
 
-        <div id="" class="m-10" style="position:relative;">
-        	<?php $cat_keyword = $this->uri->rsegment(1); $sub_cat_keyword = $this->uri->rsegment(2); ?>
-        	<?php $this->help_videos->get_help_videos($cat_keyword,$sub_cat_keyword); ?>
-        </div>
 
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <style type="text/css">
@@ -780,41 +756,20 @@
 */
 </style>
 
-<script type="text/javascript">
-	
-
-$('.play_video_btn').click(function(){
-
- $('.group_video_frame').attr('src','');
-
-  var video_details_arr = $(this).find('.video_details').text().split('`');
-  $('.play_video_title').text(video_details_arr[2]);
-  $('.edit_video_details_form').hide();
 
 
-  $('#delete_video_link').attr('href','<?php echo base_url(); ?>help_videos/delete_video_link/'+video_details_arr[0]);
-  $('#edit_v_title').val(video_details_arr[2]);
-  $('#edit_v_url').val(video_details_arr[1]);
+<?php /*
 
-  var cat_id_a = video_details_arr[3].replace("_", "");
-  var cat_id = cat_id_a.replace("_", "");
 
-  $('.edit_cat').val(cat_id).trigger('change');
-  $('#edit_access_control').val(video_details_arr[5]);
 
-  setTimeout(function(){
-    $('.edit_sub_cat').val(video_details_arr[4]);
-  },1000);
 
-  setTimeout(function(){
-    $('.group_video_frame').attr('src',video_details_arr[1]);
-  },2000);
 
-  $('.edit_video_id').val(video_details_arr[0]);
+        <div id="" class="m-10" >
+        	<?php $cat_keyword = $this->uri->rsegment(1); $sub_cat_keyword = $this->uri->rsegment(2); ?>
+        	<?php $this->help_videos->get_help_videos($cat_keyword,$sub_cat_keyword); ?>
+        </div>
 
-  $('.group_video_frame').parent().show();
 
-});
-</script>
+        */ ?>
 
 <?php $this->load->view('assets/whos-logged-in'); ?>

@@ -48,8 +48,22 @@ class Projects_m extends CI_Model{
 		return $query;
 	}
 
-	public function insert_uploaded_file($file_name,$file_type,$project_id,$client_id,$date_upload,$user_id){
-		$query = $this->db->query("INSERT INTO `storage_files` ( `file_name`, `file_type`, `project_id`, `client_id`, `date_upload`, `user_id`) VALUES ( '$file_name', '$file_type', $project_id, $client_id, '$date_upload', '$user_id') ");
+	public function insert_uploaded_file($file_name,$file_type,$project_id,$client_id,$date_upload,$user_id,$will_replace_existing){
+		if($will_replace_existing == 1):
+			$is_authorized = 0;
+		else:
+			$is_authorized = 1;
+		endif;
+		$query = $this->db->query("INSERT INTO `storage_files` ( `file_name`, `file_type`, `project_id`, `client_id`, `date_upload`, `user_id`,`is_authorized`,`will_replace_existing`) VALUES ( '$file_name', '$file_type', $project_id, $client_id, '$date_upload', '$user_id','$is_authorized','$will_replace_existing') ");
+		
+
+		if($will_replace_existing == 1):
+			$is_authorized = 0;
+			$storage_files_id = $this->db->insert_id();
+			$this->db->query("UPDATE `storage_files` set `replace_by_storage_files_id` = '$storage_files_id' where `for_replacement` = 1 and project_id = '$project_id' and `replace_by_storage_files_id` = 1");
+
+		endif;
+
 		return $query;
 	}
 
@@ -122,7 +136,7 @@ ORDER BY  `storage_files`.`client_id`  DESC, `storage_doc_type`.`doc_type_name` 
 	}
 
 	public function list_uploaded_files($proj_id){
-		$query = $this->db->query(" SELECT   `storage_files`.`storage_files_id`,`storage_files`.`project_id`,`project`.`project_name` ,`storage_files`.`file_name`,`storage_files`.`date_upload`,  `storage_doc_type`.`doc_type_name`, `users`.`user_first_name`,`storage_files`.`is_project_attachment`,`storage_files`.`is_authorized`,`storage_files`.`is_updated` 
+		$query = $this->db->query(" SELECT   `storage_files`.`storage_files_id`,`storage_files`.`project_id`,`project`.`project_name` ,`storage_files`.`file_name`,`storage_files`.`date_upload`,  `storage_doc_type`.`doc_type_name`, `users`.`user_first_name`,`storage_files`.`is_project_attachment`,`storage_files`.`is_authorized`,`storage_files`.`is_updated`, `storage_files`.`will_replace_existing`, `storage_files`.`for_replacement` 
 
 			FROM `storage_files` 
 			INNER JOIN  `storage_doc_type` ON `storage_doc_type`.`storage_doc_type_id` =  `storage_files`.`file_type`
@@ -980,12 +994,13 @@ ORDER BY  `storage_files`.`client_id`  DESC, `storage_doc_type`.`doc_type_name` 
 							WHERE a.is_active = 1
 								AND a.project_id = '$project_id'
 								AND a.file_type = '$doc_type'
+								AND a.is_project_attachment = 1
 						");
 		return $query;
 	}
 
 	public function set_file_for_replacement($storage_files_id){
-		$this->db->query("UPDATE `storage_files` SET `for_replacement` = 1 WHERE `storage_files_id` = '$storage_files_id'");
+			$this->db->query("UPDATE `storage_files` SET `for_replacement` = 1, will_replace_existing = 0, replace_by_storage_files_id = 1  WHERE `storage_files_id` = '$storage_files_id'");
 	}
 
 	public function check_file_for_replacement($project_id){
@@ -1012,5 +1027,31 @@ ORDER BY  `storage_files`.`client_id`  DESC, `storage_doc_type`.`doc_type_name` 
 									WHERE a.storage_files_id = '$storage_files_id'
 						");
 		return $query;
+	}
+
+	public function fetch_storage_liles_need_authorization($project_id){
+		$query = $this->db->query("SELECT * FROM storage_files a
+								LEFT JOIN storage_doc_type b ON b.storage_doc_type_id = a.file_type
+							WHERE a.is_active = 1
+								AND a.project_id = '$project_id'
+								AND a.is_authorized = '0'
+							order by b.doc_type_name
+						");
+		return $query;
+	}
+
+	public function approve_file_to_be_attached($storage_files_id){
+		$this->db->query("UPDATE storage_files 
+								set is_project_attachment = 1,
+									is_authorized = 1,
+									for_replacement = 0
+									WHERE storage_files_id = '$storage_files_id'");
+
+		$this->db->query("UPDATE storage_files 
+								set is_project_attachment = 0,
+									is_authorized = 1,
+									will_replace_existing = 0,
+									replace_by_storage_files_id = 0
+									WHERE replace_by_storage_files_id = '$storage_files_id'");
 	}
 }

@@ -1,7 +1,9 @@
 <p style = "font-family: Arial,Helvetica Neue,Helvetica,sans-serif;font-size: 12px;"><?php echo $message ?></p>
 
 <a href="<?php echo 'https://sojourn.focusshopfit.com.au/project_attachments/proj_attachment?project_id='.$project_id ?>">Click Here</a>
-
+<br>
+<br>
+<br>
 <div style = "font-family: Arial,Helvetica Neue,Helvetica,sans-serif;font-size: 12px; ">
 	Regards,<br><br><br>
 	<?php echo $sender ?><br/>

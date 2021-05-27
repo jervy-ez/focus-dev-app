@@ -133,11 +133,7 @@ class Works_m extends CI_Model{
 	}
 
 	public function display_work_contructor($work_id){
-		$query = $this->db->query("SELECT *, if(a.is_pending = 0, b.company_name, c.company_name ) AS comp_name, a.is_pending AS cs_is_pending FROM work_contractors a 
-										LEFT JOIN company_details b ON a.company_id = b.company_id
-										LEFT JOIN company_details_temp c ON c.company_details_temp_id = a.company_id
-									WHERE works_id = '$work_id'
-								");
+		$query = $this->db->query("SELECT * from work_contractors a left join company_details b on a.company_id = b.company_id where works_id = '$work_id'");
 		return $query;
 	}
 
@@ -267,8 +263,8 @@ class Works_m extends CI_Model{
 		return $query;
 	}
 
-	public function display_works_selected_contractor($is_pending = '0',$works_id,$company_id){
-		$query = $this->db->query("select * from work_contractors where works_id = '$works_id' and company_id = '$company_id' and is_pending = '$is_pending'");
+	public function display_works_selected_contractor($works_id,$company_id){
+		$query = $this->db->query("select * from work_contractors where works_id = '$works_id' and company_id = '$company_id'");
 		return $query;
 	}
 
@@ -516,19 +512,16 @@ class Works_m extends CI_Model{
 	}
 
 	public function view_project_contractors($proj_id){
-		$query = $this->db->query("SELECT *,
-										if(works.is_variation = 1,variation.variation_name,'Works' ) as work_type, 
-										if(work_contractors.is_pending = 0 , company_details.company_name, company_details_temp.company_name) AS comp_name from work_contractors 
+		$query = $this->db->query("SELECT *,if(works.is_variation = 1,variation.variation_name,'Works' ) as work_type from work_contractors 
 									left join works on works.works_id = work_contractors.works_id
 									left join job_sub_category  on job_sub_category.job_sub_cat_id = works.work_con_sup_id
 									left join supplier_cat on works.work_con_sup_id = supplier_cat.supplier_cat_id
 									left join company_details on work_contractors.company_id = company_details.company_id
-									LEFT JOIN company_details_temp ON company_details_temp.company_details_temp_id = work_contractors.company_id
 									left join notes on works.note_id = notes.notes_id
 									left join variation on variation.variation_id = works.variation_id
 								where works.project_id = '$proj_id'
 									and works.is_active = 1
-								ORDER BY comp_name");
+								order by company_name");
 		return $query;
 	}
 
@@ -567,19 +560,4 @@ class Works_m extends CI_Model{
 								");
 		return $query;
 	}
-
-	//============== Temporary Company Function ==================
-	public function insert_work_pending_company($works_id,$company_id){
-		$this->db->query("DELETE FROM `work_contractors` WHERE `works_id` = '$works_id' AND `company_id` = '$company_id' AND `is_pending` = 1");
-		$date_added = date('Y-m-d');
-		$this->db->query("INSERT INTO `work_contractors` (`works_id`, `date_added`, `company_id`, `contact_person_id`, `is_pending`) 
-				VALUES ('$works_id', '$date_added', '$company_id', 0, 1)");
-	}
-	public function update_temporary_cont_sup($work_contractor_id,$temp_comp_id){
-		$this->db->query("UPDATE `work_contractors` SET `company_id` = '$temp_comp_id' WHERE `works_contrator_id` = '$work_contractor_id'");
-	}
-	public function remove_temporary_cont_sup($work_contractor_id){
-		$this->db->query("DELETE FROM `work_contractors` WHERE `works_contrator_id` = '$work_contractor_id'");
-	}
-//============== Temporary Company Function ==================
 }

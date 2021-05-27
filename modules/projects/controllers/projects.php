@@ -3013,7 +3013,15 @@ $gp = 0;
 				}else{
 					$site_address_id = $data['address_id'];
 					$shop_tenancy_number = '';
-					$this->company_m->update_address_details($data['address_id'],$data['unit_number'],$data['unit_level'],$data['street'],$data['suburb_a'],$data['postcode_a']);
+		//			$this->company_m->update_address_details($data['address_id'],$data['unit_number'],$data['unit_level'],$data['street'],$data['suburb_a'],$data['postcode_a']);
+
+					$general_address_id_result_a = $this->company_m->fetch_address_general_by('postcode-suburb',$data['postcode_a'],$data['suburb_a']);
+					foreach ($general_address_id_result_a->result() as $general_address_id_a){
+						$general_address_a = $general_address_id_a->general_address_id;
+					}
+					$site_address_id = $this->company_m->insert_address_detail($data['street'],$general_address_a,$data['unit_level'],$data['unit_number']);
+
+					
 				}
 
 
@@ -3021,7 +3029,7 @@ $gp = 0;
 				$cc_pm = ($cc_pm_raw == 0 ? $project_manager_id : $cc_pm_raw);
 
 
-				$this->company_m->update_address_details($invoice_address_id,$data['number_b'],$data['unit_level_b'],$data['street_b'],$data['suburb_b'],$data['postcode_b'],$data['pobox']);
+	//			$this->company_m->update_address_details($invoice_address_id,$data['number_b'],$data['unit_level_b'],$data['street_b'],$data['suburb_b'],$data['postcode_b'],$data['pobox']);
 
 /*
 			$formated_start_date = str_replace("/","-",$site_start);
@@ -3569,6 +3577,7 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
 		$is_prj_scrn = $_POST['is_prj_scrn'];
 		$project_id = 'NULL';
 		$client_id = 'NULL';
+		$will_replace_existing = $_POST['will_replace_existing']; 
 
 		if( isset($_POST['client']) && $_POST['client'] != '' ){
 			$client_data_arr = explode('|', $_POST['client']);
@@ -3627,8 +3636,9 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
         	if ( !$this->upload->do_upload('doc_files')) {
 			   	echo $this->upload->display_errors();
 			}else{
-				$this->projects_m->insert_uploaded_file($file_name_amp,$file_type,$project_id,$client_id,$date_upload,$user_id);
-				if($file_type == 6 || $file_type == 3){
+				$this->projects_m->insert_uploaded_file($file_name_amp,$file_type,$project_id,$client_id,$date_upload,$user_id,$will_replace_existing);
+				//if($file_type == 6 || $file_type == 3){
+				if($will_replace_existing == 1){
 // SEND NOTIFICATION
 					require_once('PHPMailer/class.phpmailer.php');
 					require_once('PHPMailer/PHPMailerAutoload.php');
@@ -3644,20 +3654,21 @@ if($today_rvw_mrkr > $timestamp_day_revuew_req && $today_rvw_mrkr < $timestamp_n
 					$mail->addReplyTo($user_email);
 				
 					$mail->addaddress($pm_email, $pm_name);
-					
+					//$mail->addaddress('mark.obis2012@gmail.com');
+
 					$mail->addBCC('mark.obis2012@gmail.com');
 
 					$mail->smtpdebug = 2;
 					$mail->ishtml(true);
 
-					// $mail->Subject = "File upload for approval";
-					// $mail->Body    = "A file was uploaded to the doc storage of Project number: ".$project_id." and awaiting approval. Please visit this link to and go to doc storage to check: https://sojourn.focusshopfit.com.au/projects/view/".$project_id;
+					$mail->Subject = "File upload for approval";
+					$mail->Body    = "A file was uploaded to the doc storage of Project number: ".$project_id." and awaiting approval. Please visit this link to and go to doc storage to check: https://sojourn.focusshopfit.com.au/projects/view/".$project_id."/ds";
 
-					// if(!$mail->send()) {
-					// 	echo 'Message could not be sent.'.' Mailer Error: ' . $mail->ErrorInfo;
-					// } else {
-					// 	echo "Email Send Successfully";
-					// }
+					if(!$mail->send()) {
+						echo 'Message could not be sent.'.' Mailer Error: ' . $mail->ErrorInfo;
+					} else {
+						echo "Email Send Successfully";
+					}
 
 // SEND NOTIFICATION
 				}
@@ -3740,6 +3751,7 @@ endif;
 
 	public function list_uploaded_files(){ //
 		$proj_id = $_POST['proj_id'];
+		$job_date = $_POST['job_date'];
 		$q_list_doc_type = $this->projects_m->list_uploaded_files($proj_id);
 
 		$user_role_id = $this->session->userdata('user_role_id');
@@ -3759,70 +3771,131 @@ endif;
 			$authorize_role_id = $default_doc_storage->authorize_role_id;	
 		}
 
+		$proj_q = $this->projects_m->fetch_project_details($proj_id);
+		$proj_q = $proj_q->result();
+		foreach ($proj_q as $row){
+			$job_category = $row->job_category;	
+		}
+
+
+
 		$default_doc_types = $this->admin_m->fetch_doc_storage_required_notification();
 		$q_default_doc_types = $default_doc_types->result();
 
-			echo '<div>';
-
 		if($rows < 1){
 			echo '<p class="m-top-10"><em class="fa fa-exclamation-circle"></em> No Files Uploaded</p>';
-		}else{ 
+		}else{
 			foreach ($list_doc_type as $stored_files){
-				if($doc_type == ''){
-					$doc_type = $stored_files->doc_type_name;
-					echo "</div><div class=\"doc_droup_set\"  ><p class=\"m-top-15 doc_type_text\"> <div class=\"btn btn-info btn-xs   doc_type_head \"  style=\"margin: -4px 0 0 0;\"><em  class=\"fa fa-code-fork\"></em></div> &nbsp; <strong>$doc_type</strong></p>";
-				}else{
-					if($doc_type != $stored_files->doc_type_name){
-						$doc_type = $stored_files->doc_type_name;
-						echo "</div><div class=\"doc_droup_set\"  ><p class=\"m-top-15 doc_type_text\"> <div class=\"btn btn-info btn-xs  doc_type_head \"  style=\"margin: -4px 0 0 0;\"><em  class=\"fa fa-code-fork\"></em></div> &nbsp; <strong>$doc_type</strong></p>";
-					}
-				}
+
+				$font_color = "";
+				if($stored_files->for_replacement == 1):
+					$font_color = "blue";
+				endif;
+
+				$will_replace_existing = $stored_files->will_replace_existing;
+
+				if($will_replace_existing == 1):
+					$font_color = "red";
+				endif;
 
 				if($stored_files->is_project_attachment == 1){
 					$check = 'checked';
 				}else{
 					$check = '';
 				}
+
+				if($doc_type == ''){
+					$doc_type = $stored_files->doc_type_name;
+					echo "<p class=\"m-top-15\"><strong>$doc_type</strong></p>";
+				}else{
+					if($doc_type != $stored_files->doc_type_name){
+						$doc_type = $stored_files->doc_type_name;
+						echo "<p class=\"m-top-15\"><strong>$doc_type</strong></p>";
+					}else{
+						$doc_type = $stored_files->doc_type_name;
+					}
+				}
+
 				$need_authorization = 0;
 				foreach ($q_default_doc_types as $required_doc_type){
 					if($doc_type == $required_doc_type->doc_type_name){
 						$need_authorization = 1;
 					}
 				}
+				
+				echo '<p class="row_file_list clearfix pad-3 pad-left-5 pad-right-5" style = "padding-left: 5px;">';
 
-				echo '<p class="row_file_list clearfix pad-3 pad-left-5 pad-right-5" style="display:none;">
-				<a href="'.base_url().'docs/stored_docs/'.urlencode($stored_files->file_name).'" target="_blank" class="pull-left" id=""><em class="fa fa-level-up fa-lg fa-rotate-90" style="color: #269ABC;"></em> &nbsp;&nbsp;'.$stored_files->file_name.'</a>';
+				echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left"  title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				
+				// if($will_replace_existing == 0):
+				// 	if($is_admin == 1 || $user_role_id == $authorize_role_id  || $job_category == 'Maintenance'):
+				// 		echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				// 	else:
+				// 		if($job_date !== ""):
+				// 			if($stored_files->is_authorized == 1):
+				// 				if($need_authorization == 1):
+				// 					if($stored_files->for_replacement == 1):
+				// 						echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.' disabled>';
+										
+				// 					else:
+				// 						if($check == 'checked'){
+				// 							echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.' disabled>';
+				// 						}else{
+				// 							echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				// 						}
+				// 					endif;
+				// 				else:
+				// 					echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				// 				endif;
+								
+				// 			else:
+				// 				if($need_authorization == 1):
+				// 					if($stored_files->for_replacement == 1):
+				// 						echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.' disabled>';
+										
+				// 					else:
+				// 						if($check == 'checked'){
+				// 							echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.' disabled>';
+				// 						}else{
+				// 							echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				// 						}
+				// 					endif;
+				// 				else:
+				// 					echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				// 				endif;
+				// 			endif;
+				// 		else:
+				// 			echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left"  title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				// 		endif;
+				// 	endif;
+				// else:
+				// 	if($job_date !== ""):
+				// 		if($is_admin == 1 || $user_role_id == $authorize_role_id  || $job_category == 'Maintenance'):
+				// 			echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left"  title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				// 		else:
+				// 			//if($stored_files->is_authorized == 1):
+				// 			echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left"  title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.' disabled>';
+				// 			//endif;
+				// 		endif;
+				// 	else:
+				// 		echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-left"  title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				// 	endif;
+				// endif;
+				echo '<a href="'.base_url().'docs/stored_docs/'.urlencode($stored_files->file_name).'" target="_blank" class="pull-left" id="" style = "color: '.$font_color.'">&nbsp;&nbsp;&nbsp;'.$stored_files->file_name.'</a>';
 			
- //if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):	
+ 			//if($this->session->userdata('is_admin') == 1 || $this->session->userdata('user_id') == 6  ):	
 
 				echo '<span style=" background:#F7901E; font-size: 12px; padding: 1px 8px; float: right; border: 1px solid #864e11;  color: #fff;  height: 20px;    margin: 0px 5px;     border-radius: 10px;    display: block;"><em class="fa fa-calendar-o"></em> '.$stored_files->date_upload.' &nbsp; '.$stored_files->user_first_name.'</span>';
+
+
 			//endif;
 
-				//if($need_authorization == 0){
-					echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-right" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
+				echo '<em id="'.$stored_files->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;" onclick = "del_stored_file('.$stored_files->storage_files_id.')"></em>';
+				
+				
 
-					echo '<em id="'.$stored_files->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;" onclick = "del_stored_file('.$stored_files->storage_files_id.')"></em>';
-				// }else{
-				// 	if($is_admin == 1 || $user_role_id == $authorize_role_id):
-				// 		if($stored_files->is_authorized == 1){
-				// 			echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-right" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.'>';
-				// 		}else{
-				// 			echo '<button type = "button" class = "btn btn-success btn-xs pull-right" style = "font-size: 12px" onclick="approve_doc_type('.$stored_files->storage_files_id.')">Approve</button>';
-				// 		}
-
-				// 		echo '<em id="'.$stored_files->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;" onclick = "del_stored_file('.$stored_files->storage_files_id.')"></em>';
-				// 	else:
-				// 		if($stored_files->is_authorized == 1){
-				// 			echo '<input type = "checkbox" name = "proj_attach" id = "attach_'.$stored_files->storage_files_id.'" class = "pull-right" title = "Project attachments" onclick = "attach_to_project('.$stored_files->storage_files_id.')" '.$check.' disabled>';
-				// 		}
-				// 	endif;
-				// }
-
-				// echo '<em id="'.$stored_files->storage_files_id.'" class="pointer fa fa-trash fa-lg pull-right del_stored_file" style="color: red; display:none; margin-top: 3px;" onclick = "del_stored_file('.$stored_files->storage_files_id.')"></em>';
 			echo '</p>';
 			}
-
-			echo '</div>';
 
 		}
 
@@ -5857,7 +5930,7 @@ echo '<div class="pad-5 '.$data->client_id.'_files uploaded_files_row" style="di
 
 		$destination_file = './docs/stored_docs/'.$data_file_name;
 
-		$this->projects_m->insert_uploaded_file($file_name_set,$file_type,$proj_id,0,$date_upload,$user_id);
+		$this->projects_m->insert_uploaded_file($file_name_set,$file_type,$proj_id,0,$date_upload,$user_id,0);
 		copy($src_file, $destination_file);
 	}
 
@@ -6052,4 +6125,147 @@ echo '<div class="pad-5 '.$data->client_id.'_files uploaded_files_row" style="di
 		$this->projects_m->approve_doc_file_selected($storage_files_id);
 	}
 
+	public function fetch_storage_liles_need_authorization(){
+		$data = json_decode(file_get_contents("php://input"), true);
+        $project_id = $data['project_id'];
+		$query = $this->projects_m->fetch_storage_liles_need_authorization($project_id);
+
+        echo json_encode($query->result());
+	}
+
+	public function fetch_files_for_replacement(){
+		$data = json_decode(file_get_contents("php://input"), true);
+        $project_id = $data['project_id'];
+		$query = $this->projects_m->check_file_for_replacement($project_id);
+
+        echo json_encode($query->result());
+	}
+
+	public function approve_file_to_be_attached(){
+		$data = json_decode(file_get_contents("php://input"), true);
+        $storage_files_id = $data['storage_files_id'];
+
+        $this->projects_m->approve_file_to_be_attached($storage_files_id);
+
+        $doc_file_q = $this->projects_m->fetch_storage_file_details($storage_files_id);
+		$project_id = 0;
+		foreach ($doc_file_q->result_array() as $row){
+			$project_id = $row['project_id'];
+		}
+
+		$proj_q = $this->projects_m->select_particular_project($project_id);
+		foreach ($proj_q->result_array() as $row){
+			$project_manager_id = $row['project_manager_id'];
+			$project_admin_id = $row['project_admin_id'];
+			$joinery_selected_sender = $row['joinery_selected_sender'];
+
+			$focus_company_id = $row['focus_company_id'];
+			$data['focus_company_id'] = $focus_company_id;
+		}
+
+
+// SEND NOTIFICATION
+		$data['project_id'] = $project_id;
+		$user_id = $this->session->userdata('user_id');
+		$users_q = $this->user_model->fetch_user($user_id);
+		$user_name = "";
+		$user_email = "";
+		foreach ($users_q->result_array() as $users_row){
+			$user_name = $users_row['user_first_name']." ".$users_row['user_last_name'];
+			$user_email_id = $users_row['user_email_id'];
+			$email_q = $this->company_m->fetch_email($user_email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$user_email = $email_row['general_email'];
+			}
+		}
+
+		$pa_q = $this->user_model->fetch_user($project_admin_id);
+		$pa_name = "";
+		$pa_email = "";
+		foreach ($pa_q->result_array() as $pa_row){
+			$pa_name = $pa_row['user_first_name']." ".$pa_row['user_last_name'];
+			$user_email_id = $pa_row['user_email_id'];
+			$email_q = $this->company_m->fetch_email($user_email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$pa_email = $email_row['general_email'];
+			}
+		}
+
+		$joinery_q = $this->user_model->fetch_user($joinery_selected_sender);
+		$joinery_name = "";
+		$joinery_email = "";
+		foreach ($joinery_q->result_array() as $joinery_row){
+			$joinery_name = $joinery_row['user_first_name']." ".$joinery_row['user_last_name'];
+			$user_email_id = $joinery_row['user_email_id'];
+			$email_q = $this->company_m->fetch_email($user_email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$joinery_email = $email_row['general_email'];
+			}
+		}
+
+		$admin_q = $this->admin_m->fetch_default_doc_storage();
+		foreach ($admin_q->result_array() as $admin_row){
+			$email_subject = $admin_row['email_subject'];
+			$email_content = $admin_row['email_content'];
+		}
+
+		require_once('PHPMailer/class.phpmailer.php');
+		require_once('PHPMailer/PHPMailerAutoload.php');
+
+		$mail = new phpmailer(true);
+		$mail->host = "sojourn-focusshopfit-com-au.mail.protection.outlook.com";
+		$mail->port = 587;
+	
+		//$mail->setfrom('userconf@sojourn.focusshopfit.com.au', 'name');
+		$mail->setFrom($user_email, $user_name);
+
+		//$mail->addreplyto('userconf@sojourn.focusshopfit.com.au', 'name');
+		$mail->addReplyTo($user_email);
+	
+		$mail->addaddress('mark.obis2012@gmail.com', 'Mark Obis');
+		// $mail->addaddress($pa_email);
+		// $mail->addaddress($joinery_email);
+		// $mail->addaddress($pm_email);
+		
+		$mail->addBCC('mark.obis2012@gmail.com');
+
+		$mail->smtpdebug = 2;
+		$mail->ishtml(true);
+
+		$mail->Subject = $email_subject;
+
+		$data['message'] = $email_content;
+		$data['sender'] = $user_name;
+		$data['send_email'] = $user_email;
+
+		$data['comp_phone'] = "Ph. 08 6305 0991";
+		if($focus_company_id == 6):
+			$data['comp_address_line1'] = "Unit 45/85-115 ";
+			$data['comp_address_line2'] = "Alfred Road, Chipping Norton ";
+			$data['comp_address_line3'] = "NSW 2170";
+		else:
+			$data['comp_address_line1'] = "Unit 3 / 86 Inspiration Drive";
+			$data['comp_address_line2'] = "Wangara WA 6065";
+			$data['comp_address_line3'] = "PO Box 1326 Wangara DC WA 6947";
+		endif;
+
+		$data['comp_name'] = "FSF Group Pty Ltd";
+		$data['abn1'] = "ABN 61 167 776 678";
+		$data['comp_name2'] = "Focus Shopfit Pty Ltd";
+		$data['abn2'] = "ABN 16 159 087 984";
+		$data['comp_name3'] = "Focus Shopfit NSW Pty Ltd";
+		$data['abn3'] = "ABN 17 164 759 102";
+
+		$message = $this->load->view('message_view',$data,TRUE);
+
+		$mail->Body    = $message;
+
+		if(!$mail->send()) {
+			echo 'Message could not be sent.'.' Mailer Error: ' . $mail->ErrorInfo;
+		} else {
+			echo "Email Send Successfully";
+		}
+
+// SEND NOTIFICATION
+	}
 }

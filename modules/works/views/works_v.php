@@ -1,19 +1,8 @@
 ﻿<?php $this->load->module('projects'); ?>
-<script src="<?php echo base_url(); ?>js/vue.js"></script>
-<script src="<?php echo base_url(); ?>js/vue-select.js"></script>
-<link rel="stylesheet" href="<?php echo base_url(); ?>css/vue-select.css">
-<script src="<?php echo base_url(); ?>js/moment.min.js"></script>
-<script src="<?php echo base_url(); ?>js/jmespath.js"></script>
-<script src="<?php echo base_url(); ?>js/axios.min.js"></script>
-
 <input type="hidden" id="gst" value="<?php echo $this->session->userdata('gst_rate'); ?>">
 <input type="hidden" id ="base_url" value = "<?php echo base_url(); ?>">
 <input type="hidden" id ="proj_post_code" value = "<?php echo $postcode ?>">
 <input type="hidden" id = "state" value = "<?php echo $state ?>">
-<input type="hidden" id="hidden_work_contractor_id">
-<input type="hidden" id="hidden_work_company_id">
-<div id="workApp">
-
 <div class="">
 	<div id="frm_add_works"></div>
 	<div class="">
@@ -39,7 +28,10 @@
 
 								<!--<button type = "button" id = "showaddworkmodal" class="btn btn-primary pull-right" data-toggle="modal" data-target="#frmaddworks"><i class = "fa fa-cogs"></i> Add Work</button>-->
 								<!--<a href="samplemod/print_pdf"  target="_blank" class="btn btn-primary pull-right"><i class = "fa fa-print"></i> Print</a>-->
-								<label><?php echo $screen ?></label><span>(<a href="#" data-placement="right" class="popover-test" title="" data-content="This is where the works of the selected Project are listed." data-original-title="Welcome">?</a>)</span>
+								<label><?php echo $screen ?></label>
+
+
+ <span class="fa fa-film pointer play_works_vids" data-toggle="modal" data-target="#help_video_group"> </span>
 								<!-- <p>This is where the works of the selected Project are listed. </p> -->
 								<p>Description Color Code: <span style = "color: #000">Default</span> / <span style = "color: #0099cc">CQR Sent</span> / <span style = "color: #6dc066">CPO Sent</span> / <span style = "color: #ff3b3f">Is Reconciled</span></p>
 								<p>Company Color Code: <span style = "color: Blue">Has insurance</span> / <span style = "color: Red">Incomplete Insurance</span></p>
@@ -92,16 +84,7 @@
 							<div class="box-head pad-5">
 								<label><i class="fa fa-users fa-lg"></i> Companies of CPO No.: </label>
 								<label id = "cont_cpono"></label>
-								<div class="dropdown">
-									<button class="btn btn-primary dropdown-toggle pull-right" id="btnaddcontractor" type="button" data-toggle="dropdown">Add
-									  	<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu">
-								    	<li><a href="#" data-toggle="modal" data-target="#frm_pending_cont_sup" v-on:click = "show_pending_contractor">Pending Contractors/Suppliers</a></li>
-								    	<li><a href="#" data-toggle="modal" data-target="#addContractor_Modal_adv">Contractors/Suppliers</a></li>
-								  	</ul>
-								</div>
-								<!-- <button type="button" id="btnaddcontractor" class ="btn btn-primary pull-right" data-toggle="modal" data-target="#addContractor_Modal_adv">Add</button> -->
+								<button type="button" id="btnaddcontractor" class ="btn btn-primary pull-right" data-toggle="modal" data-target="#addContractor_Modal_adv">Add</button>
 							</div>
 							<div id = "work_contractors" class="box-area pad-5" style = "height: 400px; overflow: auto">
 							</div>
@@ -114,63 +97,6 @@
 	</div>
 </div>
 <!-- MODAL LIST -->
-<div class="modal fade" id="frm_pending_cont_sup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-	    <div class="modal-content">
-	        <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		        <h4 class="modal-title">Pending Contractors</h4>
-	        </div>
-	        <div class="modal-body row">
-	        	<div class="col-sm-12 pad-5"><input type="text" class="form-control input-sm" placeholder = "Search..."></div>
-	        	<div class="col-sm-12 pad-5" style = "height: 200px; overflow: auto">
-	        		<table class="table table-hover text-nowrap">
-	                    <thead class="thead-dark">
-	                        <tr>
-	                          <th></th>
-	                          <th>Company Name</th>
-	                          <th>Contact Person</th>
-	                        </tr>
-	                    </thead>
-	                      <tbody>
-	                        <tr v-for = "company in company" :title = "'('+ company.contact_number + ') ' + company.email">
-	                          <td><input type="checkbox" :value="company.company_details_temp_id" v-model="temp_company_id"></td>
-	                          <td>{{ company.company_name }}</td>
-	                          <td>{{ company.contact_person_fname +" "+ company.contact_person_sname }}</td>
-	                        </tr>
-	                    </tbody>
-	                </table>
-	        	</div>
-	        </div>
-	        <div class="modal-footer">
-	          	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	          	<button type="button" class="btn btn-success" data-dismiss="modal" v-on:click="add_temp_comp">Add</button>
-	        </div>
-	    </div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-<div class="modal fade" id="frm_pending_cont_sup_update" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-	    <div class="modal-content">
-	        <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		        <h4 class="modal-title">Pending Contractors</h4>
-	        </div>
-	        <div class="modal-body row">
-	        	<div class="col-sm-12 pad-5">
-	        		<v-select v-model = "temp_company_id_update" :options="options"></v-select>
-	        	</div>
-	        	
-	        </div>
-	        <div class="modal-footer">
-	          	<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	          	<button type="button" class="btn btn-danger pull-left" data-dismiss="modal" v-on:click="remove_temp_comp">Remove</button>
-	          	<button type="button" class="btn btn-success" data-dismiss="modal" v-on:click="update_temp_comp">Update</button>
-	        </div>
-	    </div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
 <div class="modal fade" id="addContractor_Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
 	    <div class="modal-content">
@@ -556,118 +482,8 @@
 	    </div>
 	</div>
 </div>
-</div>
 
 <script>
-	window.select_contractor = function(a,b){
-		$("#hidden_work_company_id").val(b);
-		$("#hidden_work_contractor_id").val(a);
-		this.app.select_temp_company();
-	}
-	Vue.component('v-select', VueSelect.VueSelect);
-	var app = new Vue({
-	  	el: '#workApp',
-	  	data: {
-	  		works_id: 0,
-		    company: [],
-		    temp_company_id: [],
-		  	options: [],
-		    temp_company_id_update: '',
-	  	},
-		mounted: function(){
-			this.load_contractor_supplier();
-		},
-  		filters: {
-		    getDayname: function(date){
-		      return moment(date).format('ddd');
-		    },
-		    format_date: function(date){
-		      return moment(date).format('ll');
-		    },
-		    ausdate: function(date) {
-		      if(date == '0000-00-00'){
-		        return '';
-		      }else{
-		        return moment(date).format('DD/MM/YYYY');
-		      }
-		      
-		    },
-		    getTime: function(date){
-		      var temp_date = '2020-01-01 '+date;
-		      return moment(temp_date).format('h:mm a');
-		    },
-  		},
-  		methods: {
-  			select_temp_company: function(){
-  				//this.temp_company_id = $("#hidden_work_company_id").val();
-  				var temp_company_id_update = $("#hidden_work_company_id").val();
-  				for (var key in this.company) {
-  					if(this.company[key].company_details_temp_id == temp_company_id_update){
-  						this.temp_company_id_update = this.company[key].company_name;
-  					}
-  				}
-  			},
-		    load_contractor_supplier: function(){
-		    	axios.post("<?php echo base_url() ?>company/fetch_temporary_cont_sup", 
-		      	{
-		      	}).then(response => {	
-		      		this.options = [];
-		          	this.company = response.data;    
-		          	for (var key in this.company) {
-		          		this.options.push({'value': this.company[key].company_details_temp_id, 'label': this.company[key].company_name });
-			        }     
-	  				     
-		      	}).catch(error => {
-		        	console.log(error.response)
-		      	});
-		    },
-		    show_pending_contractor: function(){
-		    	this.temp_company_id = [];
-		    },
-		    add_temp_comp: function(){
-		    	this.works_id = $("#cont_cpono").html();
-		    	axios.post("<?php echo base_url() ?>works/insert_work_pending_company", 
-		      	{
-		      		'works_id': this.works_id,
-					'company_id': this.temp_company_id
-		      	}).then(response => {	
-		      		window.selwork_badge(this.works_id);
-		      	}).catch(error => {
-		        	console.log(error.response)
-		      	});
-		    },
-		    update_temp_comp: function(){
-		    	var work_contractor_id = $("#hidden_work_contractor_id").val();
-		    	this.works_id = $("#cont_cpono").html();
-		    	axios.post("<?php echo base_url() ?>works/update_temporary_cont_sup", 
-		      	{
-		      		'work_contractor_id': work_contractor_id,
-		      		'temp_comp_id': this.temp_company_id_update.value
-		      	}).then(response => {	
-		          	window.selwork(this.works_id);
-		      	}).catch(error => {
-		        	console.log(error.response)
-		      	});
-		   
-		    },
-		    remove_temp_comp: function(){
-		    	var work_contractor_id = $("#hidden_work_contractor_id").val();
-		    	this.works_id = $("#cont_cpono").html();
-		    	var r = confirm("Are you sure you want to remove selected Pending Company?");
-      			if (r == true) {
-			    	axios.post("<?php echo base_url() ?>works/remove_temporary_cont_sup", 
-			      	{
-			      		'work_contractor_id': work_contractor_id
-			      	}).then(response => {	
-			          	window.selwork(this.works_id);
-			      	}).catch(error => {
-			        	console.log(error.response)
-			      	});
-			    }
-		    },
-		}
-	});
-	
 	var state = $('#state').val();
 	var baseurl = $("#base_url").val(); 
 	var proj_post_code = $("#proj_post_code").val();

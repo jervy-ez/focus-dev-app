@@ -718,17 +718,9 @@ class Works extends MY_Controller{
 	}
 	function proj_summary_w_cost(){
 		$proj_id = $this->uri->segment(3);
-		$is_pending_client = 0;
-		$pending_cont_person = "";
-		$pending_mobile_number = "";
-		$pending_client_email = "";
+
 		$proj_q = $this->projects_m->select_particular_project($proj_id);
 		foreach ($proj_q->result_array() as $row){
-			$is_pending_client = $row['is_pending_client'];
-			$pending_cont_person = $row['pending_cont_person'];
-			$pending_mobile_number = $row['pending_cont_number'];
-			$pending_client_email = $row['pending_cont_email'];
-
 			$data['proj_name'] = html_entity_decode(str_replace("&apos;","'",$row['project_name'])); 
 			$tenancyno = $row['shop_tenancy_number'].' '.$row['shop_name'];
 		   	$primary_contact_person_id = $row['primary_contact_person_id'];
@@ -809,56 +801,43 @@ class Works extends MY_Controller{
 		   	
 		}
 
-		if($is_pending_client == 0):
+		$comp_det_q = $this->company_m->display_company_detail_by_id($client_id);
+		foreach ($comp_det_q->result_array() as $row){
+		   $address_id = $row['address_id'];
+		   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
+		   foreach ($comp_add_q->result_array() as $comp_add_row){
+		   		if($comp_add_row['unit_level'] == ""){
+		   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
+		   		}else{
+		   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
+		   		}
+				$data['comp_address_2nd'] = $comp_add_row['street'];
+				$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
+		   }
+		}
 
-			$comp_det_q = $this->company_m->display_company_detail_by_id($client_id);
-			foreach ($comp_det_q->result_array() as $row){
-			   $address_id = $row['address_id'];
-			   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
-			   foreach ($comp_add_q->result_array() as $comp_add_row){
-			   		if($comp_add_row['unit_level'] == ""){
-			   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
-			   		}else{
-			   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
-			   		}
-					$data['comp_address_2nd'] = $comp_add_row['street'];
-					$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
-			   }
-			}
-
-		
-			$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
-			foreach ($comp_q->result_array() as $row){
-				$data['contact_person'] = $row['first_name']." ".$row['last_name'];
-				//$email_id = $row['email_id'];
-				$comp_contact_number_id = $row['contact_number_id'];
-				$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
-				foreach ($comp_phone_q->result_array() as $phone_row){
-					if($phone_row['office_number'] == ""){
-						$data['comp_office_number'] = "";
-					}else{
-						$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
-					}
-					$data['mobile_number'] = $phone_row['mobile_number'];
+		$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
+		foreach ($comp_q->result_array() as $row){
+			$data['contact_person'] = $row['first_name']." ".$row['last_name'];
+			//$email_id = $row['email_id'];
+			$comp_contact_number_id = $row['contact_number_id'];
+			$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
+			foreach ($comp_phone_q->result_array() as $phone_row){
+				if($phone_row['office_number'] == ""){
+					$data['comp_office_number'] = "";
+				}else{
+					$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
 				}
-				$client_email = "";
-				$email_id = $row['email_id'];
-				$email_q = $this->company_m->fetch_email($email_id);
-				foreach ($email_q->result_array() as $email_row){
-					$client_email = $email_row['general_email'];
-				}
-				$data['client_email'] = $client_email;
+				$data['mobile_number'] = $phone_row['mobile_number'];
 			}
-		else:
-			$data['comp_address_1st'] = "";
-			$data['comp_address_2nd'] = "";
-			$data['comp_address_3rd'] = "";
-			$data['contact_person'] = $pending_cont_person;
-			$data['comp_office_number'] = "";
-			$data['mobile_number'] = $pending_mobile_number;
-			$data['client_email'] = $pending_client_email;
-
-		endif;
+			$client_email = "";
+			$email_id = $row['email_id'];
+			$email_q = $this->company_m->fetch_email($email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$client_email = $email_row['general_email'];
+			}
+			$data['client_email'] = $client_email;
+		}
 
 		$proj_cost_total_t = $this->projects_m->get_project_cost_total($proj_id);
 		foreach ($proj_cost_total_t->result_array() as $row){
@@ -896,18 +875,10 @@ class Works extends MY_Controller{
 
 	function proj_summary_wo_cost(){
 		$proj_id = $this->uri->segment(3);
-		$is_pending_client = 0;
-		$pending_cont_person = "";
-		$pending_mobile_number = "";
-		$pending_client_email = "";
+
 		$proj_q = $this->projects_m->select_particular_project($proj_id);
 		$data['project_t'] = $proj_q;
 		foreach ($proj_q->result_array() as $row){
-			$is_pending_client = $row['is_pending_client'];
-			$pending_cont_person = $row['pending_cont_person'];
-			$pending_mobile_number = $row['pending_cont_number'];
-			$pending_client_email = $row['pending_cont_email'];
-
 			$data['proj_name'] = html_entity_decode(str_replace("&apos;","'",$row['project_name'])); 
 			$tenancyno = $row['shop_tenancy_number'].' '.$row['shop_name'];
 
@@ -989,56 +960,44 @@ class Works extends MY_Controller{
 		   	
 		}
 
-		if($is_pending_client == 0):
+		$comp_det_q = $this->company_m->display_company_detail_by_id($client_id);
+		foreach ($comp_det_q->result_array() as $row){
+		   $address_id = $row['address_id'];
+		   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
+		   foreach ($comp_add_q->result_array() as $comp_add_row){
+		   		if($comp_add_row['unit_level'] == ""){
+		   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
+		   		}else{
+		   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
+		   		}
+				$data['comp_address_2nd'] = $comp_add_row['street'];
+				$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
+		   }
+		}
 
-			$comp_det_q = $this->company_m->display_company_detail_by_id($client_id);
-			foreach ($comp_det_q->result_array() as $row){
-			   $address_id = $row['address_id'];
-			   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
-			   foreach ($comp_add_q->result_array() as $comp_add_row){
-			   		if($comp_add_row['unit_level'] == ""){
-			   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
-			   		}else{
-			   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
-			   		}
-					$data['comp_address_2nd'] = $comp_add_row['street'];
-					$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
-			   }
-			}
-
-			$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
-			foreach ($comp_q->result_array() as $row){
-				$data['contact_person'] = $row['first_name']." ".$row['last_name'];
-				//$email_id = $row['email_id'];
-				$comp_contact_number_id = $row['contact_number_id'];
-				$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
-				foreach ($comp_phone_q->result_array() as $phone_row){
-					if($phone_row['office_number'] == ""){
-						$data['comp_office_number'] = "";
-					}else{
-						$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
-					}
-					$data['mobile_number'] = $phone_row['mobile_number'];
+		$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
+		foreach ($comp_q->result_array() as $row){
+			$data['contact_person'] = $row['first_name']." ".$row['last_name'];
+			//$email_id = $row['email_id'];
+			$comp_contact_number_id = $row['contact_number_id'];
+			$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
+			foreach ($comp_phone_q->result_array() as $phone_row){
+				if($phone_row['office_number'] == ""){
+					$data['comp_office_number'] = "";
+				}else{
+					$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
 				}
-				$client_email = "";
-				$email_id = $row['email_id'];
-				$email_q = $this->company_m->fetch_email($email_id);
-				foreach ($email_q->result_array() as $email_row){
-					$client_email = $email_row['general_email'];
-				}
-				
-				$data['client_email'] = $client_email;
+				$data['mobile_number'] = $phone_row['mobile_number'];
 			}
-		else:
-			$data['comp_address_1st'] = "";
-			$data['comp_address_2nd'] = "";
-			$data['comp_address_3rd'] = "";
-			$data['contact_person'] = $pending_cont_person;
-			$data['comp_office_number'] = "";
-			$data['mobile_number'] = $pending_mobile_number;
-			$data['client_email'] = $pending_client_email;
-
-		endif;
+			$client_email = "";
+			$email_id = $row['email_id'];
+			$email_q = $this->company_m->fetch_email($email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$client_email = $email_row['general_email'];
+			}
+			
+			$data['client_email'] = $client_email;
+		}
 
 		$proj_cost_total_t = $this->projects_m->get_project_cost_total($proj_id);
 		foreach ($proj_cost_total_t->result_array() as $row){
@@ -1073,19 +1032,9 @@ class Works extends MY_Controller{
 
 	function proj_joinery_summary_w_cost(){
 		$proj_id = $this->uri->segment(3);
-		$is_pending_client = 0;
-		$pending_cont_person = "";
-		$pending_mobile_number = "";
-		$pending_client_email = "";
-
 		$proj_q = $this->projects_m->select_particular_project($proj_id);
 		$data['project_t'] = $proj_q;
 		foreach ($proj_q->result_array() as $row){
-			$is_pending_client = $row['is_pending_client'];
-			$pending_cont_person = $row['pending_cont_person'];
-			$pending_mobile_number = $row['pending_cont_number'];
-			$pending_client_email = $row['pending_cont_email'];
-
 			$data['proj_name'] = html_entity_decode(str_replace("&apos;","'",$row['project_name'])); 
 			$tenancyno = $row['shop_tenancy_number'].' '.$row['shop_name'];
 
@@ -1164,54 +1113,43 @@ class Works extends MY_Controller{
 		   	}
 		   	
 		}
-		if($is_pending_client == 0):
 
-			$comp_det_q = $this->company_m->display_company_detail_by_id($client_id);
-			foreach ($comp_det_q->result_array() as $row){
-			   $address_id = $row['address_id'];
-			   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
-			   foreach ($comp_add_q->result_array() as $comp_add_row){
-			   		if($comp_add_row['unit_level'] == ""){
-			   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
-			   		}else{
-			   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
-			   		}
-					$data['comp_address_2nd'] = $comp_add_row['street'];
-					$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
-			   }
+		$comp_det_q = $this->company_m->display_company_detail_by_id($client_id);
+		foreach ($comp_det_q->result_array() as $row){
+		   $address_id = $row['address_id'];
+		   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
+		   foreach ($comp_add_q->result_array() as $comp_add_row){
+		   		if($comp_add_row['unit_level'] == ""){
+		   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
+		   		}else{
+		   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
+		   		}
+				$data['comp_address_2nd'] = $comp_add_row['street'];
+				$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
+		   }
+		}
+
+		$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
+		foreach ($comp_q->result_array() as $row){
+			//$data['contact_person'] = $row['first_name']." ".$row['last_name'];
+			//$email_id = $row['email_id'];
+			$comp_contact_number_id = $row['contact_number_id'];
+			$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
+			foreach ($comp_phone_q->result_array() as $phone_row){
+				if($phone_row['office_number'] == ""){
+					$data['comp_office_number'] = "";
+				}else{
+					$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
+				}
+				
 			}
 
-			$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
-			foreach ($comp_q->result_array() as $row){
-				//$data['contact_person'] = $row['first_name']." ".$row['last_name'];
-				//$email_id = $row['email_id'];
-				$comp_contact_number_id = $row['contact_number_id'];
-				$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
-				foreach ($comp_phone_q->result_array() as $phone_row){
-					if($phone_row['office_number'] == ""){
-						$data['comp_office_number'] = "";
-					}else{
-						$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
-					}
-					
-				}
-
-				$email_id = $row['email_id'];
-				$email_q = $this->company_m->fetch_email($email_id);
-				foreach ($email_q->result_array() as $email_row){
-					$data['client_email'] = $email_row['general_email'];
-				}
+			$email_id = $row['email_id'];
+			$email_q = $this->company_m->fetch_email($email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$data['client_email'] = $email_row['general_email'];
 			}
-		else:
-			$data['comp_address_1st'] = "";
-			$data['comp_address_2nd'] = "";
-			$data['comp_address_3rd'] = "";
-			$data['contact_person'] = $pending_cont_person;
-			$data['comp_office_number'] = "";
-			$data['mobile_number'] = $pending_mobile_number;
-			$data['client_email'] = $pending_client_email;
-
-		endif;
+		}
 
 		$works_t = $this->works_m->display_all_works($proj_id);
 		foreach ($works_t->result_array() as $row){
@@ -1241,20 +1179,10 @@ class Works extends MY_Controller{
 
 	function proj_joinery_summary_wo_cost(){
 		$proj_id = $this->uri->segment(3);
-		$is_pending_client = 0;
-		$pending_cont_person = "";
-		$pending_mobile_number = "";
-		$pending_client_email = "";
-			
 
 		$proj_q = $this->projects_m->select_particular_project($proj_id);
 		$data['project_t'] = $proj_q;
 		foreach ($proj_q->result_array() as $row){
-			$is_pending_client = $row['is_pending_client'];
-			$pending_cont_person = $row['pending_cont_person'];
-			$pending_mobile_number = $row['pending_cont_number'];
-			$pending_client_email = $row['pending_cont_email'];
-
 			$data['proj_name'] = html_entity_decode(str_replace("&apos;","'",$row['project_name'])); 
 			$tenancyno = $row['shop_tenancy_number'].' '.$row['shop_name'];
 			
@@ -1332,49 +1260,38 @@ class Works extends MY_Controller{
 				}
 		   	}
 		}
-		if($is_pending_client == 0):
 
-			$comp_det_q = $this->company_m->display_company_detail_by_id($client_id);
-			foreach ($comp_det_q->result_array() as $row){
-			   $address_id = $row['address_id'];
-			   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
-			   foreach ($comp_add_q->result_array() as $comp_add_row){
-			   		if($comp_add_row['unit_level'] == ""){
-			   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
-			   		}else{
-			   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
-			   		}
-					$data['comp_address_2nd'] = $comp_add_row['street'];
-					$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
-			   }
+		$comp_det_q = $this->company_m->display_company_detail_by_id($client_id);
+		foreach ($comp_det_q->result_array() as $row){
+		   $address_id = $row['address_id'];
+		   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
+		   foreach ($comp_add_q->result_array() as $comp_add_row){
+		   		if($comp_add_row['unit_level'] == ""){
+		   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
+		   		}else{
+		   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
+		   		}
+				$data['comp_address_2nd'] = $comp_add_row['street'];
+				$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
+		   }
+		}
+
+		$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
+		foreach ($comp_q->result_array() as $row){
+			//$data['contact_person'] = $row['first_name']." ".$row['last_name'];
+			//$email_id = $row['email_id'];
+			$comp_contact_number_id = $row['contact_number_id'];
+			$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
+			foreach ($comp_phone_q->result_array() as $phone_row){
+				$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
 			}
 
-			$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
-			foreach ($comp_q->result_array() as $row){
-				//$data['contact_person'] = $row['first_name']." ".$row['last_name'];
-				//$email_id = $row['email_id'];
-				$comp_contact_number_id = $row['contact_number_id'];
-				$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
-				foreach ($comp_phone_q->result_array() as $phone_row){
-					$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
-				}
-
-				$email_id = $row['email_id'];
-				$email_q = $this->company_m->fetch_email($email_id);
-				foreach ($email_q->result_array() as $email_row){
-					$data['client_email'] = $email_row['general_email'];
-				}
+			$email_id = $row['email_id'];
+			$email_q = $this->company_m->fetch_email($email_id);
+			foreach ($email_q->result_array() as $email_row){
+				$data['client_email'] = $email_row['general_email'];
 			}
-		else:
-			$data['comp_address_1st'] = "";
-			$data['comp_address_2nd'] = "";
-			$data['comp_address_3rd'] = "";
-			$data['contact_person'] = $pending_cont_person;
-			$data['comp_office_number'] = "";
-			$data['mobile_number'] = $pending_mobile_number;
-			$data['client_email'] = $pending_client_email;
-
-		endif;
+		}
 
 		$works_t = $this->works_m->display_all_works($proj_id);
 		foreach ($works_t->result_array() as $row){
@@ -1586,23 +1503,12 @@ class Works extends MY_Controller{
 
 
 	function contract_tot_rfntf(){
-		$is_pending_client = 0;
 		$proj_id = $this->uri->segment(3);
 
 		$proj_q = $this->projects_m->select_particular_project($proj_id);
 		foreach ($proj_q->result_array() as $row){
-			$is_pending_client = $row['is_pending_client'];
-			$pending_cont_person = $row['pending_cont_person'];
-			$pending_mobile_number = $row['pending_cont_number'];
-			$pending_client_email = $row['pending_cont_email'];
-
 			$client_id = $row['client_id'];
-			if($is_pending_client == 0):
-				$compname = $row['company_name'];
-			else:
-				$compname = $row['pending_comp_name'];
-			endif;
-
+			$compname = $row['company_name'];
 			$data['project_name'] = $row['project_name'];
 			$data['project_date'] = $row['project_date'];
 			$data['project_total'] = $row['project_total'];
@@ -1625,57 +1531,44 @@ class Works extends MY_Controller{
 					$data['email'] = $email_row['general_email'];
 				}*/
 			}
-
-			if($is_pending_client == 0):
-				$primary_contact_person_id = $row['primary_contact_person_id'];
-				$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
-				foreach ($comp_q->result_array() as $row){
-					$data['client_contact_person'] = $row['first_name']." ".$row['last_name'];
-					//$email_id = $row['email_id'];
-					$comp_contact_number_id = $row['contact_number_id'];
-					$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
-					foreach ($comp_phone_q->result_array() as $phone_row){
-						if($phone_row['office_number'] == ""):
-							$data['comp_office_number'] = "";
-						else:
-							$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
-						endif;
-					}
-
-					$email_id = $row['email_id'];
-					$email_q = $this->company_m->fetch_email($email_id);
-					foreach ($email_q->result_array() as $email_row){
-						$data['client_email'] = $email_row['general_email'];
-					}
+			$primary_contact_person_id = $row['primary_contact_person_id'];
+			$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
+			foreach ($comp_q->result_array() as $row){
+				$data['client_contact_person'] = $row['first_name']." ".$row['last_name'];
+				//$email_id = $row['email_id'];
+				$comp_contact_number_id = $row['contact_number_id'];
+				$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
+				foreach ($comp_phone_q->result_array() as $phone_row){
+					if($phone_row['office_number'] == ""):
+						$data['comp_office_number'] = "";
+					else:
+						$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
+					endif;
 				}
-			else:
-				$data['client_contact_person'] = $pending_cont_person;
-				$data['comp_office_number'] = $pending_mobile_number;
-				$data['client_email'] = $pending_client_email;
-			endif;
+
+				$email_id = $row['email_id'];
+				$email_q = $this->company_m->fetch_email($email_id);
+				foreach ($email_q->result_array() as $email_row){
+					$data['client_email'] = $email_row['general_email'];
+				}
+			}
 
 		}
 
-		if($is_pending_client == 0):
-			$comp_det_q = $this->company_m->display_company_detail_by_id($client_id);
-			foreach ($comp_det_q->result_array() as $row){
-			   $address_id = $row['address_id'];
-			   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
-			   foreach ($comp_add_q->result_array() as $comp_add_row){
-			   		if($comp_add_row['unit_level'] == ""){
-			   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
-			   		}else{
-			   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
-			   		}
-					$data['comp_address_2nd'] = $comp_add_row['street'];
-					$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
-			   }
-			}
-		else:
-			$data['comp_address_1st'] = "";
-			$data['comp_address_2nd'] = "";
-			$data['comp_address_3rd'] = "";
-		endif;
+		$comp_det_q = $this->company_m->display_company_detail_by_id($client_id);
+		foreach ($comp_det_q->result_array() as $row){
+		   $address_id = $row['address_id'];
+		   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
+		   foreach ($comp_add_q->result_array() as $comp_add_row){
+		   		if($comp_add_row['unit_level'] == ""){
+		   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
+		   		}else{
+		   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
+		   		}
+				$data['comp_address_2nd'] = $comp_add_row['street'];
+				$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
+		   }
+		}
 
 
 
@@ -1822,8 +1715,7 @@ class Works extends MY_Controller{
 		$work_sel_cont_list_q = $this->works_m->display_work_contructor($work_id);
 		foreach ($work_sel_cont_list_q->result_array() as $work_sel_cont_list_row){
 			$contractor_id = $work_sel_cont_list_row['company_id'];
-			$is_pending =  $work_sel_cont_list_row['cs_is_pending'];
-			echo $contractor_id."-".$is_pending."|";
+			echo $contractor_id."|";
 		}
 	}
 
@@ -1836,45 +1728,36 @@ class Works extends MY_Controller{
 			$is_selected = $work_sel_cont_list_row['is_selected'];
 			$cqr_created = $work_sel_cont_list_row['cqr_created'];
 			$cpo_created = $work_sel_cont_list_row['cpo_created'];
-			$is_pending = $work_sel_cont_list_row['is_pending'];
 		}
-		echo $contractor_id."|".$work_id."|".$is_selected."|".$cqr_created."|".$cpo_created."|".$is_pending;
+		echo $contractor_id."|".$work_id."|".$is_selected."|".$cqr_created."|".$cpo_created;
 	}
 
 	function get_contractor_email(){
 		$work_id = $_POST['work_id'];
 		$comp_id = $_POST['comp_id'];
-		$is_pending = $_POST['is_pending'];
-		$work_sel_cont_q = $this->works_m->display_works_selected_contractor($is_pending,$work_id,$comp_id);
+		$work_sel_cont_q = $this->works_m->display_works_selected_contractor($work_id,$comp_id);
 		foreach ($work_sel_cont_q->result_array() as $work_cont_row){
-			if($is_pending == 0):
-				$work_cont_contact_person_id = $work_cont_row['contact_person_id'];
-				$work_cont_person_q = $this->company_m->fetch_all_contact_persons($work_cont_contact_person_id);
-				foreach ($work_cont_person_q->result_array() as $work_cont_person_row){
-				    $data['attention'] = $work_cont_person_row['first_name']." ".$work_cont_person_row['last_name'];
-					   
-					$contact_number_id = $work_cont_person_row['contact_number_id'];
-					$phon_q = $this->company_m->fetch_phone($contact_number_id);
-					foreach ($phon_q->result_array() as $phone_row){
-						if($phone_row['office_number'] == ""):
-							$data['office_number'] = "";
-						else:
-							$data['office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
-						endif;
-					}
-					$cont_email = "";
-					$contact_email_id = $work_cont_person_row['email_id'];
-					$email_q = $this->company_m->fetch_email($contact_email_id);
-					foreach ($email_q->result_array() as $email_row){
-						$cont_email = $email_row['general_email'];
-					}
+			$work_cont_contact_person_id = $work_cont_row['contact_person_id'];
+			$work_cont_person_q = $this->company_m->fetch_all_contact_persons($work_cont_contact_person_id);
+			foreach ($work_cont_person_q->result_array() as $work_cont_person_row){
+			    $data['attention'] = $work_cont_person_row['first_name']." ".$work_cont_person_row['last_name'];
+				   
+				$contact_number_id = $work_cont_person_row['contact_number_id'];
+				$phon_q = $this->company_m->fetch_phone($contact_number_id);
+				foreach ($phon_q->result_array() as $phone_row){
+					if($phone_row['office_number'] == ""):
+						$data['office_number'] = "";
+					else:
+						$data['office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
+					endif;
 				}
-			else:
-				$pending_comp_q = $this->company_m->fetch_selcted_temporary_comp($comp_id);
-				foreach ($pending_comp_q->result_array() as $pending_comp_row){
-					$cont_email = $pending_comp_row['email'];
+				$cont_email = "";
+				$contact_email_id = $work_cont_person_row['email_id'];
+				$email_q = $this->company_m->fetch_email($contact_email_id);
+				foreach ($email_q->result_array() as $email_row){
+					$cont_email = $email_row['general_email'];
 				}
-			endif;
+			}
 		}
 		echo $cont_email;
 	}
@@ -2437,7 +2320,6 @@ class Works extends MY_Controller{
 		$proj_id = $this->uri->segment(3);
 		$work_id = $this->uri->segment(4);
 		$contractor_id = $this->uri->segment(5);
-		$is_pending = $this->uri->segment(6);
 
 		$is_joinery = strstr($work_id, '-');
 		if($is_joinery == ""){
@@ -2673,19 +2555,12 @@ class Works extends MY_Controller{
 		$proj_q = $this->projects_m->select_particular_project($proj_id);
 		$data['project_t'] = $proj_q;
 		foreach ($proj_q->result_array() as $row){
-			$is_pending_client = $row['is_pending_client'];
 			$joinery_selected_sender = $row['joinery_selected_sender'];
 			$proj_name = str_replace("&apos;", "'", $row['project_name']);
 			$proj_name = str_replace("–","-", $proj_name);
 			$data['proj_name'] = $proj_name;
 			$tenancyno = $row['shop_tenancy_number'].' '.$row['shop_name'];
-			if($is_pending_client == 0):
-		   		$primary_contact_person_id = $row['primary_contact_person_id'];
-		   		$pending_cont_number = "";
-		   	else:
-		   		$primary_contact_person_id = 0;
-		   		$pending_cont_number = $row['pending_cont_number'];
-		   	endif;
+		   	$primary_contact_person_id = $row['primary_contact_person_id'];
 		   	$client_id = $row['client_id'];
 			$job_type = $row['job_type'];
 			$data['start_date'] = $row['date_site_commencement'];
@@ -2806,24 +2681,20 @@ class Works extends MY_Controller{
 		   	$data['has_attachment'] = $has_attachment;
 		}
 
-		if($is_pending_client == 0):
-			$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
-			foreach ($comp_q->result_array() as $row){
-				//$data['contact_person'] = $row['first_name']." ".$row['last_name'];
-				//$email_id = $row['email_id'];
-				$comp_contact_number_id = $row['contact_number_id'];
-				$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
-				foreach ($comp_phone_q->result_array() as $phone_row){
-					if($phone_row['office_number'] == ""):
-						$data['comp_office_number'] = "";
-					else:
-						$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
-					endif;
-				}
+		$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
+		foreach ($comp_q->result_array() as $row){
+			//$data['contact_person'] = $row['first_name']." ".$row['last_name'];
+			//$email_id = $row['email_id'];
+			$comp_contact_number_id = $row['contact_number_id'];
+			$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
+			foreach ($comp_phone_q->result_array() as $phone_row){
+				if($phone_row['office_number'] == ""):
+					$data['comp_office_number'] = "";
+				else:
+					$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
+				endif;
 			}
-		else:
-			$data['comp_office_number'] = $pending_cont_number;
-		endif;
+		}
 		//$email_q = $this->company_m->fetch_email($email_id);
 		//foreach ($email_q->result_array() as $row){
 		 //  $data['email'] = $row['general_email'];
@@ -2832,89 +2703,89 @@ class Works extends MY_Controller{
 		$data['attention'] = "";
 		$data['cont_email'] = "";	
 		$data['office_number'] = "";
-		$work_sel_cont_q = $this->works_m->display_works_selected_contractor($is_pending,$work_id,$contractor_id);
+		$work_sel_cont_q = $this->works_m->display_works_selected_contractor($work_id,$contractor_id);
 		foreach ($work_sel_cont_q->result_array() as $work_cont_row){
-
-			if($is_pending == 0):
-				$work_cont_contact_person_id = $work_cont_row['contact_person_id'];
-				$work_cont_person_q = $this->company_m->fetch_all_contact_persons($work_cont_contact_person_id);
-				foreach ($work_cont_person_q->result_array() as $work_cont_person_row){
-				    $data['attention'] = $work_cont_person_row['first_name']." ".$work_cont_person_row['last_name'];
-					   
-					$contact_number_id = $work_cont_person_row['contact_number_id'];
-					$phon_q = $this->company_m->fetch_phone($contact_number_id);
-					foreach ($phon_q->result_array() as $phone_row){
-						if($phone_row['office_number'] == ""):
-							$data['office_number'] = "";
-						else:
-							$data['office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
-						endif;
-						
-					}
-
-					$contact_email_id = $work_cont_person_row['email_id'];
-					$email_q = $this->company_m->fetch_email($contact_email_id);
-					foreach ($email_q->result_array() as $email_row){
-						$data['cont_email'] = $email_row['general_email'];
-					}
+			$work_cont_contact_person_id = $work_cont_row['contact_person_id'];
+			$work_cont_person_q = $this->company_m->fetch_all_contact_persons($work_cont_contact_person_id);
+			foreach ($work_cont_person_q->result_array() as $work_cont_person_row){
+			    $data['attention'] = $work_cont_person_row['first_name']." ".$work_cont_person_row['last_name'];
+				   
+				$contact_number_id = $work_cont_person_row['contact_number_id'];
+				$phon_q = $this->company_m->fetch_phone($contact_number_id);
+				foreach ($phon_q->result_array() as $phone_row){
+					if($phone_row['office_number'] == ""):
+						$data['office_number'] = "";
+					else:
+						$data['office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
+					endif;
+					
 				}
-			else:
-				$pending_comp_q =  $this->company_m->fetch_selcted_temporary_comp($contractor_id);
-				foreach ($pending_comp_q->result_array() as $pending_comp_row){
-					$work_company_name = $pending_comp_row['company_name'];
-					$data['attention'] = $pending_comp_row['contact_person_fname']." ".$pending_comp_row['contact_person_sname'];
-					$data['office_number'] = $pending_comp_row['contact_number'];
-					$data['cont_email'] = $pending_comp_row['email'];
+
+				$contact_email_id = $work_cont_person_row['email_id'];
+				$email_q = $this->company_m->fetch_email($contact_email_id);
+				foreach ($email_q->result_array() as $email_row){
+					$data['cont_email'] = $email_row['general_email'];
 				}
-			endif;
+			}
 		}
 
-		if($is_pending == 0):
-			$comp_det_q = $this->company_m->display_company_detail_by_id($contractor_id);
-			foreach ($comp_det_q->result_array() as $row){
-			   $data['work_company_name'] = str_replace("&apos;", "'", $row['company_name']);
-			   $address_id = $row['address_id'];
-			   //--- For Insurance ------
-			   if($row['public_liability_expiration'] !== ""){
-					$ple_raw_data = $row['public_liability_expiration'];
-					$ple_arr =  explode('/',$ple_raw_data);
-					$ple_day = $ple_arr[0];
-					$ple_month = $ple_arr[1];
-					$ple_year = $ple_arr[2];
-					$ple_date = $ple_year.'-'.$ple_month.'-'.$ple_day;
-				}
 
-				if($row['workers_compensation_expiration'] !== ""){
-					$wce_raw_data = $row['workers_compensation_expiration'];
-					$wce_arr =  explode('/',$wce_raw_data);
-					$wce_day = $wce_arr[0];
-					$wce_month = $wce_arr[1];
-					$wce_year = $wce_arr[2];
-					$wce_date = $wce_year.'-'.$wce_month.'-'.$wce_day;
-				}
+		$comp_det_q = $this->company_m->display_company_detail_by_id($contractor_id);
+		foreach ($comp_det_q->result_array() as $row){
+		   $data['work_company_name'] = str_replace("&apos;", "'", $row['company_name']);
+		   $address_id = $row['address_id'];
+		   //--- For Insurance ------
+		   if($row['public_liability_expiration'] !== ""){
+				$ple_raw_data = $row['public_liability_expiration'];
+				$ple_arr =  explode('/',$ple_raw_data);
+				$ple_day = $ple_arr[0];
+				$ple_month = $ple_arr[1];
+				$ple_year = $ple_arr[2];
+				$ple_date = $ple_year.'-'.$ple_month.'-'.$ple_day;
+			}
 
-				if($row['income_protection_expiration'] !== ""){
-					$ipe_raw_data = $row['income_protection_expiration'];
-					$ipe_arr =  explode('/',$ipe_raw_data);
-					$ipe_day = $ipe_arr[0];
-					$ipe_month = $ipe_arr[1];
-					$ipeyear = $ipe_arr[2];
-					$ipe_date = $ipe_year.'-'.$ipe_month.'-'.$ipe_day;
-				}
-				$today = date('Y-m-d');
-				
-				$complete = 0;
-				$incomplete = 0;
-				
-				if($row['company_type_id'] == '2'){
-					if($row['has_insurance_public_liability'] == 1){
-						if($row['public_liability_expiration'] !== ""){
-							if($ple_date <= $today){
-								$incomplete = 1;
+			if($row['workers_compensation_expiration'] !== ""){
+				$wce_raw_data = $row['workers_compensation_expiration'];
+				$wce_arr =  explode('/',$wce_raw_data);
+				$wce_day = $wce_arr[0];
+				$wce_month = $wce_arr[1];
+				$wce_year = $wce_arr[2];
+				$wce_date = $wce_year.'-'.$wce_month.'-'.$wce_day;
+			}
+
+			if($row['income_protection_expiration'] !== ""){
+				$ipe_raw_data = $row['income_protection_expiration'];
+				$ipe_arr =  explode('/',$ipe_raw_data);
+				$ipe_day = $ipe_arr[0];
+				$ipe_month = $ipe_arr[1];
+				$ipeyear = $ipe_arr[2];
+				$ipe_date = $ipe_year.'-'.$ipe_month.'-'.$ipe_day;
+			}
+			$today = date('Y-m-d');
+			
+			$complete = 0;
+			$incomplete = 0;
+			
+			if($row['company_type_id'] == '2'){
+				if($row['has_insurance_public_liability'] == 1){
+					if($row['public_liability_expiration'] !== ""){
+						if($ple_date <= $today){
+							$incomplete = 1;
+						}else{
+							if($row['has_insurance_workers_compensation'] == 1){
+								if($row['workers_compensation_expiration'] !== ""){
+									if($wce_date <= $today){
+										$incomplete = 1;
+									}else{
+										$complete = 1;
+									}
+								}else{
+									$incomplete = 1;
+								}
 							}else{
-								if($row['has_insurance_workers_compensation'] == 1){
-									if($row['workers_compensation_expiration'] !== ""){
-										if($wce_date <= $today){
+								if($row['has_insurance_income_protection'] == 1){
+									if($row['income_protection_expiration'] !== ""){
+										if($ipe_date <= $today){
 											$incomplete = 1;
 										}else{
 											$complete = 1;
@@ -2923,72 +2794,51 @@ class Works extends MY_Controller{
 										$incomplete = 1;
 									}
 								}else{
-									if($row['has_insurance_income_protection'] == 1){
-										if($row['income_protection_expiration'] !== ""){
-											if($ipe_date <= $today){
-												$incomplete = 1;
-											}else{
-												$complete = 1;
-											}
-										}else{
-											$incomplete = 1;
-										}
-									}else{
-										$incomplete = 1;
-									}
+									$incomplete = 1;
 								}
 							}
-						}else{
-							$incomplete = 1;
 						}
-						
 					}else{
 						$incomplete = 1;
 					}
-				}
-
-				$admin_q = $this->admin_m->fetch_admin_defaults();
-				foreach ($admin_q->result_array() as $admin_row){
-					$cqr_notes_no_insurance = $admin_row['cqr_notes_no_insurance'];
-					$cqr_notes_w_insurance = $admin_row['cqr_notes_w_insurance'];
-				}
-				
-				if($row['company_type_id'] == '2'){
-					if($complete == 1){
-						$data['cqr_notes_insurance'] = $cqr_notes_w_insurance;
-						$data['insurance_stat'] = 1;
-					}else{
-						$data['cqr_notes_insurance'] = $cqr_notes_no_insurance;
-						$data['insurance_stat'] = 0;
-					}
+					
 				}else{
+					$incomplete = 1;
+				}
+			}
+
+			$admin_q = $this->admin_m->fetch_admin_defaults();
+			foreach ($admin_q->result_array() as $admin_row){
+				$cqr_notes_no_insurance = $admin_row['cqr_notes_no_insurance'];
+				$cqr_notes_w_insurance = $admin_row['cqr_notes_w_insurance'];
+			}
+			
+			if($row['company_type_id'] == '2'){
+				if($complete == 1){
 					$data['cqr_notes_insurance'] = $cqr_notes_w_insurance;
 					$data['insurance_stat'] = 1;
+				}else{
+					$data['cqr_notes_insurance'] = $cqr_notes_no_insurance;
+					$data['insurance_stat'] = 0;
 				}
-
-			   //--- For Insurance ------
-			   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
-			   foreach ($comp_add_q->result_array() as $comp_add_row){
-			   		if($comp_add_row['unit_level'] == ""){
-			   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
-			   		}else{
-			   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
-			   		}
-					$data['comp_address_2nd'] = $comp_add_row['street'];
-					$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
-			   }
-			   $data['abn'] = $row['abn'];
+			}else{
+				$data['cqr_notes_insurance'] = $cqr_notes_w_insurance;
+				$data['insurance_stat'] = 1;
 			}
-		else:
-			$data['work_company_name'] = $work_company_name;
-			$data['cqr_notes_insurance'] = "";
-			$data['insurance_stat'] = 0;
-			$data['comp_address_1st'] = "";
-			$data['comp_address_2nd'] = "";
-			$data['comp_address_3rd'] = "";
-			$data['abn'] = "";
 
-		endif;
+		   //--- For Insurance ------
+		   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
+		   foreach ($comp_add_q->result_array() as $comp_add_row){
+		   		if($comp_add_row['unit_level'] == ""){
+		   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
+		   		}else{
+		   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
+		   		}
+				$data['comp_address_2nd'] = $comp_add_row['street'];
+				$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
+		   }
+		   $data['abn'] = $row['abn'];
+		}
 		
 		$work_attachement_q = $this->works_m->fetch_work_attachment_type($work_id);
 
@@ -3005,7 +2855,6 @@ class Works extends MY_Controller{
 		$proj_id = $_GET['project_id'];//$this->uri->segment(3);
 		$work_id = $_GET['work_id'];//$this->uri->segment(4);
 		$contractor_id = $_GET['comp_id'];//$this->uri->segment(5);
-		$is_pending = $_GET['is_pending'];
 		$is_joinery = strstr($work_id, '-');
 		if($is_joinery == ""){
 			$joinery_id = "";
@@ -3242,19 +3091,10 @@ class Works extends MY_Controller{
 		$proj_q = $this->projects_m->select_particular_project($proj_id);
 		$data['project_t'] = $proj_q;
 		foreach ($proj_q->result_array() as $row){
-			$is_pending_client = $row['is_pending_client'];
-
 			$joinery_selected_sender = $row['joinery_selected_sender'];
 			$data['proj_name'] = $row['project_name']; 
 			$tenancyno = $row['shop_tenancy_number'].' '.$row['shop_name'];
 		   	$primary_contact_person_id = $row['primary_contact_person_id'];
-		   	if($is_pending_client == 0):
-		   		$primary_contact_person_id = $row['primary_contact_person_id'];
-		   		$pending_cont_number = "";
-		   	else:
-		   		$primary_contact_person_id = 0;
-		   		$pending_cont_number = $row['pending_cont_number'];
-		   	endif;
 		   	$client_id = $row['client_id'];
 			$job_type = $row['job_type'];
 			$data['start_date'] = $row['date_site_commencement'];
@@ -3374,24 +3214,20 @@ class Works extends MY_Controller{
 		   	$data['has_attachment'] = $has_attachment;
 		}
 
-		if($is_pending_client == 0):
-			$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
-			foreach ($comp_q->result_array() as $row){
-				//$data['contact_person'] = $row['first_name']." ".$row['last_name'];
-				//$email_id = $row['email_id'];
-				$comp_contact_number_id = $row['contact_number_id'];
-				$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
-				foreach ($comp_phone_q->result_array() as $phone_row){
-					if($phone_row['office_number'] == ""):
-						$data['comp_office_number'] = "";
-					else:
-						$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
-					endif;
-				}
+		$comp_q = $this->company_m->fetch_all_contact_persons($primary_contact_person_id);
+		foreach ($comp_q->result_array() as $row){
+			//$data['contact_person'] = $row['first_name']." ".$row['last_name'];
+			//$email_id = $row['email_id'];
+			$comp_contact_number_id = $row['contact_number_id'];
+			$comp_phone_q = $this->company_m->fetch_phone($comp_contact_number_id);
+			foreach ($comp_phone_q->result_array() as $phone_row){
+				if($phone_row['office_number'] == ""):
+					$data['comp_office_number'] = "";
+				else:
+					$data['comp_office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
+				endif;
 			}
-		else:
-			$data['comp_office_number'] = $pending_cont_number;
-		endif;
+		}
 		//$email_q = $this->company_m->fetch_email($email_id);
 		//foreach ($email_q->result_array() as $row){
 		 //  $data['email'] = $row['general_email'];
@@ -3399,91 +3235,89 @@ class Works extends MY_Controller{
 		
 		
 			
-		$work_sel_cont_q = $this->works_m->display_works_selected_contractor($is_pending,$work_id,$contractor_id);
+		$work_sel_cont_q = $this->works_m->display_works_selected_contractor($work_id,$contractor_id);
 		foreach ($work_sel_cont_q->result_array() as $work_cont_row){
-			if($is_pending == 0):
-			
-				$work_cont_contact_person_id = $work_cont_row['contact_person_id'];
-				$work_cont_person_q = $this->company_m->fetch_all_contact_persons($work_cont_contact_person_id);
-				foreach ($work_cont_person_q->result_array() as $work_cont_person_row){
-				    $data['attention'] = $work_cont_person_row['first_name']." ".$work_cont_person_row['last_name'];
-					   
-					$contact_number_id = $work_cont_person_row['contact_number_id'];
-					$phon_q = $this->company_m->fetch_phone($contact_number_id);
-					foreach ($phon_q->result_array() as $phone_row){
-						if($phone_row['office_number'] == ""):
-							$data['office_number'] = "";
-						else:
-							$data['office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
-						endif;
-						
-					}
+			$work_cont_contact_person_id = $work_cont_row['contact_person_id'];
+			$work_cont_person_q = $this->company_m->fetch_all_contact_persons($work_cont_contact_person_id);
+			foreach ($work_cont_person_q->result_array() as $work_cont_person_row){
+			    $data['attention'] = $work_cont_person_row['first_name']." ".$work_cont_person_row['last_name'];
+				   
+				$contact_number_id = $work_cont_person_row['contact_number_id'];
+				$phon_q = $this->company_m->fetch_phone($contact_number_id);
+				foreach ($phon_q->result_array() as $phone_row){
+					if($phone_row['office_number'] == ""):
+						$data['office_number'] = "";
+					else:
+						$data['office_number'] = "(".$phone_row['area_code'].") ".$phone_row['office_number'];
+					endif;
+					
+				}
 
-					$contact_email_id = $work_cont_person_row['email_id'];
-					$email_q = $this->company_m->fetch_email($contact_email_id);
-					foreach ($email_q->result_array() as $email_row){
-						$data['cont_email'] = $email_row['general_email'];
-					}
+				$contact_email_id = $work_cont_person_row['email_id'];
+				$email_q = $this->company_m->fetch_email($contact_email_id);
+				foreach ($email_q->result_array() as $email_row){
+					$data['cont_email'] = $email_row['general_email'];
 				}
-			else:
-				$pending_comp_q =  $this->company_m->fetch_selcted_temporary_comp($contractor_id);
-				foreach ($pending_comp_q->result_array() as $pending_comp_row){
-					$work_company_name = $pending_comp_row['company_name'];
-					$data['attention'] = $pending_comp_row['contact_person_fname']." ".$pending_comp_row['contact_person_sname'];
-					$data['office_number'] = $pending_comp_row['contact_number'];
-					$data['cont_email'] = $pending_comp_row['email'];
-				}
-			endif;
+			}
 		}
 
-		if($is_pending == 0):
+		$comp_det_q = $this->company_m->display_company_detail_by_id($contractor_id);
+		foreach ($comp_det_q->result_array() as $row){
+		   $data['work_company_name'] = $row['company_name'];
+		   $address_id = $row['address_id'];
+
+		   //--- For Insurance ------
+		   if($row['public_liability_expiration'] !== ""){
+				$ple_raw_data = $row['public_liability_expiration'];
+				$ple_arr =  explode('/',$ple_raw_data);
+				$ple_day = $ple_arr[0];
+				$ple_month = $ple_arr[1];
+				$ple_year = $ple_arr[2];
+				$ple_date = $ple_year.'-'.$ple_month.'-'.$ple_day;
+			}
+
+			if($row['workers_compensation_expiration'] !== ""){
+				$wce_raw_data = $row['workers_compensation_expiration'];
+				$wce_arr =  explode('/',$wce_raw_data);
+				$wce_day = $wce_arr[0];
+				$wce_month = $wce_arr[1];
+				$wce_year = $wce_arr[2];
+				$wce_date = $wce_year.'-'.$wce_month.'-'.$wce_day;
+			}
+
+			if($row['income_protection_expiration'] !== ""){
+				$ipe_raw_data = $row['income_protection_expiration'];
+				$ipe_arr =  explode('/',$ipe_raw_data);
+				$ipe_day = $ipe_arr[0];
+				$ipe_month = $ipe_arr[1];
+				$ipeyear = $ipe_arr[2];
+				$ipe_date = $ipe_year.'-'.$ipe_month.'-'.$ipe_day;
+			}
+			$today = date('Y-m-d');
 			
-			$comp_det_q = $this->company_m->display_company_detail_by_id($contractor_id);
-			foreach ($comp_det_q->result_array() as $row){
-			   $data['work_company_name'] = $row['company_name'];
-			   $address_id = $row['address_id'];
-
-			   //--- For Insurance ------
-			   if($row['public_liability_expiration'] !== ""){
-					$ple_raw_data = $row['public_liability_expiration'];
-					$ple_arr =  explode('/',$ple_raw_data);
-					$ple_day = $ple_arr[0];
-					$ple_month = $ple_arr[1];
-					$ple_year = $ple_arr[2];
-					$ple_date = $ple_year.'-'.$ple_month.'-'.$ple_day;
-				}
-
-				if($row['workers_compensation_expiration'] !== ""){
-					$wce_raw_data = $row['workers_compensation_expiration'];
-					$wce_arr =  explode('/',$wce_raw_data);
-					$wce_day = $wce_arr[0];
-					$wce_month = $wce_arr[1];
-					$wce_year = $wce_arr[2];
-					$wce_date = $wce_year.'-'.$wce_month.'-'.$wce_day;
-				}
-
-				if($row['income_protection_expiration'] !== ""){
-					$ipe_raw_data = $row['income_protection_expiration'];
-					$ipe_arr =  explode('/',$ipe_raw_data);
-					$ipe_day = $ipe_arr[0];
-					$ipe_month = $ipe_arr[1];
-					$ipeyear = $ipe_arr[2];
-					$ipe_date = $ipe_year.'-'.$ipe_month.'-'.$ipe_day;
-				}
-				$today = date('Y-m-d');
-				
-				$complete = 0;
-				$incomplete = 0;
-				
-				if($row['company_type_id'] == '2'){
-					if($row['has_insurance_public_liability'] == 1){
-						if($row['public_liability_expiration'] !== ""){
-							if($ple_date <= $today){
-								$incomplete = 1;
+			$complete = 0;
+			$incomplete = 0;
+			
+			if($row['company_type_id'] == '2'){
+				if($row['has_insurance_public_liability'] == 1){
+					if($row['public_liability_expiration'] !== ""){
+						if($ple_date <= $today){
+							$incomplete = 1;
+						}else{
+							if($row['has_insurance_workers_compensation'] == 1){
+								if($row['workers_compensation_expiration'] !== ""){
+									if($wce_date <= $today){
+										$incomplete = 1;
+									}else{
+										$complete = 1;
+									}
+								}else{
+									$incomplete = 1;
+								}
 							}else{
-								if($row['has_insurance_workers_compensation'] == 1){
-									if($row['workers_compensation_expiration'] !== ""){
-										if($wce_date <= $today){
+								if($row['has_insurance_income_protection'] == 1){
+									if($row['income_protection_expiration'] !== ""){
+										if($ipe_date <= $today){
 											$incomplete = 1;
 										}else{
 											$complete = 1;
@@ -3492,73 +3326,52 @@ class Works extends MY_Controller{
 										$incomplete = 1;
 									}
 								}else{
-									if($row['has_insurance_income_protection'] == 1){
-										if($row['income_protection_expiration'] !== ""){
-											if($ipe_date <= $today){
-												$incomplete = 1;
-											}else{
-												$complete = 1;
-											}
-										}else{
-											$incomplete = 1;
-										}
-									}else{
-										$incomplete = 1;
-									}
+									$incomplete = 1;
 								}
 							}
-						}else{
-							$incomplete = 1;
 						}
-						
 					}else{
 						$incomplete = 1;
 					}
-				}
-
-				$admin_q = $this->admin_m->fetch_admin_defaults();
-				foreach ($admin_q->result_array() as $admin_row){
-					$cqr_notes_no_insurance = $admin_row['cqr_notes_no_insurance'];
-					$cqr_notes_w_insurance = $admin_row['cqr_notes_w_insurance'];
-				}
-				
-				if($row['company_type_id'] == '2'){
-					if($complete == 1){
-						$data['cqr_notes_insurance'] = $cqr_notes_w_insurance;
-						$data['insurance_stat'] = 1;
-					}else{
-						$data['cqr_notes_insurance'] = $cqr_notes_no_insurance;
-						$data['insurance_stat'] = 0;
-					}
+					
 				}else{
+					$incomplete = 1;
+				}
+			}
+
+			$admin_q = $this->admin_m->fetch_admin_defaults();
+			foreach ($admin_q->result_array() as $admin_row){
+				$cqr_notes_no_insurance = $admin_row['cqr_notes_no_insurance'];
+				$cqr_notes_w_insurance = $admin_row['cqr_notes_w_insurance'];
+			}
+			
+			if($row['company_type_id'] == '2'){
+				if($complete == 1){
 					$data['cqr_notes_insurance'] = $cqr_notes_w_insurance;
 					$data['insurance_stat'] = 1;
+				}else{
+					$data['cqr_notes_insurance'] = $cqr_notes_no_insurance;
+					$data['insurance_stat'] = 0;
 				}
-
-			   //--- For Insurance ------
-
-			   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
-			   foreach ($comp_add_q->result_array() as $comp_add_row){
-			   		if($comp_add_row['unit_level'] == ""){
-			   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
-			   		}else{
-			   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
-			   		}
-					$data['comp_address_2nd'] = $comp_add_row['street'];
-					$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
-			   }
-			   $data['abn'] = $row['abn'];
+			}else{
+				$data['cqr_notes_insurance'] = $cqr_notes_w_insurance;
+				$data['insurance_stat'] = 1;
 			}
-		else:
-			$data['work_company_name'] = $work_company_name;
-			$data['cqr_notes_insurance'] = "";
-			$data['insurance_stat'] = 0;
-			$data['comp_address_1st'] = "";
-			$data['comp_address_2nd'] = "";
-			$data['comp_address_3rd'] = "";
-			$data['abn'] = "";
 
-		endif;
+		   //--- For Insurance ------
+
+		   $comp_add_q = $this->company_m->fetch_complete_detail_address($address_id);
+		   foreach ($comp_add_q->result_array() as $comp_add_row){
+		   		if($comp_add_row['unit_level'] == ""){
+		   			$data['comp_address_1st'] = $comp_add_row['unit_number'];
+		   		}else{
+		   			$data['comp_address_1st'] = $comp_add_row['unit_level']." / ".$comp_add_row['unit_number'];
+		   		}
+				$data['comp_address_2nd'] = $comp_add_row['street'];
+				$data['comp_address_3rd'] = ucfirst(strtolower($comp_add_row['suburb']))." ".$comp_add_row['shortname']." ".$comp_add_row['postcode'];
+		   }
+		   $data['abn'] = $row['abn'];
+		}
 		
 		$work_attachement_q = $this->works_m->fetch_work_attachment_type($work_id);
 
@@ -3607,9 +3420,8 @@ class Works extends MY_Controller{
 			   }
 
 
-			   $is_pending = 0;
 
-			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($is_pending,$work_id,$company_client_id);
+			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($work_id,$company_client_id);
 			   foreach ($work_sel_cont_q->result_array() as $work_cont_row){
 			   		$work_cont_contact_person_id = $work_cont_row['contact_person_id'];
 			   		$work_cont_person_q = $this->company_m->fetch_all_contact_persons($work_cont_contact_person_id);
@@ -3688,7 +3500,6 @@ class Works extends MY_Controller{
 				if($is_deliver_office == 0){
 					$site_address_id= $row['site_add'];
 				}else{
-					$tenancyno = "";
 					$site_address_id= $physical_address;
 				}
 
@@ -3933,8 +3744,8 @@ class Works extends MY_Controller{
 			   }
 			   
 			   $data['work_desc'] = $row['joinery_name'];
-			   $is_pending = 0;
-			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($is_pending,$work_joinery_id,$company_client_id);
+			   
+			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($work_joinery_id,$company_client_id);
 			   foreach ($work_sel_cont_q->result_array() as $work_cont_row){
 			   		$work_cont_contact_person_id = $work_cont_row['contact_person_id'];
 			   		$work_cont_person_q = $this->company_m->fetch_all_contact_persons($work_cont_contact_person_id);
@@ -4248,8 +4059,8 @@ class Works extends MY_Controller{
 			   }else{
 			   		$data['work_desc'] = str_replace("&apos;","'",$row['supplier_cat_name']);
 			   }
-			   $is_pending = 0;
-			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($is_pending,$work_id,$company_client_id);
+
+			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($work_id,$company_client_id);
 			   foreach ($work_sel_cont_q->result_array() as $work_cont_row){
 			   		$cpo_created = $work_cont_row['cpo_created'];
 			   		if($cpo_created == 1){
@@ -4515,7 +4326,7 @@ class Works extends MY_Controller{
 	    		$date_upload = date('d/m/Y');
 	    		$user_id = $this->session->userdata('user_id');
 	    		//echo $work_company_name;
-	    		$this->projects_m->insert_uploaded_file($file_name_set,$file_type,$proj_id,0,$date_upload,$user_id);
+	    		$this->projects_m->insert_uploaded_file($file_name_set,$file_type,$proj_id,$date_upload,$user_id);
 	    		$this->load->view('cpo_for_storage_pdf', $data);
 	    	// }
 			
@@ -4544,8 +4355,8 @@ class Works extends MY_Controller{
 			   }
 			   
 			   $data['work_desc'] = $row['joinery_name'];
-			   $is_pending = 0;
-			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($is_pending,$work_joinery_id,$company_client_id);
+			   
+			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($work_joinery_id,$company_client_id);
 			   foreach ($work_sel_cont_q->result_array() as $work_cont_row){
 			   		$cpo_created = $work_cont_row['cpo_created'];
 			   		if($cpo_created == 1){
@@ -4805,7 +4616,7 @@ class Works extends MY_Controller{
 	    		$date_upload = date('d/m/Y');
 	    		
 	    		$user_id = $this->session->userdata('user_id');
-	    		$this->projects_m->insert_uploaded_file($file_name_set,$file_type,$proj_id,$date_upload,0,$user_id);
+	    		$this->projects_m->insert_uploaded_file($file_name_set,$file_type,$proj_id,$date_upload,$user_id);
 	    		
 	    		$this->load->view('cpo_for_storage_pdf', $data);
 	    	// }
@@ -4858,8 +4669,7 @@ class Works extends MY_Controller{
 			   }else{
 			   		$data['work_desc'] = str_replace("&apos;","'",$row['supplier_cat_name']);
 			   }
-			   $is_pending = 0;
-			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($is_pending,$work_id,$company_client_id);
+			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($work_id,$company_client_id);
 			   foreach ($work_sel_cont_q->result_array() as $work_cont_row){
 			   		$work_cont_contact_person_id = $work_cont_row['contact_person_id'];
 			   		$work_cont_person_q = $this->company_m->fetch_all_contact_persons($work_cont_contact_person_id);
@@ -5141,8 +4951,7 @@ class Works extends MY_Controller{
 			   
 			   $data['work_desc'] = $row['joinery_name'];
 			   
-			   $is_pending = 0;
-			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($is_pending,$work_joinery_id,$company_client_id);
+			   $work_sel_cont_q = $this->works_m->display_works_selected_contractor($work_joinery_id,$company_client_id);
 			   foreach ($work_sel_cont_q->result_array() as $work_cont_row){
 			   		$work_cont_contact_person_id = $work_cont_row['contact_person_id'];
 			   		$work_cont_person_q = $this->company_m->fetch_all_contact_persons($work_cont_contact_person_id);
@@ -6672,8 +6481,6 @@ class Works extends MY_Controller{
 			}
 		}
 
-		$result = [];
-
 		if($company_num < $con_sup_num_rows){
 			
 			$contractor_exist = $company_num;
@@ -6949,28 +6756,5 @@ class Works extends MY_Controller{
 		$data['proj_id'] = $proj_id;
 		$data['project_t'] = $proj_q;
 		$this->load->view('safe_work_observation_pdf', $data);
-	}
-
-	function insert_work_pending_company(){
-		$data = json_decode(file_get_contents("php://input"), true);
-		$works_id = $data['works_id'];
-		$company_id = $data['company_id'];
-		foreach ($company_id as $value) {
-		 	$this->works_m->insert_work_pending_company($works_id,$value);
-		}
-		
-	}
-
-	function update_temporary_cont_sup(){
-		$data = json_decode(file_get_contents("php://input"), true);
-		$work_contractor_id = $data['work_contractor_id'];
-		$temp_comp_id = $data['temp_comp_id'];
-		$this->works_m->update_temporary_cont_sup($work_contractor_id,$temp_comp_id);
-	}
-	
-	function remove_temporary_cont_sup(){
-		$data = json_decode(file_get_contents("php://input"), true);
-		$work_contractor_id = $data['work_contractor_id'];
-		$this->works_m->remove_temporary_cont_sup($work_contractor_id);
 	}
 }

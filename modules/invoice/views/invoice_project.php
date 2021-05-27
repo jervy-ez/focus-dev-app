@@ -116,7 +116,9 @@
          Total Paid: $<?php echo number_format($this->invoice->get_total_amount_paid_project($project_id),2); ?></h4>
       </div>
 
-      <label>Invoice</label><span>(<a href="#" data-placement="right" class="popover-test" title="" data-content="This is where the works of the selected Project are listed." data-original-title="Welcome">?</a>)</span>
+      <label>Invoice</label>
+      <span class="fa fa-film pointer play_invoice_vids" data-toggle="modal" data-target="#help_video_group"> </span>
+
       <p>This is where the invoicing of the project happens. </p>
     </div>
 

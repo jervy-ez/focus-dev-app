@@ -39,7 +39,6 @@ function SetLogo($logo,$comp_name,$tel_no,$po_box,$acn,$focus_suburb,$focus_abn,
   $this->proj_id = $proj_id;
   $this->proj_name = $proj_name;
   $this->compname = $compname;
-  
   $work_company_name = str_replace("&apos;", "'", $work_company_name);
   $work_company_name = str_replace("&amp;", "&", $work_company_name);
   $this->work_company_name = $work_company_name;
@@ -358,12 +357,10 @@ if($has_attachment == 0){
     $pdf->Cell(50,5,"Please click link below to download attachments:");
     $pdf->Ln(5);
     $pdf->Cell(5);
-    $pdf->Link(15,205,80,10,"https://sojourn.focusshopfit.com.au/project_attachments/proj_attachment?project_id=".$proj_id);
-    //$pdf->Link(15,205,80,10,$proj_attach_db_link);
+    $pdf->Link(15,205,80,10,$proj_attach_db_link);
     $pdf->SetFont('Arial','B',10);
     $pdf->SetTextColor(0,0,255);
-    $pdf->MultiCell(80,5,"https://sojourn.focusshopfit.com.au/project_attachments/proj_attachment?project_id=".$proj_id,0,"L");
-    //$pdf->MultiCell(80,5,$proj_attach_db_link,0,"L");
+    $pdf->MultiCell(80,5,$proj_attach_db_link,0,"L");
     $pdf->SetFont('Arial','',11);
     $pdf->SetTextColor('0,0,0');
 }

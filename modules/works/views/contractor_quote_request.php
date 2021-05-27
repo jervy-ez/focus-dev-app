@@ -1,13 +1,7 @@
 <?php
 foreach ($project_t->result_array() as $row){
-  $client_id = $row['client_id'];
-  $is_pending_client = $row['is_pending_client'];
-  if($is_pending_client == 0):
-    $compname = $row['company_name'];
-  else:
-    $compname = $row['pending_comp_name'];
-  endif;
-  $compname = str_replace("&apos;", "'", $compname);
+  $client_id = $row['company_id'];
+  $compname = str_replace("&apos;", "'", $row['company_name']);
   $company_name = str_replace(' ', '', $compname);
   $company_name = str_replace('/', '', $company_name);
   $filepath = "reports/".$client_id."_".$company_name."/".$proj_id."/CQR/".$work_id."/";
@@ -366,10 +360,10 @@ if($has_attachment == 0){
     $pdf->Cell(50,5,"Please click link below to download attachments:");
     $pdf->Ln(5);
     $pdf->Cell(5);
-    $pdf->Link(15,205,80,10,"https://sojourn.focusshopfit.com.au/project_attachments/proj_attachment?project_id=".$proj_id);
+    $pdf->Link(15,205,80,10,"https://sojourn.focusshopfit.com.au/project_attachments?project_id=".$proj_id);
     $pdf->SetFont('Arial','B',10);
     $pdf->SetTextColor(0,0,255);
-    $pdf->MultiCell(80,5,"https://sojourn.focusshopfit.com.au/project_attachments/proj_attachment?project_id=".$proj_id,0,"L");
+    $pdf->MultiCell(80,5,"https://sojourn.focusshopfit.com.au/project_attachments?project_id=".$proj_id,0,"L");
     $pdf->SetFont('Arial','',11);
     $pdf->SetTextColor('0,0,0');
 }

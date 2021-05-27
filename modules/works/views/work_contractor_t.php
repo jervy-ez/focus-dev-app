@@ -137,7 +137,7 @@
 			?>
 			<tr class="cont-<?php echo $row['works_contrator_id']; ?>" <?php if($is_selected == 1){ ?>style = "color: #CC6666"<?php } ?>>
 				<td class="item-cont-<?php echo $row['works_contrator_id']; ?>-comp">
-					<?php if($row['cs_is_pending'] == 0): ?>
+					
 						<?php if($job_date !== ""): ?>
 							<?php if($is_variation == 0): ?>
 								<?php if($is_reconciled == 0): ?>
@@ -149,12 +149,7 @@
 								<?php endif; ?>
 							<?php endif; ?>
 						<?php endif; ?>
-					<?php endif; ?>
-					<?php if($row['cs_is_pending'] == 0): ?>
-					<a href="#" title = "<?php echo $contact_name.'  ('.$contact_no.')' ?>" <?php if($is_variation == 0){ ?>onClick = "selcontractor(<?php echo $row['works_contrator_id'] ?>)" data-toggle="modal" data-target="#addContractor_Modal"<?php }else{ ?> onClick = "sel_var_contractor(<?php echo $row['works_contrator_id'] ?>)" data-toggle="modal" data-target="#add_var_Contractor_Modal"<?php }?> id = "work_contractor_name" style = "color: <?php echo $font_color ?>"><?php echo $row['comp_name'] ?></a>
-					<?php else: ?>
-					<a href="#" onClick = "select_contractor(<?php echo $row['works_contrator_id'] ?>,<?php echo $row['company_id'] ?>)" data-toggle="modal" data-target="#frm_pending_cont_sup_update" id = "work_contractor_name" style = "color: #FC8114"><?php echo $row['comp_name'] ?></a>
-					<?php endif; ?>
+					<a href="#" title = "<?php echo $contact_name.'  ('.$contact_no.')' ?>" <?php if($is_variation == 0){ ?>onClick = "selcontractor(<?php echo $row['works_contrator_id'] ?>)" data-toggle="modal" data-target="#addContractor_Modal"<?php }else{ ?> onClick = "sel_var_contractor(<?php echo $row['works_contrator_id'] ?>)" data-toggle="modal" data-target="#add_var_Contractor_Modal"<?php }?> id = "work_contractor_name" style = "color: <?php echo $font_color ?>"><?php echo $row['company_name'] ?></a>
 					
 					<?php if($row['contractor_notes'] !== ""): ?>
 					<span class="badge alert-success pointer pull-right tooltip-enabled" title = "<?php echo $row['contractor_notes'] ?>"><i class="fa fa-pencil-square-o"></i></span>

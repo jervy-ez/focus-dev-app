@@ -56,7 +56,7 @@
 							<input type="radio" id = "selcomp" name = "selcomp" value = "<?php echo $row['works_contrator_id'] ?>" <?php if($is_selected == 1){ ?>checked="checked"<?php } ?> onClick = "sel_var_work_con(<?php echo $row['works_contrator_id'] ?>)" >
 						<?php endif; ?>
 					<?php endif; ?>
-					<a href="#" title = "<?php echo $contact_name.'  ('.$contact_no.')' ?>" <?php if($is_variation == 0){ ?>onClick = "selcontractor(<?php echo $row['works_contrator_id'] ?>)" data-toggle="modal" data-target="#addContractor_Modal"<?php }else{ ?> onClick = "sel_var_contractor(<?php echo $row['works_contrator_id'] ?>)" data-toggle="modal" data-target="#add_var_Contractor_Modal"<?php }?>><?php echo $row['comp_name'] ?></a>
+					<a href="#" title = "<?php echo $contact_name.'  ('.$contact_no.')' ?>" <?php if($is_variation == 0){ ?>onClick = "selcontractor(<?php echo $row['works_contrator_id'] ?>)" data-toggle="modal" data-target="#addContractor_Modal"<?php }else{ ?> onClick = "sel_var_contractor(<?php echo $row['works_contrator_id'] ?>)" data-toggle="modal" data-target="#add_var_Contractor_Modal"<?php }?>><?php echo $row['company_name'] ?></a>
 					
 					<?php if($row['contractor_notes'] !== ""): ?>
 					<span class="badge alert-success pointer pull-right tooltip-enabled" title = "<?php echo $row['contractor_notes'] ?>"><i class="fa fa-pencil-square-o"></i></span>

@@ -639,7 +639,8 @@
 
 
 								</div>
-								<label style="margin-top: 0px;"><?php echo $curr_page_name;   ?>  <?php echo $screen; ?></label><span> (<a href="#" data-placement="right" class="popover-test" title="" data-content="Hello there mate! Welcome to the projects screen." data-original-title="Welcome">?</a>)</span>
+								<label style="margin-top: 0px;"><?php echo $curr_page_name;   ?>  <?php echo $screen; ?></label>
+<span class="fa fa-film pointer open_help_vids_mpd" data-toggle="modal" data-target="#help_video_group"> </span>
 								<p>This is where the projects are listed. 
 
 
@@ -1208,4 +1209,59 @@ function edit_save(obj){
     app.getImageLogo();
   }
 </script>
+
+
+<!-- _________________________________ HELP VIDEO SETUP _________________________________ -->
+<?php $this->load->module('help_videos'); ?>
+<div id="help_video_group" class="modal fade" tabindex="-1" data-width="760" >
+  <div class="modal-dialog" style="width:85%;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <ul id="myTab" class="nav nav-tabs pull-right" style="border-bottom: 0;">
+          <li class="now_playing_tab_btn"><a href="#now_playing" style="color:#555; display:none;" data-toggle="tab"><i class="fa fa-globe fa-lg"></i> Now Playing</a></li>
+          <li class="help_videos_tab_btn active"><a href="#help_videos" style="color:#555;" data-toggle="tab" tabindex="20"><i class="fa fa-inbox fa-lg"></i> Videos</a></li> 
+        </ul>
+        <h4 class="modal-title"><em id="" class="fa fa-film"></em> Help Videos </h4>
+      </div>
+      <div class="modal-body" style="margin:0 !important; padding:0 !important;">
+        <div class="tab-content">
+          <div id="now_playing" class="tab-pane fade clearfix  in">
+            <iframe style="width: 100%;height: 70%;background-repeat: no-repeat;background-color:#000;background-image: url('<?php echo base_url(); ?>uploads/misc/loading_bub.gif');background-position: center;background-size: 50px;" class="group_video_frame" ></iframe>
+          </div>
+          <div id="help_videos" class="tab-pane fade clearfix active in">
+            <div id="" class="m-10 p-bottom-10 clearfix">
+            <p id="" class="m-left-5 p-bottom-10 m-top-5 clearfix" style="font-weight: bold;    font-size: 16px;    border-bottom: 1px solid #ccc;">Project Screen Videos</p>
+              <?php $cat_keyword = 'projects'; $sub_cat_keyword = 'index'; ?>
+              <?php $this->help_videos->get_help_videos($cat_keyword,$sub_cat_keyword); ?>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+$('.mod_video_toggle').click(function(){
+ $('.group_video_frame').attr('src','');
+  var video_details_arr = $(this).find('.video_details').text().split('`');
+  setTimeout(function(){
+    $('.group_video_frame').attr('src',video_details_arr[1]);
+  },2000);
+  $('li.now_playing_tab_btn a').show().trigger('click');
+});
+
+$('.open_help_vids_mpd').click(function(){
+  $('li.help_videos_tab_btn a').trigger('click');
+    $('li.now_playing_tab_btn a').hide();
+});
+</script>
+<!-- _________________________________ HELP VIDEO SETUP _________________________________ -->
+
+
+
+
+
+
+
 <?php $this->bulletin_board->list_latest_post(); ?>

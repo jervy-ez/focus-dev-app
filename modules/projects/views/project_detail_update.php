@@ -172,26 +172,12 @@
 																<?php endif; ?>
 															</select>
 
-															<?php if($this->input->post('contact_person')): ?>
-																<script type="text/javascript">$('select#contact_person').val('<?php echo $this->input->post('contact_person'); ?>');</script>
-															<?php else: ?>
-																<script type="text/javascript">$('select#contact_person').val('<?php echo $contact_person_id; ?>');</script>
-
-															<?php endif; ?>
+															
 
 
 														</div>
 													</div>
-													<script type="text/javascript">
-
-														$('select#company_prg').on("change", function(e) {
-															var sub_client = $(this).val();
-
-															$('select#sub_client_id').val(sub_client);
-
-														});
-
-													</script>
+													
 												</div>
 
 												<div v-show="!client_type">
@@ -1549,3 +1535,22 @@ suburb
 <?php else: ?>
 	<script type="text/javascript">$("select#job_category").val("<?php echo $job_category; ?>");</script>															
 <?php endif; ?>
+
+<?php if($this->input->post('contact_person')): ?>
+	<script type="text/javascript">$('select#contact_person').val('<?php echo $this->input->post('contact_person'); ?>');</script>
+<?php else: ?>
+	<script type="text/javascript">$('select#contact_person').val('<?php echo $contact_person_id; ?>');</script>
+
+<?php endif; ?>
+
+
+<script type="text/javascript">
+
+	$('select#company_prg').on("change", function(e) {
+		var sub_client = $(this).val();
+
+		$('select#sub_client_id').val(sub_client);
+
+	});
+
+</script>

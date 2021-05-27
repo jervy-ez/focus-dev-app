@@ -13,6 +13,22 @@
 <script src="<?php echo base_url(); ?>js/jmespath.js"></script>
 <script src="<?php echo base_url(); ?>js/axios.min.js"></script>
 
+<?php
+$currentPageUrl = 'http://' . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+//echo "Current page URL " . $currentPageUrl;
+$url_arr = explode("/", $currentPageUrl);
+$num = count($url_arr)-1;
+if($url_arr[$num] == 'ds'){
+	echo '<script>var is_ds = 1</script>';
+}else{
+	echo '<script>var is_ds = 0</script>';
+}
+echo '<script>window.history.pushState("","","'.base_url().'projects/view/'. $project_id.'");</script>';
+// $url = 'http://www.example.com/news?q=string&f=true&id=1233&sort=true';
+// $values = parse_url($url);
+// $host = explode('.',$values['host']);
+// echo $host[1];
+?>
 
 
 <?php
@@ -26,7 +42,7 @@
 				break;
 			case 'variations':
 				$variation_id = $this->uri->segment(4);
-				echo '<script>window.history.pushState("","",'. $variation_id.')</script>';
+				echo '<script>window.history.pushState("","",'. $project_id.')</script>';
 				break;
 			case 'project-schedule':
 				$curr_tab = 'project-schedule';
@@ -149,7 +165,7 @@
 				case 'variations':
 					$curr_tab = 'variations';
 					$variation_id = $this->uri->segment(4);
-					echo '<script>window.history.pushState("","",'. $variation_id.')</script>';
+					echo '<script>window.history.pushState("","",'. $project_id.')</script>';
 					break;
 				case 'works':
 					$curr_tab = 'works';
@@ -419,7 +435,9 @@ $filtered_date = $induction_commencement_date;
 								<div class="col-lg-4 col-md-12 hidden-md hidden-sm hidden-xs">
 									<div class="pad-left-15 clearfix">		
 										<span class="project_gst_percent_inv hide"><?php echo $admin_gst_rate; ?></span>								
-										<label class="project_name"><?php echo $project_name; ?><p>Client: <strong><?php echo $client_company_name; ?></strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Project No.<?php echo $project_id; ?></p></label>
+										<label class="project_name"><?php echo $project_name; ?> 
+										<span class="fa fa-film pointer play_details_vids open_help_vids_mpd" data-toggle="modal" data-target="#help_video_group"> </span>
+										<p>Client: <strong><?php echo $client_company_name; ?></strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Project No.<?php echo $project_id; ?></p></label>
 									</div>
 								</div>
 
@@ -1527,7 +1545,7 @@ $("#site_finish").on("dp.change", function (e) {
 
 
 						<form method="post" action="<?php echo base_url(); ?>projects/process_upload_file_storage" id="upload_doc_file_prj" enctype="multipart/form-data">
-
+							<input type="hidden" name="will_replace_existing" id="will_replace_existing" value = "0">
 							<div class="input-group m-bottom-10" >
 								<span id="" class="input-group-addon"><strong>Document Type*</strong></span>
 								<select id = "doc_type_name" name="doc_type_name" class="form-control doc_type_name" required="" required="" onchange = "document_type_change()">
@@ -1557,7 +1575,7 @@ $("#site_finish").on("dp.change", function (e) {
 			<hr class="no-m" />
 			<div class="modal-body row">
 
-				<h4 class="m-top-0"><i class="fa fa-file-text-o"></i> Uploaded Files</h4>
+				<h4 class="m-top-0"><i class="fa fa-file-text-o"></i> Uploaded Files  <span style = "font-size: 12px;color: blue">Already Replaced</span>&nbsp;&nbsp;&nbsp;&nbsp;<span style = "font-size: 12px;color: red; padding-right:20px">Updated</span></h4></h4>
 				<hr class="no-m" />
 				<div class="col-sm-12" id = "docStorageList" ></div>
 				<?php //echo $this->projects->list_uploaded_files($project_id); ?>
@@ -1615,6 +1633,181 @@ $("#site_finish").on("dp.change", function (e) {
 	</div>
 </div>
 
+<div id="mdl_for_doc_approval" class="modal fade" tabindex="-1" data-width="760">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" v-on:click="close_approve_modal">×</button>
+				<h4 class="modal-title">For Approval</h4>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" id="file_is_set" value = "0">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="col-sm-12 pad-5"><b>For Approval</b></div>
+						<div class="col-sm-12 pad-5" style = "height: 200px; overflow: auto">
+							<table class="table table-hover text-nowrap thead-dark" style = "font-size: 12px">
+				                <thead>
+				                    <tr>
+				                    	<th></th>
+				                    	<th style = "width: 50px">File Name</th>
+				                    	<th>Doc Type</th>
+					                    <th style = "width: 70px"></th>
+				                    </tr>
+				                </thead>
+			                  	<tbody>
+				                    <tr v-for = "doc_for_approval in doc_for_approval">
+				                    	<td>
+				                    		<button type = "button" class = "btn btn-success btn-xs" v-on:click = "view_file(doc_for_approval.file_name,doc_for_approval.storage_files_id)" title = "Preview"><i class="fa fa-eye"></i></button>
+				                    	</td>
+				                     	<td style = "width: 200px; word-break: break-all">
+				                     		{{ doc_for_approval.file_name }}
+				                     		
+				                     	</td>
+				                    	<td>{{ doc_for_approval.doc_type_name }}</td>
+					                    <td style = "width: 70px">
+					                    	<button type = "button" class = "btn btn-warning btn-xs" v-on:click="approve_file(doc_for_approval.storage_files_id)" title = "Approve File">Approve</button>
+					                    	<!-- <button type = "button" class = "btn btn-primary btn-xs pull-right" v-on:click="view_replace" title = "View File For Replacement"><i class="fa fa-arrow-circle-right"></i></button> -->
+					                    	
+					                    </td>
+				                    </tr>
+				                </tbody>
+				            </table>
+			            </div>
+					</div>
+					<div class="col-md-6">
+						<div class="col-sm-12 pad-5"><b>For Replacement</b></div>
+						<div class="col-sm-12 pad-5" style = "height: 200px; overflow: auto">
+							<table class="table table-hover text-nowrap thead-dark" style = "font-size: 12px" v-show = "show_for_replacement">
+				                <thead>
+				                    <tr>
+				                    	<th></th>
+				                    	<th>File Name</th>
+				                    	<th>Doc Type</th>
+				                    </tr>
+				                </thead>
+			                  	<tbody>
+				                    <tr v-for = "doc_for_replacement in doc_for_replacement" v-if="doc_for_replacement.replace_by_storage_files_id == selected_storage_id">
+				                    	<td>
+				                    		<button type = "button" class = "btn btn-success btn-xs" v-on:click = "view_file(doc_for_replacement.file_name,selected_storage_id)"><i class="fa fa-eye"></i></button>
+				                     	</td>
+				                     	<td>{{ doc_for_replacement.file_name }}</td>
+				                    	<td>{{ doc_for_replacement.doc_type_name }}</td>
+				                    </tr>
+				                </tbody>
+				            </table>
+			            </div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 pad-5"><b>Preview</b></div>
+					<div class="col-sm-12 pad-5">
+						<iframe  :src="pdfFile" style = "position: relative; top: 0; left: 0; width: 100%; height: 300px; background: white" v-show = "show_pdf"></iframe>
+					</div>
+				</div>
+			</div>
+			<hr class="no-m"/>
+			<div class="modal-footer row">
+	        	<button type="button" class="btn btn-default" data-dismiss="modal" v-on:click="close_approve_modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	var file_is_set = 0;
+	var app_approval = new Vue({
+	  	el: '#mdl_for_doc_approval',
+	  	data: {
+	  		selected_storage_id: 0,
+	  		doc_for_approval: [],
+	  		doc_for_replacement: [],
+	  		show_pdf: true,
+	  		pdfFile: "",
+	  		show_for_replacement: false
+	  	},
+		mounted: function(){
+			//this.load_doc_for_approval();
+			//this.load_doc_for_replacement();
+		},
+  		filters: {
+		    getDayname: function(date){
+		      return moment(date).format('ddd');
+		    },
+		    format_date: function(date){
+		      return moment(date).format('ll');
+		    },
+		    ausdate: function(date) {
+		      if(date == '0000-00-00'){
+		        return '';
+		      }else{
+		        return moment(date).format('DD/MM/YYYY');
+		      }
+		      
+		    },
+		    getTime: function(date){
+		      var temp_date = '2020-01-01 '+date;
+		      return moment(temp_date).format('h:mm a');
+		    },
+  		},
+  		methods: {
+  			load_doc_for_approval: function(){
+  				var project_id = '<?php echo $project_id ?>';
+  				axios.post("<?php echo base_url() ?>projects/fetch_storage_liles_need_authorization", 
+		        {
+		        	'project_id': project_id,
+		        }).then(response => {
+		          	this.doc_for_approval = response.data;              
+		        }).catch(error => {
+		          console.log(error.response)
+		        });
+  			},
+  			load_doc_for_replacement: function(){
+  				var project_id = '<?php echo $project_id ?>';
+  				axios.post("<?php echo base_url() ?>projects/fetch_files_for_replacement", 
+		        {
+		        	'project_id': project_id,
+		        }).then(response => {
+		          	this.doc_for_replacement = response.data;              
+		        }).catch(error => {
+		          console.log(error.response)
+		        });
+  				
+  			},
+  			view_file: function(filename,storage_files_id){
+  				var start = Date.now();
+  				this.pdfFile = '<?php echo base_url() ?>docs/stored_docs/'+filename+'?time='+start;
+  				this.selected_storage_id = storage_files_id;
+  				this.show_for_replacement = true;
+  			},
+  			approve_file : function(storage_files_id){
+  				var r = confirm("Are you sure you want to APPROVE selected uploaded file to be Attached to the project?");
+	      		if (r == true) {
+	  				axios.post("<?php echo base_url() ?>projects/approve_file_to_be_attached", 
+			        {
+			        	'storage_files_id': storage_files_id,
+			        }).then(response => {
+			          	this.load_doc_for_approval();   
+			          	this.load_doc_for_replacement();           
+			        }).catch(error => {
+			          console.log(error.response)
+			        });
+			    }
+  			},
+  			close_approve_modal: function(){
+  				window.location.reload();
+  			},
+  		}
+  	});
+  	$(document).ready(function() { 
+		if(is_ds == 1){
+			app_approval.load_doc_for_approval();
+			app_approval.load_doc_for_replacement();
+			$("#mdl_for_doc_approval").modal('show');
+		}
+	});
+</script>
+
+
 <div id="mdl_doc_type_list" class="modal fade" tabindex="-1" data-width="760">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -1639,7 +1832,7 @@ $("#site_finish").on("dp.change", function (e) {
 		                  	<tbody>
 			                    <tr v-for = "req_doc_type_list in req_doc_type_list">
 			                    	<td>
-			                    		<input type="checkbox" name="req_doc_type" :value = "req_doc_type_list.storage_files_id">
+			                    		<input type="checkbox" name="req_doc_type" v-model = "req_doc_type" :value = "req_doc_type_list.storage_files_id">
 			                     	</td>
 			                     	<td>{{ req_doc_type_list.date_upload }}</td>
 			                    	<td>{{ req_doc_type_list.doc_type_name }}</td>
@@ -1653,7 +1846,7 @@ $("#site_finish").on("dp.change", function (e) {
 			<hr class="no-m"/>
 			<div class="modal-footer row">
 				<button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click = "set_replace_files">Select</button>
-	        	<button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+	        	<button type="button" class="btn btn-success" data-dismiss="modal" v-on:click = "cancel_replace_files">Cancel</button>
 			</div>
 		</div>
 	</div>
@@ -1665,9 +1858,10 @@ $("#site_finish").on("dp.change", function (e) {
 	  	el: '#mdl_doc_type_list',
 	  	data: {
 	  		req_doc_type_list: [],
+	  		req_doc_type: [],
 	  	},
 		mounted: function(){
-			this.load_req_doc_type_files();
+			//this.load_req_doc_type_files();
 		},
   		filters: {
 		    getDayname: function(date){
@@ -1705,7 +1899,23 @@ $("#site_finish").on("dp.change", function (e) {
   			},
 
   			set_replace_files: function(){
-  				file_is_set = 1;
+  				var num = this.req_doc_type.length;
+  				if(num > 1){
+	  				var r = confirm("Are you sure you want to replace selected "+num+" files?");
+			    	if (r == true) {
+		  				file_is_set = 1;
+		  				$("#will_replace_existing").val(1);
+		  			}else{
+		  				$("#doc_type_name").val("");
+		  			}
+		  		}else{
+		  			file_is_set = 1;
+		  			$("#will_replace_existing").val(1);
+		  		}
+  			},
+  			cancel_replace_files: function(){
+  				file_is_set = 0;
+  				$("#will_replace_existing").val(0);
   			},
   		}
   	});
@@ -1780,9 +1990,20 @@ $('input#doc_files').on('dragover', function(e) {
 
 	$('.doc_upload_submit').click(function(){
 
+
+
 		var doc_type = $('select.doc_type_name').val();
 
 		if(doc_type > 0){
+
+			$(this).hide();
+			$('#doc_storage').modal('hide');
+			$('#loading_modal').modal({'backdrop': 'static', 'show' : true} );
+
+			setTimeout(function(){ 
+				$('form#upload_doc_file_prj').submit(); 
+			}, 3000);
+
 			if(file_is_set == 1){
 				$('input[name="req_doc_type"]:checked').each(function() {
 				   	$.post(baseurl+"projects/set_file_for_replacement", 
@@ -1793,8 +2014,8 @@ $('input#doc_files').on('dragover', function(e) {
 					});
 				});
 			}
-			$('#doc_storage').modal('hide');
-			$('form#upload_doc_file_prj').submit(); $('#loading_modal').modal({'backdrop': 'static', 'show' : true} );
+
+
 
 		}else{
 			alert('Please select Document Type.')
@@ -1823,14 +2044,18 @@ $('input#doc_files').on('dragover', function(e) {
 	});
 
 	window.del_stored_file = function(file_id){
-		$.post(baseurl+"projects/remove_uploaded_file",{file_id: file_id});
-		$.post(baseurl+"projects/list_uploaded_files", 
-		{ 
-			proj_id: '<?php echo $project_id ?>'
-		}, 
-		function(result){
-			$("#docStorageList").html(result);
-		});
+		var r = confirm("Are you sure you want to remove the selected file?");
+	    if (r == true) {
+			$.post(baseurl+"projects/remove_uploaded_file",{file_id: file_id});
+			$.post(baseurl+"projects/list_uploaded_files", 
+			{ 
+				proj_id: '<?php echo $project_id ?>',
+				job_date: '<?php echo $job_date ?>'
+			}, 
+			function(result){
+				$("#docStorageList").html(result);
+			});
+		}
 	}
 
 	$("#showDocStorage").click(function(){
@@ -1838,7 +2063,8 @@ $('input#doc_files').on('dragover', function(e) {
 		
 		$.post(baseurl+"projects/list_uploaded_files", 
 		{ 
-			proj_id: '<?php echo $project_id ?>'
+			proj_id: '<?php echo $project_id ?>',
+			job_date: '<?php echo $job_date ?>'
 		}, 
 		function(result){
 			$("#docStorageList").html(result);
@@ -1907,7 +2133,6 @@ $('input#doc_files').on('dragover', function(e) {
 	}
 
 	window.approve_doc_type = function(storage_files_id){
-		alert(storage_files_id);
 		$.post(baseurl+"projects/check_file_for_replacement", 
         { 
           project_id: '<?php echo $project_id ?>'
@@ -1961,21 +2186,25 @@ $('input#doc_files').on('dragover', function(e) {
 	}
 
 	window.document_type_change = function(){
-		var doc_type_id = $("#doc_type_name").val();
-		this.app.load_req_doc_type_files();
-		$.post(baseurl+"projects/check_doc_type_is_required", 
-        { 
-          doc_type_id: doc_type_id,
-          project_id: '<?php echo $project_id ?>'
-        }, 
-        function(result){
-        	if(result == 1){
-        		$("#doc_type_comfirmation").modal('show');
-        	}
-        });   
+		var job_date = '<?php echo $job_date ?>';
+		if(job_date !== ""){
+			var doc_type_id = $("#doc_type_name").val();
+			this.app.load_req_doc_type_files();
+			$.post(baseurl+"projects/check_doc_type_is_required", 
+	        { 
+	          doc_type_id: doc_type_id,
+	          project_id: '<?php echo $project_id ?>'
+	        }, 
+	        function(result){
+	        	if(result == 1){
+	        		$("#doc_type_comfirmation").modal('show');
+	        	}
+	        }); 
+	    }  
 	}
 
 	$("#display_existing_doc_file").click(function(){
+		app.load_req_doc_type_files();
 		$("#doc_type_comfirmation").modal('hide');
 		$("#mdl_doc_type_list").modal('show');
 	});
@@ -1983,6 +2212,118 @@ $('input#doc_files').on('dragover', function(e) {
 
 </script>
 <?php //endif; ?>
+
+
+
+<!-- _________________________________ HELP VIDEO SETUP _________________________________ -->
+<?php $this->load->module('help_videos'); ?>
+<div id="help_video_group" class="modal fade" tabindex="-1" data-width="760" >
+  <div class="modal-dialog" style="width:85%;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <ul id="myTab" class="nav nav-tabs pull-right" style="border-bottom: 0;">
+          <li class="now_playing_tab_btn"><a href="#now_playing" style="color:#555; display:none;" data-toggle="tab"><i class="fa fa-globe fa-lg"></i> Now Playing</a></li>
+          <li class="help_videos_tab_btn active"><a href="#help_videos" style="color:#555;" data-toggle="tab" tabindex="20"><i class="fa fa-inbox fa-lg"></i> Videos</a></li> 
+        </ul>
+        <h4 class="modal-title"><em id="" class="fa fa-film"></em> Help Videos </h4>
+      </div>
+      <div class="modal-body" style="margin:0 !important; padding:0 !important;">
+        <div class="tab-content">
+          <div id="now_playing" class="tab-pane fade clearfix  in">
+            <iframe style="width: 100%;height: 70%;background-repeat: no-repeat;background-color:#000;background-image: url('<?php echo base_url(); ?>uploads/misc/loading_bub.gif');background-position: center;background-size: 50px;" class="group_video_frame" ></iframe>
+          </div>
+          <div id="help_videos" class="tab-pane fade clearfix active in">
+            <div id="" class="m-10 p-bottom-10 clearfix">
+
+<div id="" class="details_video hp_vids_tmbs clearfix" style="display:none;">
+<p id="" class="m-left-5 p-bottom-10 m-top-5 clearfix" style="font-weight: bold;    font-size: 16px;    border-bottom: 1px solid #ccc;">Details Videos</p>
+<?php $cat_keyword = 'projects'; $sub_cat_keyword = 'projects_details'; ?>
+<?php $this->help_videos->get_help_videos($cat_keyword,$sub_cat_keyword); ?>
+</div>
+
+<div id="" class="invoice_video hp_vids_tmbs clearfix" style="display:none;">
+<p id="" class="m-left-5 p-bottom-10 m-top-5 clearfix" style="font-weight: bold;    font-size: 16px;    border-bottom: 1px solid #ccc;">Invoice Videos</p>
+<?php $cat_keyword = 'projects'; $sub_cat_keyword = 'invoice'; ?>
+<?php $this->help_videos->get_help_videos($cat_keyword,$sub_cat_keyword); ?>
+</div>
+
+<div id="" class="works_video hp_vids_tmbs clearfix" style="display:none;">
+<p id="" class="m-left-5 p-bottom-10 m-top-5 clearfix" style="font-weight: bold;    font-size: 16px;    border-bottom: 1px solid #ccc;">Works Videos</p>
+<?php $cat_keyword = 'projects'; $sub_cat_keyword = 'works'; ?>
+<?php $this->help_videos->get_help_videos($cat_keyword,$sub_cat_keyword); ?>
+</div>
+
+<div id="" class="variation_video hp_vids_tmbs clearfix" style="display:none;">
+<p id="" class="m-left-5 p-bottom-10 m-top-5 clearfix" style="font-weight: bold;    font-size: 16px;    border-bottom: 1px solid #ccc;">Works Videos</p>
+<?php $cat_keyword = 'projects'; $sub_cat_keyword = 'variation'; ?>
+<?php $this->help_videos->get_help_videos($cat_keyword,$sub_cat_keyword); ?>
+</div>
+
+
+
+            </div>
+          </div>
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+$('.mod_video_toggle').click(function(){
+ $('.group_video_frame').attr('src','');
+  var video_details_arr = $(this).find('.video_details').text().split('`');
+  setTimeout(function(){
+    $('.group_video_frame').attr('src',video_details_arr[1]);
+  },2000);
+  $('li.now_playing_tab_btn a').show().trigger('click');
+});
+
+$('.play_invoice_vids').click(function(){
+	$('.hp_vids_tmbs').hide();
+	$('.invoice_video').show();
+});
+
+$('.play_details_vids').click(function(){
+	$('.hp_vids_tmbs').hide();
+	$('.details_video').show();
+});
+
+$('.play_works_vids').click(function(){
+	$('.hp_vids_tmbs').hide();
+	$('.works_video').show();
+});
+
+$('.play_variation_vids').click(function(){
+	$('.hp_vids_tmbs').hide();
+	$('.variation_video').show();
+});
+
+
+$('.open_help_vids_mpd').click(function(){
+	$('li.help_videos_tab_btn a').trigger('click');
+  	$('li.now_playing_tab_btn a').hide();
+});
+
+
+</script>
+
+<?php if(  $this->session->userdata('is_admin') != 1  ): ?>
+<?php if(  $this->session->userdata('user_role_id') != 5 &&  $this->session->userdata('user_role_id') != 6 &&  $this->session->userdata('user_role_id') != 4  ): ?>
+	<style type="text/css">
+
+	#vid_id_21,#vid_id_22{
+		display: none;
+		visibility: hidden;
+	}
+
+	</style>
+<?php endif; ?>
+<?php endif; ?>
+
+<!-- _________________________________ HELP VIDEO SETUP _________________________________ -->
+
 
 
 <?php $this->load->view('assets/logout-modal'); ?>

@@ -1,12 +1,7 @@
 <?php
 foreach ($project_t->result_array() as $row){
-  $client_id = $row['client_id'];
-  $is_pending_client = $row['is_pending_client'];
-  if($is_pending_client == 0):
-    $compname = $row['company_name'];
-  else:
-    $compname = $row['pending_comp_name'];
-  endif;
+  $client_id = $row['company_id'];
+  $compname = $row['company_name'];
   $company_name = str_replace(' ', '', $compname);
   $filepath = "reports/".$client_id."_".$company_name."/".$proj_id."/";
 define('FPDF_FONTPATH','font/');
