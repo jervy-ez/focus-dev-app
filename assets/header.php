@@ -17,7 +17,7 @@
         <link href="<?php echo base_url(); ?>css/segment.css" rel="stylesheet"/>
 
         <link href="<?php echo base_url(); ?>css/select2.css" rel="stylesheet"/>
-        <link href="<?php echo base_url(); ?>css/main.css?ver=32" rel="stylesheet" type="text/css">
+        <link href="<?php echo base_url(); ?>css/main.css?ver=766" rel="stylesheet" type="text/css">
         <script type="text/javascript" language="javascript" src="<?php echo base_url(); ?>js/vendor/jquery-1.11.0.min.js"></script>
 
         <script src="<?php echo base_url(); ?>js/moment.js" ></script>  
