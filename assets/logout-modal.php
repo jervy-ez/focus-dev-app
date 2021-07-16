@@ -346,21 +346,7 @@
 						</div>
 					</div>
 
-
-
-					<div id="" class="clearfix"></div>
-					<div class='col-xs-8'>
-						<div class="form-group m-top-5">
-							<div class='input-group' id=''>
-								<select class="form-control aus_timezone tz_set_b">
-									<option value="0" selected>Select Timezone</option>
-									<option value="1">Aus Western Standard Time</option>
-									<option value="2">Aus Eastern Standard Time</option> 
-								</select>
-								<span class="input-group-addon">Time Zone <span class="fa fa-globe fa-lg"></span></span>
-							</div>
-						</div>
-					</div>
+ 
 					<div id="" class="clearfix"></div>
 
 

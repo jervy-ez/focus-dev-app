@@ -1859,6 +1859,12 @@ endif;
 	}
 
 
+	public function cancel_leave($leave_id,$user_id){
+		 $this->user_model->cancel_applied_leave($leave_id);
+		 redirect('/users/leave_details/'.$user_id.'?view_approved=1', 'refresh'); 
+	}
+
+
 
 
 	public function notify_changed_completion_date($project_id,$project_name=''){
@@ -2154,14 +2160,13 @@ endif;
 			$date_a = date("Y-m-d", $fetch_leave_req['start_day_of_leave']   ).' 07:00:00am';
 			$date_b = date("Y-m-d", $fetch_leave_req['end_day_of_leave']   ).' 05:00:00pm';
 
-			if($fetch_leave_req['total_days_away'] - 8 > 0){
+			if($fetch_leave_req['total_days_away'] > 1){
 				$re_occur = 1;
 			}
 		}
 
 		$details = $fetch_leave_req['details'];
 //echo "$date_a<br />$date_b";
-
 
 		if( $fetch_leave_req['leave_type_id'] == 1 ||  $fetch_leave_req['leave_type_id'] == 4 ||  $fetch_leave_req['leave_type_id'] == 5  ||  $fetch_leave_req['leave_type_id'] == 6){
 			$status = 'Leave';
@@ -2171,9 +2176,7 @@ endif;
 			$status = 'Sick';
 		}
 
-
 //echo "<p></p>";
-
 //var_dump($fetch_leave_req);
 
 		$date_time_stamp_a = strtotime($date_a);
@@ -2204,12 +2207,10 @@ endif;
 
 		if( $re_occur == 1 ){
 			$reoccur_id = $this->user_model->insert_user_availability_reoccur('0700','1700','daily','','mon,tue,wed,thu,fri',$date_time_stamp_a,$date_time_stamp_b,'0','');
-			$this->user_model->inset_availability($fetch_leave_req['user_id'],$status,  $fetch_leave_req['details'],$date_time_stamp_a,$date_time_stamp_b,$reoccur_id,$loc_id);
+			$this->user_model->inset_availability($fetch_leave_req['user_id'],$status,  $fetch_leave_req['details'],$date_time_stamp_a,$date_time_stamp_b,$reoccur_id,$loc_id,$leave_req_id);
 		}else{
-			$this->user_model->inset_availability($fetch_leave_req['user_id'],$status,  $fetch_leave_req['details'],$date_time_stamp_a,$date_time_stamp_b,0,$loc_id);
+			$this->user_model->inset_availability($fetch_leave_req['user_id'],$status,  $fetch_leave_req['details'],$date_time_stamp_a,$date_time_stamp_b,0,$loc_id,$leave_req_id);
 		}
-		
-
 	}
 
 	function delete_user_ava(){
@@ -2364,7 +2365,27 @@ endif;
 		$user_id = $ave[3];
 		$pathname = $ave[4];
 		$status = $ave[5];
-		$timezone = $ave[6];
+	//	$timezone = $ave[6];
+
+
+		$fetch_user_loc = $this->admin_m->fetch_user_location($person_did);
+		$user_location = array_shift($fetch_user_loc->result_array());
+
+		$user_state_raw = explode(',', $user_location['location']);
+		$user_site = trim($user_state_raw[1]);
+		switch ($user_site) {
+			case "NSW": 
+			$timezone = 2;
+			break;
+
+			case "QLD":
+			$timezone = 0;
+			break;
+
+			case "WA":
+			$timezone = 1;
+			break;
+		}
 
 
 		$occur = explode('`', $_POST['reoccur']);
