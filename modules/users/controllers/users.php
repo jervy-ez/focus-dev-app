@@ -2483,6 +2483,331 @@ endif;
 	}
 
 
+	public function get_return_date($user_id){
+
+		$nowTimeStamp = strtotime('now');
+
+ $returnMsg = '';
+
+
+		$sql_a = "SELECT from_unixtime(`user_availability`.`date_time_stamp_a`, '%H%i')  AS `startDayHrs`,  from_unixtime(`user_availability`.`date_time_stamp_b`, '%H%i')  AS `endDayHrs`,  from_unixtime(`user_availability`.`date_time_stamp_b`, '%j')  AS `endDayNum`
+		 FROM `user_availability`  WHERE `user_availability`.`user_id` = '$user_id' AND `user_availability`.`date_time_stamp_b` >= '$nowTimeStamp'  AND `user_availability`.`is_active` = '1'  ORDER BY `endDayNum`  DESC LIMIT 1 ";
+
+		$my_result_a = $this->db->query($sql_a);
+		$data = array_shift($my_result_a->result());
+
+		//var_dump($data);
+
+
+if( isset($data->endDayNum) ):
+
+
+		$endDayNum = $data->endDayNum;
+		$current_day_number = date("z")+1;
+		unset($data);
+
+		$cell_calendar = array();
+		$table_arr_cell = array();
+
+		$day_number = 0;
+		$sql = "SELECT *, 
+		FROM_UNIXTIME(`user_availability`.`date_time_stamp_a`, '%H%i') AS `startTime`, 
+		FROM_UNIXTIME(`user_availability`.`date_time_stamp_b`, '%H%i') AS `endTime`, 
+		FROM_UNIXTIME(`user_availability`.`date_time_stamp_b`, '%j') AS `dDay`, 
+		FROM_UNIXTIME(`user_availability`.`date_time_stamp_b`, '%Y') AS `dYear`,
+		FROM_UNIXTIME(`user_availability`.`date_time_stamp_a`, '%d/%m/%Y %h:%i %p') AS `dateTimeStart`,
+		FROM_UNIXTIME(`user_availability`.`date_time_stamp_b`, '%d/%m/%Y %h:%i %p') AS `dateTimeEnd`,
+		FROM_UNIXTIME(`user_availability`.`date_time_stamp_b`, '%a') AS `nameDay`
+		FROM `user_availability` WHERE `user_availability`.`user_id` = '$user_id' 
+		AND ( `user_availability`.`date_time_stamp_b` >= '$nowTimeStamp' OR `user_availability`.`date_time_stamp_a` >= '$nowTimeStamp' ) 
+		AND `user_availability`.`is_active` = '1'   ORDER BY `user_availability`.`date_time_stamp_a` ASC ";
+
+		$my_result = $this->db->query($sql);
+		
+
+		foreach ($my_result->result() as $data){
+
+			if(isset($table_arr_cell[$data->dDay])){
+
+			//	echo $table_arr_cell[$data->dDay]['startTime'];
+				//echo '<p id="" class=""></p>';
+
+			//	echo $table_arr_cell[$data->dDay]['endTime'];
+				
+				//echo '<p id="" class=""></p>';
+				//echo '<p id="" class=""></p>';
+
+				$time_end_diff = $data->startTime - $table_arr_cell[$data->dDay]['endTime'];
+
+
+				if( $time_end_diff > 0 ){
+					
+					$returnMsg = 'Return by: '.$table_arr_cell[$data->dDay]['nameDay'].'day '.$table_arr_cell[$data->dDay]['dateTimeEnd'];
+					break;
+					// gets return text here...
+
+				}else{
+
+					$table_arr_cell[$data->dDay]['endTime'] = $data->endTime;
+					$table_arr_cell[$data->dDay]['dateTimeEnd'] = $data->dateTimeEnd;
+					//$table_arr_cell[$data->dDay]['returnMsg']	= 'Return by: '.$data->dateTimeEnd;
+
+
+				}
+
+
+			}else{
+
+				$table_arr_cell[$data->dDay] = array(
+					"dDay" 			=> $data->dDay,  
+					"nameDay" 		=> $data->nameDay,  
+					"dateTimeStart" => $data->dateTimeStart,  
+					"dateTimeEnd"	=> $data->dateTimeEnd,  
+					"startTime"		=> $data->startTime,  
+					"endTime"		=> $data->endTime,  
+					"dYear" 		=> $data->dYear,
+					"isWeekEnd" 	=> '0',
+				);
+
+			//	echo '<p id="" class=""></p>';
+			//	echo $data->user_availability_id.'  --- >  ';
+			//	echo $data->dateTimeStart.' --  '.$data->dateTimeEnd.' --  '.$data->endTime;
+			//	echo '<p id="" class=""></p>';
+
+
+			}
+
+
+		//	echo '<p id="" class=""></p>';
+		//	echo '<p id="" class=""></p>';
+		//	echo $data->user_availability_id.'  --- >  ';
+		//	echo $data->dateTimeStart.' --  '.$data->dateTimeEnd.' --  '.$data->endTime;
+		//	echo '<p id="" class=""></p>';
+		//	echo '<p id="" class=""></p>';
+
+		}
+
+
+
+// var_dump($table_arr_cell);
+
+
+
+
+
+		/*
+
+
+
+
+
+
+			$return_message = '';
+
+			if($day_number == 0){
+				$day_number = $data->dDay;
+			}
+
+
+
+			//	var_dump($data);
+			//	echo $data->startTime.'   '.$data->endTime.'   '.$data->dDay;
+			//	echo '<p id="" class=""></p>';
+
+
+			$dataTime =  DateTime::createFromFormat('z Y', strval($data->dDay) . ' ' . strval($data->dYear));
+
+			//	echo $dataTime->format('Y-m-d');
+			//	echo '<p id="" class="">'.$day_number.'</p>';
+
+
+
+			if($day_number == $data->dDay){
+				if( $data->endTime < 1700 ){
+					$return_message = 'return within the day';
+					break;
+				}else{
+					$return_message = 'return next day';
+				}
+			}else{
+
+
+			}
+
+			$day_number++;
+
+
+
+
+		*/
+
+
+
+//echo '<p id="" class=""></p>';
+
+
+
+//echo $endDayNum;
+
+
+//echo '<p id="" class=""></p>';
+//echo $current_day_number;
+
+
+
+
+//echo '<p id="" class=""></p>';
+
+
+
+
+ 
+
+
+
+
+/*
+foreach ($table_arr_cell as $key => $value) {
+	var_dump( $value);
+	echo '<p id="" class=""></p>';
+}
+*/
+
+//	echo '<p id="" class=""></p>';
+//	echo '<p id="" class=""></p>';
+//	echo '<p id="" class=""></p>';
+
+//	echo '<p id="" class=""></p>';
+//	echo '<p id="" class=""></p>';
+//	echo '<p id="" class=""></p>';
+
+
+for ($i=$current_day_number; $i <= $endDayNum; $i++) { 
+//	  echo '<p id="" class="">'.$i.'</p>';
+
+
+//echo '<p id="" class=""></p>';
+
+
+//echo '<p id="" class=""></p>';
+
+
+//echo '<p id="" class=""></p>';
+
+
+	if(!isset($table_arr_cell[$i])){
+
+ 
+
+
+
+		$year = $data->dYear;
+
+		$dayOfYear = $i-1;
+
+		$dayDate =  date('l', strtotime('January 1st '.$year.' +'.$dayOfYear.' days'));
+		$dayCalendar =  date('d/m/Y', strtotime('January 1st '.$year.' +'.$dayOfYear.' days'));
+
+
+		if($dayDate == 'Saturday' || $dayDate == 'Sunday'){
+			$isWeekend = 1;
+		}else{
+			$isWeekend = 0;
+		}
+
+
+
+
+
+		$table_arr_cell[$i] = array(
+			"dDay" 			=> $i,  
+			"nameDay" 		=> $dayDate,  
+			"dateTimeStart" => $dayCalendar,  
+			"dateTimeEnd"	=> '',
+			"startTime"		=>'',
+			"endTime"		=> '0',
+			"dYear" 		=> $data->dYear,
+			"isWeekEnd" 	=> $isWeekend,
+		);
+
+
+	}
+
+
+
+}
+
+///	echo '<p id="" class=""></p>';
+//	echo '<p id="" class=""></p>';
+//	echo '<p id="" class=""></p>';
+
+
+//	echo '<p id="" class=""></p>';
+//	echo '<p id="" class=""></p>';
+//	echo '<p id="" class=""></p>';
+
+	ksort($table_arr_cell);
+
+
+
+	foreach ($table_arr_cell as $key => $value) {
+		if( $table_arr_cell[$key]['isWeekEnd'] == 0 && $table_arr_cell[$key]['endTime'] == 0 ){
+			$returnMsg = 'Return by: '.$table_arr_cell[$key]['nameDay'].' '.$table_arr_cell[$key]['dateTimeStart'].' 8:00 AM';;
+		}elseif( $table_arr_cell[$key]['endTime'] < 1700 && $table_arr_cell[$key]['endTime'] > 0 && $table_arr_cell[$key]['isWeekEnd'] != 0  ){
+			$returnMsg = 'Return by: '.$table_arr_cell[$key]['nameDay'].' '.$table_arr_cell[$key]['dateTimeEnd'];
+		}else{
+
+
+			if($returnMsg== ''){
+				if(!isset($table_arr_cell[$key+1])){
+					$year = $table_arr_cell[$key]['dYear'];
+					$dayOfYear = $endDayNum;
+
+					if( date('l', strtotime('January 1st '.$year.' +'.$dayOfYear.' days')) == 'Saturday'  ){
+						$dayDate =  date('l d/m/Y 8:00 A', strtotime('January 1st '.$year.' +'.($dayOfYear+2).' days'));
+						$returnMsg = 'Return by: '.$dayDate;
+					}else{
+						$dayDate =  date('l d/m/Y 8:00 A', strtotime('January 1st '.$year.' +'.$dayOfYear.' days'));
+						$returnMsg = 'Return by: '.$dayDate;
+					}
+
+
+
+
+
+
+				}
+			}
+
+
+
+		}
+	}
+/*
+
+	foreach ($table_arr_cell as $key => $value) {
+
+//	echo '<p id="" class=""></p>';
+//	echo '<p id="" class=""></p>';
+var_dump($table_arr_cell[$key]);
+
+//	echo '<p id="" class=""></p>';
+//	echo '<p id="" class=""></p>';
+}
+*/
+//echo '<p id="" class="">'.$returnMsg.'</p>';
+
+endif;
+
+return $returnMsg;
+
+
+
+ 
+
+	}
+
+
 	function set_availability($innit_ave = ''){
 		$this->clear_apost();
 		$ave = explode('`', $_POST['ajax_var']);
@@ -3084,6 +3409,9 @@ function get_user_ave_comments($user_id,$return_text=''){
 		}
 */
 
+$emp_set_userId = $user_ave['user_id'];
+$return_mgs = $this->get_return_date($emp_set_userId);
+
 		if($user_ave_q->num_rows === 1){
 			
 
@@ -3103,26 +3431,27 @@ $d_date->setTimezone(new DateTimeZone($state_code_loc));
 			// date_default_timezone_set($user_location['state_code']);
 $new_set_end_date = $d_date->format('l jS \of F Y h:ia' );
 
-*/
+*/ 
 
 $new_set_end_date = date('l jS \of F Y h:ia',$user_ave['date_time_stamp_b'] );
-
-
-
 
  
 
 
+ //get_return_date
+
+
+
 
 				if($return_text != ''){
-					return $user_ave['notes'].' till '.$new_set_end_date.' '.$aus_timezone;
+					return $user_ave['notes'].' '.$return_mgs;
 				}else{
 
 					if( strlen($user_ave['notes']) > 0 ){
-						echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" data-placement="left" title="" data-original-title="'.$user_ave['notes'].' till '.$new_set_end_date.' '.$aus_timezone.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
+						echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" data-placement="left" title="" data-original-title="'.$user_ave['notes'].' '.$return_mgs.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
 					}else{
 						if($user_ave['status']!= ''){
-							echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" data-placement="left" title="" data-original-title="till '.$new_set_end_date.' '.$aus_timezone.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
+							echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" data-placement="left" title="" data-original-title="'.$return_mgs.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
 						}
 					}
 				}
@@ -3179,16 +3508,16 @@ $date_end = date("l jS \of F h:ia",$reoccur_ave['date_range_b']);//.' '.$reoccur
 */
 
 			if($return_text != ''){
-				return ( strlen($user_ave['notes']) > 0 ? $user_ave['notes'] : $reoccur_ave['notes']).' till '.$dis_time.' '.$aus_timezone;
+				return ( strlen($user_ave['notes']) > 0 ? $user_ave['notes'] : $reoccur_ave['notes']).' '.$return_mgs;
 			}else{
 
 
 
 if( strlen($user_ave['notes']) > 0   ){
-	echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" data-placement="left" title="" data-original-title="'.( strlen($user_ave['notes']) > 0 ? $user_ave['notes'] : $reoccur_ave['status'] ).' till '.$dis_time.' '.$aus_timezone.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
+	echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" data-placement="left" title="" data-original-title="'.( strlen($user_ave['notes']) > 0 ? $user_ave['notes'] : $reoccur_ave['status'] ).' '.$return_mgs.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
 	
 }else{
-		echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" data-placement="left" title="" data-original-title="'.( strlen($reoccur_ave['notes']) > 0 ? $reoccur_ave['notes'] : $reoccur_ave['status'] ).' till '.$dis_time.' '.$aus_timezone.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
+		echo '<span style="color:#1F3A4D;" class=" tooltip-enabled" data-placement="left" title="" data-original-title="'.( strlen($reoccur_ave['notes']) > 0 ? $reoccur_ave['notes'] : $reoccur_ave['status'] ).' '.$return_mgs.'"><i class="fa fa-info-circle" aria-hidden="true"></i></span>';
 			
 
 }
