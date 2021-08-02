@@ -2541,10 +2541,10 @@ echo '<p id="" class=""><br /></p>';
  
 
 
-	public function get_return_date($user_id){
+	public function get_return_date($user_id){   // return text availability
 
 		$nowTimeStamp = strtotime('now');
-	//	$nowTimeStamp = 1626740798;
+	//	$nowTimeStamp = 1627516800;
 		$returnMsg = '';
 
 		if($user_id == 27){
@@ -2563,7 +2563,7 @@ echo '<p id="" class=""><br /></p>';
  
 
 		$current_day_number = date("z")+1;
-	//	$current_day_number = ( date("z",1626740798) ) + 1;
+	//	$current_day_number = ( date("z",1627516800) ) + 1;
 
 		if(!isset($data->endDayNum) ){
 			$endDayNum = 365;
@@ -2617,7 +2617,7 @@ echo '<p id="" class=""><br /></p>';
 
 				if( $time_end_diff > 0 ){
 					
-					$returnMsg = 'Return by: '.$table_arr_cell[$data->dDay]['nameDay'].'day '.$table_arr_cell[$data->dDay]['dateTimeEnd'];
+					$returnMsg = 'Return by: '.$table_arr_cell[$data->dDay]['nameDay'].'day '.$table_arr_cell[$data->dDay]['dateTimeEnd'].'';
 					break;
 					// gets return text here...
 					// same day return date
@@ -2666,7 +2666,12 @@ echo '<p id="" class=""><br /></p>';
 		FROM_UNIXTIME(`user_reoccur_availability`.`date_range_b`, '%a') AS `nameDay`
 
 		FROM `user_reoccur_availability` LEFT JOIN `user_availability` ON `user_availability`.`reoccur_id` = `user_reoccur_availability`.`reoccur_id` 
-		WHERE `user_reoccur_availability`.`date_range_b` >= '$nowTimeStamp' AND `user_reoccur_availability`.`is_active` = '1' 
+
+			WHERE `user_reoccur_availability`.`is_active` = '1' AND `user_reoccur_availability`.`date_range_b` >= '$nowTimeStamp'
+
+ 
+
+
 		AND `user_availability`.`user_id` = '$user_id' AND `user_availability`.`is_active` = '1' ORDER BY `user_reoccur_availability`.`reoccur_id` ASC";
 
 		$my_result = $this->db->query($sql_c);
@@ -2679,8 +2684,7 @@ echo '<p id="" class=""><br /></p>';
 
 			$days_range = array();
 			$days_range = explode(',', strtoupper( $data->range_reoccur) );
-
-
+ 
 
 
 
@@ -2713,12 +2717,29 @@ echo '<p id="" class=""><br /></p>';
 				}
 
 
-
-	//	 	echo '<p id="" class="">'.$dayNameInit.'</p>';
-
+				$dayNameInit = strtoupper($dayNameInit);
 
 
-			if( $data->range_reoccur != '' &&  in_array(strtoupper($dayNameInit) , $days_range)    ){
+	//	  	echo '<p id="" class="">'.var_dump($data).'</p>';
+
+
+				if( !isset($table_arr_cell[$i] ) ){
+
+
+		
+
+
+
+ 
+			if( $data->range_reoccur != '' &&  in_array( $dayNameInit , $days_range)    ){
+ /*
+echo '<p id="" class="">In ARRAY! '.$dayNameInit.'</p>';
+
+ 	 	echo '<p id="" class="">'.$dayCalendar.'</p>';
+		  	echo '<p id="" class="">'.var_dump($data->startTime).'</p>';
+		  	echo '<p id="" class="">'.var_dump($data->endTime).'</p>';
+		  	echo '<p id="" class="">'.var_dump($i).'</p>';
+ */
 				$table_arr_cell[$i] = array(
 					"dDay" 			=> $i,  
 					"nameDay" 		=> $dayDate,  
@@ -2734,9 +2755,13 @@ echo '<p id="" class=""><br /></p>';
 
 			}else{
 
+ /*
+ echo '<p id="" class=""> ***************** </p>';
+		  	echo '<p id="" class="">'.var_dump($i).'</p>';
+ echo '<p id="" class=""> ***************** </p>';
+*/
+
  
-
-
 				$table_arr_cell[$i] = array(
 					"dDay" 			=> $i,  
 					"nameDay" 		=> $dayDate,  
@@ -2747,16 +2772,15 @@ echo '<p id="" class=""><br /></p>';
 					"dYear" 		=> $dateYear,
 					"isWeekEnd" 	=> $isWeekend,
 				);
+ 
 
-
-
+ 
 			}
 
+		} 
 
 
-
-
-	//		echo '<p id="" class="">'.var_dump($table_arr_cell).'</p>';
+// echo '<p id="" class="">'.var_dump($table_arr_cell).'</p>';
 
 
 
@@ -2767,9 +2791,8 @@ echo '<p id="" class=""><br /></p>';
 
 
 		}
-		unset($data);
+	unset($data);
  
-
 
 
 
@@ -2783,6 +2806,9 @@ echo '<p id="" class=""><br /></p>';
 		}
 */
 
+
+ /// remove cooments here
+ 
 		$dateYear = date('Y');
 		for ($i=$current_day_number; $i <= $endDayNum; $i++) {
 			if(!isset($table_arr_cell[$i])){
@@ -2814,7 +2840,7 @@ echo '<p id="" class=""><br /></p>';
 				);
 			}
 		}
-
+ 
 
 
 /*
@@ -2824,27 +2850,60 @@ echo '<p id="" class=""><br /></p>';
 */
 	 
 		ksort($table_arr_cell);
+
+	//	echo '<p id="" class="">------------------------------</p>';
+//		var_dump($table_arr_cell);
  /*
 		foreach ($table_arr_cell as $key => $value) {
 			echo '<p id="" class=""></p>';
 			print_r($value);
 			echo '<p id="" class=""></p>';
+
+
+
+		}
  */
+
+
+
+
+
+
+
+	//	echo '<p id="" class="">------------------------------</p>';
+/*
+		foreach ($table_arr_cell as $key => $value) {
+			
+			echo '<p id="" class="">'.print_r($value).'</p>';
+		}
+*/
+
 		foreach ($table_arr_cell as $key => $value) {
 
-		//	echo '<p id="" class="">'.$table_arr_cell[$key]['isWeekEnd'].'</p>';
-		//	echo '<p id="" class="">'.$table_arr_cell[$key]['nameDay'].'</p>';
+	//		echo '<p id="" class="">'.$key.'</p>';
+
+ 
+	//		echo '<p id="" class="">'.$table_arr_cell[$key]['dDay'].'</p>';
+	//		echo '<p id="" class="">'.$table_arr_cell[$key]['startTime'].'</p>';
+	//		echo '<p id="" class="">'.$table_arr_cell[$key]['endTime'].'</p>';
+	//		echo '<p id="" class="">'.$table_arr_cell[$key]['isWeekEnd'].'</p>';
+	//		echo '<p id="" class="">'.$table_arr_cell[$key]['dateTimeStart'].'</p>';
 
 
 			if( $table_arr_cell[$key]['isWeekEnd'] == 0 && $table_arr_cell[$key]['endTime'] == 0 ){  // shows next day as return day
 				$returnMsg = 'Return by: '.$table_arr_cell[$key]['nameDay'].' '.$table_arr_cell[$key]['dateTimeStart'].' 8:00 AM'.''; // steve here error
-				break;
+			
 
+//echo $returnMsg;
+ 	break;
 			}
  
 			elseif( $table_arr_cell[$key]['endTime'] < 1700 && $table_arr_cell[$key]['endTime'] > 0 && $table_arr_cell[$key]['isWeekEnd'] == 0  ){
 				$returnMsg = 'Return by: '.$table_arr_cell[$key]['nameDay'].' '.$table_arr_cell[$key]['dateTimeEnd'].'';
-				break;
+			 
+
+//echo $returnMsg;
+	break;
 			}
  
 
@@ -2873,8 +2932,10 @@ echo '<p id="" class=""><br /></p>';
 			}
 		} 
  
- 
- 
+
+
+//echo $returnMsg;
+
 
 return $returnMsg;
 
